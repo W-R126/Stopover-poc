@@ -1,0 +1,65 @@
+.input-ui-component {
+  font-family: 'EtihadAltis-Book', Arial, sans-serif;
+  display: inline-block;
+  width: 300px;
+  position: relative;
+  margin: 0;
+  margin-top: 0.4em;
+  padding: 0 !important;
+  font-size: 1.2em;
+  border-radius: 6px;
+  border: 1px solid #b8b7b7;
+  outline: 0;
+  color: #4e4c4a;
+}
+
+.input-ui-component:focus-within {
+  border: 1px solid #6997d3;
+}
+
+.input-ui-component > input {
+  width: 100%;
+  border: 0;
+  background-color: transparent;
+  padding: 1.5em 0.7em 0.3em;
+  margin: 0;
+  font-family: 'EtihadAltis-Book', Arial, sans-serif;
+  font-size: 1em;
+  outline: 0;
+  color: #4e4c4a;
+}
+
+.input-ui-component > label {
+  position: absolute;
+  font-weight: 100;
+  font-size: 1em;
+  font-family: 'EtihadAltis-Book', Arial, sans-serif;
+  top: 1.05em;
+  left: 1.15em;
+  pointer-events: none;
+  transition:
+    top 100ms,
+    left 100ms,
+    right 100ms,
+    font-size 100ms,
+    font-weight 100ms;
+}
+
+.input-ui-component > input:focus ~ label,
+.input-ui-component.has-value > input ~ label {
+  top: 0.7em;
+  left: 0.9em;
+  font-size: 0.75em;
+  font-weight: 600;
+}
+
+html[dir='rtl'] .input-ui-component > label {
+  left: unset;
+  right: 1.15em;
+}
+
+html[dir='rtl'] .input-ui-component > input:focus ~ label,
+html[dir='rtl'] .input-ui-component.has-value > input ~ label {
+  left: unset;
+  right: 0.9em;
+}

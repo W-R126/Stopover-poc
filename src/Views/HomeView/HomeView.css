@@ -1,0 +1,20 @@
+.home-view {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  position: relative;
+  min-height: 500px;
+}
+
+.home-view .view-top-image {
+  z-index: -1;
+  height: 442px;
+  background-image: url('../../Assets/Images/HomeView/etihad-787-sky-banner.jpg');
+  background-position: 75% 50% !important;
+}
+
+.home-view .flight-search-component {
+  margin-top: 320px;
+  margin-bottom: 200px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.27);
+}

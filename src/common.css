@@ -1,0 +1,53 @@
+@font-face {
+  font-family: 'EtihadAltis-Text';
+  src: url('./Assets/Fonts/etihadaltis-text_v3-webfont.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'EtihadAltis-Book';
+  src: url('./Assets/Fonts/etihadaltis-book_v3-webfont.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'EtihadAltis-Medium';
+  src: url('./Assets/Fonts/etihadaltis-medium_v3-webfont.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('./Assets/Fonts/font-awesome.woff') format('woff');
+}
+
+html {
+  font-size: 10px;
+}
+
+body {
+  font-family: 'EtihadAltis-Book', arial, sans-serif;
+  font-size: 1.6rem;
+}
+
+.view-top-image {
+  width: 100%;
+  position: absolute;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-size: cover;
+}
+
+.content-wrapper {
+  max-width: 1376px;
+  width: 100%;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+}
+
+.open-external-link {
+  display: inline-block;
+  margin-left: 0.4em;
+}
+
+html[dir='rtl'] .open-external-link {
+  margin-left: unset;
+  margin-right: 0.4em;
+}

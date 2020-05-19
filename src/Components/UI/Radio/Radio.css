@@ -1,0 +1,47 @@
+.radio-ui-component {
+  display: inline-block;
+}
+
+.radio-ui-component * {
+  all: initial;
+  color: #4e4c4a;
+  cursor: pointer;
+}
+
+.radio-ui-component > input {
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+.radio-ui-component > label::before {
+  display: inline-block;
+  content: '';
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 0 0 2px #b8b7b7;
+  border: 3px solid #fff;
+  vertical-align: middle;
+  position: relative;
+  top: -0.05em;
+  margin-right: 0.5em;
+}
+
+.radio-ui-component:hover > label::before {
+  background-color: #e5d1a1;
+}
+
+.radio-ui-component > input:checked ~ label::before {
+  background-color: #bd8b13;
+}
+
+.radio-ui-component > input:focus ~ label::before {
+  box-shadow: 0 0 0 2px #6997d3;
+}
+
+html[dir='rtl'] .radio-ui-component > label::before {
+  margin-right: unset;
+  margin-left: 0.5em;
+}

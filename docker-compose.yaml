@@ -1,0 +1,9 @@
+version: '3'
+services:
+  stopover-frontend:
+    build: ./
+      
+    image: stopover-frontend
+    container_name: stopover-frontend
+    ports:
+        - "8080:80"

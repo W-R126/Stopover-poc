@@ -1,0 +1,123 @@
+.logo-component {
+  display: inline-flex;
+  font-size: 2rem;
+  color: #bd8b13;
+  font-family: 'EtihadAltis-Text', Arial, sans-serif;
+  user-select: none;
+  line-height: 1;
+  direction: ltr !important;
+}
+
+.logo-component.align-bottom {
+  flex-flow: column;
+}
+
+.logo-component > .logos-container {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+
+.logo-component > .logos-container > img {
+  height: 1em;
+}
+
+.logo-component > .logos-container > .arabic-container {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 200ms,
+    opacity 200ms;
+}
+
+.logo-component.arabic > .logos-container > .arabic-container {
+  opacity: 1;
+  max-height: 1.5em;
+}
+
+.logo-component > .logos-container > .arabic-container > img {
+  height: 1.3em;
+}
+
+.logo-component > .logos-container > .airways-container {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 200ms,
+    opacity 200ms;
+}
+
+.logo-component.airways > .logos-container > .airways-container {
+  max-height: 1.4em;
+  opacity: 1;
+}
+
+.logo-component > .logos-container > .airways-container > span {
+  display: inline-block;
+  font-size: 1em;
+  margin-top: 0.3em;
+  font-family: 'EtihadAltis-Medium', Arial, sans-serif;
+}
+
+.logo-component > .choose-well-container {
+  display: flex;
+}
+
+.logo-component.align-bottom > .choose-well-container {
+  flex-flow: column;
+  max-height: 0;
+  opacity: 0;
+  text-align: center;
+  overflow: hidden;
+  transition:
+    opacity 200ms,
+    max-height 200ms;
+}
+
+.logo-component.align-right > .choose-well-container {
+  flex-flow: row;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 0;
+  max-width: 0;
+  transition:
+    opacity 200ms,
+    max-width 200ms;
+}
+
+.logo-component.align-right.choose-well > .choose-well-container {
+  max-width: fit-content;
+  opacity: 1;
+}
+
+.logo-component.align-right > .choose-well-container::before {
+  content: '';
+  border-left: 1px solid #d7b971;
+  margin: 0 0.5em;
+}
+
+.logo-component.align-bottom.choose-well > .choose-well-container {
+  opacity: 1;
+  max-height: 2.2em;
+}
+
+.logo-component.align-bottom > .choose-well-container::before {
+  content: '';
+  border-top: 1px solid #d7b971;
+  margin: 0.5em 0 0.3em;
+}
+
+.logo-component.align-right > .choose-well-container > span {
+  display: block;
+  font-size: 1.3em;
+  margin-top: -0.17em;
+  transition:
+    margin-top 200ms,
+    opacity 200ms;
+}
+
+.logo-component.align-right.arabic > .choose-well-container > span {
+  margin-top: 0.95em;
+}
