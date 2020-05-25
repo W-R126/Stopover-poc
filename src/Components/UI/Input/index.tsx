@@ -46,7 +46,7 @@ export default class Input extends React.Component<InputProps, InputState> {
     this.forceUpdate();
   }
 
-  private getClassName(): string {
+  private get className(): string {
     const result = ['input-ui-component'];
 
     if (this.inputRef.current) {
@@ -84,7 +84,10 @@ export default class Input extends React.Component<InputProps, InputState> {
     const { errors } = this.state;
 
     return (
-      <div className={this.getClassName()}>
+      <div className={this.className}>
+        <div className="label-wrapper">
+          {placeholder && (<label htmlFor={id}>{placeholder}</label>)}
+        </div>
         <input
           ref={this.inputRef}
           value={value}
@@ -92,7 +95,6 @@ export default class Input extends React.Component<InputProps, InputState> {
           onChange={this.onChange}
           {...inputProps}
         />
-        {placeholder && (<label htmlFor={id}>{placeholder}</label>)}
         <div className="errors">
           <span>{errors}</span>
         </div>

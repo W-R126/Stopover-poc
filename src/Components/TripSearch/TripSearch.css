@@ -1,0 +1,218 @@
+.trip-search-component {
+  background-color: #fff;
+  padding: 32px;
+  border-radius: 8px;
+  user-select: none;
+  color: #4e4c4a;
+}
+
+.trip-search-component label {
+  font-family: 'EtihadAltis-Medium', Arial, sans-serif;
+  font-size: 1.1em;
+}
+
+.trip-search-component .trip-finalize button {
+  line-height: 1em;
+  font-family: 'EtihadAltis-Medium', Arial, sans-serif;
+  font-size: 1.4em;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background-color: #bd8b13;
+  color: #fff;
+  cursor: pointer;
+  height: 54px;
+  outline: 0;
+  width: 200px;
+}
+
+.trip-search-component .trip-finalize button:hover {
+  background-color: #976f0f;
+}
+
+.trip-search-component .trip-finalize button:focus {
+  border: 1px solid #6997d3;
+}
+
+.trip-search-component .radio-ui-component {
+  margin: 0;
+  margin-right: 1em;
+}
+
+.trip-search-component .trip-type {
+  padding-bottom: 0.6em;
+}
+
+.trip-search-component .trip-type > label {
+  margin-right: 1em;
+}
+
+.trip-search-component .trip-details {
+  display: flex;
+  justify-content: space-between;
+}
+
+.trip-search-component .trip-origin-destination {
+  display: flex;
+  margin-top: 1em;
+}
+
+.trip-search-component .trip-origin-destination .input-ui-component {
+  width: 320px;
+}
+
+.trip-search-component .trip-dates {
+  display: flex;
+  margin-top: 1em;
+}
+
+.trip-search-component .trip-dates .input-ui-component {
+  width: 200px;
+}
+
+.trip-search-component .trip-final-step {
+  display: flex;
+  justify-content: space-between;
+}
+
+.trip-search-component .passenger-details {
+  margin-top: 1em;
+  display: flex;
+}
+
+.trip-search-component .passenger-details > .select-ui-component {
+  width: 320px;
+  margin-right: 1em;
+}
+
+.trip-search-component .passenger-details > .passenger-picker-component {
+  width: 320px;
+}
+
+html[dir='rtl'] .trip-search-component .passenger-details > .select-ui-component {
+  margin-right: unset;
+  margin-left: 1em;
+}
+
+.trip-search-component .trip-finalize {
+  margin-top: 1em;
+  display: flex;
+}
+
+.trip-search-component .trip-finalize > div {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-end;
+}
+
+.trip-search-component .trip-origin-destination > .input-ui-component:not(:first-child) {
+  margin-left: 1em;
+}
+
+.trip-search-component .trip-dates > .input-ui-component:not(:first-child) {
+  margin-left: 1em;
+}
+
+.trip-search-component .trip-finalize > div:not(:first-child) {
+  margin-left: 1em;
+}
+
+.trip-search-component .trip-finalize > .book-with-miles {
+  flex-flow: row;
+  align-items: flex-end;
+  padding-bottom: 1em;
+}
+
+html[dir='rtl'] .trip-search-component .radio-ui-component {
+  margin-right: unset;
+  margin-left: 1em;
+}
+
+html[dir='rtl'] .trip-search-component .trip-type > label {
+  margin-right: unset;
+  margin-left: 1em;
+}
+
+html[dir='rtl'] .trip-origin-destination > .input-ui-component:not(:first-child) {
+  margin-left: unset;
+  margin-right: 1em;
+}
+
+html[dir='rtl'] .trip-dates > .input-ui-component:not(:first-child) {
+  margin-left: unset;
+  margin-right: 1em;
+}
+
+html[dir='rtl'] .trip-search-component .trip-finalize > div:not(:first-child) {
+  margin-left: unset;
+  margin-right: 1em;
+}
+
+@media screen and (max-width: 1200px) {
+  .trip-search-component .trip-details {
+    flex-flow: column;
+  }
+
+  .trip-search-component .trip-details .input-ui-component {
+    width: 50%;
+  }
+
+  .trip-search-component .trip-final-step {
+    flex-flow: column;
+  }
+
+  .trip-search-component .passenger-details > .select-ui-component,
+  .trip-search-component .passenger-details > .passenger-picker-component {
+    width: 50%;
+  }
+
+  .trip-search-component .trip-finalize {
+    justify-content: flex-end;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .trip-search-component {
+    padding: 1em;
+  }
+}
+
+@media screen and (max-width: 457px) {
+  .trip-search-component button {
+    width: 100%;
+  }
+
+  .trip-search-component .trip-origin-destination,
+  .trip-search-component .trip-dates,
+  .trip-search-component .passenger-details {
+    flex-flow: row wrap;
+  }
+
+  .trip-search-component .trip-details .input-ui-component {
+    width: 100%;
+  }
+
+  .trip-search-component .trip-details .input-ui-component:not(:first-child) {
+    margin: 0 !important;
+    margin-top: 1em !important;
+  }
+
+  .trip-search-component .passenger-details > .select-ui-component {
+    width: 100%;
+    margin-left: unset;
+    margin-right: unset;
+  }
+
+  .trip-search-component .passenger-details > .passenger-picker-component {
+    width: 100%;
+    margin-top: 1em;
+  }
+
+  .trip-search-component .trip-finalize {
+    flex-flow: column;
+  }
+
+  .trip-search-component .trip-finalize > div:not(:first-child) {
+    margin: unset;
+  }
+}

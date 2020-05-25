@@ -13,6 +13,7 @@ export default {
   outbound: 'Outbound',
   inbound: 'Inbound',
   cabin: 'Cabin',
+  done: 'Done',
   cabinTypes: {
     economy: 'Economy',
     business: 'Business',
@@ -22,18 +23,25 @@ export default {
     singular: 'Guest',
     plural: 'Guests',
   },
+  passenger: {
+    singular: 'Passenger',
+    plural: 'Passengers',
+  },
   passengerTypes: {
     adult: {
       singular: 'Adult',
       plural: 'Adults',
+      description: 'Age 12+',
     },
     child: {
       singular: 'Child',
       plural: 'Children',
+      description: 'Age 2 - 11',
     },
     infant: {
       singular: 'Infant',
       plural: 'Infants',
+      description: 'Under 2',
     },
   },
   bookWithMiles: 'Book with miles',

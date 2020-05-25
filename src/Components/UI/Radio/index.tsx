@@ -2,7 +2,7 @@ import React from 'react';
 
 import './Radio.css';
 
-export interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label: string;
 }
 

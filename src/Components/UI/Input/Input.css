@@ -2,19 +2,21 @@
   font-family: 'EtihadAltis-Book', Arial, sans-serif;
   display: inline-block;
   width: 300px;
-  position: relative;
   margin: 0;
-  margin-top: 0.4em;
-  padding: 0 !important;
-  font-size: 1.2em;
+  padding: 0;
+  font-size: 18px;
   border-radius: 6px;
+  height: 60px;
   border: 1px solid #b8b7b7;
-  outline: 0;
   color: #4e4c4a;
+  transition:
+    border 300ms,
+    box-shadow 300ms;
 }
 
 .input-ui-component:focus-within {
   border: 1px solid #6997d3;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .input-ui-component > input {
@@ -29,37 +31,28 @@
   color: #4e4c4a;
 }
 
-.input-ui-component > label {
-  position: absolute;
+.input-ui-component .label-wrapper {
+  z-index: 0;
+  height: 0;
+  overflow: visible;
+}
+
+.input-ui-component .label-wrapper > label {
+  display: block;
   font-weight: 100;
   font-size: 1em;
   font-family: 'EtihadAltis-Book', Arial, sans-serif;
-  top: 1.05em;
-  left: 1.15em;
+  padding: 1.15em;
   pointer-events: none;
   transition:
-    top 100ms,
-    left 100ms,
-    right 100ms,
+    padding 100ms,
     font-size 100ms,
     font-weight 100ms;
 }
 
-.input-ui-component > input:focus ~ label,
-.input-ui-component.has-value > input ~ label {
-  top: 0.7em;
-  left: 0.9em;
-  font-size: 0.75em;
+.input-ui-component:focus-within .label-wrapper > label,
+.input-ui-component.has-value .label-wrapper > label {
+  padding: 0.9em 1.05em;
+  font-size: 0.7em;
   font-weight: 600;
-}
-
-html[dir='rtl'] .input-ui-component > label {
-  left: unset;
-  right: 1.15em;
-}
-
-html[dir='rtl'] .input-ui-component > input:focus ~ label,
-html[dir='rtl'] .input-ui-component.has-value > input ~ label {
-  left: unset;
-  right: 0.9em;
 }

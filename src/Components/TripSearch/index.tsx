@@ -1,19 +1,13 @@
 import React from 'react';
 import ContentService from '../../Services/ContentService';
 
-import './FlightSearch.css';
+import './TripSearch.css';
 import Input from '../UI/Input';
 import Radio from '../UI/Radio';
 import Checkbox from '../UI/Checkbox';
-
-export interface TripSearchProps {
-  contentService: ContentService;
-}
-
-interface SingularPlural {
-  singular?: string;
-  plural?: string;
-}
+import Select from '../UI/Select';
+import PassengerPicker, { Passengers } from '../PassengerPicker';
+import { SingularPlural } from '../../Models/SingularPlural';
 
 interface TripSearchState {
   content: {
@@ -32,7 +26,6 @@ interface TripSearchState {
       business?: string;
       first?: string;
     };
-    guest?: SingularPlural;
     passengerTypes?: {
       adult?: SingularPlural;
       child?: SingularPlural;
@@ -41,6 +34,12 @@ interface TripSearchState {
     bookWithMiles?: string;
     searchFlights?: string;
   };
+  cabinType: string;
+  passengers: Passengers;
+}
+
+interface TripSearchProps {
+  contentService: ContentService;
 }
 
 export default class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
@@ -49,7 +48,16 @@ export default class TripSearch extends React.Component<TripSearchProps, TripSea
 
     this.state = {
       content: {},
+      cabinType: 'economy',
+      passengers: {
+        adults: 1,
+        children: 0,
+        infants: 0,
+      },
     };
+
+    this.onCabinTypeChange = this.onCabinTypeChange.bind(this);
+    this.onPassengersChange = this.onPassengersChange.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -60,11 +68,20 @@ export default class TripSearch extends React.Component<TripSearchProps, TripSea
     });
   }
 
+  onCabinTypeChange(cabinType: string): void {
+    this.setState({ cabinType });
+  }
+
+  onPassengersChange(passengers: Passengers): void {
+    this.setState({ passengers });
+  }
+
   render(): JSX.Element {
-    const { content } = this.state;
+    const { content, ...data } = this.state;
+    const { contentService } = this.props;
 
     return (
-      <div className="flight-search-component">
+      <div className="trip-search-component">
         <div className="trip-type">
           <Radio
             label={content.tripTypes?.return ?? ''}
@@ -118,20 +135,21 @@ export default class TripSearch extends React.Component<TripSearchProps, TripSea
         </div>
         <div className="trip-final-step">
           <div className="passenger-details">
-            <div>
-              <select id="trip-cabin-type">
-                <option value="economy">{content.cabinTypes?.economy}</option>
-                <option value="business">{content.cabinTypes?.business}</option>
-                <option value="first">{content.cabinTypes?.first}</option>
-              </select>
-            </div>
-            <div>
-              <select id="trip-passengers">
-                <option value="adults">{content.passengerTypes?.adult?.plural}</option>
-                <option value="children">{content.passengerTypes?.child?.plural}</option>
-                <option value="infants">{content.passengerTypes?.infant?.plural}</option>
-              </select>
-            </div>
+            <Select
+              id="trip-cabin-type"
+              label={content.cabin}
+              value={data.cabinType}
+              onChange={this.onCabinTypeChange}
+            >
+              <option value="economy">{content.cabinTypes?.economy}</option>
+              <option value="business">{content.cabinTypes?.business}</option>
+              <option value="first">{content.cabinTypes?.first}</option>
+            </Select>
+            <PassengerPicker
+              contentService={contentService}
+              value={data.passengers}
+              onChange={this.onPassengersChange}
+            />
           </div>
           <div className="trip-finalize">
             <div className="book-with-miles">

@@ -94,7 +94,7 @@
 
 .logo-component.align-right > .choose-well-container::before {
   content: '';
-  border-left: 1px solid #d7b971;
+  border-left: 1px solid #e5d1a1;
   margin: 0 0.5em;
 }
 
@@ -105,7 +105,7 @@
 
 .logo-component.align-bottom > .choose-well-container::before {
   content: '';
-  border-top: 1px solid #d7b971;
+  border-top: 1px solid #e5d1a1;
   margin: 0.5em 0 0.3em;
 }
 

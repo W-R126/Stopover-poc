@@ -7,7 +7,7 @@ import Logo from '../../Components/Logo';
 import ContentService from '../../Services/ContentService';
 import MainMenu from './MainMenu';
 
-export interface HeaderProps {
+interface HeaderProps {
   contentService: ContentService;
 }
 
@@ -82,7 +82,7 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
     this.scrollY = scrollY;
   }
 
-  private getClassName(): string | undefined {
+  private get className(): string | undefined {
     const { show, small } = this.state;
     const result = [];
 
@@ -125,7 +125,7 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
 
     return (
       <>
-        <header className={this.getClassName()}>
+        <header className={this.className}>
           <div className="content-wrapper">
             <Link to="/">
               <Logo

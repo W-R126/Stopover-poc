@@ -2,14 +2,9 @@ import React from 'react';
 
 import './MainMenuDesktop.css';
 import './MainMenuMobile.css';
-import closeBtn from '../../Assets/Images/UI/close-btn.svg';
 import hamburgerIcon from '../../Assets/Images/UI/hamburger-icon.svg';
 import ContentService from '../../Services/ContentService';
 import Link from '../../Components/UI/Link';
-
-export interface MainMenuProps {
-  contentService: ContentService;
-}
 
 interface Image {
   url?: string;
@@ -34,6 +29,10 @@ interface MainMenuItem {
   external?: boolean;
   url?: string;
   categories?: Category[];
+}
+
+interface MainMenuProps {
+  contentService: ContentService;
 }
 
 interface MainMenuState {
@@ -135,9 +134,7 @@ export default class MainMenu extends React.Component<MainMenuProps, MainMenuSta
         >
           <li className="hamburger-menu-header">
             How can we help you?
-            <label htmlFor="main-menu-checkbox">
-              <img src={closeBtn} alt={common?.close} />
-            </label>
+            <label htmlFor="main-menu-checkbox" />
           </li>
 
           {textLinks?.map((mainMenuItem, mainMenuItemIdx) => (

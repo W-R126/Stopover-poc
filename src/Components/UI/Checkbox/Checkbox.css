@@ -1,7 +1,6 @@
 .checkbox-ui-component {
   display: inline-flex;
   align-items: center;
-  position: relative;
 }
 
 .checkbox-ui-component * {
@@ -27,6 +26,7 @@
   box-shadow: 0 0 0 2px #b8b7b7;
   border: 2px solid #fff;
   margin-right: 0.5em;
+  transition: box-shadow 300ms;
 }
 
 html[dir='rtl'] .checkbox-ui-component > label > div {
@@ -46,7 +46,9 @@ html[dir='rtl'] .checkbox-ui-component > label > div {
 }
 
 .checkbox-ui-component > input:focus ~ label > div {
-  box-shadow: 0 0 0 2px #6997d3;
+  box-shadow:
+    0 0 0 2px #6997d3,
+    0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .checkbox-ui-component > input:checked ~ label > div::before {

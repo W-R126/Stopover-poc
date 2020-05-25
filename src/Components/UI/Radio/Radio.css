@@ -14,8 +14,13 @@
   width: 0;
 }
 
+.radio-ui-component > label {
+  display: flex;
+  align-items: center;
+}
+
 .radio-ui-component > label::before {
-  display: inline-block;
+  display: block;
   content: '';
   width: 0.8em;
   height: 0.8em;
@@ -23,10 +28,8 @@
   background-color: #fff;
   box-shadow: 0 0 0 2px #b8b7b7;
   border: 3px solid #fff;
-  vertical-align: middle;
-  position: relative;
-  top: -0.05em;
   margin-right: 0.5em;
+  transition: box-shadow 300ms;
 }
 
 .radio-ui-component:hover > label::before {
@@ -38,7 +41,9 @@
 }
 
 .radio-ui-component > input:focus ~ label::before {
-  box-shadow: 0 0 0 2px #6997d3;
+  box-shadow:
+    0 0 0 2px #6997d3,
+    0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 html[dir='rtl'] .radio-ui-component > label::before {

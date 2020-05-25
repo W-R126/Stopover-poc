@@ -4,7 +4,7 @@ import './HomeView.css';
 import ContentService from '../../Services/ContentService';
 import TripSearch from '../../Components/TripSearch';
 
-export interface HomeViewProps {
+interface HomeViewProps {
   contentService: ContentService;
 }
 

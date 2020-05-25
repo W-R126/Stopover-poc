@@ -11,7 +11,7 @@ export enum ChooseWellAlignEnum {
   BOTTOM = 1,
 }
 
-export interface LogoProps {
+interface LogoProps {
   contentService: ContentService;
   display: {
     arabic?: boolean;
@@ -57,7 +57,7 @@ export default class Logo extends React.Component<LogoProps, LogoState> {
     });
   }
 
-  private getClassName(): string {
+  private get className(): string {
     const {
       display: {
         arabic: displayArabic = true,
@@ -95,7 +95,7 @@ export default class Logo extends React.Component<LogoProps, LogoState> {
     const { size } = this.props;
 
     return (
-      <div className={this.getClassName()} style={{ fontSize: size }}>
+      <div className={this.className} style={{ fontSize: size }}>
         <div className="logos-container">
           <div className="arabic-container">
             <img src={arabicLogo} alt={content?.alt} />

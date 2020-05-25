@@ -1,0 +1,148 @@
+.select-ui-component {
+  display: inline-block;
+  font-family: 'EtihadAltis-Book', Arial, sans-serif;
+  font-size: 18px;
+  width: 300px;
+  outline: 0;
+  height: 60px;
+  cursor: pointer;
+  position: relative;
+}
+
+.select-ui-component .select-wrapper {
+  border: 1px solid #b8b7b7;
+  border-radius: 6px;
+  background-color: #fff;
+  overflow: hidden;
+  width: 100%;
+  transition:
+    max-height 300ms,
+    border 300ms,
+    box-shadow 300ms;
+}
+
+.select-ui-component:focus .select-wrapper {
+  border: 1px solid #6997d3;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.select-ui-component[aria-expanded='true'] .select-wrapper {
+  max-height: 300px;
+}
+
+.select-ui-component .selected-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 59px;
+  border-bottom: 1px solid #b8b7b7;
+  padding: 0 0.7em;
+}
+
+.select-ui-component .selected-option::after {
+  font-family: 'FontAwesome', Arial, Helvetica, sans-serif;
+  content: '\f107';
+  font-size: 1.3em;
+  transition: transform 100ms;
+}
+
+.select-ui-component[aria-expanded='true'] .selected-option::after {
+  transform: rotateZ(-180deg);
+}
+
+.select-ui-component .selected-option-wrapper > label {
+  padding: 0 0.06em;
+  margin-bottom: 0.5em;
+  display: block;
+  font-family: 'EtihadAltis-Book', Arial, sans-serif;
+  font-size: 0.7em;
+  font-weight: 600;
+}
+
+.select-ui-component .options {
+  overflow: auto;
+}
+
+.select-ui-component .options::-webkit-scrollbar {
+  width: 10px;
+  background-color: #f2f2f2;
+  border-radius: 6px;
+}
+
+.select-ui-component .options::-webkit-scrollbar-thumb {
+  background-color: #837e79;
+  border-radius: 6px;
+}
+
+.select-ui-component .options > .selected-option {
+  display: none;
+}
+
+.select-ui-component .option {
+  padding: 1em 0.7em;
+}
+
+.select-ui-component .option:not(:first-child) {
+  border-top: 1px solid #b8b7b7;
+}
+
+.select-ui-component .option.hover {
+  background-color: #ededec;
+}
+
+@media screen and (max-width: 480px) {
+  .select-ui-component .options {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-height: unset !important;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    flex-flow: column;
+    padding: 8px;
+  }
+
+  .select-ui-component[aria-expanded='true'] .options {
+    display: flex;
+  }
+
+  .select-ui-component .options-wrapper {
+    background-color: #fff;
+    width: 100%;
+    border: 1px solid #b8b7b7;
+    border-top: 0;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    overflow: auto;
+    max-height: 100%;
+  }
+
+  .select-ui-component .options-wrapper::-webkit-scrollbar {
+    width: 10px;
+    background-color: #f2f2f2;
+    border-radius: 6px;
+  }
+
+  .select-ui-component .options-wrapper::-webkit-scrollbar-thumb {
+    background-color: #837e79;
+    border-radius: 6px;
+  }
+
+  .select-ui-component .options > .selected-option {
+    display: flex;
+    background-color: #fff;
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
+    border: 1px solid #b8b7b7;
+  }
+
+  .select-ui-component .options > .selected-option::after {
+    content: '✕';
+    font-size: 1em;
+    font-family: inherit;
+  }
+}
