@@ -26,17 +26,13 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.select-ui-component[aria-expanded='true'] .select-wrapper {
-  max-height: 300px;
-}
-
 .select-ui-component .selected-option {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 59px;
   border-bottom: 1px solid #b8b7b7;
-  padding: 0 0.7em;
+  padding: 0 1.3rem;
 }
 
 .select-ui-component .selected-option::after {
@@ -55,7 +51,7 @@
   margin-bottom: 0.5em;
   display: block;
   font-family: 'EtihadAltis-Book', Arial, sans-serif;
-  font-size: 0.7em;
+  font-size: 1.3rem;
   font-weight: 600;
 }
 
@@ -79,7 +75,7 @@
 }
 
 .select-ui-component .option {
-  padding: 1em 0.7em;
+  padding: 1em 1.3rem;
 }
 
 .select-ui-component .option:not(:first-child) {

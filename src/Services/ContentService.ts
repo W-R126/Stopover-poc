@@ -4,6 +4,9 @@ import Logo from './Content/Logo';
 import MainMenu from './Content/MainMenu';
 import Common from './Content/Common';
 import Footer from './Content/Footer';
+import Cities from './Content/Cities';
+import Countries from './Content/Countries';
+import AirportNames from './Content/AirportNames';
 
 export default class ContentService extends BaseService {
   private readonly activeRequests: { [key: string]: Promise<any> } = {};
@@ -29,6 +32,15 @@ export default class ContentService extends BaseService {
           break;
         case 'common':
           data = Common;
+          break;
+        case 'cities':
+          data = Cities;
+          break;
+        case 'countries':
+          data = Countries;
+          break;
+        case 'airports':
+          data = AirportNames;
           break;
         default:
           data = undefined;

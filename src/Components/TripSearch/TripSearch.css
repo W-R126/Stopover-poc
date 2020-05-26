@@ -55,10 +55,12 @@
 .trip-search-component .trip-origin-destination {
   display: flex;
   margin-top: 1em;
+  width: 100%;
 }
 
-.trip-search-component .trip-origin-destination .input-ui-component {
-  width: 320px;
+.trip-search-component .trip-origin-destination .airport-search-component {
+  max-width: 380px;
+  width: 100%;
 }
 
 .trip-search-component .trip-dates {
@@ -81,12 +83,13 @@
 }
 
 .trip-search-component .passenger-details > .select-ui-component {
-  width: 320px;
+  max-width: 380px;
   margin-right: 1em;
 }
 
 .trip-search-component .passenger-details > .passenger-picker-component {
-  width: 320px;
+  max-width: 380px;
+  width: 100%;
 }
 
 html[dir='rtl'] .trip-search-component .passenger-details > .select-ui-component {
@@ -105,7 +108,7 @@ html[dir='rtl'] .trip-search-component .passenger-details > .select-ui-component
   justify-content: flex-end;
 }
 
-.trip-search-component .trip-origin-destination > .input-ui-component:not(:first-child) {
+.trip-search-component .trip-origin-destination > .airport-search-component:not(:first-child) {
   margin-left: 1em;
 }
 
@@ -133,7 +136,7 @@ html[dir='rtl'] .trip-search-component .trip-type > label {
   margin-left: 1em;
 }
 
-html[dir='rtl'] .trip-origin-destination > .input-ui-component:not(:first-child) {
+html[dir='rtl'] .trip-origin-destination > .airport-search-component:not(:first-child) {
   margin-left: unset;
   margin-right: 1em;
 }

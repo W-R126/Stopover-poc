@@ -330,7 +330,9 @@ export default class PassengerPicker extends React.Component<
                         {`${
                           passengerCount
                         } ${
-                          passengerCount > 1 ? content.passenger?.plural : content.passenger?.singular
+                          passengerCount > 1
+                            ? content.passenger?.plural
+                            : content.passenger?.singular
                         }`}
                       </div>
                     )}

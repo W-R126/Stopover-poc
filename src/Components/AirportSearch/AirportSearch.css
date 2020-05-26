@@ -1,0 +1,100 @@
+.airport-search-component {
+  display: inline-block;
+  width: 300px;
+  height: 60px;
+  position: relative;
+  font-size: 18px;
+  outline: 0;
+}
+
+.airport-search-component > .wrapper {
+  border: 1px solid #b8b7b7;
+  border-radius: 6px;
+  max-height: 60px;
+  overflow: hidden;
+  background-color: #fff;
+  transition:
+    max-height 300ms,
+    border 300ms,
+    box-shadow 300ms;
+}
+
+.airport-search-component:focus-within > .wrapper {
+  border: 1px solid #6997d3;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.airport-search-component > .wrapper > .input-ui-component {
+  width: 100%;
+  border: 0;
+  height: 59px;
+  border-bottom: 1px solid #b8b7b7;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: unset;
+}
+
+.airport-search-component > .wrapper > .result {
+  overflow: auto;
+}
+
+.airport-search-component > .wrapper > .result::-webkit-scrollbar {
+  width: 10px;
+  background-color: #f2f2f2;
+  border-radius: 6px;
+}
+
+.airport-search-component > .wrapper > .result::-webkit-scrollbar-thumb {
+  background-color: #837e79;
+  border-radius: 6px;
+}
+
+.airport-search-component > .wrapper > .result > .no-result {
+  padding: 1.3rem;
+}
+
+.airport-search-component > .wrapper > .result > .airport {
+  cursor: pointer;
+}
+
+.airport-search-component > .wrapper > .result > .airport:not(:first-child) {
+  border-top: 1px solid #b8b7b7;
+}
+
+.airport-search-component > .wrapper > .result > .airport:hover,
+.airport-search-component > .wrapper > .result > .airport.selected {
+  background-color: #f2f2f2;
+}
+
+.airport-search-component > .wrapper > .result > .airport > .city-iata,
+.airport-search-component > .wrapper > .result > .airport > .airport-country {
+  display: flex;
+  justify-content: space-between;
+}
+
+.airport-search-component > .wrapper > .result > .airport > .city-iata {
+  font-size: 0.8em;
+}
+
+.airport-search-component > .wrapper > .result > .airport > .airport-country {
+  font-size: 0.9em;
+  line-height: 1.4em;
+}
+
+.airport-search-component > .wrapper > .result > .airport > .city-iata > span,
+.airport-search-component > .wrapper > .result > .airport > .airport-country > span {
+  display: block;
+  padding: 1.3rem;
+}
+
+.airport-search-component > .wrapper > .result > .airport > .airport-country > span {
+  padding-top: 0;
+}
+
+.airport-search-component > .wrapper > .result > .airport > .airport-country > .country-name {
+  text-align: right;
+}
+
+html[dir='rtl'] .airport-search-component > .wrapper > .result > .airport > .airport-country > .country-name {
+  text-align: left;
+}

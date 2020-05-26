@@ -13,12 +13,12 @@ export default {
   outbound: 'Outbound',
   inbound: 'Inbound',
   cabin: 'Cabin',
-  done: 'Done',
   cabinTypes: {
     economy: 'Economy',
     business: 'Business',
     first: 'First class',
   },
+  noResult: 'No result',
   guest: {
     singular: 'Guest',
     plural: 'Guests',

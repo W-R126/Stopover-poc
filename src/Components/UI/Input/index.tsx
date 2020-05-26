@@ -33,6 +33,7 @@ export default class Input extends React.Component<InputProps, InputState> {
     };
 
     this.onChange = this.onChange.bind(this);
+    this.focus = this.focus.bind(this);
   }
 
   private onChange(e: React.ChangeEvent<HTMLInputElement>): void {
@@ -41,21 +42,25 @@ export default class Input extends React.Component<InputProps, InputState> {
     if (onChange) {
       onChange(e.target.value);
     }
-
-    // Always force update.
-    this.forceUpdate();
   }
 
   private get className(): string {
+    const { value } = this.props;
     const result = ['input-ui-component'];
 
     if (this.inputRef.current) {
-      if (this.inputRef.current.value.length !== 0) {
+      if (value?.length !== 0 || this.inputRef.current.value.length !== 0) {
         result.push('has-value');
       }
     }
 
     return result.join(' ');
+  }
+
+  focus(): void {
+    if (this.inputRef.current) {
+      this.inputRef.current.focus();
+    }
   }
 
   validate(): boolean {

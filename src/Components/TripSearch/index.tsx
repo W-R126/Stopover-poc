@@ -8,6 +8,14 @@ import Checkbox from '../UI/Checkbox';
 import Select from '../UI/Select';
 import PassengerPicker, { Passengers } from '../PassengerPicker';
 import { SingularPlural } from '../../Models/SingularPlural';
+import AirportService from '../../Services/AirportService';
+import { AirportModel } from '../../Models/AirportModel';
+import AirportSearch from '../AirportSearch';
+
+interface TripSearchProps {
+  contentService: ContentService;
+  airportService: AirportService;
+}
 
 interface TripSearchState {
   content: {
@@ -34,12 +42,15 @@ interface TripSearchState {
     bookWithMiles?: string;
     searchFlights?: string;
   };
+  originAirports: AirportModel[];
+  destinationAirports: AirportModel[];
+  // Trip search values.
+  originAirport?: AirportModel;
+  destinationAirport?: AirportModel;
   cabinType: string;
   passengers: Passengers;
-}
-
-interface TripSearchProps {
-  contentService: ContentService;
+  outboundDate: Date;
+  inboundDate: Date;
 }
 
 export default class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
@@ -48,24 +59,46 @@ export default class TripSearch extends React.Component<TripSearchProps, TripSea
 
     this.state = {
       content: {},
+      originAirports: [],
+      destinationAirports: [],
+      // Trip search default values.
+      originAirport: undefined,
+      destinationAirport: undefined,
       cabinType: 'economy',
       passengers: {
         adults: 1,
         children: 0,
         infants: 0,
       },
+      outboundDate: new Date(),
+      inboundDate: new Date(),
     };
 
+    this.onOriginAirportChange = this.onOriginAirportChange.bind(this);
+    this.onDestinationAirportChange = this.onDestinationAirportChange.bind(this);
     this.onCabinTypeChange = this.onCabinTypeChange.bind(this);
     this.onPassengersChange = this.onPassengersChange.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
-    const { contentService } = this.props;
+    const { contentService, airportService } = this.props;
+
+    const contentReq = contentService.get('common');
+    const airportsReq = airportService.getOriginAirports();
 
     this.setState({
-      content: await contentService.get('common'),
+      content: await contentReq,
+      originAirports: await airportsReq,
+      destinationAirports: await airportsReq, // TODO: Impl.
     });
+  }
+
+  onOriginAirportChange(originAirport?: AirportModel): void {
+    this.setState({ originAirport });
+  }
+
+  onDestinationAirportChange(destinationAirport?: AirportModel): void {
+    this.setState({ destinationAirport });
   }
 
   onCabinTypeChange(cabinType: string): void {
@@ -77,7 +110,7 @@ export default class TripSearch extends React.Component<TripSearchProps, TripSea
   }
 
   render(): JSX.Element {
-    const { content, ...data } = this.state;
+    const { content, originAirports, ...data } = this.state;
     const { contentService } = this.props;
 
     return (
@@ -104,18 +137,22 @@ export default class TripSearch extends React.Component<TripSearchProps, TripSea
           />
         </div>
         <div className="trip-details">
-          <div className="trip-origin-destination">
-            <Input
-              label={content.flyingFrom}
-              type="text"
+          <div className="trip-origin-destination" style={{ zIndex: 1 }}>
+            <AirportSearch
               id="trip-origin"
-              defaultValue="Stockholm, ARN"
+              contentService={contentService}
+              airports={originAirports}
+              label={content.flyingFrom}
+              value={data.originAirport}
+              onChange={this.onOriginAirportChange}
             />
-            <Input
-              label={content.flyingTo}
-              type="text"
+            <AirportSearch
               id="trip-destination"
-              defaultValue="Abu Dhabi, AUH"
+              contentService={contentService}
+              airports={originAirports}
+              label={content.flyingTo}
+              value={data.destinationAirport}
+              onChange={this.onDestinationAirportChange}
             />
           </div>
           <div className="trip-dates">
@@ -123,13 +160,13 @@ export default class TripSearch extends React.Component<TripSearchProps, TripSea
               label={content.outbound}
               type="text"
               id="trip-date-outbound"
-              defaultValue="17/May/2020"
+              value={data.outboundDate.toString()}
             />
             <Input
               label={content.inbound}
               type="text"
               id="trip-date-inbound"
-              defaultValue="24/May/2020"
+              value={data.outboundDate.toString()}
             />
           </div>
         </div>

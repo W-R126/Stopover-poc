@@ -1,6 +1,8 @@
 .passenger-picker-component {
   height: 60px;
   position: relative;
+  display: inline-block;
+  width: 300px;
   outline: 0;
 }
 
@@ -27,7 +29,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 0.7em;
+  padding: 0 1.3rem;
   cursor: pointer;
   border-bottom: 1px solid #b8b7b7;
 }
@@ -52,7 +54,7 @@
 
 .passenger-picker-component .header-wrapper > label {
   font-family: 'EtihadAltis-Book', Arial, sans-serif;
-  font-size: 0.7em;
+  font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 0.5em;
   pointer-events: none;
@@ -74,7 +76,7 @@
 
 .passenger-picker-component .passenger-type-picker > img {
   height: 40px;
-  margin: 0.7em;
+  margin: 1.3rem;
 }
 
 .passenger-picker-component .passenger-type-picker > span > label {
@@ -126,7 +128,7 @@
     cursor: pointer;
     display: flex;
     justify-content: space-between;
-    padding: 0.7em 0.7em 0;
+    padding: 1.3rem 1.3rem 0;
     max-height: 59px;
     border-bottom: 1px solid #b8b7b7;
   }

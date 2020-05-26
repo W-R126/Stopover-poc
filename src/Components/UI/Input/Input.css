@@ -23,7 +23,7 @@
   width: 100%;
   border: 0;
   background-color: transparent;
-  padding: 1.5em 0.7em 0.3em;
+  padding: 1.5em 1.3rem 0.3em;
   margin: 0;
   font-family: 'EtihadAltis-Book', Arial, sans-serif;
   font-size: 1em;
@@ -53,6 +53,6 @@
 .input-ui-component:focus-within .label-wrapper > label,
 .input-ui-component.has-value .label-wrapper > label {
   padding: 0.9em 1.05em;
-  font-size: 0.7em;
+  font-size: 1.3rem;
   font-weight: 600;
 }
