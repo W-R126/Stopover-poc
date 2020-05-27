@@ -20,38 +20,50 @@ export default class AirportService extends BaseService {
       return this.activeRequests.originAirports;
     }
 
-    const citiesReq = this.contentService.get('cities');
-    const countriesReq = this.contentService.get('countries');
-    const airportNamesReq = this.contentService.get('airports');
+    const cityNamesReq = this.contentService.get('cityNames');
+    const countryNamesReq = this.contentService.get('countryNames');
+    const airportNamesReq = this.contentService.get('airportNames');
 
-    const cities = await citiesReq;
-    const countries = await countriesReq;
+    const cityNames = await cityNamesReq;
+    const countryNames = await countryNamesReq;
     const airportNames = await airportNamesReq;
 
     const pending = new Promise<AirportModel[]>((resolve) => {
       const result: AirportModel[] = [];
 
       Airports.forEach((airport) => {
-        const name = airportNames.find(
-          (airportName: any) => airportName.code === airport.code,
+        const airportName = airportNames.find(
+          (name: any) => name.code === airport.code,
         )?.name;
 
-        const cityName = cities.find((city: any) => city.code === airport.cityCode)?.name;
+        const cityName = cityNames.find((city: any) => city.code === airport.cityCode)?.name;
 
-        const countryName = countries.find(
+        const countryName = countryNames.find(
           (country: any) => country.code === airport.countryCode,
         )?.name;
 
+        const searchStringItems = [airport.code];
+
+        if (airportName) {
+          searchStringItems.push(airportName);
+        }
+
+        if (cityName) {
+          searchStringItems.push(cityName);
+        }
+
+        if (countryName) {
+          searchStringItems.push(countryName);
+        }
+
         result.push({
+          searchString: searchStringItems.join(' ').toLowerCase(),
           code: airport.code,
-          name,
-          nameLower: name?.toLowerCase(),
+          name: airportName,
           cityCode: airport.cityCode,
           cityName,
-          cityNameLower: cityName?.toLowerCase(),
           countryCode: airport.countryCode,
           countryName,
-          countryNameLower: countryName.toLowerCase(),
           coordinates: {
             lat: airport.coordinates.lat,
             long: airport.coordinates.long,

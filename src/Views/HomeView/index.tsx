@@ -1,32 +1,59 @@
 import React from 'react';
 
 import './HomeView.css';
-import ContentService from '../../Services/ContentService';
-import TripSearch from '../../Components/TripSearch';
+import TripSearch, { TripSearchData } from '../../Components/TripSearch';
 import AirportService from '../../Services/AirportService';
 
 interface HomeViewProps {
-  contentService: ContentService;
   airportService: AirportService;
 }
 
-export default class HomeView extends React.Component<HomeViewProps, {}> {
+interface HomeViewState {
+  tripSearchData: TripSearchData;
+}
+
+export default class HomeView extends React.Component<HomeViewProps, HomeViewState> {
   constructor(props: HomeViewProps) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      tripSearchData: {
+        tripType: 'return',
+        passengers: {
+          adults: 1,
+          children: 0,
+          infants: 0,
+        },
+        cabinType: 'economy',
+        origin: undefined,
+        destination: undefined,
+        outbound: new Date(),
+        inbound: new Date(),
+      },
+    };
+
+    this.onTripSearchChange = this.onTripSearchChange.bind(this);
+  }
+
+  private onTripSearchChange(tripSearchData: TripSearchData): void {
+    this.setState({ tripSearchData });
   }
 
   render(): JSX.Element {
-    const { contentService, airportService } = this.props;
+    const { tripSearchData: data } = this.state;
+    const { airportService } = this.props;
 
     return (
-      <section className="home-view">
-        <div className="view-top-image" />
+      <div className="home-view">
+        <div className="top-image" />
         <div className="content-wrapper">
-          <TripSearch contentService={contentService} airportService={airportService} />
+          <TripSearch
+            data={data}
+            onChange={this.onTripSearchChange}
+            airportService={airportService}
+          />
         </div>
-      </section>
+      </div>
     );
   }
 }

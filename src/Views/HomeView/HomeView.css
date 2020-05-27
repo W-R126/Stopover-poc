@@ -1,20 +1,14 @@
-.home-view {
-  display: flex;
+.home-view > .top-image {
+  position: absolute;
   width: 100%;
-  justify-content: center;
-  position: relative;
-  min-height: 500px;
-}
-
-.home-view .view-top-image {
   z-index: -1;
-  height: 442px;
-  background-image: url('../../Assets/Images/HomeView/etihad-787-sky-banner.jpg');
-  background-position: 75% 50% !important;
+  height: 400px;
+  background-image: url('../../Assets/Images/sky-2.webp');
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: cover;
 }
 
-.home-view .trip-search-component {
-  margin-top: 320px;
-  margin-bottom: 200px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.27);
+.home-view > .content-wrapper {
+  padding-top: 260px;
 }

@@ -1,11 +1,7 @@
 import BaseService from './BaseService';
 
-import Logo from './Content/Logo';
-import MainMenu from './Content/MainMenu';
-import Common from './Content/Common';
-import Footer from './Content/Footer';
-import Cities from './Content/Cities';
-import Countries from './Content/Countries';
+import CityNames from './Content/CityNames';
+import CountryNames from './Content/CountryNames';
 import AirportNames from './Content/AirportNames';
 
 export default class ContentService extends BaseService {
@@ -21,25 +17,13 @@ export default class ContentService extends BaseService {
       let data;
 
       switch (resource) {
-        case 'footer':
-          data = Footer;
+        case 'cityNames':
+          data = CityNames;
           break;
-        case 'mainMenu':
-          data = MainMenu;
+        case 'countryNames':
+          data = CountryNames;
           break;
-        case 'logo':
-          data = Logo;
-          break;
-        case 'common':
-          data = Common;
-          break;
-        case 'cities':
-          data = Cities;
-          break;
-        case 'countries':
-          data = Countries;
-          break;
-        case 'airports':
+        case 'airportNames':
           data = AirportNames;
           break;
         default:

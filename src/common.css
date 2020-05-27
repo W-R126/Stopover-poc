@@ -13,41 +13,56 @@
   src: url('./Assets/Fonts/etihadaltis-medium_v3-webfont.woff') format('woff');
 }
 
-@font-face {
-  font-family: 'FontAwesome';
-  src: url('./Assets/Fonts/font-awesome.woff') format('woff');
-}
-
-html {
-  font-size: 10px;
-}
-
 body {
-  font-family: 'EtihadAltis-Book', arial, sans-serif;
-  font-size: 1.6rem;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  color: #4e4c4a;
 }
 
-.view-top-image {
-  width: 100%;
-  position: absolute;
-  background-repeat: no-repeat;
-  background-position: 50%;
-  background-size: cover;
+/* Input element. */
+input {
+  border: 1px solid #b8b7b7;
+  border-radius: 6px;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  padding: 15px;
+  color: #4e4c4a;
+  outline: 0;
 }
 
+input:focus {
+  border: 1px solid #a5c1e5;
+}
+
+input:disabled {
+  cursor: not-allowed;
+  background-color: #fff;
+}
+
+input::placeholder {
+  color: #959492;
+}
+
+/* Input label */
+.input-label {
+  cursor: inherit;
+  font-size: 18px;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+}
+
+/* Content wrapper. */
 .content-wrapper {
-  max-width: 1376px;
+  max-width: 1440px;
+  padding: 0 24px;
   width: 100%;
-  padding-left: 16px !important;
-  padding-right: 16px !important;
+  margin: 0 auto;
 }
 
-.open-external-link {
-  display: inline-block;
-  margin-left: 0.4em;
+/* External link. */
+.external-link > img {
+  margin-left: 7px;
 }
 
-html[dir='rtl'] .open-external-link {
-  margin-left: unset;
-  margin-right: 0.4em;
+html[dir='rtl'] .external-link > img {
+  margin-left: 0;
+  margin-right: 7px;
 }

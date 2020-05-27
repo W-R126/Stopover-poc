@@ -1,0 +1,63 @@
+.amount-picker {
+  display: flex;
+  justify-content: space-between;
+}
+
+.amount-picker > .info {
+  display: flex;
+  flex-flow: column;
+}
+
+.amount-picker > .info > .title {
+  margin-bottom: 5px;
+}
+
+.amount-picker > .info > .description {
+  font-size: 16px;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  white-space: nowrap;
+}
+
+.amount-picker > .amount {
+  display: flex;
+  align-items: center;
+}
+
+.amount-picker > .amount::before {
+  content: '';
+  display: block;
+  width: 50px;
+}
+
+.amount-picker > .amount > button {
+  border: 0;
+  width: 24px;
+  height: 24px;
+  line-height: 0;
+  color: #fff;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.amount-picker > .amount > button:disabled {
+  cursor: not-allowed;
+}
+
+.amount-picker > .amount > .decrease {
+  background-color: #b8b7b7;
+}
+
+.amount-picker > .amount > .increase {
+  background-color: #d7b971;
+}
+
+.amount-picker > .amount > .value {
+  display: inline-block;
+  width: 40px;
+  text-align: center;
+}
