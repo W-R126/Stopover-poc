@@ -1,151 +1,78 @@
-.passenger-picker-component {
-  height: 60px;
-  position: relative;
+.passenger-picker {
   display: inline-block;
-  width: 300px;
+  position: relative;
   outline: 0;
+  cursor: pointer;
 }
 
-.passenger-picker-component .picker-wrapper {
-  background-color: #fff;
-  max-height: 60px;
-  overflow: hidden;
-  border: 1px solid #b8b7b7;
-  border-radius: 6px;
-  font-size: 18px;
-  transition:
-    max-height 300ms,
-    border 300ms,
-    box-shadow 300ms;
-}
-
-.passenger-picker-component:focus .picker-wrapper {
-  border: 1px solid #6997d3;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  width: 100%;
-}
-
-.passenger-picker-component .picker-wrapper > .header {
+.passenger-picker > .header {
+  padding: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 1.3rem;
-  cursor: pointer;
-  border-bottom: 1px solid #b8b7b7;
+  border: 1px solid transparent;
+  border-radius: 3px;
 }
 
-.passenger-picker-component .picker-wrapper > .header::after {
-  font-family: 'FontAwesome', Arial, Helvetica, sans-serif;
-  content: '\f107';
-  font-size: 1.3em;
-  transition: transform 100ms;
+.passenger-picker:focus > .header {
+  border: 1px solid #a5c1e5;
 }
 
-.passenger-picker-component[aria-expanded='true'] .picker-wrapper > .header::after {
-  transform: rotateZ(-180deg);
+.passenger-picker:hover > .header {
+  background-color: #f3f3f3;
 }
 
-.passenger-picker-component .header-wrapper {
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  height: 58px;
+.passenger-picker > .header > img {
+  margin-left: 10px;
 }
 
-.passenger-picker-component .header-wrapper > label {
-  font-family: 'EtihadAltis-Book', Arial, sans-serif;
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 0.5em;
-  pointer-events: none;
+html[dir='rtl'] .passenger-picker > .header > img {
+  margin-left: 0;
+  margin-right: 10px;
 }
 
-.passenger-picker-component .header-wrapper > .passenger-count {
-  height: 20px;
-  overflow: hidden;
+.passenger-picker > .pickers {
+  position: absolute;
+  top: -16px;
+  left: -16px;
+  background-color: #fff;
+  box-shadow: 0 0 8px 0 #a6a6a6;
+  border-radius: 8px;
+  z-index: 1000;
+  cursor: default;
 }
 
-.passenger-picker-component .pickers .amount-picker-ui-component {
-  width: 100%;
-}
-
-.passenger-picker-component .passenger-type-picker {
-  display: flex;
-  align-items: center;
-}
-
-.passenger-picker-component .passenger-type-picker > img {
-  height: 40px;
-  margin: 1.3rem;
-}
-
-.passenger-picker-component .passenger-type-picker > span > label {
-  display: block;
-  font-size: 1em;
-  margin-bottom: 0.3em;
-  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
-  font-weight: 600;
-}
-
-.passenger-picker-component .passenger-type-picker > span > span {
-  display: block;
-  font-size: 0.8em;
-}
-
-.passenger-picker-component .pickers > .pickers-wrapper > .modal-header {
+.passenger-picker[aria-expanded='false'] > .pickers {
   display: none;
 }
 
-@media screen and (max-width: 480px) {
-  .passenger-picker-component .pickers {
-    position: fixed;
-    background-color: rgba(0, 0, 0, 0.4);
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    padding: 8px;
-  }
+html[dir='rtl'] .passenger-picker > .pickers {
+  left: initial;
+  right: -16px;
+}
 
-  .passenger-picker-component[aria-expanded='false'] .pickers {
-    display: none;
-  }
+.passenger-picker > .pickers > .amount-picker {
+  padding: 25px 30px 0;
+}
 
-  .passenger-picker-component .picker-wrapper {
-    max-height: 60px !important;
-  }
+.passenger-picker > .pickers > .actions {
+  padding: 19px 19px;
+  display: flex;
+  justify-content: flex-end;
+}
 
-  .passenger-picker-component .pickers > .pickers-wrapper {
-    background-color: #fff;
-    border-radius: 6px;
-    border: 1px solid #b8b7b7;
-  }
+.passenger-picker > .pickers > .actions > button {
+  background-color: transparent;
+  border: 0;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  padding: 6px 11px;
+  line-height: 18px;
+  color: #bd8b13;
+  cursor: pointer;
+  border-radius: 3px;
+}
 
-  .passenger-picker-component .pickers > .pickers-wrapper > .modal-header {
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    padding: 1.3rem 1.3rem 0;
-    max-height: 59px;
-    border-bottom: 1px solid #b8b7b7;
-  }
-
-  .passenger-picker-component .pickers > .pickers-wrapper > .modal-header::after {
-    display: block;
-    margin-top: 8px;
-    content: '✓';
-    font-size: 1em;
-  }
-
-  .passenger-picker-component .pickers > .pickers-wrapper > .modal-header > .header-wrapper {
-    display: block;
-  }
-
-  .passenger-picker-component .pickers > .pickers-wrapper > .modal-header > .header-wrapper > label {
-    display: block;
-    margin-bottom: 0.5em;
-  }
+.passenger-picker > .pickers > .actions > button:hover {
+  background-color: #f3f3f3;
 }

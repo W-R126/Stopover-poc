@@ -1,0 +1,38 @@
+
+.result-view {
+  max-height: 370px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  overflow: auto;
+}
+
+.result-view > .airport {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.result-view > .airport:hover,
+.result-view > .airport.selected {
+  background-color: #ededec;
+}
+
+.result-view > .airport:not(:last-child) {
+  border-bottom: 1px solid #a6a6a6;
+}
+
+.result-view > .airport > .row-1,
+.result-view > .airport > .row-2 {
+  display: flex;
+  justify-content: space-between;
+}
+
+.result-view > .airport > .row-1 > span,
+.result-view > .airport > .row-2 > span {
+  display: inline-block;
+  vertical-align: top;
+  padding: 10px;
+}
+
+.result-view > .airport > .row-2 > .airport-name {
+  font-weight: 600;
+}

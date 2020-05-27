@@ -1,25 +1,20 @@
 import React from 'react';
-import { AirportModel } from '../../Models/AirportModel';
-import Input from '../UI/Input';
 
 import './AirportSearch.css';
-import ContentService from '../../Services/ContentService';
+import closeBtn from '../../Assets/Images/close-btn.svg';
+import { AirportModel } from '../../Models/AirportModel';
+import ResultView from './ResultView';
 
 interface AirportSearchProps {
-  contentService: ContentService;
-  airports: AirportModel[];
-  id?: string;
-  tabIndex: number;
-  maxHeight: number;
-  label?: string;
+  label: string;
+  placeholder?: string;
   value?: AirportModel;
-  onChange?: (value?: AirportModel) => void;
+  airports?: AirportModel[];
+  disabled?: boolean;
+  onChange: (value?: AirportModel) => void;
 }
 
 interface AirportSearchState {
-  content: {
-    noResult?: string;
-  };
   query: string;
   expanded: boolean;
   filteredAirports: AirportModel[];
@@ -29,52 +24,53 @@ export default class AirportSearch extends React.Component<
   AirportSearchProps,
   AirportSearchState
 > {
-  static defaultProps: Pick<AirportSearchProps, 'tabIndex' | 'maxHeight'> = {
-    tabIndex: 0,
-    maxHeight: 400,
-  };
-
-  private readonly resultRef = React.createRef<HTMLDivElement>();
-
   private readonly selfRef = React.createRef<HTMLDivElement>();
-
-  private readonly inputRef = React.createRef<Input>();
-
-  private readonly wrapperRef = React.createRef<HTMLDivElement>();
 
   constructor(props: AirportSearchProps) {
     super(props);
 
-    const { airports } = props;
-
     this.state = {
-      content: {},
       query: '',
       expanded: false,
-      filteredAirports: airports,
+      filteredAirports: props.airports || [],
     };
 
-    this.onFocus = this.onFocus.bind(this);
     this.onQueryChange = this.onQueryChange.bind(this);
     this.onClickOutside = this.onClickOutside.bind(this);
     this.onTabOutside = this.onTabOutside.bind(this);
+    this.select = this.select.bind(this);
+    this.expand = this.expand.bind(this);
+    this.collapse = this.collapse.bind(this);
   }
 
-  async componentDidMount(): Promise<void> {
-    const { contentService } = this.props;
-
-    this.setState({ content: await contentService.get('common') });
-
+  componentDidMount(): void {
     document.addEventListener('click', this.onClickOutside);
     document.addEventListener('keyup', this.onTabOutside);
   }
 
-  componentDidUpdate(prevProps: AirportSearchProps): void {
-    const { airports: prevAirports } = prevProps;
-    const { airports } = this.props;
+  componentDidUpdate(prevProps: AirportSearchProps, prevState: AirportSearchState): void {
+    const { airports, value } = this.props;
+    const { query } = this.state;
 
-    if (airports !== prevAirports) {
-      this.setState({ filteredAirports: airports });
+    const newState = {};
+
+    if (query !== prevState.query) {
+      this.filterAirports(query);
+    }
+
+    if (prevProps.airports !== airports) {
+      Object.assign(newState, { filteredAirports: airports || [] });
+    }
+
+    if (prevProps.value !== value) {
+      Object.assign(
+        newState,
+        { query: value === undefined ? '' : `${value.cityName}, ${value.code}` },
+      );
+    }
+
+    if (Object.keys(newState).length > 0) {
+      this.setState(newState);
     }
   }
 
@@ -83,167 +79,133 @@ export default class AirportSearch extends React.Component<
     document.removeEventListener('keyup', this.onTabOutside);
   }
 
-  private onTabOutside(e: any): void {
-    if (!this.selfRef.current || this.selfRef.current.contains(document.activeElement)) {
-      return;
-    }
-
-    if (e.key === 'Tab') {
-      const { expanded } = this.state;
-
-      if (expanded) {
-        this.setState({ expanded: false });
-      }
-    }
-  }
-
   private onClickOutside(e: any): void {
     const { expanded } = this.state;
 
-    if (!this.selfRef.current || this.selfRef.current.contains(e.target) || !expanded) {
+    if (!expanded || !this.selfRef.current || this.selfRef.current.contains(e.target)) {
       return;
     }
 
-    this.setState({ expanded: false });
+    if (expanded) {
+      this.collapse();
+    }
   }
 
-  private onFocus(): void {
+  private onTabOutside(e: any): void {
+    const { expanded } = this.state;
+
+    if (!expanded
+      || e.key !== 'Tab'
+      || !this.selfRef.current
+      || this.selfRef.current.contains(e.target)
+    ) {
+      return;
+    }
+
+    this.collapse();
+  }
+
+  private onQueryChange(e: React.ChangeEvent<HTMLInputElement>): void {
+    const query = e.target.value;
+
+    if (query === '') {
+      const { onChange } = this.props;
+
+      onChange(undefined);
+    }
+
+    this.filterAirports(query);
+  }
+
+  private filterAirports(query: string): void {
+    const strippedQuery = query.replace(/,|\./g, '').replace(/\s{2,}/g, ' ').toLowerCase();
+
+    let { airports: filteredAirports = [] } = this.props;
+
+    strippedQuery.split(' ').forEach((queryPart) => {
+      filteredAirports = filteredAirports.filter(
+        (airport) => airport.searchString.indexOf(queryPart) !== -1,
+      );
+    });
+
+    this.setState({
+      query,
+      filteredAirports,
+    });
+  }
+
+  private select(airport: AirportModel): void {
+    const { onChange } = this.props;
+
+    this.collapse();
+
+    onChange(airport);
+  }
+
+  private expand(): void {
     this.setState({ expanded: true });
   }
 
-  private async onQueryChange(query: string): Promise<void> {
-    this.setState({ query }, this.execQuery);
-  }
-
-  private get maxHeight(): number {
-    const { maxHeight: propMaxHeight } = this.props;
-    const { expanded } = this.state;
-
-    if (!this.resultRef.current || !expanded) {
-      return 60;
+  private collapse(e?: any): void {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
     }
 
-    let maxHeight = this.resultRef.current.getBoundingClientRect().height;
+    const { value } = this.props;
+    const newState = { expanded: false };
 
-    if (maxHeight > propMaxHeight) {
-      maxHeight = propMaxHeight;
+    if (value) {
+      Object.assign(newState, { query: `${value.cityName}, ${value.code}` });
     }
 
-    return maxHeight + 61;
-  }
-
-  private async execQuery(): Promise<void> {
-    const { airports } = this.props;
-    const { query } = this.state;
-
-    const strippedQuery = query.replace(/,|\./g, '').replace(/\s{2,}/g, ' ').toLowerCase();
-
-    const queryParts = strippedQuery.split(' ');
-
-    let filteredAirports = airports;
-
-    if (strippedQuery.length >= 3) {
-      queryParts.forEach((queryPart) => {
-        filteredAirports = filteredAirports.filter(
-          (airport) => (
-            airport.nameLower?.indexOf(queryPart) !== -1
-            || airport.code.indexOf(queryPart.toUpperCase()) !== -1
-            || airport.cityNameLower?.indexOf(queryPart) !== -1
-            || airport.countryNameLower?.indexOf(queryPart) !== -1
-          ),
-        );
-      });
-    }
-
-    await new Promise((resolve) => this.setState({ filteredAirports }, resolve));
-
-    if (this.wrapperRef.current) {
-      this.wrapperRef.current.style.maxHeight = `${this.maxHeight}px`;
-    }
-  }
-
-  private async select(airport: AirportModel): Promise<void> {
-    const { onChange } = this.props;
-
-    const query = `${airport?.cityName}, ${airport?.code}` ?? '';
-
-    this.onQueryChange(query);
-
-    setTimeout(() => {
-      if (this.inputRef.current) {
-        setTimeout(this.inputRef.current.focus, 10);
-      }
-    }, 10);
-
-    if (onChange) {
-      onChange(airport);
-    }
+    this.setState(newState);
   }
 
   render(): JSX.Element {
     const {
       label,
+      placeholder,
+      disabled,
       value,
-      id,
-      tabIndex,
-      maxHeight: propMaxHeight,
     } = this.props;
-
-    const {
-      query,
-      expanded,
-      filteredAirports,
-      content,
-    } = this.state;
-
-    const { maxHeight } = this;
+    const { query, expanded, filteredAirports } = this.state;
 
     return (
       <div
         ref={this.selfRef}
-        className="airport-search-component"
-        role="button"
+        className="airport-search"
         aria-expanded={expanded}
       >
-        <div
-          className="wrapper"
-          style={{ maxHeight }}
-          ref={this.wrapperRef}
-        >
-          <Input
-            ref={this.inputRef}
-            label={label}
-            type="text"
-            id={id}
-            value={query}
-            tabIndex={tabIndex}
-            onChange={this.onQueryChange}
-            onFocus={this.onFocus}
-          />
-          <div className="result" ref={this.resultRef} style={{ maxHeight: propMaxHeight }}>
-            {filteredAirports.length === 0 && (
-              <div className="no-result">
-                {content.noResult}
-              </div>
-            )}
-            {filteredAirports.map((airport, idx) => (
-              <div
-                className={`airport${airport === value ? ' selected' : ''}`}
-                key={`airport-${idx}`}
-                role="button"
-                onMouseDown={async (): Promise<void> => this.select(airport)}
-              >
-                <div className="city-iata">
-                  <span className="city-name">{airport.cityName}</span>
-                  <span className="airport-code">{airport.code}</span>
-                </div>
-                <div className="airport-country">
-                  <span className="airport-name">{airport.name}</span>
-                  <span className="country-name">{airport.countryName}</span>
-                </div>
-              </div>
-            ))}
+        <div className="wrapper">
+          <div
+            className="search"
+            role="button"
+            onClick={disabled ? undefined : this.expand}
+          >
+            <span
+              className="close-btn"
+              role="button"
+              onClick={this.collapse}
+            >
+              <img src={closeBtn} alt="Close" />
+            </span>
+            <label className="input-label">
+              {label}
+            </label>
+            <input
+              value={query}
+              onChange={this.onQueryChange}
+              placeholder={placeholder}
+              onFocus={this.expand}
+              disabled={disabled}
+            />
           </div>
+          <ResultView
+            airports={filteredAirports}
+            onSelect={this.select}
+            value={value}
+          />
         </div>
       </div>
     );

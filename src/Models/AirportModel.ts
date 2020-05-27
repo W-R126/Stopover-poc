@@ -1,15 +1,12 @@
+import { CoordinateModel } from './CoordinateModel';
+
 export interface AirportModel {
   code: string;
-  name?: string;
-  nameLower?: string;
   cityCode: string;
-  cityName?: string;
-  cityNameLower?: string;
   countryCode: string;
+  name?: string;
+  cityName?: string;
   countryName?: string;
-  countryNameLower?: string;
-  coordinates: {
-    lat: number;
-    long: number;
-  };
+  coordinates: CoordinateModel;
+  searchString: string;
 }

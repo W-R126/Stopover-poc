@@ -1,61 +1,34 @@
 import React from 'react';
 
 import './PassengerPicker.css';
-import passengerTypeAdult from '../../Assets/Images/UI/passenger-type-adult.svg';
-import passengerTypeChild from '../../Assets/Images/UI/passenger-type-child.svg';
-import passengerTypeInfant from '../../Assets/Images/UI/passenger-type-infant.svg';
-import ContentService from '../../Services/ContentService';
-import { SingularPlural } from '../../Models/SingularPlural';
-import AmountPicker from '../UI/AmountPicker';
+import arrowDown from '../../Assets/Images/arrow-down.svg';
+import AmountPicker from './AmountPicker';
 
-interface PassengerType extends SingularPlural {
-  description?: string;
-}
-
-export interface Passengers {
+export interface PassengerPickerData {
   adults: number;
   children: number;
   infants: number;
 }
 
 interface PassengerPickerProps {
-  contentService: ContentService;
-  tabIndex?: number;
-  id?: string;
-  value: Passengers;
-  onChange?: (value: Passengers) => void;
+  data: PassengerPickerData;
+  maximumPassengers: number;
+  tabIndex: number;
+  onChange: (data: PassengerPickerData) => void;
 }
 
 interface PassengerPickerState {
-  content: {
-    guest?: SingularPlural;
-    passenger?: SingularPlural;
-    passengerTypes?: {
-      adult?: PassengerType;
-      child?: PassengerType;
-      infant?: PassengerType;
-    };
-  };
   expanded: boolean;
-  detailedPassengerCount: boolean;
 }
 
 export default class PassengerPicker extends React.Component<
   PassengerPickerProps,
   PassengerPickerState
 > {
-  static defaultProps: Pick<PassengerPickerProps, 'tabIndex' | 'value'> = {
+  static readonly defaultProps: Pick<PassengerPickerProps, 'tabIndex' | 'maximumPassengers'> = {
+    maximumPassengers: 9,
     tabIndex: 0,
-    value: {
-      adults: 1,
-      children: 0,
-      infants: 0,
-    },
-  }
-
-  private readonly pickerWrapperRef = React.createRef<HTMLDivElement>();
-
-  private readonly detaildPassengersRef = React.createRef<HTMLDivElement>();
+  };
 
   private readonly selfRef = React.createRef<HTMLDivElement>();
 
@@ -63,52 +36,40 @@ export default class PassengerPicker extends React.Component<
     super(props);
 
     this.state = {
-      content: {},
       expanded: false,
-      detailedPassengerCount: true,
     };
 
+    this.onClickOutside = this.onClickOutside.bind(this);
+    this.onTabOutside = this.onTabOutside.bind(this);
     this.onAdultsChange = this.onAdultsChange.bind(this);
     this.onChildrenChange = this.onChildrenChange.bind(this);
     this.onInfantsChange = this.onInfantsChange.bind(this);
-    this.onClickOutside = this.onClickOutside.bind(this);
-    this.onTabOutside = this.onTabOutside.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
-    this.toggleExpanded = this.toggleExpanded.bind(this);
+    this.expand = this.expand.bind(this);
+    this.collapse = this.collapse.bind(this);
   }
 
-  async componentDidMount(): Promise<void> {
-    const { contentService } = this.props;
-
+  componentDidMount(): void {
     document.addEventListener('click', this.onClickOutside);
     document.addEventListener('keyup', this.onTabOutside);
-
-    this.setState({
-      content: await contentService.get('common'),
-    });
-  }
-
-  componentDidUpdate(): void {
-    if (!this.detaildPassengersRef.current) {
-      return;
-    }
-
-    const { detailedPassengerCount } = this.state;
-
-    if (
-      this.detaildPassengersRef.current.getBoundingClientRect().height > 20
-    ) {
-      if (detailedPassengerCount) {
-        this.setState({ detailedPassengerCount: false });
-      }
-    } else if (!detailedPassengerCount) {
-      this.setState({ detailedPassengerCount: true });
-    }
   }
 
   componentWillUnmount(): void {
     document.removeEventListener('click', this.onClickOutside);
     document.removeEventListener('keyup', this.onTabOutside);
+  }
+
+  private onTabOutside(e: any): void {
+    const { expanded } = this.state;
+
+    if (!expanded
+      || e.key !== 'Tab'
+      || !this.selfRef.current
+      || this.selfRef.current.contains(e.target)
+    ) {
+      return;
+    }
+
+    this.collapse();
   }
 
   private onClickOutside(e: any): void {
@@ -119,283 +80,111 @@ export default class PassengerPicker extends React.Component<
     const { expanded } = this.state;
 
     if (expanded) {
-      this.toggleExpanded();
-    }
-  }
-
-  private onTabOutside(e: any): void {
-    if (!this.selfRef.current || this.selfRef.current.contains(document.activeElement)) {
-      return;
-    }
-
-    if (e.key === 'Tab') {
-      const { expanded } = this.state;
-
-      if (expanded) {
-        this.toggleExpanded();
-      }
-    }
-  }
-
-  private onKeyDown(e: React.KeyboardEvent<HTMLDivElement>): void {
-    const { expanded } = this.state;
-
-    if ([' ', 'Escape'].indexOf(e.key) !== -1) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-
-    switch (e.key) {
-      case ' ':
-      case 'Enter':
-        if (!expanded) {
-          this.toggleExpanded();
-        }
-
-        break;
-      case 'Escape':
-        if (expanded) {
-          this.toggleExpanded();
-
-          if (this.selfRef.current) {
-            this.selfRef.current.focus();
-          }
-        }
-
-        break;
-      default:
-        break;
+      this.collapse();
     }
   }
 
   private onAdultsChange(adults: number): void {
-    const { value } = this.props;
+    const { data, onChange } = this.props;
 
-    this.onChange({ adults, children: value.children, infants: value.infants });
+    const newData = { adults };
+
+    if (data.infants > adults) {
+      Object.assign(newData, { infants: adults });
+    }
+
+    Object.assign(data, newData);
+
+    onChange(data);
   }
 
   private onChildrenChange(children: number): void {
-    const { value } = this.props;
+    const { data, onChange } = this.props;
 
-    this.onChange({ adults: value.adults, children, infants: value.infants });
+    Object.assign(data, { children });
+
+    onChange(data);
   }
 
   private onInfantsChange(infants: number): void {
-    const { value } = this.props;
+    const { data, onChange } = this.props;
 
-    this.onChange({ adults: value.adults, children: value.children, infants });
+    Object.assign(data, { infants });
+
+    onChange(data);
   }
 
-  private onChange(value: Passengers): void {
-    const { onChange } = this.props;
-
-    if (value.infants > value.adults) {
-      Object.assign(value, { infants: value.adults });
-    }
-
-    if (onChange) {
-      onChange(value);
-    }
+  private expand(): void {
+    this.setState({ expanded: true });
   }
 
-  private get maxHeight(): number {
-    const { expanded } = this.state;
-
-    if (expanded && this.pickerWrapperRef.current) {
-      let maxHeight = 0;
-
-      Array.from(this.pickerWrapperRef.current.children).forEach((element) => {
-        maxHeight += element.getBoundingClientRect().height;
-      });
-
-      return maxHeight;
-    }
-
-    return 60;
-  }
-
-  private get detailedPassengers(): string {
-    const { content: { passengerTypes } } = this.state;
-    const { value } = this.props;
-
-    let result = `${
-      value.adults
-    } ${
-      value.adults > 1 ? passengerTypes?.adult?.plural : passengerTypes?.adult?.singular
-    }`;
-
-    if (value.children > 0) {
-      if (value.infants > 0) {
-        result += ', ';
-      } else {
-        result += ' and ';
-      }
-
-      result += `${
-        value.children
-      } ${
-        value.children > 1 ? passengerTypes?.child?.plural : passengerTypes?.child?.singular
-      }`;
-    }
-
-    if (value.infants > 0) {
-      result += ` and ${
-        value.infants
-      } ${
-        value.infants > 1 ? passengerTypes?.infant?.plural : passengerTypes?.infant?.singular
-      }`;
-    }
-
-    return result;
-  }
-
-  private toggleExpanded(): void {
-    const { expanded } = this.state;
-
-    this.setState({ expanded: !expanded });
+  private collapse(): void {
+    this.setState({ expanded: false });
   }
 
   render(): JSX.Element {
-    const { content, expanded, detailedPassengerCount } = this.state;
-    const {
-      tabIndex,
-      id,
-      value,
-    } = this.props;
+    const { data, tabIndex, maximumPassengers } = this.props;
+    const { expanded } = this.state;
 
-    const { maxHeight } = this;
-    const passengerCount = value.adults + value.children + value.infants;
+    const totalPassengers = data.adults + data.children + data.infants;
 
     return (
       <div
-        className="passenger-picker-component"
         ref={this.selfRef}
-        role="button"
-        aria-expanded={expanded}
-        id={id}
+        className="passenger-picker"
         tabIndex={tabIndex}
-        onKeyDown={this.onKeyDown}
-        onClick={this.toggleExpanded}
+        aria-expanded={expanded}
       >
         <div
-          className="picker-wrapper"
-          ref={this.pickerWrapperRef}
-          style={{ maxHeight }}
+          className="header input-label"
+          role="button"
+          onClick={this.expand}
         >
-          <div className="header">
-            <div className="header-wrapper">
-              <label>{content.guest?.plural}</label>
-              <div className="passenger-count">
-                {!detailedPassengerCount && (
-                  <div>
-                    {`${
-                      passengerCount
-                    } ${
-                      passengerCount > 1 ? content.passenger?.plural : content.passenger?.singular
-                    }`}
-                  </div>
-                )}
+          {`${totalPassengers} Passenger${totalPassengers > 1 ? 's' : ''}`}
+          <img src={arrowDown} alt="Expand" />
+        </div>
 
-                <div
-                  ref={this.detaildPassengersRef}
-                  style={{
-                    visibility: !detailedPassengerCount ? 'hidden' : undefined,
-                  }}
-                >
-                  {this.detailedPassengers}
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="pickers">
+          <AmountPicker
+            title="Adults"
+            description="Ages 12+"
+            value={data.adults}
+            min={1}
+            max={maximumPassengers - data.children}
+            onChange={this.onAdultsChange}
+          />
 
-          <div className="pickers">
-            <div
-              className="pickers-wrapper"
-              role="button"
-              onClick={(e): void => {
-                e.stopPropagation();
-                e.preventDefault();
+          <AmountPicker
+            title="Children"
+            description="Ages 2-11"
+            value={data.children}
+            min={0}
+            max={maximumPassengers - data.adults}
+            onChange={this.onChildrenChange}
+          />
+
+          <AmountPicker
+            title="Infants"
+            description="Under 2"
+            value={data.infants}
+            min={0}
+            max={data.adults}
+            onChange={this.onInfantsChange}
+          />
+
+          <div className="actions">
+            <button
+              type="button"
+              onClick={(): void => {
+                this.collapse();
+
+                if (this.selfRef.current) {
+                  this.selfRef.current.focus();
+                }
               }}
             >
-              <div
-                className="modal-header"
-                role="button"
-                onClick={this.toggleExpanded}
-              >
-                <div className="header-wrapper">
-                  <label>{content.guest?.plural}</label>
-                  <div className="passenger-count">
-                    {!detailedPassengerCount && (
-                      <div>
-                        {`${
-                          passengerCount
-                        } ${
-                          passengerCount > 1
-                            ? content.passenger?.plural
-                            : content.passenger?.singular
-                        }`}
-                      </div>
-                    )}
-
-                    <div
-                      style={{
-                        visibility: !detailedPassengerCount ? 'hidden' : undefined,
-                      }}
-                    >
-                      {this.detailedPassengers}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <AmountPicker
-                min={1}
-                max={9 - value.children}
-                value={value.adults}
-                onChange={this.onAdultsChange}
-                disabled={!expanded}
-                label={(
-                  <div className="passenger-type-picker">
-                    <img src={passengerTypeAdult} alt={content.passengerTypes?.adult?.plural} />
-                    <span>
-                      <label>{content.passengerTypes?.adult?.plural}</label>
-                      <span>{content.passengerTypes?.adult?.description}</span>
-                    </span>
-                  </div>
-                )}
-              />
-              <AmountPicker
-                min={0}
-                max={9 - value.adults}
-                value={value.children}
-                onChange={this.onChildrenChange}
-                disabled={!expanded}
-                label={(
-                  <div className="passenger-type-picker">
-                    <img src={passengerTypeChild} alt={content.passengerTypes?.child?.plural} />
-                    <span>
-                      <label>{content.passengerTypes?.child?.plural}</label>
-                      <span>{content.passengerTypes?.child?.description}</span>
-                    </span>
-                  </div>
-                )}
-              />
-              <AmountPicker
-                min={0}
-                max={value.adults}
-                value={value.infants}
-                onChange={this.onInfantsChange}
-                disabled={!expanded}
-                label={(
-                  <div className="passenger-type-picker">
-                    <img src={passengerTypeInfant} alt={content.passengerTypes?.infant?.plural} />
-                    <span>
-                      <label>{content.passengerTypes?.infant?.plural}</label>
-                      <span>{content.passengerTypes?.infant?.description}</span>
-                    </span>
-                  </div>
-                )}
-              />
-            </div>
+              Done
+            </button>
           </div>
         </div>
       </div>
