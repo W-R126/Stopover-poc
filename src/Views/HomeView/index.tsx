@@ -25,10 +25,14 @@ export default class HomeView extends React.Component<HomeViewProps, HomeViewSta
           infants: 0,
         },
         cabinType: 'economy',
-        origin: undefined,
-        destination: undefined,
-        outbound: new Date(),
-        inbound: new Date(),
+        originDestination: {
+          origin: undefined,
+          destination: undefined,
+        },
+        dates: {
+          outbound: new Date(),
+          inbound: new Date(),
+        },
       },
     };
 

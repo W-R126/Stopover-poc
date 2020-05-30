@@ -11,4 +11,11 @@
 
 .home-view > .content-wrapper {
   padding-top: 260px;
+  display: flex;
+  justify-content: center;
+}
+
+.home-view > .content-wrapper > .trip-search {
+  max-width: 1240px;
+  width: 100%;
 }

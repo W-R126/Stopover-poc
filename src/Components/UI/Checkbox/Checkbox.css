@@ -1,0 +1,57 @@
+.ui-checkbox-input {
+  height: 0;
+  width: 0;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+.ui-checkbox-input + .ui-checkbox-label {
+  font-size: 16px;
+  color: #4e4c4a;
+  line-height: 22.4px;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  cursor: pointer;
+}
+
+.ui-checkbox-input:disabled + .ui-checkbox-label {
+  color: #959492;
+  cursor: not-allowed;
+}
+
+.ui-checkbox-input + .ui-checkbox-label > span {
+  display: inline-block;
+  vertical-align: bottom;
+  margin-right: 8px;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border: 1px solid #959492;
+  border-radius: 2px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.ui-checkbox-input:disabled + .ui-checkbox-label > span {
+  border-color: #959492;
+}
+
+.ui-checkbox-input:focus + .ui-checkbox-label > span {
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px #6997d3;
+}
+
+.ui-checkbox-input + .ui-checkbox-label > span::before {
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f00c';
+  color: #fff;
+  line-height: 19px;
+  vertical-align: top;
+}
+
+.ui-checkbox-input:not(:disabled) + .ui-checkbox-label:hover > span,
+.ui-checkbox-input:not(:disabled):checked + .ui-checkbox-label > span {
+  background-color: #bd8b13;
+  border-color: #bd8b13;
+}

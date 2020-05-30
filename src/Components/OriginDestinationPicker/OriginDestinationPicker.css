@@ -1,0 +1,101 @@
+.origin-destination-picker {
+  display: inline-flex;
+  flex-flow: row wrap;
+  position: relative;
+  user-select: none;
+}
+
+.origin-destination-picker > div {
+  width: 50%;
+}
+
+.origin-destination-picker > button {
+  background-color: #fff;
+  border: 1px solid #4e4c4a;
+  padding: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  outline: 0;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+}
+
+.origin-destination-picker > button:disabled {
+  cursor: not-allowed;
+}
+
+.origin-destination-picker > button:focus {
+  border-color: #fff;
+  box-shadow:
+    0 0 0 2px #6997d3,
+    1px 1px 5px rgba(0, 0, 0, 0.4);
+}
+
+.origin-destination-picker > button > img {
+  border: 2px solid #fff;
+  border-radius: 50%;
+  height: 100%;
+  width: 100%;
+}
+
+@media screen and (min-width: 481px) {
+  html:not([dir='rtl']) .origin-destination-picker > .origin > .airport-search:not(.focused) > .wrapper,
+  html[dir='rtl'] .origin-destination-picker > .destination > .airport-search:not(.focused) > .wrapper {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 1px solid transparent;
+  }
+
+  html:not([dir='rtl']) .origin-destination-picker > .origin > .airport-search > .wrapper > input,
+  html[dir='rtl'] .origin-destination-picker > .destination > .airport-search > .wrapper > input {
+    padding-right: 30px;
+  }
+
+  html[dir='rtl'] .origin-destination-picker > .origin > .airport-search:not(.focused) > .wrapper,
+  html:not([dir='rtl']) .origin-destination-picker > .destination > .airport-search:not(.focused) > .wrapper {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  html[dir='rtl'] .origin-destination-picker > .origin > .airport-search > .wrapper > input,
+  html:not([dir='rtl']) .origin-destination-picker > .destination > .airport-search > .wrapper > input {
+    padding-left: 30px;
+  }
+
+  .origin-destination-picker > button {
+    position: relative;
+    top: 34px;
+    margin: 0 -17px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .origin-destination-picker > div > .airport-search[aria-expanded='true'] {
+    z-index: 3;
+  }
+
+  .origin-destination-picker > div {
+    width: 100%;
+  }
+
+  .origin-destination-picker > button {
+    position: absolute;
+    height: 44px;
+    width: 44px;
+    top: 71px;
+  }
+
+  html:not([dir='rtl']) .origin-destination-picker > button {
+    right: 8px;
+  }
+
+  html[dir='rtl'] .origin-destination-picker > button {
+    left: 8px;
+  }
+
+  .origin-destination-picker > button > img {
+    transform: rotateZ(90deg);
+  }
+}

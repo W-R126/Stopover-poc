@@ -1,81 +1,84 @@
 .ui-select {
-  display: inline-block;
-  position: relative;
-  outline: 0;
-  white-space: nowrap;
+  display: block;
+  height: 50px;
+  font-size: 18px;
+  color: #4e4c4a;
   cursor: pointer;
+  outline: 0;
+  user-select: none;
 }
 
-.ui-select > .selected {
+.ui-select:focus {
+  position: relative;
+  z-index: 1;
+}
+
+.ui-select > .wrapper {
+  border-radius: 4px;
+  border: 1px solid #4e4c4a;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.ui-select:focus > .wrapper {
+  box-shadow: 0 0 0 2px #6997d3;
+  border-color: #fff;
+}
+
+.ui-select[aria-expanded='false'] > .wrapper {
+  max-height: 50px;
+}
+
+.ui-select > .wrapper > .selected {
   display: flex;
   justify-content: space-between;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  background-color: #fff;
   align-items: center;
-  padding: 8px;
+  padding: 11px 16px;
+  height: 49px;
+  border-bottom: 1px solid #dcdbdb;
 }
 
-.ui-select:focus > .selected {
-  border: 1px solid #a5c1e5;
+.ui-select > .wrapper > .selected::after {
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f107';
+  font-size: 22px;
+  transition: transform 100ms;
 }
 
-.ui-select:hover > .selected {
-  background-color: #f3f3f3;
+.ui-select[aria-expanded='true'] > .wrapper > .selected::after {
+  transform: rotateZ(-180deg);
 }
 
-.ui-select > .selected > img {
-  margin-left: 10px;
+html:not([dir='rtl']) .ui-select > .wrapper > .selected::after {
+  margin-left: 16px;
 }
 
-.ui-select > .options {
-  position: absolute;
-  top: -16px;
-  left: -16px;
-  background-color: #fff;
-  box-shadow: 0 0 8px 0 #a6a6a6;
-  border-radius: 8px;
-  z-index: 1000;
+html[dir='rtl'] .ui-select > .wrapper > .selected::after {
+  margin-right: 16px;
 }
 
-.ui-select[aria-expanded='false'] > .options {
-  display: none;
+.ui-select > .wrapper > .options {
+  max-height: 400px;
+  overflow: auto;
 }
 
-.ui-select > .options > .ui-option {
-  display: flex;
-  padding: 25px 30px;
-  padding-left: 45px;
-  white-space: nowrap;
-  position: relative;
+.ui-select[aria-expanded='false'] > .wrapper > .options {
+  visibility: hidden; /* Fixes FF tab issue. */
 }
 
-.ui-select > .options > .ui-option:hover {
-  background-color: #ededec;
+.ui-select > .wrapper > .options > .option {
+  padding: 11px 16px;
 }
 
-.ui-select > .options > .ui-option > img {
-  position: absolute;
-  left: 15px;
-  top: 26px;
+.ui-select > .wrapper > .options > .option:hover {
+  background-color: #f2f2f2;
 }
 
-html[dir='rtl'] .ui-select > .selected > img {
-  margin-left: 0;
-  margin-right: 10px;
+.ui-select > .wrapper > .options > .option[aria-selected='true'] {
+  background-color: #6997d3;
+  color: #fff;
 }
 
-html[dir='rtl'] .ui-select > .options {
-  left: initial;
-  right: -16px;
-}
-
-html[dir='rtl'] .ui-select > .options > .ui-option {
-  padding: 25px 30px;
-  padding-right: 45px;
-}
-
-html[dir='rtl'] .ui-select > .options > .ui-option > img {
-  left: initial;
-  right: 15px;
+.ui-select > .wrapper > .options > .option:not(:first-child) {
+  border-top: 1px solid #dcdbdb;
 }

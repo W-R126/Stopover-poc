@@ -1,0 +1,49 @@
+.date-picker {
+  display: inline-flex;
+  flex-flow: row wrap;
+  user-select: none;
+}
+
+.date-picker > div {
+  width: 50%;
+  display: inline-flex;
+  flex-flow: column;
+}
+
+.date-picker > div > input {
+  width: 100%;
+  z-index: 0;
+}
+
+.date-picker > div > input:focus {
+  z-index: 1 !important;
+}
+
+@media screen and (min-width: 481px) {
+  html:not([dir='rtl']) .date-picker > .outbound > input,
+  html[dir='rtl'] .date-picker > .inbound > input {
+    border-right: 0;
+  }
+
+  html:not([dir='rtl']) .date-picker > .outbound > input:not(:focus),
+  html[dir='rtl'] .date-picker > .inbound > input:not(:focus) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  html:not([dir='rtl']) .date-picker > .inbound > input:not(:focus),
+  html[dir='rtl'] .date-picker > .outbound > input:not(:focus) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .date-picker > div {
+    width: 100%;
+  }
+
+  .date-picker > .inbound {
+    margin-top: 8px;
+  }
+}

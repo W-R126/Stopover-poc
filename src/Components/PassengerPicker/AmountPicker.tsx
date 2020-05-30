@@ -3,74 +3,73 @@ import React from 'react';
 import './AmountPicker.css';
 
 interface AmountPickerProps {
-  title: string;
-  description: string;
   value: number;
   min: number;
   max: number;
-  disabled: boolean;
+  icon: string;
+  title: string;
+  description: string;
   onChange: (value: number) => void;
 }
 
 export default class AmountPicker extends React.Component<AmountPickerProps, {}> {
-  static readonly defaultProps: Pick<AmountPickerProps, 'disabled'> = {
-    disabled: false,
-  };
-
   constructor(props: AmountPickerProps) {
     super(props);
-
-    this.state = {};
 
     this.decrease = this.decrease.bind(this);
     this.increase = this.increase.bind(this);
   }
 
   private decrease(): void {
-    const { value, onChange } = this.props;
+    const { value, onChange, min } = this.props;
 
-    onChange(value - 1);
+    if (value > min) {
+      onChange(value - 1);
+    }
   }
 
   private increase(): void {
-    const { value, onChange } = this.props;
+    const { value, onChange, max } = this.props;
 
-    onChange(value + 1);
+    if (value < max) {
+      onChange(value + 1);
+    }
   }
 
   render(): JSX.Element {
     const {
-      title,
-      description,
       value,
       min,
       max,
-      disabled,
+      icon,
+      title,
+      description,
     } = this.props;
 
     return (
       <div className="amount-picker">
+        <img src={icon} alt={title} />
         <div className="info">
-          <span className="title input-label">{title}</span>
+          <span className="title">{title}</span>
           <span className="description">{description}</span>
         </div>
         <div className="amount">
           <button
-            type="button"
             className="decrease"
-            disabled={disabled || value <= min}
+            type="button"
             onClick={this.decrease}
+            disabled={value === min}
           >
             -
           </button>
-          <span className="value">
+          <span>
             {value}
           </span>
           <button
-            type="button"
             className="increase"
-            disabled={disabled || value >= max}
+            type="button"
             onClick={this.increase}
+            disabled={value === max}
           >
             +
           </button>

@@ -1,55 +1,109 @@
 .trip-search {
+  display: inline-flex;
+  flex-flow: row wrap;
   background-color: #fff;
   border-radius: 8px;
-  padding: 30px 20px;
-  box-shadow: 0 0 8px #a6a6a6;
+  padding: 24px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  transition: padding 300ms;
 }
 
-.trip-search > .row-1 {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 30px;
-}
-
-.trip-search > .row-1 > .trip-details > .ui-select,
-.trip-search > .row-1 > .trip-details > .passenger-picker {
-  margin: 0 7px;
-}
-
-.trip-search > .row-1 > .trip-options > a {
-  text-decoration: none;
-  color: #005f96;
-  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
-  font-size: 18px;
-  margin: 0 15px;
-}
-
-.trip-search > .row-2 {
-  display: flex;
-  justify-content: space-between;
-  margin: 0 5px;
-}
-
-.trip-search > .row-2 > .trip-origin-destination {
-  display: flex;
-  align-items: center;
-  width: 50%;
-}
-
-.trip-search > .row-2 > .trip-origin-destination > .airport-search {
-  margin: 0 10px;
-  max-width: 295px;
+.trip-search > .trip-type-picker {
+  margin-bottom: 6px;
   width: 100%;
 }
 
-.trip-search > .row-2 > .trip-origin-destination > button {
-  position: relative;
-  top: 15px;
-  cursor: pointer;
-  border: 0;
-  background-color: transparent;
+.trip-search > .origin-destination-picker {
+  width: calc(100% - 376px);
 }
 
-.trip-search > .row-2 > .trip-origin-destination > button:disabled {
-  cursor: not-allowed;
+.trip-search > .date-picker {
+  width: 360px;
+}
+
+.trip-search > .cabin-type {
+  margin-top: 16px;
+  width: calc((100% - 376px) / 2);
+}
+
+.trip-search > .cabin-type > .ui-select {
+  width: 100%;
+}
+
+.trip-search > .passengers {
+  margin-top: 16px;
+  width: calc((100% - 376px) / 2);
+}
+
+.trip-search > .passengers > label {
+  display: block;
+}
+
+@media screen and (min-width: 651px) {
+  html:not([dir='rtl']) .trip-search > .cabin-type > .ui-select[aria-expanded='false'] > .wrapper,
+  html[dir='rtl'] .trip-search > .passengers > .passenger-picker[aria-expanded='false'] > .wrapper {
+    border-right: 0;
+    padding-right: 1px;
+  }
+
+  html[dir='rtl'] .trip-search > .cabin-type > .ui-select[aria-expanded='false']:not(:focus) > .wrapper,
+  html:not([dir='rtl']) .trip-search > .passengers > .passenger-picker[aria-expanded='false']:not(:focus) > .wrapper {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  html:not([dir='rtl']) .trip-search > .cabin-type > .ui-select[aria-expanded='false']:not(:focus) > .wrapper,
+  html[dir='rtl'] .trip-search > .passengers > .passenger-picker[aria-expanded='false']:not(:focus) > .wrapper {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+@media screen and (min-width: 901px) {
+  html:not([dir='rtl']) .trip-search > .date-picker {
+    margin-left: 16px;
+  }
+
+  html[dir='rtl'] .trip-search > .date-picker {
+    margin-right: 16px;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .trip-search > .origin-destination-picker {
+    width: 100%;
+  }
+
+  .trip-search > .date-picker {
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .trip-search > .cabin-type {
+    width: 50%;
+  }
+
+  .trip-search > .passengers {
+    width: 50%;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .trip-search {
+    padding: 16px;
+  }
+
+  .trip-search > .date-picker {
+    margin-top: 8px;
+  }
+
+  .trip-search > .cabin-type {
+    margin-top: 8px;
+    width: 100%;
+  }
+
+  .trip-search > .passengers {
+    margin-top: 8px;
+    width: 100%;
+  }
 }

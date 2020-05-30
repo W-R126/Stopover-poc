@@ -1,21 +1,35 @@
 .amount-picker {
   display: flex;
-  justify-content: space-between;
+  font-size: 16px;
+}
+
+.amount-picker > img {
+  height: 40px;
+}
+
+html:not([dir='rtl']) .amount-picker > img {
+  margin-right: 10px;
+}
+
+html[dir='rtl'] .amount-picker > img {
+  margin-left: 10px;
 }
 
 .amount-picker > .info {
   display: flex;
+  flex-grow: 1;
   flex-flow: column;
+  justify-content: center;
+}
+
+.amount-picker > .info > span {
+  display: block;
 }
 
 .amount-picker > .info > .title {
-  margin-bottom: 5px;
-}
-
-.amount-picker > .info > .description {
-  font-size: 16px;
-  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
-  white-space: nowrap;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  line-height: 24px;
 }
 
 .amount-picker > .amount {
@@ -23,41 +37,66 @@
   align-items: center;
 }
 
-.amount-picker > .amount::before {
-  content: '';
-  display: block;
-  width: 50px;
-}
-
 .amount-picker > .amount > button {
-  border: 0;
-  width: 24px;
-  height: 24px;
-  line-height: 0;
-  color: #fff;
-  border-radius: 2px;
+  border: 1px solid #4e4c4a;
+  background-color: transparent;
+  border-radius: 4px;
+  width: 30px;
+  height: 30px;
+  outline: 0;
+  font-size: 0;
   cursor: pointer;
-  font-size: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
 }
 
 .amount-picker > .amount > button:disabled {
   cursor: not-allowed;
+  border-color: #dcdbdb;
+  background-color: #dcdbdb;
+  color: #4e4c4a;
 }
 
-.amount-picker > .amount > .decrease {
-  background-color: #b8b7b7;
+.amount-picker > .amount > button:focus {
+  box-shadow: 0 0 0 2px #6997d3;
+  border-color: transparent;
 }
 
-.amount-picker > .amount > .increase {
-  background-color: #d7b971;
+.amount-picker > .amount > button::after {
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 28px;
 }
 
-.amount-picker > .amount > .value {
-  display: inline-block;
-  width: 40px;
+.amount-picker > .amount > .decrease:not(:disabled) {
+  background-color: transparent;
+  border-color: #4e4c4a;
+  color: #4e4c4a;
+}
+
+.amount-picker > .amount > .decrease:not(:disabled):hover,
+.amount-picker > .amount > .decrease:not(:disabled):focus {
+  background-color: #4e4c4a;
+  color: #fff;
+}
+
+.amount-picker > .amount > .decrease::after {
+  content: '\f068';
+}
+
+.amount-picker > .amount > .increase:not(:disabled) {
+  border-color: #bd8b13;
+  background-color: #bd8b13;
+  color: #fff;
+}
+
+.amount-picker > .amount > .increase:not(:disabled):hover {
+  background-color: #976f0f;
+}
+
+.amount-picker > .amount > .increase::after {
+  content: '\f067';
+}
+
+.amount-picker > .amount > span {
+  width: 30px;
   text-align: center;
 }

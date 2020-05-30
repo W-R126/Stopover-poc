@@ -1,0 +1,21 @@
+.trip-type-picker {
+  display: inline-flex;
+  flex-flow: row wrap;
+  user-select: none;
+}
+
+html:not([dir='rtl']) .trip-type-picker {
+  margin-left: -8px;
+}
+
+html[dir='rtl'] .trip-type-picker {
+  margin-right: -8px;
+}
+
+html:not([dir='rtl']) .trip-type-picker > li {
+  margin-left: 8px;
+}
+
+html[dir='rtl'] .trip-type-picker > li {
+  margin-right: 8px;
+}

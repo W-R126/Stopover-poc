@@ -4,6 +4,9 @@ header {
   top: 0;
   left: 0;
   width: 100%;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  z-index: 100;
 }
 
 .header-spacer {
@@ -37,4 +40,10 @@ header > .content-wrapper > nav > a {
   text-decoration: none;
   padding: 0 20px;
   margin: 0 1px;
+}
+
+@media screen and (max-width: 1144px) {
+  header > .content-wrapper > nav {
+    display: none;
+  }
 }

@@ -1,0 +1,63 @@
+.ui-radio-input {
+  height: 0;
+  width: 0;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  opacity: 0;
+  position: absolute;
+  cursor: pointer;
+}
+
+.ui-radio-input + .ui-radio-label {
+  font-size: 16px;
+  color: #4e4c4a;
+  line-height: 22.4px;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  cursor: pointer;
+}
+
+.ui-radio-input:disabled + .ui-radio-label {
+  color: #959492;
+  cursor: not-allowed;
+}
+
+.ui-radio-input + .ui-radio-label > span {
+  display: inline-block;
+  vertical-align: bottom;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border: 1px solid #4e4c4a;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #fff inset;
+  text-align: center;
+  font-size: 14px;
+}
+
+.ui-radio-input:disabled + .ui-radio-label > span {
+  border-color: #959492;
+}
+
+.ui-radio-input:focus + .ui-radio-label > span {
+  box-shadow:
+    0 0 0 3px #fff inset,
+    0 0 0 2px #6997d3;
+  border-color: #fff;
+}
+
+html:not([dir='rtl']) .ui-radio-input + .ui-radio-label > span {
+  margin-right: 8px;
+}
+
+html[dir='rtl'] .ui-radio-input + .ui-radio-label > span {
+  margin-left: 8px;
+}
+
+.ui-radio-input:not(:disabled) + .ui-radio-label:hover > span {
+  background-color: #d7b971;
+}
+
+.ui-radio-input:not(:disabled):checked + .ui-radio-label > span {
+  background-color: #bd8b13;
+}

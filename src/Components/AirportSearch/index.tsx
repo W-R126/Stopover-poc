@@ -1,30 +1,38 @@
 import React from 'react';
 
 import './AirportSearch.css';
-import closeBtn from '../../Assets/Images/close-btn.svg';
 import { AirportModel } from '../../Models/AirportModel';
-import ResultView from './ResultView';
 
 interface AirportSearchProps {
-  label: string;
+  id?: string;
+  className?: string;
+  style?: React.CSSProperties;
   placeholder?: string;
+  tabIndex: number;
   value?: AirportModel;
-  airports?: AirportModel[];
-  disabled?: boolean;
+  airports: AirportModel[];
+  exclude: AirportModel[];
   onChange: (value?: AirportModel) => void;
 }
 
 interface AirportSearchState {
   query: string;
   expanded: boolean;
-  filteredAirports: AirportModel[];
+  focused: boolean;
+  hoveredIndex: number;
+  showCountFactor: number;
 }
 
 export default class AirportSearch extends React.Component<
   AirportSearchProps,
   AirportSearchState
 > {
-  private readonly selfRef = React.createRef<HTMLDivElement>();
+  static readonly defaultProps: Pick<AirportSearchProps, 'tabIndex' | 'exclude'> = {
+    tabIndex: 0,
+    exclude: [],
+  };
+
+  private readonly resultRef = React.createRef<HTMLDivElement>();
 
   constructor(props: AirportSearchProps) {
     super(props);
@@ -32,180 +40,288 @@ export default class AirportSearch extends React.Component<
     this.state = {
       query: '',
       expanded: false,
-      filteredAirports: props.airports || [],
+      focused: false,
+      hoveredIndex: 0,
+      showCountFactor: 1,
     };
 
+    this.onResultScroll = this.onResultScroll.bind(this);
     this.onQueryChange = this.onQueryChange.bind(this);
-    this.onClickOutside = this.onClickOutside.bind(this);
-    this.onTabOutside = this.onTabOutside.bind(this);
-    this.select = this.select.bind(this);
-    this.expand = this.expand.bind(this);
-    this.collapse = this.collapse.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onBlur = this.onBlur.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentDidMount(): void {
-    document.addEventListener('click', this.onClickOutside);
-    document.addEventListener('keyup', this.onTabOutside);
+    if (!this.resultRef.current) {
+      return;
+    }
+
+    this.resultRef.current.addEventListener('scroll', this.onResultScroll);
   }
 
-  componentDidUpdate(prevProps: AirportSearchProps, prevState: AirportSearchState): void {
-    const { airports, value } = this.props;
-    const { query } = this.state;
-
-    const newState = {};
-
-    if (query !== prevState.query) {
-      this.filterAirports(query);
-    }
-
-    if (prevProps.airports !== airports) {
-      Object.assign(newState, { filteredAirports: airports || [] });
-    }
+  componentDidUpdate(prevProps: AirportSearchProps): void {
+    const { value } = this.props;
+    const { focused } = this.state;
 
     if (prevProps.value !== value) {
-      Object.assign(
-        newState,
-        { query: value === undefined ? '' : `${value.cityName}, ${value.code}` },
-      );
-    }
-
-    if (Object.keys(newState).length > 0) {
-      this.setState(newState);
+      if (value) {
+        this.setState({ query: this.getQuery(value) });
+      } else if (!focused) {
+        // Only clear query if the field is not focused.
+        this.setState({ query: '' });
+      }
     }
   }
 
   componentWillUnmount(): void {
-    document.removeEventListener('click', this.onClickOutside);
-    document.removeEventListener('keyup', this.onTabOutside);
+    if (!this.resultRef.current) {
+      return;
+    }
+
+    this.resultRef.current.removeEventListener('scroll', this.onResultScroll);
   }
 
-  private onClickOutside(e: any): void {
-    const { expanded } = this.state;
+  private onResultScroll(): void {
+    if (!this.resultRef.current) {
+      return;
+    }
 
-    if (!expanded || !this.selfRef.current || this.selfRef.current.contains(e.target)) {
+    const scrollHeight = this.resultRef.current.scrollHeight - this.resultRef.current.clientHeight;
+
+    if (this.resultRef.current.scrollTop > scrollHeight - 800) {
+      const { showCountFactor } = this.state;
+      this.setState({ showCountFactor: showCountFactor + 1 });
+    }
+  }
+
+  private onQueryChange(e: React.ChangeEvent<HTMLInputElement>): void {
+    const { onChange } = this.props;
+
+    onChange(undefined);
+
+    if (this.resultRef.current) {
+      this.resultRef.current.scrollTop = 0;
+    }
+
+    this.expand();
+
+    this.setState({ query: e.target.value, hoveredIndex: 0 });
+  }
+
+  private onFocus(): void {
+    this.setState({ focused: true });
+  }
+
+  private onBlur(): void{
+    this.collapse();
+
+    this.setState({ focused: false });
+  }
+
+  private onKeyDown(e: React.KeyboardEvent<HTMLInputElement>): void {
+    const { expanded } = this.state;
+    let { hoveredIndex } = this.state;
+    const { filteredAirports } = this;
+
+    if (e.key === 'Escape') {
+      this.collapse();
+
       return;
     }
 
     if (expanded) {
-      this.collapse();
+      if (e.key === 'Enter') {
+        this.select(filteredAirports[hoveredIndex]);
+        this.setState({ hoveredIndex: 0 });
+        this.collapse();
+
+        return;
+      }
     }
-  }
 
-  private onTabOutside(e: any): void {
-    const { expanded } = this.state;
+    this.expand();
 
-    if (!expanded
-      || e.key !== 'Tab'
-      || !this.selfRef.current
-      || this.selfRef.current.contains(e.target)
-    ) {
+    if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') {
       return;
     }
 
-    this.collapse();
-  }
+    e.preventDefault();
+    e.stopPropagation();
 
-  private onQueryChange(e: React.ChangeEvent<HTMLInputElement>): void {
-    const query = e.target.value;
+    // Navigate with keys.
+    const { value } = this.props;
 
-    if (query === '') {
-      const { onChange } = this.props;
-
-      onChange(undefined);
+    if (value) {
+      hoveredIndex = filteredAirports.indexOf(value);
     }
 
-    this.filterAirports(query);
+    hoveredIndex += e.key === 'ArrowUp' ? -1 : 1;
+
+    if (hoveredIndex >= 0 && hoveredIndex < filteredAirports.length) {
+      if (this.resultRef.current) {
+        // Scroll if hovered item moves out of vision.
+        const resultRefRect = this.resultRef.current.getBoundingClientRect();
+        const elementRect = this.resultRef.current.children[hoveredIndex].getBoundingClientRect();
+        const offsetTop = elementRect.top - resultRefRect.top;
+        const offsetBottom = offsetTop + elementRect.height;
+
+        if (offsetTop < 0) {
+          this.resultRef.current.scrollTop += (offsetTop + 1);
+
+          if (this.resultRef.current.scrollTop === 1) {
+            this.resultRef.current.scrollTop = 0;
+          }
+        } else if (offsetBottom > resultRefRect.height) {
+          this.resultRef.current.scrollTop += offsetBottom - resultRefRect.height;
+        }
+      }
+
+      this.setState({ hoveredIndex });
+    }
   }
 
-  private filterAirports(query: string): void {
-    const strippedQuery = query.replace(/,|\./g, '').replace(/\s{2,}/g, ' ').toLowerCase();
+  private getQuery(airport: AirportModel): string {
+    return `${airport.cityName}, ${airport.code}`;
+  }
 
-    let { airports: filteredAirports = [] } = this.props;
+  private get filteredAirports(): AirportModel[] {
+    const { airports, exclude } = this.props;
+    const { query } = this.state;
+    const queryParts = query.replace(/,|\./g, '').replace(/\s{2,}/g, ' ').toLowerCase().split(' ');
+    let filteredAirports = airports;
 
-    strippedQuery.split(' ').forEach((queryPart) => {
+    queryParts.forEach((queryPart) => {
       filteredAirports = filteredAirports.filter(
         (airport) => airport.searchString.indexOf(queryPart) !== -1,
       );
     });
 
-    this.setState({
-      query,
-      filteredAirports,
-    });
+    return filteredAirports.filter((airport) => exclude.indexOf(airport) === -1);
   }
 
-  private select(airport: AirportModel): void {
+  private select(value?: AirportModel): void {
     const { onChange } = this.props;
 
-    this.collapse();
-
-    onChange(airport);
+    onChange(value);
   }
 
   private expand(): void {
-    this.setState({ expanded: true });
+    const { expanded } = this.state;
+
+    if (!expanded) {
+      this.toggle();
+    }
   }
 
-  private collapse(e?: any): void {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-
+  private collapse(): void {
+    const { expanded } = this.state;
     const { value } = this.props;
-    const newState = { expanded: false };
 
-    if (value) {
-      Object.assign(newState, { query: `${value.cityName}, ${value.code}` });
+    if (!value) {
+      // Empty query if no value is selected.
+      this.setState({ query: '' });
     }
 
-    this.setState(newState);
+    if (expanded) {
+      this.toggle();
+    }
+  }
+
+  private toggle(): void {
+    const { expanded } = this.state;
+
+    this.setState({ expanded: !expanded });
   }
 
   render(): JSX.Element {
     const {
-      label,
+      id,
+      className: propClassName,
+      style,
       placeholder,
-      disabled,
       value,
     } = this.props;
-    const { query, expanded, filteredAirports } = this.state;
+
+    const {
+      query,
+      expanded,
+      focused,
+      hoveredIndex,
+      showCountFactor,
+    } = this.state;
+
+    const { filteredAirports } = this;
+
+    const showCount = showCountFactor * 50;
+    const className = ['airport-search'];
+
+    if (propClassName) {
+      className.push(propClassName);
+    }
+
+    if (focused) {
+      className.push('focused');
+    }
 
     return (
       <div
-        ref={this.selfRef}
-        className="airport-search"
+        className={className.join(' ')}
+        style={style}
         aria-expanded={expanded}
       >
         <div className="wrapper">
-          <div
-            className="search"
-            role="button"
-            onClick={disabled ? undefined : this.expand}
-          >
-            <span
-              className="close-btn"
-              role="button"
-              onClick={this.collapse}
-            >
-              <img src={closeBtn} alt="Close" />
-            </span>
-            <label className="input-label">
-              {label}
-            </label>
-            <input
-              value={query}
-              onChange={this.onQueryChange}
-              placeholder={placeholder}
-              onFocus={this.expand}
-              disabled={disabled}
-            />
-          </div>
-          <ResultView
-            airports={filteredAirports}
-            onSelect={this.select}
-            value={value}
+          <input
+            type="text"
+            id={id}
+            placeholder={placeholder}
+            value={query}
+            onFocus={this.onFocus}
+            onChange={this.onQueryChange}
+            onKeyDown={this.onKeyDown}
+            onBlur={this.onBlur}
           />
+          <div className="result" ref={this.resultRef}>
+            {filteredAirports
+              .slice(0, showCount)
+              .map((airport, idx) => (
+                <div
+                  className={`airport${hoveredIndex === idx ? ' hovered' : ''}`}
+                  key={`airport-${airport.code}`}
+                  role="option"
+                  aria-selected={value === airport}
+                  onMouseMove={(): void => {
+                    if (hoveredIndex !== idx) {
+                      this.setState({ hoveredIndex: idx });
+                    }
+                  }}
+                  onMouseDown={(e): void => {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    this.select(airport);
+                    this.collapse();
+                  }}
+                >
+                  <div className="row">
+                    <span className="city-name">
+                      {airport.cityName}
+                    </span>
+                    <span className="airport-code">
+                      {airport.code}
+                    </span>
+                  </div>
+                  <div className="row">
+                    <span className="airport-name">
+                      {airport.name}
+                    </span>
+                    <span className="country-name">
+                      {airport.countryName}
+                    </span>
+                  </div>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     );
