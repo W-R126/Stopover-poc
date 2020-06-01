@@ -2,44 +2,83 @@
   display: inline-flex;
   flex-flow: row wrap;
   user-select: none;
+  position: relative;
 }
 
-.date-picker > div {
+.date-picker > .outbound,
+.date-picker > .inbound {
   width: 50%;
   display: inline-flex;
   flex-flow: column;
 }
 
-.date-picker > div > input {
+.date-picker:not(.return-trip) > .outbound {
   width: 100%;
-  z-index: 0;
 }
 
-.date-picker > div > input:focus {
+.date-picker > .outbound > input,
+.date-picker > .inbound > input {
+  width: 100%;
+  z-index: 0;
+  cursor: pointer;
+}
+
+.date-picker > .outbound > input:focus,
+.date-picker > .inbound > input:focus {
   z-index: 1 !important;
 }
 
+.date-picker > .calendar-wrapper {
+  width: 700px;
+  position: absolute;
+  top: 91px;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #fff;
+  box-shadow:
+    0 0 0 2px #6997d3,
+    0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 11px 16px;
+  z-index: 1;
+}
+
+.date-picker[aria-expanded='false'] > .calendar-wrapper {
+  display: none;
+}
+
+@media screen and (max-width: 900px) {
+  .date-picker > .calendar-wrapper {
+    width: 100%;
+  }
+}
+
 @media screen and (min-width: 481px) {
-  html:not([dir='rtl']) .date-picker > .outbound > input,
-  html[dir='rtl'] .date-picker > .inbound > input {
+  html[dir='rtl'] .date-picker > .inbound > input,
+  html:not([dir='rtl']) .date-picker.return-trip > .outbound > input {
     border-right: 0;
   }
 
-  html:not([dir='rtl']) .date-picker > .outbound > input:not(:focus),
-  html[dir='rtl'] .date-picker > .inbound > input:not(:focus) {
+  html:not([dir='rtl']) .date-picker > .inbound > input:not(:focus) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  html[dir='rtl'] .date-picker > .inbound > input:not(:focus),
+  html:not([dir='rtl']) .date-picker.return-trip > .outbound > input:not(:focus) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
 
-  html:not([dir='rtl']) .date-picker > .inbound > input:not(:focus),
-  html[dir='rtl'] .date-picker > .outbound > input:not(:focus) {
+  html[dir='rtl'] .date-picker.return-trip > .outbound > input:not(:focus) {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .date-picker > div {
+  .date-picker > .outbound,
+  .date-picker > .inbound {
     width: 100%;
   }
 

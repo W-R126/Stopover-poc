@@ -10,25 +10,28 @@ import DatePicker from '../DatePicker';
 import TripTypePicker from '../TripTypePicker';
 import Select from '../UI/Select';
 import Option from '../UI/Select/Option';
+import { CalendarData } from '../Calendar';
 
 export interface TripSearchData {
   tripType: TripType;
   passengers: PassengerPickerData;
   cabinType: CabinType;
   originDestination: OriginDestinationPickerData;
-  dates: {
-    outbound: Date;
-    inbound: Date;
-  };
+  dates: CalendarData;
 }
 
 interface TripSearchProps {
   data: TripSearchData;
+  locale: string;
   onChange: (data: TripSearchData) => void;
   airportService: AirportService;
 }
 
 export default class TripSearch extends React.Component<TripSearchProps, {}> {
+  static readonly defaultProps: Pick<TripSearchProps, 'locale'> = {
+    locale: 'en-US',
+  };
+
   constructor(props: TripSearchProps) {
     super(props);
 
@@ -36,6 +39,7 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
     this.onPassengersChange = this.onPassengersChange.bind(this);
     this.onCabinTypeChange = this.onCabinTypeChange.bind(this);
     this.onOriginDestinationChange = this.onOriginDestinationChange.bind(this);
+    this.onDatesChange = this.onDatesChange.bind(this);
   }
 
   private onTripTypeChange(tripType: TripType): void {
@@ -54,6 +58,10 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
     this.onFieldChange('originDestination', originDestination);
   }
 
+  private onDatesChange(dates: CalendarData): void {
+    this.onFieldChange('dates', dates);
+  }
+
   private onFieldChange(fieldName: string, value: any): void {
     const { data, onChange } = this.props;
 
@@ -63,7 +71,7 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
   }
 
   render(): JSX.Element {
-    const { data, airportService } = this.props;
+    const { data, airportService, locale } = this.props;
 
     return (
       <div className="trip-search">
@@ -76,7 +84,12 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
           onChange={this.onOriginDestinationChange}
           airportService={airportService}
         />
-        <DatePicker />
+        <DatePicker
+          locale={locale}
+          data={data.dates}
+          onChange={this.onDatesChange}
+          span={data.tripType === 'return'}
+        />
         <div className="cabin-type">
           <label htmlFor="cabin-type">Cabin</label>
           <Select

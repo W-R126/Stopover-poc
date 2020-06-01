@@ -43,7 +43,7 @@
 }
 
 .airport-search[aria-expanded='false'] > .wrapper > .result {
-  display: none;
+  visibility: hidden;
 }
 
 .airport-search > .wrapper > .result .airport {

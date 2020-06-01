@@ -72,12 +72,16 @@
 }
 
 @media screen and (max-width: 480px) {
-  .origin-destination-picker > div > .airport-search[aria-expanded='true'] {
-    z-index: 3;
-  }
-
   .origin-destination-picker > div {
     width: 100%;
+  }
+
+  .origin-destination-picker > .destination {
+    margin-top: 8px;
+  }
+
+  .origin-destination-picker > .origin > .airport-search[aria-expanded='true'] {
+    z-index: 3; /* Cover direction swap button. */
   }
 
   .origin-destination-picker > button {

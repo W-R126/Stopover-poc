@@ -1,0 +1,93 @@
+.month > .title {
+  display: block;
+  text-align: center;
+  padding-bottom: 16px;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  user-select: none;
+}
+
+.month > .weekdays,
+.month > .days {
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.month > .weekdays {
+  color: #71706e;
+}
+
+.month > .days {
+  color: #b8b7b7;
+}
+
+.month > .weekdays > span,
+.month > .days > span {
+  display: flex;
+  width: 14.285%;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+}
+
+.month > .days > span {
+  border-radius: 4px;
+  border: 1px solid #fff;
+}
+
+.month > .days > span:not(.disabled) {
+  cursor: pointer;
+}
+
+.month > .days > span[aria-selected='true'] {
+  position: relative;
+  background-color: #bd8b13;
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.month > .days > span[aria-selected='true']::after {
+  content: '';
+  height: 30px;
+  position: absolute;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+}
+
+.month > .days > .selection-end::after {
+  left: -4px;
+  border-right: 4px solid #bd8b13;
+}
+
+.month:not(.selecting) > .days > .selection-start::after {
+  right: -4px;
+  border-left: 4px solid #bd8b13;
+}
+
+.month.negative > .days > .selection-start:not(:hover)::after {
+  left: -4px;
+  border-right: 4px solid #bd8b13;
+}
+
+.month.selecting:not(.negative) > .days > .selection-start:not(:hover)::after {
+  right: -4px;
+  border-left: 4px solid #bd8b13;
+}
+
+.month > .days > .selection-end.selection-start::after {
+  display: none;
+}
+
+.month > .days > span[aria-selected='false']:not(.disabled) {
+  color: #4e4c4a;
+}
+
+.month > .days > span[aria-selected='false']:not(.disabled):hover {
+  background-color: #e5d1a1;
+}
+
+.month > .days > span.in-span {
+  background-color: #e5d1a1;
+}

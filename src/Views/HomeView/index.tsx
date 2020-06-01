@@ -30,8 +30,8 @@ export default class HomeView extends React.Component<HomeViewProps, HomeViewSta
           destination: undefined,
         },
         dates: {
-          outbound: new Date(),
-          inbound: new Date(),
+          start: undefined,
+          end: undefined,
         },
       },
     };

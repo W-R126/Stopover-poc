@@ -1,0 +1,27 @@
+.calendar {
+  display: flex;
+}
+
+.calendar > .month {
+  width: calc(50% - 8px);
+}
+
+@media screen and (min-width: 631px) {
+  html:not([dir='rtl']) .calendar > .month:first-child {
+    margin-right: 16px;
+  }
+
+  html[dir='rtl'] .calendar > .month:first-child {
+    margin-left: 16px;
+  }
+}
+
+@media screen and (max-width: 630px) {
+  .calendar > .month {
+    width: 100%;
+  }
+
+  .calendar > .month:last-child {
+    display: none;
+  }
+}
