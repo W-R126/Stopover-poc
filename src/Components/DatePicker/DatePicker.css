@@ -32,7 +32,6 @@
   width: 700px;
   position: absolute;
   top: 91px;
-  right: 0;
   background-color: #fff;
   border: 1px solid #fff;
   box-shadow:
@@ -41,6 +40,14 @@
   border-radius: 4px;
   padding: 11px 16px;
   z-index: 1;
+}
+
+html:not([dir='rtl']) .date-picker > .calendar-wrapper {
+  right: 0;
+}
+
+html[dir='rtl'] .date-picker > .calendar-wrapper {
+  left: 0;
 }
 
 .date-picker[aria-expanded='false'] > .calendar-wrapper {
