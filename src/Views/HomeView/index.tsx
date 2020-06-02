@@ -24,7 +24,7 @@ export default class HomeView extends React.Component<HomeViewProps, HomeViewSta
           children: 0,
           infants: 0,
         },
-        cabinType: 'economy',
+        cabinType: 'all',
         originDestination: {
           origin: undefined,
           destination: undefined,
@@ -33,6 +33,7 @@ export default class HomeView extends React.Component<HomeViewProps, HomeViewSta
           start: undefined,
           end: undefined,
         },
+        bookWithMiles: false,
       },
     };
 

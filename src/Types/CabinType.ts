@@ -1,1 +1,1 @@
-export type CabinType = 'economy' | 'business' | 'first';
+export type CabinType = 'all' | 'economy' | 'business' | 'first' | 'residence';

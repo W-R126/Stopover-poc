@@ -42,16 +42,16 @@
   z-index: 1;
 }
 
+.date-picker[aria-expanded='false'] > .calendar-wrapper {
+  display: none;
+}
+
 html:not([dir='rtl']) .date-picker > .calendar-wrapper {
   right: 0;
 }
 
 html[dir='rtl'] .date-picker > .calendar-wrapper {
   left: 0;
-}
-
-.date-picker[aria-expanded='false'] > .calendar-wrapper {
-  display: none;
 }
 
 @media screen and (max-width: 900px) {

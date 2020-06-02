@@ -104,7 +104,7 @@ export default class OriginDestinationPicker extends React.Component<
             onChange={this.onDestinationChange}
             className="destination"
             id="trip-destination"
-            placeholder="Where are you header?"
+            placeholder="Where are you headed?"
             value={data.destination}
           />
         </div>

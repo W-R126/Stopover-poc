@@ -22,7 +22,6 @@
 .ui-checkbox-input + .ui-checkbox-label > span {
   display: inline-block;
   vertical-align: bottom;
-  margin-right: 8px;
   width: 20px;
   height: 20px;
   background-color: #fff;
@@ -42,6 +41,14 @@
     0 0 0 4px #6997d3;
 }
 
+html[dir='rtl'] .ui-checkbox-input + .ui-checkbox-label > span {
+  margin-left: 8px;
+}
+
+html:not([dir='rtl']) .ui-checkbox-input + .ui-checkbox-label > span {
+  margin-right: 8px;
+}
+
 .ui-checkbox-input + .ui-checkbox-label > span::before {
   font-family: 'Icons', Arial, Helvetica, sans-serif;
   content: '\f00c';
@@ -50,7 +57,11 @@
   vertical-align: top;
 }
 
-.ui-checkbox-input:not(:disabled) + .ui-checkbox-label:hover > span,
+.ui-checkbox-input:not(:disabled) + .ui-checkbox-label:hover > span {
+  background-color: #959492;
+  border-color: #959492;
+}
+
 .ui-checkbox-input:not(:disabled):checked + .ui-checkbox-label > span {
   background-color: #bd8b13;
   border-color: #bd8b13;

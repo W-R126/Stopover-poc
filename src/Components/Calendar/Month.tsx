@@ -7,6 +7,7 @@ interface MonthProps {
   month: Date;
   locale: string;
   span: boolean;
+  selecting: boolean;
   onSelectionStart: (start: Date) => void;
   onSelectionEnd: (end: Date) => void;
   start?: Date;
@@ -25,8 +26,6 @@ export default class Month extends React.Component<MonthProps, MonthState> {
     locale: 'en-US',
     span: true,
   };
-
-  static selecting = false;
 
   private readonly weekdays: string[];
 
@@ -68,14 +67,16 @@ export default class Month extends React.Component<MonthProps, MonthState> {
   }
 
   private onSelectionStart(start: Date): void {
-    const { onSelectionStart, onSelectionEnd, span } = this.props;
+    const {
+      onSelectionStart,
+      onSelectionEnd,
+      span,
+    } = this.props;
 
     onSelectionStart(start);
     this.setState({ hoveredDay: undefined });
 
-    if (span) {
-      Month.selecting = true;
-    } else {
+    if (!span) {
       onSelectionEnd(start);
     }
   }
@@ -85,12 +86,12 @@ export default class Month extends React.Component<MonthProps, MonthState> {
 
     onSelectionEnd(end);
     this.setState({ hoveredDay: undefined });
-
-    Month.selecting = false;
   }
 
   private onMouseOverDay(hoveredDay?: Date): void {
-    if (!Month.selecting) {
+    const { selecting } = this.props;
+
+    if (!selecting) {
       return;
     }
 
@@ -130,6 +131,7 @@ export default class Month extends React.Component<MonthProps, MonthState> {
       locale,
       start,
       span,
+      selecting,
     } = this.props;
 
     let { end } = this.props;
@@ -142,7 +144,7 @@ export default class Month extends React.Component<MonthProps, MonthState> {
     const negative = (hoveredDay && start && hoveredDay < start);
 
     return (
-      <div className={`month${Month.selecting ? ' selecting' : ''}${negative ? ' negative' : ''}`}>
+      <div className={`month${selecting ? ' selecting' : ''}${negative ? ' negative' : ''}`}>
         <span className="title">
           {`${month.toLocaleDateString(locale, { month: 'long' })} ${month.getFullYear()}`}
         </span>
@@ -159,6 +161,13 @@ export default class Month extends React.Component<MonthProps, MonthState> {
 
             if (day === undefined || day < this.today) {
               className.push('disabled');
+            } else if (selecting && day && hoveredDay && start) {
+              if (
+                (hoveredDay < start && day > hoveredDay && day < start)
+                || (hoveredDay > start && day < hoveredDay && day > start)
+              ) {
+                className.push('in-span');
+              }
             }
 
             if (day && start && end && day > start && day < end) {
@@ -171,15 +180,6 @@ export default class Month extends React.Component<MonthProps, MonthState> {
 
             if (day && end && day.valueOf() === end.valueOf()) {
               className.push('selection-end');
-            }
-
-            if (Month.selecting && day && hoveredDay && start) {
-              if (
-                (hoveredDay < start && day > hoveredDay && day < start)
-                || (hoveredDay > start && day < hoveredDay && day > start)
-              ) {
-                className.push('in-span');
-              }
             }
 
             return (
@@ -196,7 +196,7 @@ export default class Month extends React.Component<MonthProps, MonthState> {
                     return;
                   }
 
-                  if (Month.selecting) {
+                  if (selecting) {
                     this.onSelectionEnd(day);
                   } else {
                     this.onSelectionStart(day);

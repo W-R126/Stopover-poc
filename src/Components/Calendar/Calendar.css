@@ -1,28 +1,61 @@
 .calendar {
   display: flex;
   direction: ltr;
+  align-items: flex-start;
+  position: relative;
+}
+
+.calendar > button {
+  border: 0;
+  background-color: transparent;
+  outline: 0;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 138px;
+  transition: opacity 300ms;
+}
+
+.calendar > button:disabled {
+  opacity: 0.5;
+}
+
+.calendar > button > img {
+  vertical-align: top;
+  height: 32px;
+  width: 32px;
+}
+
+.calendar > .navigate-left > img {
+  transform: rotateZ(-180deg);
 }
 
 .calendar > .month {
   width: calc(50% - 8px);
-}
-
-@media screen and (min-width: 631px) {
-  html:not([dir='rtl']) .calendar > .month:first-child {
-    margin-right: 16px;
-  }
-
-  html[dir='rtl'] .calendar > .month:first-child {
-    margin-left: 16px;
-  }
+  margin: 0 8px;
 }
 
 @media screen and (max-width: 630px) {
   .calendar > .month {
     width: 100%;
   }
+}
 
-  .calendar > .month:last-child {
-    display: none;
+@media screen and (max-width: 480px) {
+  .calendar > button {
+    position: absolute;
+    top: 0;
+    margin: 0;
+  }
+
+  .calendar > .navigate-left {
+    left: 0;
+  }
+
+  .calendar > .navigate-right {
+    right: 0;
+  }
+
+  .calendar > .month {
+    margin-top: 6px;
   }
 }

@@ -11,6 +11,7 @@ import TripTypePicker from '../TripTypePicker';
 import Select from '../UI/Select';
 import Option from '../UI/Select/Option';
 import { CalendarData } from '../Calendar';
+import Checkbox from '../UI/Checkbox';
 
 export interface TripSearchData {
   tripType: TripType;
@@ -18,6 +19,7 @@ export interface TripSearchData {
   cabinType: CabinType;
   originDestination: OriginDestinationPickerData;
   dates: CalendarData;
+  bookWithMiles: boolean;
 }
 
 interface TripSearchProps {
@@ -62,6 +64,10 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
     this.onFieldChange('dates', dates);
   }
 
+  private onBookWithMilesChange(bookWithMiles: boolean): void {
+    this.onFieldChange('bookWithMiles', bookWithMiles);
+  }
+
   private onFieldChange(fieldName: string, value: any): void {
     const { data, onChange } = this.props;
 
@@ -97,9 +103,11 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
             value={data.cabinType}
             onChange={this.onCabinTypeChange}
           >
+            <Option value="all">All cabins</Option>
             <Option value="economy">Economy</Option>
             <Option value="business">Business</Option>
             <Option value="first">First Class</Option>
+            <Option value="residence">Residence</Option>
           </Select>
         </div>
         <div className="passengers">
@@ -109,6 +117,23 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
             data={data.passengers}
             onChange={this.onPassengersChange}
           />
+        </div>
+        <div className="search-flight">
+          <div className="book-with-miles">
+            <Checkbox
+              checked={data.bookWithMiles}
+              id="book-with-miles"
+              onChange={(e): void => this.onBookWithMilesChange(e.target.checked)}
+            >
+              Book with miles
+            </Checkbox>
+          </div>
+          <button
+            type="button"
+            onClick={(): void => console.log(data)}
+          >
+            Search flight
+          </button>
         </div>
       </div>
     );

@@ -22,6 +22,8 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
 
   private readonly selfRef = React.createRef<HTMLDivElement>();
 
+  private readonly calendarRef = React.createRef<Calendar>();
+
   constructor(props: DatePickerProps) {
     super(props);
 
@@ -46,6 +48,10 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
       return;
     }
 
+    if (this.calendarRef.current && this.calendarRef.current.state.selecting) {
+      this.calendarRef.current.abortSelection();
+    }
+
     this.collapse();
   }
 
@@ -67,6 +73,14 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
     const { expanded } = this.state;
 
     if (!expanded) {
+      const { data } = this.props;
+
+      if (this.calendarRef.current && data.start) {
+        this.calendarRef.current.goToMonth(
+          new Date(data.start.getFullYear(), data.start.getMonth(), 1),
+        );
+      }
+
       this.setState({ expanded: true });
     }
   }
@@ -95,6 +109,7 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
         aria-expanded={expanded}
         role="button"
         onClick={this.expand}
+        onFocus={this.expand}
       >
         <div className="outbound">
           <label htmlFor="outbound">Outbound</label>
@@ -121,7 +136,13 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
         )}
 
         <div className="calendar-wrapper">
-          <Calendar locale={locale} span={span} data={data} onChange={onChange} />
+          <Calendar
+            ref={this.calendarRef}
+            locale={locale}
+            span={span}
+            data={data}
+            onChange={onChange}
+          />
         </div>
       </div>
     );

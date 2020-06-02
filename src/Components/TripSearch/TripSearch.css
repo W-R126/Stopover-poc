@@ -39,6 +39,45 @@
   display: block;
 }
 
+.trip-search > .search-flight {
+  width: 360px;
+  display: flex;
+  height: 50px;
+  align-items: center;
+  align-self: flex-end;
+  justify-content: space-between;
+}
+
+.trip-search > .search-flight > button {
+  cursor: pointer;
+  background-color: #bd8b13;
+  border: 2px solid #bd8b13;
+  color: #fff;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  border-radius: 4px;
+  line-height: 1.5;
+  height: 50px;
+  padding: 0 16px;
+}
+
+.trip-search > .search-flight > .book-with-miles > label {
+  margin-bottom: 0;
+}
+
+.trip-search > .search-flight > button:hover {
+  background-color: #976f0f;
+  border-color: #976f0f;
+}
+
+.trip-search > .search-flight > button:focus {
+  outline: 0;
+  border-color: #fff;
+  box-shadow: 0 0 0 2px #6997d3;
+}
+
 @media screen and (min-width: 651px) {
   html:not([dir='rtl']) .trip-search > .cabin-type > .ui-select[aria-expanded='false'] > .wrapper,
   html[dir='rtl'] .trip-search > .passengers > .passenger-picker[aria-expanded='false'] > .wrapper {
@@ -60,12 +99,18 @@
 }
 
 @media screen and (min-width: 901px) {
-  html:not([dir='rtl']) .trip-search > .date-picker {
+  html:not([dir='rtl']) .trip-search > .date-picker,
+  html:not([dir='rtl']) .trip-search > .search-flight {
     margin-left: 16px;
   }
 
-  html[dir='rtl'] .trip-search > .date-picker {
+  html[dir='rtl'] .trip-search > .date-picker,
+  html[dir='rtl'] .trip-search > .search-flight {
     margin-right: 16px;
+  }
+
+  .trip-search > .search-flight > button {
+    width: 180px;
   }
 }
 
@@ -84,6 +129,15 @@
   }
 
   .trip-search > .passengers {
+    width: 50%;
+  }
+
+  .trip-search > .search-flight {
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .trip-search > .search-flight > button {
     width: 50%;
   }
 }
@@ -105,5 +159,21 @@
   .trip-search > .passengers {
     margin-top: 8px;
     width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .trip-search > .search-flight {
+    display: block;
+    height: unset;
+  }
+
+  .trip-search > .search-flight > .book-with-miles,
+  .trip-search > .search-flight > button {
+    width: 100%;
+  }
+
+  .trip-search > .search-flight > button {
+    margin-top: 16px;
   }
 }
