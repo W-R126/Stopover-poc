@@ -2,7 +2,7 @@
 # where we run the built app.
 
 # Node.js build stage. Builds and compiles the app.
-FROM tiangolo/node-frontend as build-stage
+FROM tiangolo/node-frontend:10 as build-stage
 
 # Copy package json
 COPY package.json package-lock.json /app/
