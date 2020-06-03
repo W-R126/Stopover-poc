@@ -41,26 +41,26 @@
 }
 
 @media screen and (min-width: 481px) {
-  html:not([dir='rtl']) .origin-destination-picker > .origin > .airport-search:not(.focused) > .wrapper,
-  html[dir='rtl'] .origin-destination-picker > .destination > .airport-search:not(.focused) > .wrapper {
+  html:not([dir='rtl']) .origin-destination-picker > .origin > .airport-search:not(.focused) > .modal-wrapper > .wrapper,
+  html[dir='rtl'] .origin-destination-picker > .destination > .airport-search:not(.focused) > .modal-wrapper > .wrapper {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-right: 1px solid transparent;
   }
 
-  html:not([dir='rtl']) .origin-destination-picker > .origin > .airport-search > .wrapper > input,
-  html[dir='rtl'] .origin-destination-picker > .destination > .airport-search > .wrapper > input {
+  html:not([dir='rtl']) .origin-destination-picker > .origin > .airport-search > .modal-wrapper > .wrapper > input,
+  html[dir='rtl'] .origin-destination-picker > .destination > .airport-search > .modal-wrapper > .wrapper > input {
     padding-right: 30px;
   }
 
-  html[dir='rtl'] .origin-destination-picker > .origin > .airport-search:not(.focused) > .wrapper,
-  html:not([dir='rtl']) .origin-destination-picker > .destination > .airport-search:not(.focused) > .wrapper {
+  html[dir='rtl'] .origin-destination-picker > .origin > .airport-search:not(.focused) > .modal-wrapper > .wrapper,
+  html:not([dir='rtl']) .origin-destination-picker > .destination > .airport-search:not(.focused) > .modal-wrapper > .wrapper {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
 
-  html[dir='rtl'] .origin-destination-picker > .origin > .airport-search > .wrapper > input,
-  html:not([dir='rtl']) .origin-destination-picker > .destination > .airport-search > .wrapper > input {
+  html[dir='rtl'] .origin-destination-picker > .origin > .airport-search > .modal-wrapper > .wrapper > input,
+  html:not([dir='rtl']) .origin-destination-picker > .destination > .airport-search > .modal-wrapper > .wrapper > input {
     padding-left: 30px;
   }
 

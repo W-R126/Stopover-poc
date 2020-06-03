@@ -18,4 +18,5 @@
 .home-view > .content-wrapper > .trip-search {
   max-width: 1240px;
   width: 100%;
+  margin-bottom: 24px;
 }

@@ -168,6 +168,7 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
               className="btn-primary"
               type="button"
               onClick={this.collapse}
+              disabled={!(data.end && data.start)}
             >
               Done
             </button>

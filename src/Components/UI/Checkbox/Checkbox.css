@@ -61,7 +61,7 @@ html:not([dir='rtl']) .ui-checkbox-input + .ui-checkbox-label > span {
 }
 
 .ui-checkbox-input:not(:disabled) + .ui-checkbox-label:hover > span {
-  background-color: #d7b971;
+  border-color: #d7b971;
 }
 
 .ui-checkbox-input:not(:disabled):checked + .ui-checkbox-label > span {

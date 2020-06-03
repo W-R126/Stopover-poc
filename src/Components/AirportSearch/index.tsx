@@ -274,57 +274,64 @@ export default class AirportSearch extends React.Component<
         style={style}
         aria-expanded={expanded}
       >
-        <div className="wrapper">
-          <input
-            type="text"
-            id={id}
-            placeholder={placeholder}
-            value={query}
-            onFocus={this.onFocus}
-            onChange={this.onQueryChange}
-            onKeyDown={this.onKeyDown}
-            onBlur={this.onBlur}
-          />
-          <div className="result" ref={this.resultRef}>
-            {filteredAirports
-              .slice(0, showCount)
-              .map((airport, idx) => (
-                <div
-                  className={`airport${hoveredIndex === idx ? ' hovered' : ''}`}
-                  key={`airport-${airport.code}`}
-                  role="option"
-                  aria-selected={value === airport}
-                  onMouseMove={(): void => {
-                    if (hoveredIndex !== idx) {
-                      this.setState({ hoveredIndex: idx });
-                    }
-                  }}
-                  onMouseDown={(e): void => {
-                    e.stopPropagation();
-                    e.preventDefault();
-
-                    this.select(airport);
-                    this.collapse();
-                  }}
-                >
-                  <div className="row">
-                    <span className="city-name">
-                      {airport.cityName}
-                    </span>
-                    <span className="airport-code">
-                      {airport.code}
-                    </span>
-                  </div>
-                  <div className="row">
-                    <span className="airport-name">
-                      {airport.name}
-                    </span>
-                    <span className="country-name">
-                      {airport.countryName}
-                    </span>
-                  </div>
+        <div className="modal-wrapper">
+          <div className="wrapper">
+            <input
+              type="text"
+              id={id}
+              placeholder={placeholder}
+              value={query}
+              onFocus={this.onFocus}
+              onChange={this.onQueryChange}
+              onKeyDown={this.onKeyDown}
+              onBlur={this.onBlur}
+            />
+            <div className="result" ref={this.resultRef}>
+              {filteredAirports.length === 0 && (
+                <div className="no-result">
+                  No result
                 </div>
-              ))}
+              )}
+              {filteredAirports
+                .slice(0, showCount)
+                .map((airport, idx) => (
+                  <div
+                    className={`airport${hoveredIndex === idx ? ' hovered' : ''}`}
+                    key={`airport-${airport.code}`}
+                    role="option"
+                    aria-selected={value === airport}
+                    onMouseMove={(): void => {
+                      if (hoveredIndex !== idx) {
+                        this.setState({ hoveredIndex: idx });
+                      }
+                    }}
+                    onMouseDown={(e): void => {
+                      e.stopPropagation();
+                      e.preventDefault();
+
+                      this.select(airport);
+                      this.collapse();
+                    }}
+                  >
+                    <div className="row">
+                      <span className="city-name">
+                        {airport.cityName}
+                      </span>
+                      <span className="airport-code">
+                        {airport.code}
+                      </span>
+                    </div>
+                    <div className="row">
+                      <span className="airport-name">
+                        {airport.name}
+                      </span>
+                      <span className="country-name">
+                        {airport.countryName}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
       </div>

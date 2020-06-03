@@ -82,6 +82,12 @@ label {
   box-shadow: 0 0 0 2px #6997d3;
 }
 
+.btn-primary:disabled {
+  background-color: #dcdbdb;
+  color: #4e4c4a;
+  border-color: #dcdbdb;
+}
+
 /* Content wrapper. */
 .content-wrapper {
   max-width: 1440px;
