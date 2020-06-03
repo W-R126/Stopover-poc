@@ -28,7 +28,11 @@
   z-index: 1 !important;
 }
 
-.date-picker > .calendar-wrapper {
+.date-picker[aria-expanded='false'] > .modal-wrapper {
+  display: none;
+}
+
+.date-picker > .modal-wrapper > .calendar-wrapper {
   width: 700px;
   position: absolute;
   top: 91px;
@@ -42,20 +46,21 @@
   z-index: 1;
 }
 
-.date-picker[aria-expanded='false'] > .calendar-wrapper {
-  display: none;
-}
-
-html:not([dir='rtl']) .date-picker > .calendar-wrapper {
+html:not([dir='rtl']) .date-picker > .modal-wrapper > .calendar-wrapper {
   right: 0;
 }
 
-html[dir='rtl'] .date-picker > .calendar-wrapper {
+html[dir='rtl'] .date-picker > .modal-wrapper > .calendar-wrapper {
   left: 0;
 }
 
+.date-picker > .modal-wrapper > .calendar-wrapper > button {
+  width: 100%;
+  margin-top: 24px;
+}
+
 @media screen and (max-width: 900px) {
-  .date-picker > .calendar-wrapper {
+  .date-picker > .modal-wrapper > .calendar-wrapper {
     width: 100%;
   }
 }
@@ -81,6 +86,10 @@ html[dir='rtl'] .date-picker > .calendar-wrapper {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
+
+  .date-picker > .modal-wrapper > .calendar-wrapper > button {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -91,5 +100,25 @@ html[dir='rtl'] .date-picker > .calendar-wrapper {
 
   .date-picker > .inbound {
     margin-top: 8px;
+  }
+
+  .date-picker > .modal-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  .date-picker > .modal-wrapper > .calendar-wrapper {
+    position: static;
+    box-shadow: none;
+    border-radius: 8px;
+    padding: 16px;
   }
 }

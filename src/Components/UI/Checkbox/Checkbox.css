@@ -4,6 +4,9 @@
   margin: 0;
   padding: 0;
   line-height: 0;
+  opacity: 0;
+  position: absolute;
+  cursor: pointer;
 }
 
 .ui-checkbox-input + .ui-checkbox-label {
@@ -58,8 +61,7 @@ html:not([dir='rtl']) .ui-checkbox-input + .ui-checkbox-label > span {
 }
 
 .ui-checkbox-input:not(:disabled) + .ui-checkbox-label:hover > span {
-  background-color: #959492;
-  border-color: #959492;
+  background-color: #d7b971;
 }
 
 .ui-checkbox-input:not(:disabled):checked + .ui-checkbox-label > span {

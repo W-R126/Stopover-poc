@@ -8,11 +8,6 @@
   user-select: none;
 }
 
-.ui-select:focus {
-  position: relative;
-  z-index: 1;
-}
-
 .ui-select > .wrapper {
   border-radius: 4px;
   border: 1px solid #4e4c4a;
@@ -57,45 +52,64 @@ html[dir='rtl'] .ui-select > .wrapper > .selected::after {
   margin-right: 16px;
 }
 
-.ui-select > .wrapper > .options {
+.ui-select > .wrapper > .modal-wrapper > .options {
   max-height: 400px;
   overflow: auto;
 }
 
-.ui-select[aria-expanded='false'] > .wrapper > .options {
-  visibility: hidden; /* Fixes FF tab issue. */
+.ui-select[aria-expanded='false'] > .wrapper > .modal-wrapper {
+  display: none;
 }
 
-.ui-select > .wrapper > .options > .option {
+.ui-select > .wrapper > .modal-wrapper > .options > .option {
   padding: 11px 16px;
 }
 
-.ui-select > .wrapper > .options > .option:hover {
+.ui-select > .wrapper > .modal-wrapper > .options > .option:hover {
   background-color: #f2f2f2;
 }
 
-.ui-select > .wrapper > .options > .option[aria-selected='true'] {
+.ui-select > .wrapper > .modal-wrapper > .options > .option[aria-selected='true'] {
   background-color: #6997d3;
   color: #fff;
 }
 
-.ui-select > .wrapper > .options > .option:not(:first-child) {
+.ui-select > .wrapper > .modal-wrapper > .options > .option:not(:first-child) {
   border-top: 1px solid #dcdbdb;
 }
 
-/* @media screen and (max-width: 480px) {
-  .ui-select > .wrapper > .options {
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 8px;
+@media screen and (min-width: 481px) {
+  .ui-select:focus {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .ui-select > .wrapper > .modal-wrapper {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    max-height: 100%;
-    height: 100%;
     z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.7);
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    cursor: default;
   }
-} */
+
+  .ui-select > .wrapper > .modal-wrapper > .options {
+    background-color: #fff;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #fff;
+    cursor: pointer;
+    max-height: calc(100vh - 32px);
+  }
+
+  .ui-select > .wrapper > .modal-wrapper > .options > .option {
+    padding: 16px;
+  }
+}

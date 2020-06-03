@@ -103,7 +103,7 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
             value={data.cabinType}
             onChange={this.onCabinTypeChange}
           >
-            <Option value="all">All cabins</Option>
+            <Option value="all">All Cabins</Option>
             <Option value="economy">Economy</Option>
             <Option value="business">Business</Option>
             <Option value="first">First Class</Option>
@@ -130,6 +130,7 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
           </div>
           <button
             type="button"
+            className="btn-primary"
             onClick={(): void => console.log(data)}
           >
             Search flight

@@ -235,12 +235,12 @@ export default class PassengerPicker extends React.Component<
         tabIndex={tabIndex}
         aria-expanded={expanded}
       >
-        <div className="wrapper">
-          <div
-            className="header"
-            role="button"
-            onClick={this.toggle}
-          >
+        <div
+          className="wrapper"
+          role="button"
+          onClick={this.toggle}
+        >
+          <div className="header">
             <span className="passengers-detailed" ref={this.passengersDetailedRef}>
               {passengersDetailed}
             </span>
@@ -249,34 +249,51 @@ export default class PassengerPicker extends React.Component<
             </span>
           </div>
 
-          <div className="pickers">
-            <AmountPicker
-              icon={adultsIcon}
-              title="Adults"
-              description="Age 12+"
-              max={maxPassengers - data.children}
-              min={1}
-              onChange={this.onAdultsChange}
-              value={data.adults}
-            />
-            <AmountPicker
-              icon={childrenIcon}
-              title="Children"
-              description="Age 2-11"
-              max={maxPassengers - data.adults}
-              min={0}
-              onChange={this.onChildrenChange}
-              value={data.children}
-            />
-            <AmountPicker
-              icon={infantsIcon}
-              title="Infants"
-              description="Under 2"
-              max={data.adults}
-              min={0}
-              onChange={this.onInfantsChange}
-              value={data.infants}
-            />
+          <div className="modal-wrapper">
+            <div
+              className="pickers"
+              role="button"
+              onClick={(e): void => {
+                // Don't collapse.
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              <AmountPicker
+                icon={adultsIcon}
+                title="Adults"
+                description="Age 12+"
+                max={maxPassengers - data.children}
+                min={1}
+                onChange={this.onAdultsChange}
+                value={data.adults}
+              />
+              <AmountPicker
+                icon={childrenIcon}
+                title="Children"
+                description="Age 2-11"
+                max={maxPassengers - data.adults}
+                min={0}
+                onChange={this.onChildrenChange}
+                value={data.children}
+              />
+              <AmountPicker
+                icon={infantsIcon}
+                title="Infants"
+                description="Under 2"
+                max={data.adults}
+                min={0}
+                onChange={this.onInfantsChange}
+                value={data.infants}
+              />
+              <button
+                type="button"
+                className="btn-done btn-primary"
+                onClick={this.toggle}
+              >
+                Done
+              </button>
+            </div>
           </div>
         </div>
       </div>

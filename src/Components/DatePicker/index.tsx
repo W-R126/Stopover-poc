@@ -32,24 +32,28 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
     };
 
     this.expand = this.expand.bind(this);
+    this.collapse = this.collapse.bind(this);
     this.onClickOutside = this.onClickOutside.bind(this);
+    this.onFocusIn = this.onFocusIn.bind(this);
   }
 
   componentDidMount(): void {
     document.addEventListener('mousedown', this.onClickOutside);
+    document.addEventListener('focusin', this.onFocusIn);
   }
 
   componentWillUnmount(): void {
     document.removeEventListener('mousedown', this.onClickOutside);
+    document.removeEventListener('focusin', this.onFocusIn);
+  }
+
+  private onFocusIn(e: any): void {
+    this.onClickOutside(e);
   }
 
   private onClickOutside(e: any): void {
     if (!this.selfRef.current || this.selfRef.current.contains(e.target)) {
       return;
-    }
-
-    if (this.calendarRef.current && this.calendarRef.current.state.selecting) {
-      this.calendarRef.current.abortSelection();
     }
 
     this.collapse();
@@ -87,6 +91,10 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
 
   private collapse(): void {
     const { expanded } = this.state;
+
+    if (this.calendarRef.current && this.calendarRef.current.state.selecting) {
+      this.calendarRef.current.abortSelection();
+    }
 
     if (expanded) {
       this.setState({ expanded: false });
@@ -135,14 +143,35 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
           </div>
         )}
 
-        <div className="calendar-wrapper">
-          <Calendar
-            ref={this.calendarRef}
-            locale={locale}
-            span={span}
-            data={data}
-            onChange={onChange}
-          />
+        <div
+          className="modal-wrapper"
+          role="button"
+          onClick={this.collapse}
+        >
+          <div
+            className="calendar-wrapper"
+            role="button"
+            onClick={(e): void => {
+              // Don't collapse.
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
+            <Calendar
+              ref={this.calendarRef}
+              locale={locale}
+              span={span}
+              data={data}
+              onChange={onChange}
+            />
+            <button
+              className="btn-primary"
+              type="button"
+              onClick={this.collapse}
+            >
+              Done
+            </button>
+          </div>
         </div>
       </div>
     );

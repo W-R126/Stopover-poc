@@ -35,6 +35,7 @@ export default class OriginDestinationPicker extends React.Component<
     this.swapDirections = this.swapDirections.bind(this);
     this.onOriginChange = this.onOriginChange.bind(this);
     this.onDestinationChange = this.onDestinationChange.bind(this);
+    this.setAirportFromPosition = this.setAirportFromPosition.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -42,7 +43,11 @@ export default class OriginDestinationPicker extends React.Component<
 
     const airports = await airportService.getOriginAirports();
 
-    this.setState({ airports });
+    await new Promise((resolve) => this.setState({ airports }, resolve));
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(this.setAirportFromPosition);
+    }
   }
 
   private onOriginChange(origin?: AirportModel): void {
@@ -59,6 +64,29 @@ export default class OriginDestinationPicker extends React.Component<
     Object.assign(data, { [key]: value });
 
     onChange(data);
+  }
+
+  private setAirportFromPosition(position: Position): void {
+    const { longitude: long, latitude: lat } = position.coords;
+    const { airports } = this.state;
+
+    let origin = airports[0];
+    let currDistance = Math.abs(
+      (origin.coordinates.lat - lat) + (origin.coordinates.long - long),
+    );
+
+    airports.forEach((airport) => {
+      const distance = Math.abs(
+        (airport.coordinates.lat - lat) + (airport.coordinates.long - long),
+      );
+
+      if (distance < currDistance) {
+        currDistance = distance;
+        origin = airport;
+      }
+    });
+
+    this.onOriginChange(origin);
   }
 
   private swapDirections(): void {

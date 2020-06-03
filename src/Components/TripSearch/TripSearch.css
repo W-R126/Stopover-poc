@@ -48,34 +48,8 @@
   justify-content: space-between;
 }
 
-.trip-search > .search-flight > button {
-  cursor: pointer;
-  background-color: #bd8b13;
-  border: 2px solid #bd8b13;
-  color: #fff;
-  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-  border-radius: 4px;
-  line-height: 1.5;
-  height: 50px;
-  padding: 0 16px;
-}
-
 .trip-search > .search-flight > .book-with-miles > label {
   margin-bottom: 0;
-}
-
-.trip-search > .search-flight > button:hover {
-  background-color: #976f0f;
-  border-color: #976f0f;
-}
-
-.trip-search > .search-flight > button:focus {
-  outline: 0;
-  border-color: #fff;
-  box-shadow: 0 0 0 2px #6997d3;
 }
 
 @media screen and (min-width: 651px) {

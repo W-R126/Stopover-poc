@@ -175,6 +175,7 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
           className="navigate-left"
           onClick={this.navigateBack}
           disabled={minDate >= month1}
+          tabIndex={-1}
         >
           <img src={navigationArrow} alt="Nagivate left" />
         </button>
@@ -205,6 +206,7 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
           className="navigate-right"
           onClick={this.navigateForward}
           disabled={maxDate <= (displayTwoMonths ? month2 : month1)}
+          tabIndex={-1}
         >
           <img src={navigationArrow} alt="Nagivate right" />
         </button>

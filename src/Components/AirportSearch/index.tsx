@@ -106,7 +106,11 @@ export default class AirportSearch extends React.Component<
 
     this.expand();
 
-    this.setState({ query: e.target.value, hoveredIndex: 0 });
+    this.setState({
+      query: e.target.value,
+      hoveredIndex: 0,
+      showCountFactor: 1,
+    });
   }
 
   private onFocus(): void {

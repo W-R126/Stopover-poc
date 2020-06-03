@@ -133,21 +133,21 @@ export default class Select<T> extends React.Component<SelectProps<T>, SelectSta
           <div className="selected">
             {selected}
           </div>
-          <div
-            className="options"
-            id={`${id ?? ''}-options`}
-          >
-            {options.map((option) => (
-              <div
-                key={option.key ?? ''}
-                className="option"
-                role="option"
-                aria-selected={option === selected}
-                onClick={(): void => this.select(option.props.value)}
-              >
-                {option}
-              </div>
-            ))}
+
+          <div className="modal-wrapper">
+            <div className="options" id={`${id ?? ''}-options`}>
+              {options.map((option) => (
+                <div
+                  key={option.key ?? ''}
+                  className="option"
+                  role="option"
+                  aria-selected={option === selected}
+                  onClick={(): void => this.select(option.props.value)}
+                >
+                  {option}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
