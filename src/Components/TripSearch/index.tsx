@@ -2,8 +2,8 @@ import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import './TripSearch.css';
-import { TripType } from '../../Types/TripType';
-import { CabinType } from '../../Types/CabinType';
+import { TripType } from '../../Enums/TripType';
+import { CabinType } from '../../Enums/CabinType';
 import AirportService from '../../Services/AirportService';
 import PassengerPicker, { PassengerPickerData } from '../PassengerPicker';
 import OriginDestinationPicker, { OriginDestinationPickerData } from '../OriginDestinationPicker';
@@ -14,15 +14,7 @@ import Option from '../UI/Select/Option';
 import { CalendarData } from '../Calendar';
 import Checkbox from '../UI/Checkbox';
 import Utils from '../../Utils';
-
-export interface TripSearchData {
-  tripType: TripType;
-  passengers: PassengerPickerData;
-  cabinType: CabinType;
-  originDestination: OriginDestinationPickerData;
-  dates: CalendarData;
-  bookWithMiles: boolean;
-}
+import { TripSearchData } from './TripSearchData';
 
 interface TripSearchProps extends RouteComponentProps {
   data: TripSearchData;
@@ -84,39 +76,18 @@ class TripSearch extends React.Component<TripSearchProps, {}> {
 
     // TODO: Validation.
 
-    history.push(TripSearch.getBookingUrl(data));
-  }
-
-  static getBookingUrl(data: TripSearchData): string {
-    let result = '/booking';
-
-    result += `/${data.originDestination.origin?.code ?? ''}`;
-    result += `/${data.originDestination.destination?.code ?? ''}`;
-    result += `/${data.cabinType}`;
-    result += `/${data.passengers.adults}`;
-    result += `/${data.passengers.children}`;
-    result += `/${data.passengers.infants}`;
-    result += `/${data.tripType}`;
-
-    if (data.dates.start) {
-      result += `/${Utils.getDateString(data.dates.start)}`;
-    } else {
-      result += '/';
-    }
-
-    if (data.tripType === 'return') {
-      if (data.dates.end) {
-        result += `/${Utils.getDateString(data.dates.end)}`;
-      } else {
-        result += '/';
-      }
-    }
-
-    return result;
+    history.push(Utils.getBookingUrl(data));
   }
 
   render(): JSX.Element {
     const { data, airportService, locale } = this.props;
+    const cabinTypeLocale: { [key: string]: string } = {
+      all: 'All Cabins',
+      economy: 'Economy',
+      business: 'Business',
+      first: 'First Class',
+      residence: 'Residence',
+    };
 
     return (
       <div className="trip-search">
@@ -133,7 +104,7 @@ class TripSearch extends React.Component<TripSearchProps, {}> {
           locale={locale}
           data={data.dates}
           onChange={this.onDatesChange}
-          span={data.tripType === 'return'}
+          span={data.tripType === TripType.return}
         />
         <div className="cabin-type">
           <label htmlFor="cabin-type">Cabin</label>
@@ -142,11 +113,11 @@ class TripSearch extends React.Component<TripSearchProps, {}> {
             value={data.cabinType}
             onChange={this.onCabinTypeChange}
           >
-            <Option value="all">All Cabins</Option>
-            <Option value="economy">Economy</Option>
-            <Option value="business">Business</Option>
-            <Option value="first">First Class</Option>
-            <Option value="residence">Residence</Option>
+            {Object.keys(CabinType).map((cabinType, idx) => (
+              <Option value={(CabinType as any)[cabinType]} key={`cabin-type-option-${idx}`}>
+                {cabinTypeLocale[cabinType]}
+              </Option>
+            ))}
           </Select>
         </div>
         <div className="passengers">

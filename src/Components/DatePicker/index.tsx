@@ -67,7 +67,7 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
     const { locale } = this.props;
 
     const day = date.getDate();
-    const month = date.toLocaleDateString(locale, { month: 'short' });
+    const month = date.toLocaleDateString(locale, { month: 'short' }).substr(0, 3);
     const year = date.getFullYear();
 
     return `${day < 10 ? `0${day}` : day}/${month}/${year}`;

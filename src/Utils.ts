@@ -1,3 +1,7 @@
+import { TripSearchData } from './Components/TripSearch/TripSearchData';
+import { TripType } from './Enums/TripType';
+import { CabinType } from './Enums/CabinType';
+
 export default class Utils {
   static getWeekdays(locale: string): string[] {
     const date = new Date(2020, 4, 24);
@@ -35,5 +39,33 @@ export default class Utils {
     }
 
     return 0;
+  }
+
+  static getBookingUrl(data: TripSearchData): string {
+    let result = '/booking';
+
+    result += `/${data.originDestination.origin?.code ?? ''}`;
+    result += `/${data.originDestination.destination?.code ?? ''}`;
+    result += `/${CabinType[data.cabinType]}`;
+    result += `/${data.passengers.adults}`;
+    result += `/${data.passengers.children}`;
+    result += `/${data.passengers.infants}`;
+    result += `/${TripType[data.tripType]}`;
+
+    if (data.dates.start) {
+      result += `/${Utils.getDateString(data.dates.start)}`;
+    } else {
+      result += '/';
+    }
+
+    if (data.tripType === TripType.return) {
+      if (data.dates.end) {
+        result += `/${Utils.getDateString(data.dates.end)}`;
+      } else if (data.dates.start) {
+        result += `/${Utils.getDateString(data.dates.start)}`;
+      }
+    }
+
+    return result;
   }
 }

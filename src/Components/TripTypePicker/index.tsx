@@ -1,5 +1,5 @@
 import React from 'react';
-import { TripType } from '../../Types/TripType';
+import { TripType } from '../../Enums/TripType';
 
 import './TripTypePicker.css';
 import Radio from '../UI/Radio';
@@ -20,7 +20,7 @@ export default class TripTypePicker extends React.Component<TripTypePickerProps,
     const { onChange } = this.props;
 
     if (e.target.checked) {
-      onChange(e.target.value as TripType);
+      onChange((TripType as any)[e.target.value]);
     }
   }
 
@@ -33,8 +33,8 @@ export default class TripTypePicker extends React.Component<TripTypePickerProps,
           <Radio
             id="trip-type-return"
             name="trip-type"
-            checked={value === 'return'}
-            value="return"
+            checked={value === TripType.return}
+            value={TripType.return}
             onChange={this.onChange}
           >
             Return
@@ -44,8 +44,8 @@ export default class TripTypePicker extends React.Component<TripTypePickerProps,
           <Radio
             id="trip-type-one-way"
             name="trip-type"
-            checked={value === 'oneWay'}
-            value="oneWay"
+            checked={value === TripType.oneway}
+            value={TripType.oneway}
             onChange={this.onChange}
           >
             One way
@@ -55,8 +55,8 @@ export default class TripTypePicker extends React.Component<TripTypePickerProps,
           <Radio
             id="trip-type-multi-city"
             name="trip-type"
-            checked={value === 'multiCity'}
-            value="multiCity"
+            checked={value === TripType.multicity}
+            value={TripType.multicity}
             onChange={this.onChange}
           >
             Multi city

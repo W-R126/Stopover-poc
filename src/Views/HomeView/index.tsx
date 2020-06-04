@@ -1,11 +1,15 @@
 import React from 'react';
 
 import './HomeView.css';
-import TripSearch, { TripSearchData } from '../../Components/TripSearch';
+import TripSearch from '../../Components/TripSearch';
 import AirportService from '../../Services/AirportService';
+import { TripSearchData } from '../../Components/TripSearch/TripSearchData';
+import { TripType } from '../../Enums/TripType';
+import { CabinType } from '../../Enums/CabinType';
 
 interface HomeViewProps {
   airportService: AirportService;
+  locale: string;
 }
 
 interface HomeViewState {
@@ -18,13 +22,13 @@ export default class HomeView extends React.Component<HomeViewProps, HomeViewSta
 
     this.state = {
       tripSearchData: {
-        tripType: 'return',
+        tripType: TripType.return,
         passengers: {
           adults: 1,
           children: 0,
           infants: 0,
         },
-        cabinType: 'all',
+        cabinType: CabinType.all,
         originDestination: {
           origin: undefined,
           destination: undefined,
@@ -46,13 +50,14 @@ export default class HomeView extends React.Component<HomeViewProps, HomeViewSta
 
   render(): JSX.Element {
     const { tripSearchData: data } = this.state;
-    const { airportService } = this.props;
+    const { airportService, locale } = this.props;
 
     return (
       <div className="home-view">
         <div className="top-image" />
         <div className="content-wrapper">
           <TripSearch
+            locale={locale}
             data={data}
             onChange={this.onTripSearchChange}
             airportService={airportService}
