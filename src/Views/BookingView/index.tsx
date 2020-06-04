@@ -1,11 +1,16 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
+import './BookingView.css';
 import TripSearch from '../../Components/TripSearch';
 import { TripType } from '../../Enums/TripType';
 import { CabinType } from '../../Enums/CabinType';
 import AirportService from '../../Services/AirportService';
 import { TripSearchData } from '../../Components/TripSearch/TripSearchData';
+import Progress, { ProgressStep } from './Components/Progress';
+import SearchDetails from './Components/SearchDetails';
+import FlightSearchResult from './Components/FlightSearchResult';
+import FlightService from '../../Services/FlightService';
 import Utils from '../../Utils';
 
 interface BookingViewProps extends RouteComponentProps<{
@@ -20,22 +25,31 @@ interface BookingViewProps extends RouteComponentProps<{
   inbound?: string;
 }> {
   airportService: AirportService;
+  flightService: FlightService;
   locale: string;
 }
 
 interface BookingState {
   tripSearchData: TripSearchData;
+  newTripSearchData: TripSearchData;
+  editing: boolean;
 }
 
 class BookingView extends React.Component<BookingViewProps, BookingState> {
   constructor(props: BookingViewProps) {
     super(props);
 
+    const tripSearchData = this.getDataFromParams(props);
+
     this.state = {
-      tripSearchData: this.getDataFromParams(props),
+      tripSearchData,
+      newTripSearchData: this.copyTripSearchData(tripSearchData),
+      editing: false,
     };
 
     this.onTripSearchChange = this.onTripSearchChange.bind(this);
+    this.toggleEdit = this.toggleEdit.bind(this);
+    this.onSearch = this.onSearch.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -51,20 +65,35 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       destination: await destinationReq,
     });
 
-    this.setState({ tripSearchData });
-  }
+    const newState = {
+      tripSearchData,
+      newTripSearchData: this.copyTripSearchData(tripSearchData),
+    };
 
-  private onTripSearchChange(tripSearchData: TripSearchData): void {
-    const { history } = this.props;
-
-    if (tripSearchData.originDestination.destination && tripSearchData.originDestination.origin) {
-      history.replace(Utils.getBookingUrl(tripSearchData));
+    if (!Utils.validateTripSearchData(tripSearchData)) {
+      Object.assign(newState, { editing: true });
     }
 
-    this.setState({ tripSearchData });
+    this.setState(newState);
   }
 
-  private getDataFromParams(props: BookingViewProps): any {
+  private onTripSearchChange(newTripSearchData: TripSearchData): void {
+    this.setState({ newTripSearchData });
+  }
+
+  private onSearch(cancel = false): void {
+    const { tripSearchData, newTripSearchData } = this.state;
+
+    if (cancel) {
+      this.setState({ newTripSearchData: this.copyTripSearchData(tripSearchData) });
+    } else {
+      this.setState({ tripSearchData: this.copyTripSearchData(newTripSearchData) });
+    }
+
+    this.toggleEdit();
+  }
+
+  private getDataFromParams(props: BookingViewProps): TripSearchData {
     const { match } = props;
     const { params } = match;
 
@@ -95,18 +124,81 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     };
   }
 
+  private toggleEdit(): void {
+    const { editing } = this.state;
+
+    this.setState({ editing: !editing });
+  }
+
+  private copyTripSearchData(data: TripSearchData): TripSearchData {
+    const tripSearchData = JSON.parse(JSON.stringify(data));
+
+    const { dates } = tripSearchData;
+
+    if (dates.end) {
+      dates.end = new Date(dates.end);
+    }
+
+    if (dates.start) {
+      dates.start = new Date(dates.start);
+    }
+
+    return tripSearchData;
+  }
+
   render(): JSX.Element {
-    const { airportService, locale } = this.props;
-    const { tripSearchData } = this.state;
+    const { locale, airportService, flightService } = this.props;
+    const {
+      tripSearchData,
+      newTripSearchData,
+      editing,
+    } = this.state;
+
+    const tripSearchValid = Utils.validateTripSearchData(tripSearchData);
 
     return (
       <div className="booking-view">
-        <TripSearch
-          locale={locale}
-          airportService={airportService}
-          data={tripSearchData}
-          onChange={this.onTripSearchChange}
-        />
+        <Progress step={ProgressStep.flights} />
+        <div className="content-wrapper">
+          {editing
+            ? (
+              <>
+                {tripSearchValid && (
+                  <button
+                    type="button"
+                    className="btn-cancel-search"
+                    onClick={(): void => this.onSearch(true)}
+                  >
+                    Cancel
+                  </button>
+                )}
+                <TripSearch
+                  replaceOnSearch
+                  locale={locale}
+                  airportService={airportService}
+                  data={newTripSearchData}
+                  onChange={this.onTripSearchChange}
+                  onSearch={this.onSearch}
+                />
+              </>
+            )
+            : (
+              <SearchDetails
+                data={tripSearchData}
+                locale={locale}
+                toggleEdit={this.toggleEdit}
+              />
+            )}
+          {tripSearchValid && (
+            <>
+              <h1 className="select-flight-header">Select outbound flight</h1>
+              <FlightSearchResult
+                tripSearchData={tripSearchData}
+                flightService={flightService}
+              />
+            </>
+          )}
+        </div>
       </div>
     );
   }

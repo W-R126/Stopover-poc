@@ -5,13 +5,13 @@ import './TripSearch.css';
 import { TripType } from '../../Enums/TripType';
 import { CabinType } from '../../Enums/CabinType';
 import AirportService from '../../Services/AirportService';
-import PassengerPicker, { PassengerPickerData } from '../PassengerPicker';
-import OriginDestinationPicker, { OriginDestinationPickerData } from '../OriginDestinationPicker';
-import DatePicker from '../DatePicker';
-import TripTypePicker from '../TripTypePicker';
+import PassengerPicker, { PassengerPickerData } from './Components/PassengerPicker';
+import OriginDestinationPicker, { OriginDestinationPickerData } from './Components/OriginDestinationPicker';
+import DatePicker from './Components/DatePicker';
+import TripTypePicker from './Components/TripTypePicker';
 import Select from '../UI/Select';
 import Option from '../UI/Select/Option';
-import { CalendarData } from '../Calendar';
+import { CalendarData } from './Components/Calendar';
 import Checkbox from '../UI/Checkbox';
 import Utils from '../../Utils';
 import { TripSearchData } from './TripSearchData';
@@ -21,11 +21,14 @@ interface TripSearchProps extends RouteComponentProps {
   locale?: string;
   onChange: (data: TripSearchData) => void;
   airportService: AirportService;
+  onSearch?: () => void;
+  replaceOnSearch?: boolean;
 }
 
 class TripSearch extends React.Component<TripSearchProps, {}> {
-  static readonly defaultProps: Pick<TripSearchProps, 'locale'> = {
+  static readonly defaultProps: Pick<TripSearchProps, 'locale' | 'replaceOnSearch'> = {
     locale: 'en-US',
+    replaceOnSearch: false,
   };
 
   constructor(props: TripSearchProps) {
@@ -72,11 +75,24 @@ class TripSearch extends React.Component<TripSearchProps, {}> {
   }
 
   private onSearch(): void {
-    const { history, data } = this.props;
+    const {
+      history,
+      data,
+      onSearch,
+      replaceOnSearch,
+    } = this.props;
 
     // TODO: Validation.
 
-    history.push(Utils.getBookingUrl(data));
+    if (onSearch) {
+      onSearch();
+    }
+
+    if (replaceOnSearch) {
+      history.replace(Utils.getBookingUrl(data));
+    } else {
+      history.push(Utils.getBookingUrl(data));
+    }
   }
 
   render(): JSX.Element {

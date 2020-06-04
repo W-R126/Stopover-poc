@@ -1,8 +1,8 @@
 import React from 'react';
-import { TripType } from '../../Enums/TripType';
+import { TripType } from '../../../../Enums/TripType';
 
 import './TripTypePicker.css';
-import Radio from '../UI/Radio';
+import Radio from '../../../UI/Radio';
 
 interface TripTypePickerProps {
   value: TripType;

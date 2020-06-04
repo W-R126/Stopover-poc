@@ -1,8 +1,8 @@
 import { TripType } from '../../Enums/TripType';
-import { PassengerPickerData } from '../PassengerPicker';
+import { PassengerPickerData } from './Components/PassengerPicker';
 import { CabinType } from '../../Enums/CabinType';
-import { OriginDestinationPickerData } from '../OriginDestinationPicker';
-import { CalendarData } from '../Calendar';
+import { OriginDestinationPickerData } from './Components/OriginDestinationPicker';
+import { CalendarData } from './Components/Calendar';
 
 export interface TripSearchData {
   tripType: TripType;

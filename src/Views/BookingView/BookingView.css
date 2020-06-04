@@ -1,0 +1,79 @@
+.booking-view > .progress {
+  z-index: 1;
+  position: relative;
+}
+
+.booking-view > .content-wrapper {
+  position: relative;
+}
+
+.booking-view > .content-wrapper > .btn-cancel-search {
+  position: absolute;
+  top: 42px;
+  font-size: 0;
+  border: 0;
+  background-color: transparent;
+  outline: 0;
+  cursor: pointer;
+  color: #4e4c4a;
+  transition:
+    right 300ms,
+    left 300ms,
+    top 300ms;
+}
+
+html:not([dir='rtl']) .booking-view > .content-wrapper > .btn-cancel-search {
+  right: 42px;
+}
+
+html[dir='rtl'] .booking-view > .content-wrapper > .btn-cancel-search {
+  left: 42px;
+}
+
+.booking-view > .content-wrapper > .btn-cancel-search::before {
+  content: '×';
+  font-size: 32px;
+  line-height: 0.5;
+}
+
+.booking-view > .content-wrapper > .search-details,
+.booking-view > .content-wrapper > .trip-search {
+  margin-top: 24px;
+  width: 100%;
+}
+
+.booking-view > .content-wrapper > .select-flight-header {
+  font-size: 18px;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-weight: 300;
+  padding: 24px;
+  transition: padding 300ms;
+}
+
+@media screen and (max-width: 768px) {
+  html:not([dir='rtl']) .booking-view > .content-wrapper > .btn-cancel-search {
+    right: 26px;
+  }
+
+  html[dir='rtl'] .booking-view > .content-wrapper > .btn-cancel-search {
+    left: 26px;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .booking-view > .content-wrapper > .btn-cancel-search {
+    top: 36px;
+  }
+
+  html:not([dir='rtl']) .booking-view > .content-wrapper > .btn-cancel-search {
+    right: 18px;
+  }
+
+  html[dir='rtl'] .booking-view > .content-wrapper > .btn-cancel-search {
+    left: 18px;
+  }
+
+  .booking-view > .content-wrapper > .select-flight-header {
+    padding: 16px;
+  }
+}

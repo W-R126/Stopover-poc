@@ -68,4 +68,26 @@ export default class Utils {
 
     return result;
   }
+
+  static validateTripSearchData(tripSearchData: TripSearchData): boolean {
+    const { originDestination, dates, passengers } = tripSearchData;
+
+    if (!(originDestination.destination && originDestination.origin)) {
+      return false;
+    }
+
+    if (tripSearchData.tripType === TripType.return && !dates.end) {
+      return false;
+    }
+
+    if (passengers.adults + passengers.children > 9) {
+      return false;
+    }
+
+    if (passengers.infants > passengers.adults) {
+      return false;
+    }
+
+    return true;
+  }
 }

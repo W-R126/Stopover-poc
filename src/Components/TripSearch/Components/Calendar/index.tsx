@@ -3,7 +3,7 @@ import React from 'react';
 import Month from './Month';
 
 import './Calendar.css';
-import navigationArrow from '../../Assets/Images/navigation-arrow.svg';
+import navigationArrow from '../../../../Assets/Images/navigation-arrow.svg';
 
 export interface CalendarData {
   start?: Date;

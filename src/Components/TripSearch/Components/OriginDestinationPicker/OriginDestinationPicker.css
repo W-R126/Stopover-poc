@@ -1,6 +1,6 @@
 .origin-destination-picker {
   display: inline-flex;
-  flex-flow: row wrap;
+  flex-flow: row;
   position: relative;
   user-select: none;
 }
@@ -72,6 +72,10 @@
 }
 
 @media screen and (max-width: 480px) {
+  .origin-destination-picker {
+    flex-flow: row wrap;
+  }
+
   .origin-destination-picker > div {
     width: 100%;
   }

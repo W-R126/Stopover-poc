@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './AirportSearch.css';
-import { AirportModel } from '../../Models/AirportModel';
+import { AirportModel } from '../../../../Models/AirportModel';
 
 interface AirportSearchProps {
   id?: string;
@@ -38,7 +38,7 @@ export default class AirportSearch extends React.Component<
     super(props);
 
     this.state = {
-      query: '',
+      query: props.value ? this.getAirportQueryName(props.value) : '',
       expanded: false,
       focused: false,
       hoveredIndex: 0,
@@ -66,7 +66,7 @@ export default class AirportSearch extends React.Component<
 
     if (prevProps.value !== value) {
       if (value) {
-        this.setState({ query: this.getQuery(value) });
+        this.setState({ query: this.getAirportQueryName(value) });
       } else if (!focused) {
         // Only clear query if the field is not focused.
         this.setState({ query: '' });
@@ -185,7 +185,7 @@ export default class AirportSearch extends React.Component<
     }
   }
 
-  private getQuery(airport: AirportModel): string {
+  private getAirportQueryName(airport: AirportModel): string {
     return `${airport.cityName}, ${airport.code}`;
   }
 
@@ -314,7 +314,7 @@ export default class AirportSearch extends React.Component<
                     className={`airport${hoveredIndex === idx ? ' hovered' : ''}`}
                     key={`airport-${airport.code}`}
                     role="option"
-                    aria-selected={value === airport}
+                    aria-selected={value?.code === airport.code}
                     onMouseMove={(): void => {
                       if (hoveredIndex !== idx) {
                         this.setState({ hoveredIndex: idx });

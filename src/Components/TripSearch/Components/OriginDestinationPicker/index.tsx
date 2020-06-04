@@ -1,10 +1,10 @@
 import React from 'react';
 
 import './OriginDestinationPicker.css';
-import toggleBtn from '../../Assets/Images/toggle-btn.svg';
-import { AirportModel } from '../../Models/AirportModel';
+import toggleBtn from '../../../../Assets/Images/toggle-btn.svg';
+import { AirportModel } from '../../../../Models/AirportModel';
 import AirportSearch from '../AirportSearch';
-import AirportService from '../../Services/AirportService';
+import AirportService from '../../../../Services/AirportService';
 
 export interface OriginDestinationPickerData {
   origin?: AirportModel;
@@ -102,7 +102,6 @@ export default class OriginDestinationPicker extends React.Component<
 
   render(): JSX.Element {
     const { airports } = this.state;
-
     const { data } = this.props;
 
     return (
