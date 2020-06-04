@@ -66,7 +66,10 @@ export default class Month extends React.Component<MonthProps, MonthState> {
     this.setState({ hoveredDay });
   }
 
-  private onSelectionStart(start: Date): void {
+  private onSelectionStart(newStart: Date): void {
+    const start = new Date(newStart);
+    start.setHours(0, 0, 0, 0);
+
     const {
       onSelectionStart,
       onSelectionEnd,
@@ -81,7 +84,10 @@ export default class Month extends React.Component<MonthProps, MonthState> {
     }
   }
 
-  private onSelectionEnd(end: Date): void {
+  private onSelectionEnd(newEnd: Date): void {
+    const end = new Date(newEnd);
+    end.setHours(0, 0, 0, 0);
+
     const { onSelectionEnd } = this.props;
 
     onSelectionEnd(end);
@@ -141,7 +147,7 @@ export default class Month extends React.Component<MonthProps, MonthState> {
     }
 
     const { days, hoveredDay } = this.state;
-    const negative = (hoveredDay && start && hoveredDay < start);
+    const negative = (hoveredDay && start && Utils.compareDates(start, hoveredDay) === 1);
 
     return (
       <div className={`month${selecting ? ' selecting' : ''}${negative ? ' negative' : ''}`}>
@@ -163,33 +169,53 @@ export default class Month extends React.Component<MonthProps, MonthState> {
               className.push('disabled');
             } else if (selecting && day && hoveredDay && start) {
               if (
-                (hoveredDay < start && day > hoveredDay && day < start)
-                || (hoveredDay > start && day < hoveredDay && day > start)
+                (
+                  Utils.compareDates(hoveredDay, start) === -1
+                  && Utils.compareDates(hoveredDay, day) === -1
+                  && Utils.compareDates(day, start) === -1
+                )
+                || (
+                  Utils.compareDates(hoveredDay, start) === 1
+                  && Utils.compareDates(hoveredDay, day) === 1
+                  && Utils.compareDates(day, start) === 1
+                )
               ) {
                 className.push('in-span');
               }
             }
 
-            if (day && start && end && day > start && day < end) {
+            if (
+              day
+              && start
+              && end
+              && Utils.compareDates(day, start) === 1
+              && Utils.compareDates(day, end) === -1
+            ) {
               className.push('in-span');
             }
 
-            if (day && start && day.valueOf() === start.valueOf()) {
+            if (day && start && Utils.compareDates(day, start) === 0) {
               className.push('selection-start');
             }
 
-            if (day && end && day.valueOf() === end.valueOf()) {
+            if (day && end && Utils.compareDates(day, end) === 0) {
               className.push('selection-end');
             }
+
+            const selected = (
+              day
+              && (
+                (start && Utils.compareDates(day, start) === 0)
+                || (end && Utils.compareDates(day, end) === 0)
+              )
+            ) || false;
 
             return (
               <span
                 key={`day-${idx}`}
                 className={className.join(' ')}
                 role="option"
-                aria-selected={
-                  day && (day.valueOf() === start?.valueOf() || day.valueOf() === end?.valueOf())
-                }
+                aria-selected={selected}
                 onMouseOver={(): void => this.onMouseOverDay(day)}
                 onClick={(): void => {
                   if (day === undefined || day < this.today) {

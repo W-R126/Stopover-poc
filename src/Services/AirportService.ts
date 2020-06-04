@@ -4,8 +4,6 @@ import ContentService from './ContentService';
 import Airports from './Content/Airports';
 
 export default class AirportService extends BaseService {
-  private readonly activeRequests: { [key: string]: Promise<any> } = {};
-
   private readonly contentService: ContentService;
 
   constructor(contentService: ContentService, baseURL?: string) {
@@ -14,21 +12,26 @@ export default class AirportService extends BaseService {
     this.contentService = contentService;
   }
 
-  async getOriginAirports(): Promise<AirportModel[]> {
-    // If origin airports are already requested, return the initial request.
-    if (this.activeRequests.originAirports !== undefined) {
-      return this.activeRequests.originAirports;
-    }
+  async getAirport(code: string): Promise<AirportModel | undefined> {
+    const codeUpper = code.toUpperCase();
 
-    const cityNamesReq = this.contentService.get('cityNames');
-    const countryNamesReq = this.contentService.get('countryNames');
-    const airportNamesReq = this.contentService.get('airportNames');
+    return this.createRequest(`getAirports/${codeUpper}`, async () => {
+      const airports = await this.getAirports();
 
-    const cityNames = await cityNamesReq;
-    const countryNames = await countryNamesReq;
-    const airportNames = await airportNamesReq;
+      return airports.find((airport) => airport.code === codeUpper);
+    });
+  }
 
-    const pending = new Promise<AirportModel[]>((resolve) => {
+  async getAirports(): Promise<AirportModel[]> {
+    return this.createRequest('getAirports', async () => {
+      const cityNamesReq = this.contentService.get('cityNames');
+      const countryNamesReq = this.contentService.get('countryNames');
+      const airportNamesReq = this.contentService.get('airportNames');
+
+      const cityNames = await cityNamesReq;
+      const countryNames = await countryNamesReq;
+      const airportNames = await airportNamesReq;
+
       const result: AirportModel[] = [];
 
       Airports.forEach((airport) => {
@@ -87,13 +90,7 @@ export default class AirportService extends BaseService {
         return 0;
       });
 
-      resolve(result);
-
-      delete this.activeRequests.originAirports;
+      return result;
     });
-
-    this.activeRequests.originAirports = pending;
-
-    return pending;
   }
 }

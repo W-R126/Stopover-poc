@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import './TripSearch.css';
 import { TripType } from '../../Types/TripType';
@@ -12,6 +13,7 @@ import Select from '../UI/Select';
 import Option from '../UI/Select/Option';
 import { CalendarData } from '../Calendar';
 import Checkbox from '../UI/Checkbox';
+import Utils from '../../Utils';
 
 export interface TripSearchData {
   tripType: TripType;
@@ -22,14 +24,14 @@ export interface TripSearchData {
   bookWithMiles: boolean;
 }
 
-interface TripSearchProps {
+interface TripSearchProps extends RouteComponentProps {
   data: TripSearchData;
-  locale: string;
+  locale?: string;
   onChange: (data: TripSearchData) => void;
   airportService: AirportService;
 }
 
-export default class TripSearch extends React.Component<TripSearchProps, {}> {
+class TripSearch extends React.Component<TripSearchProps, {}> {
   static readonly defaultProps: Pick<TripSearchProps, 'locale'> = {
     locale: 'en-US',
   };
@@ -42,6 +44,7 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
     this.onCabinTypeChange = this.onCabinTypeChange.bind(this);
     this.onOriginDestinationChange = this.onOriginDestinationChange.bind(this);
     this.onDatesChange = this.onDatesChange.bind(this);
+    this.onSearch = this.onSearch.bind(this);
   }
 
   private onTripTypeChange(tripType: TripType): void {
@@ -74,6 +77,42 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
     Object.assign(data, { [fieldName]: value });
 
     onChange(data);
+  }
+
+  private onSearch(): void {
+    const { history, data } = this.props;
+
+    // TODO: Validation.
+
+    history.push(TripSearch.getBookingUrl(data));
+  }
+
+  static getBookingUrl(data: TripSearchData): string {
+    let result = '/booking';
+
+    result += `/${data.originDestination.origin?.code ?? ''}`;
+    result += `/${data.originDestination.destination?.code ?? ''}`;
+    result += `/${data.cabinType}`;
+    result += `/${data.passengers.adults}`;
+    result += `/${data.passengers.children}`;
+    result += `/${data.passengers.infants}`;
+    result += `/${data.tripType}`;
+
+    if (data.dates.start) {
+      result += `/${Utils.getDateString(data.dates.start)}`;
+    } else {
+      result += '/';
+    }
+
+    if (data.tripType === 'return') {
+      if (data.dates.end) {
+        result += `/${Utils.getDateString(data.dates.end)}`;
+      } else {
+        result += '/';
+      }
+    }
+
+    return result;
   }
 
   render(): JSX.Element {
@@ -131,7 +170,7 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
           <button
             type="button"
             className="btn-primary"
-            onClick={(): void => console.log(data)}
+            onClick={this.onSearch}
           >
             Search flight
           </button>
@@ -140,3 +179,5 @@ export default class TripSearch extends React.Component<TripSearchProps, {}> {
     );
   }
 }
+
+export default withRouter(TripSearch);

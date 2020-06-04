@@ -138,7 +138,9 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
     onChange({ start: undefined, end: undefined });
   }
 
-  goToMonth(startMonth: Date): void {
+  goToMonth(newStartMonth: Date): void {
+    const startMonth = new Date(newStartMonth);
+
     const { maxDate } = this.props;
 
     if (startMonth >= maxDate) {

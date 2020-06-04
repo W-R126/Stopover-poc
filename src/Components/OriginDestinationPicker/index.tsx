@@ -35,18 +35,18 @@ export default class OriginDestinationPicker extends React.Component<
     this.swapDirections = this.swapDirections.bind(this);
     this.onOriginChange = this.onOriginChange.bind(this);
     this.onDestinationChange = this.onDestinationChange.bind(this);
-    this.setAirportFromPosition = this.setAirportFromPosition.bind(this);
+    this.setOriginAirportFromPosition = this.setOriginAirportFromPosition.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
     const { airportService } = this.props;
 
-    const airports = await airportService.getOriginAirports();
+    const airports = await airportService.getAirports();
 
     await new Promise((resolve) => this.setState({ airports }, resolve));
 
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.setAirportFromPosition);
+      navigator.geolocation.getCurrentPosition(this.setOriginAirportFromPosition);
     }
   }
 
@@ -66,8 +66,9 @@ export default class OriginDestinationPicker extends React.Component<
     onChange(data);
   }
 
-  private setAirportFromPosition(position: Position): void {
+  private setOriginAirportFromPosition(position: Position): void {
     const { longitude: long, latitude: lat } = position.coords;
+    const { data } = this.props;
     const { airports } = this.state;
 
     let origin = airports[0];
@@ -86,7 +87,9 @@ export default class OriginDestinationPicker extends React.Component<
       }
     });
 
-    this.onOriginChange(origin);
+    if (!data.origin) {
+      this.onOriginChange(origin);
+    }
   }
 
   private swapDirections(): void {

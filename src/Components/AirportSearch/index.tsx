@@ -192,7 +192,10 @@ export default class AirportSearch extends React.Component<
   private get filteredAirports(): AirportModel[] {
     const { airports, exclude } = this.props;
     const { query } = this.state;
-    const queryParts = query.replace(/,|\./g, '').replace(/\s{2,}/g, ' ').toLowerCase().split(' ');
+
+    const queryLower = query.toLowerCase();
+    const queryParts = queryLower.replace(/,|\./g, '').replace(/\s{2,}/g, ' ').split(' ');
+
     let filteredAirports = airports;
 
     queryParts.forEach((queryPart) => {
@@ -201,7 +204,19 @@ export default class AirportSearch extends React.Component<
       );
     });
 
-    return filteredAirports.filter((airport) => exclude.indexOf(airport) === -1);
+    // Sort by airport city name starting with query.
+    const startsWithMatch: AirportModel[] = [];
+    const others: AirportModel[] = [];
+
+    filteredAirports.forEach((airport) => {
+      if (airport.cityName?.toLowerCase().startsWith(queryLower)) {
+        startsWithMatch.push(airport);
+      } else {
+        others.push(airport);
+      }
+    });
+
+    return startsWithMatch.concat(others).filter((airport) => exclude.indexOf(airport) === -1);
   }
 
   private select(value?: AirportModel): void {

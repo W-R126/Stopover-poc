@@ -5,15 +5,8 @@ import CountryNames from './Content/CountryNames';
 import AirportNames from './Content/AirportNames';
 
 export default class ContentService extends BaseService {
-  private readonly activeRequests: { [key: string]: Promise<any> } = {};
-
   async get(resource: string): Promise<any> {
-    // If a resource is already requested, return the initial request.
-    if (this.activeRequests[resource] !== undefined) {
-      return this.activeRequests[resource];
-    }
-
-    const pending = new Promise((resolve) => {
+    return this.createRequest(resource, async () => {
       let data;
 
       switch (resource) {
@@ -31,13 +24,7 @@ export default class ContentService extends BaseService {
           break;
       }
 
-      resolve(data);
-
-      delete this.activeRequests[resource];
+      return data;
     });
-
-    this.activeRequests[resource] = pending;
-
-    return pending;
   }
 }
