@@ -1,0 +1,84 @@
+.day-ribbon {
+  display: flex;
+  border: 1px solid #dcdbdb;
+  border-left: 0;
+  border-right: 0;
+  padding: 8px 8px;
+}
+
+.day-ribbon > button {
+  font-size: 0;
+  border: 0;
+  background-color: transparent;
+  outline: 0;
+  cursor: pointer;
+  width: 24px;
+  text-align: left;
+  padding: 0;
+  color: #4e4c4a;
+}
+
+.day-ribbon > button::before {
+  font-size: 24px;
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f104';
+  display: block;
+}
+
+html:not([dir='rtl']) .day-ribbon > .navigate-forward::before {
+  transform: scaleX(-1);
+}
+
+html[dir='rtl'] .day-ribbon > .navigate-back::before {
+  transform: scaleX(-1);
+}
+
+.day-ribbon > .day {
+  flex-grow: 1;
+  display: flex;
+  flex-flow: column;
+  padding: 8px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.day-ribbon > .day:not(.selected):hover {
+  background-color: #ededec;
+  cursor: pointer;
+}
+
+.day-ribbon > .day.selected {
+  color: #bd8b13;
+}
+
+.day-ribbon > .day > strong {
+  font-size: 18px;
+  padding-bottom: 8px;
+  white-space: nowrap;
+}
+
+.day-ribbon > .day > span {
+  font-size: 16px;
+  text-align: center;
+}
+
+@media screen and (max-width: 650px) {
+  .flight-search-result {
+    padding: 16px;
+  }
+}
+
+@media screen and (max-width: 1130px) {
+  .day-ribbon > .day-0,
+  .day-ribbon > .day-6 {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 830px) {
+  .day-ribbon > .day-1,
+  .day-ribbon > .day-5 {
+    display: none;
+  }
+}

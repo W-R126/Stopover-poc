@@ -17,7 +17,7 @@
 .progress > span:not(:last-child)::after {
   display: block;
   content: '';
-  border-top: 1px dashed #B8B7B7;
+  border-top: 1px dashed #b8b7b7;
   width: 50px;
   margin: 0 16px;
 }

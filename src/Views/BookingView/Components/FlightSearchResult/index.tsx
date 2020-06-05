@@ -6,6 +6,7 @@ import flightIcon from '../../../../Assets/Images/flight.svg';
 import { TripSearchData } from '../../../../Components/TripSearch/TripSearchData';
 import { FlightModel } from '../../../../Models/FlightModel';
 import FlightService from '../../../../Services/FlightService';
+import DayRibbon from '../DayRibbon';
 
 interface FlightSearchResultProps {
   tripSearchData: TripSearchData;
@@ -60,9 +61,7 @@ export default class FlightSearchResult extends React.Component<
 
     return (
       <>
-        <div className="day-picker">
-          Bye!
-        </div>
+        <DayRibbon />
         <div className="flight-entry">
           Hello!
         </div>

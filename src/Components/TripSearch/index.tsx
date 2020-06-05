@@ -11,7 +11,7 @@ import DatePicker from './Components/DatePicker';
 import TripTypePicker from './Components/TripTypePicker';
 import Select from '../UI/Select';
 import Option from '../UI/Select/Option';
-import { CalendarData } from './Components/Calendar';
+import { CalendarData } from './Components/Calendar/CalendarData';
 import Checkbox from '../UI/Checkbox';
 import Utils from '../../Utils';
 import { TripSearchData } from './TripSearchData';

@@ -1,7 +1,8 @@
 import React from 'react';
 
 import './DatePicker.css';
-import Calendar, { CalendarData } from '../Calendar';
+import Calendar from '../Calendar';
+import { CalendarData } from '../Calendar/CalendarData';
 
 interface DatePickerProps {
   data: CalendarData;

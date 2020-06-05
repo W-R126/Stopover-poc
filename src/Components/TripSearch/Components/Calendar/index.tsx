@@ -4,11 +4,7 @@ import Month from './Month';
 
 import './Calendar.css';
 import navigationArrow from '../../../../Assets/Images/navigation-arrow.svg';
-
-export interface CalendarData {
-  start?: Date;
-  end?: Date;
-}
+import { CalendarData } from './CalendarData';
 
 interface CalendarProps {
   data: CalendarData;

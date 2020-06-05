@@ -4,6 +4,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   padding: 24px;
   transition: padding 300ms;
+  user-select: none;
 }
 
 .flight-search-result > .header > .origin-destination {
@@ -38,16 +39,11 @@
 }
 
 .flight-search-result > .result > .searching > img {
-  height: 40px;
+  height: 48px;
   margin: 0 8px;
 }
 
-.flight-search-result > .result > .no-result {
-  margin-top: 8px;
-}
-
-@media screen and (max-width: 650px) {
-  .flight-search-result {
-    padding: 16px;
-  }
+.flight-search-result > .result > .no-result,
+.flight-search-result > .result > .day-ribbon {
+  margin-top: 16px;
 }
