@@ -3,7 +3,6 @@ import { TripSearchData } from '../Components/TripSearch/TripSearchData';
 import { FlightModel } from '../Models/FlightModel';
 import Utils from '../Utils';
 import AirportService from './AirportService';
-import { AirportModel } from '../Models/AirportModel';
 
 export default class FlightService extends BaseService {
   private readonly airportService: AirportService;
@@ -60,86 +59,87 @@ export default class FlightService extends BaseService {
       },
     );
 
-    return this.parseFlightResponse(result.data);
+    const offers = result.data.unbundledOffers[0];
+    const store: { [key: string]: any } = {};
+
+    const parsedOffers = offers.map((offer: any) => ({
+      cabinClass: offer.cabinClass,
+      soldout: offer.soldout,
+      total: {
+        amount: offer.total.alternatives[0][0].amount,
+        currency: offer.total.alternatives[0][0].currency,
+      },
+      itineraryPart: this.getItineraryPart(offer.itineraryPart[0], store),
+    }));
+
+    const airportReqs = Object.keys(store)
+      .filter((key) => store[key].type === 'segment')
+      .map((key) => this.populateAirports(store[key]));
+
+    await Promise.all(airportReqs);
+
+    console.log(parsedOffers);
+
+    return parsedOffers;
   }
 
-  private async parseFlightResponse(data: any): Promise<FlightModel[]> {
-    const store: { [id: string]: any } = {};
+  private async populateAirports(data: any): Promise<void> {
+    if (!data.origin) {
+      Object.assign(data, { origin: await this.airportService.getAirport(data.originCode) });
+    }
 
-    const reqs: Promise<any>[] = [];
-
-    const unbundledOffers = data.unbundledOffers[0].map((uo: any) => {
-      const flight = {
-        cabinClass: uo.cabinClass,
-        total: {
-          amount: uo.total.alternatives[0][0].amount,
-          currency: uo.total.alternatives[0][0].currency,
-        },
-        soldout: uo.soldout,
-      };
-
-      reqs.push(this.parseItineraryParts(
-        uo.itineraryPart[0],
-        store,
-      ).then((itineraryPart) => Object.assign(flight, { itineraryPart })));
-
-      return flight;
-    });
-
-    await Promise.all(reqs);
-
-    return unbundledOffers;
+    if (!data.destination) {
+      Object.assign(
+        data,
+        { destination: await this.airportService.getAirport(data.destinationCode) },
+      );
+    }
   }
 
-  private async parseItineraryParts(data: any, store: { [id: string]: any }): Promise<any> {
-    if (data['@ref'] && store[data['@ref']] !== undefined) {
+  private getItineraryPart(data: any, store: { [key: string]: any }): any {
+    if (data['@ref'] !== undefined) {
+      if (!store[data['@ref']]) {
+        Object.assign(store, { [data['@ref']]: {} });
+      }
+
       return store[data['@ref']];
     }
 
-    const reqs = data.segments.map(
-      (segment: any) => this.parseSegment(segment, store),
-    ) as Promise<any>[];
+    const segments = data.segments.map((segment: any) => this.getSegment(segment, store));
 
-    const segments = await Promise.all(reqs);
-
-    Object.assign(
-      store,
-      {
-        [data['@id']]: {
-          bookingClass: data.bookingClass,
-          segments,
-        },
+    return Object.assign(store, {
+      [data['@id']]: {
+        bookingClass: data.bookingClass,
+        type: 'itinerary',
+        segments,
       },
-    );
-
-    return store[data['@id']];
+    })[data['@id']];
   }
 
-  private async parseSegment(data: any, store: { [id: string]: any}): Promise<any> {
-    if (data['@ref'] && store[data['@ref']] !== undefined) {
+  private getSegment(data: any, store: { [key: string]: any }): any {
+    if (data['@ref'] !== undefined) {
+      if (!store[data['@ref']]) {
+        Object.assign(store, { [data['@ref']]: {} });
+      }
+
       return store[data['@ref']];
     }
 
-    Object.assign(
-      store,
-      {
-        [data['@id']]: {
-          arrival: new Date(data.arrival),
-          departure: new Date(data.departure),
-          bookingClass: data.bookingClass,
-          cabinClass: data.cabinClass,
-          origin: data.origin ? await this.airportService.getAirport(data.origin) : undefined,
-          destination:
-            data.destination ? await this.airportService.getAirport(data.destination) : undefined,
-          flight: {
-            airlineCode: data.flight?.airlineCode,
-            flightNumber: data.flight?.flightNumber,
-            operatingAirlineCode: data.flight?.operatingAirlineCode,
-          },
+    return Object.assign(store, {
+      [data['@id']]: {
+        type: 'segment',
+        arrival: new Date(data.arrival),
+        departure: new Date(data.departure),
+        cabinClass: data.cabinClass,
+        bookingClass: data.bookingClass,
+        destinationCode: data.destination,
+        originCode: data.origin,
+        flight: {
+          airlineCode: data.flight.airlineCode,
+          flightNumber: data.flight.flightNumber,
+          operatingAirlineCode: data.flight.operatingAirlineCode,
         },
       },
-    );
-
-    return store[data['@id']];
+    })[data['@id']];
   }
 }

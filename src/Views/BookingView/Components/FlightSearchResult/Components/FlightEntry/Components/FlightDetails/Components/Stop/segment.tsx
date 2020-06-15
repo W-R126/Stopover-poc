@@ -33,7 +33,7 @@ export default function Segment({
       <span className={css.Location}>
         <span className={css.Time}>{Utils.getHourMinuteString(segment.departure)}</span>
         <span className={css.Airport}>
-          {`${segment.origin?.name} (${segment.origin?.code})`}
+          {`${segment.origin.name} (${segment.origin.code})`}
         </span>
       </span>
       <span className={css.TravelTime}>
@@ -42,7 +42,7 @@ export default function Segment({
       <span className={css.Location}>
         <span className={css.Time}>{Utils.getHourMinuteString(segment.arrival)}</span>
         <span className={css.Airport}>
-          {`${segment.destination?.name} (${segment.destination?.code})`}
+          {`${segment.destination.name} (${segment.destination.code})`}
         </span>
       </span>
       <span className={css.Flight}>
@@ -58,7 +58,7 @@ export default function Segment({
             {`${Utils.getTimeDelta(segment.arrival, layoverSegment.departure)} layover`}
           </span>
           <span>
-            {`${layoverSegment.origin?.cityName} (${layoverSegment.origin?.code})`}
+            {`${layoverSegment.origin.cityName} (${layoverSegment.origin.code})`}
           </span>
         </span>
       )}
