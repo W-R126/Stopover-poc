@@ -1,12 +1,13 @@
 import React from 'react';
 
-import './FlightSearchResult.css';
+import css from './FlightSearchResult.module.css';
 import spinner from '../../../../Assets/Images/spinner.svg';
 import flightIcon from '../../../../Assets/Images/flight.svg';
 import { TripSearchData } from '../../../../Components/TripSearch/TripSearchData';
 import { FlightModel } from '../../../../Models/FlightModel';
 import FlightService from '../../../../Services/FlightService';
 import DayRibbon from '../DayRibbon';
+import FlightEntry from './Components/FlightEntry';
 
 interface FlightSearchResultProps {
   tripSearchData: TripSearchData;
@@ -53,7 +54,7 @@ export default class FlightSearchResult extends React.Component<
   private renderResult(flights: FlightModel[]): JSX.Element {
     if (flights.length === 0) {
       return (
-        <div className="no-result">
+        <div className={css.NoResult}>
           No flights found.
         </div>
       );
@@ -61,9 +62,15 @@ export default class FlightSearchResult extends React.Component<
 
     return (
       <>
-        <DayRibbon />
-        <div className="flight-entry">
-          Hello!
+        <DayRibbon className={css.DayRibbon} />
+        <div className={css.FlightEntries}>
+          {flights.map((flight, idx) => (
+            <FlightEntry
+              className={css.FlightEntry}
+              data={flight}
+              key={`flight-entry-${idx}`}
+            />
+          ))}
         </div>
       </>
     );
@@ -75,9 +82,9 @@ export default class FlightSearchResult extends React.Component<
     const { flights } = this.state;
 
     return (
-      <div className="flight-search-result">
-        <div className="header">
-          <div className="origin-destination">
+      <div className={css.FlightSearchResult}>
+        <div>
+          <div className={css.OriginDestination}>
             <img src={flightIcon} alt="Flight" />
             <strong>
               {`${
@@ -88,10 +95,10 @@ export default class FlightSearchResult extends React.Component<
             </strong>
           </div>
         </div>
-        <div className="result">
+        <div className={css.Result}>
           {!flights
             ? (
-              <strong className="searching">
+              <strong className={css.Searching}>
                 <img src={spinner} alt="Searching" />
                 Searching
               </strong>

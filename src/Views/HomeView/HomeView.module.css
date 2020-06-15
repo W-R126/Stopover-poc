@@ -1,4 +1,8 @@
-.home-view > .top-image {
+.HomeView {
+
+}
+
+.TopImage {
   position: absolute;
   width: 100%;
   z-index: -1;
@@ -9,13 +13,13 @@
   background-size: cover;
 }
 
-.home-view > .content-wrapper {
+.ContentWrapper {
   padding-top: 260px;
   display: flex;
   justify-content: center;
 }
 
-.home-view > .content-wrapper > .trip-search {
+.TripSearch {
   max-width: 1240px;
   width: 100%;
   margin-bottom: 24px;

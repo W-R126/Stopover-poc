@@ -1,0 +1,103 @@
+.FlightEntry {
+  display: grid;
+  grid-template-columns:
+    auto
+    auto
+    auto
+    auto
+    auto
+    max-content
+    max-content
+    max-content;
+    gap: 16px;
+}
+
+.DepartureArrival {
+  font-size: 14px;
+  padding: 16px 0;
+}
+
+.Arrow {
+  display: flex;
+  align-items: center;
+}
+
+.Arrow::after {
+  display: block;
+  content: '\f061';
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  font-size: 24px;
+}
+
+html[dir='rtl'] .Arrow::after {
+  transform: rotateZ(180deg);
+}
+
+.DepartureArrival > strong {
+  display: block;
+  font-size: 18px;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  margin-bottom: 8px;
+}
+
+.TravelTime,
+.Stops {
+  text-align: center;
+  padding: 16px 0;
+  font-size: 14px;
+}
+
+.TravelTime > strong,
+.Stops > strong {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.Price > button {
+  border: 0;
+  background-color: #ededec;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 16px 32px;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  color: #4e4c4a;
+  line-height: 1;
+  outline: 0;
+  font-size: 14px;
+}
+
+.Price > button > strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.ShowDetails > button {
+  font-size: 0;
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+  height: 100%;
+  outline: 0;
+}
+
+.ShowDetails > button::after {
+  display: block;
+  content: '\f107';
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  transition: transform 100ms;
+}
+
+.FlightDetailsCollapsable {
+  grid-column: 1 / -1;
+}
+
+.FlightEntry:not(:last-child) .FlightDetails {
+  border-bottom: 1px solid #dcdbdb;
+}
+
+.FlightEntry.ShowingDetails .ShowDetails > button::after {
+  transform: rotateZ(-180deg);
+}

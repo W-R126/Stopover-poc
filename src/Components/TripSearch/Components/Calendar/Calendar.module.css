@@ -1,11 +1,11 @@
-.calendar {
+.Calendar {
   display: flex;
   direction: ltr;
   align-items: flex-start;
   position: relative;
 }
 
-.calendar > button {
+.Calendar > button {
   border: 0;
   background-color: transparent;
   outline: 0;
@@ -15,47 +15,47 @@
   transition: opacity 300ms;
 }
 
-.calendar > button:disabled {
+.Calendar > button:disabled {
   opacity: 0.5;
 }
 
-.calendar > button > img {
+.Calendar > button > img {
   vertical-align: top;
   height: 32px;
   width: 32px;
 }
 
-.calendar > .navigate-left > img {
+.Calendar > .NavigateBack > img {
   transform: rotateZ(-180deg);
 }
 
-.calendar > .month {
+.Month {
   width: calc(50% - 8px);
   margin: 0 8px;
 }
 
 @media screen and (max-width: 630px) {
-  .calendar > .month {
+  .Month {
     width: 100%;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .calendar > button {
+  .Calendar > button {
     position: absolute;
     top: 0;
     margin: 0;
   }
 
-  .calendar > .navigate-left {
+  .Calendar > .NavigateBack {
     left: 0;
   }
 
-  .calendar > .navigate-right {
+  .Calendar > .NavigateForward {
     right: 0;
   }
 
-  .calendar > .month {
+  .Month {
     margin-top: 6px;
   }
 }

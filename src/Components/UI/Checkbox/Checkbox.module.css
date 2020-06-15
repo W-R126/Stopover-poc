@@ -1,4 +1,4 @@
-.ui-checkbox-input {
+.Checkbox {
   height: 0;
   width: 0;
   margin: 0;
@@ -9,7 +9,7 @@
   cursor: pointer;
 }
 
-.ui-checkbox-input + .ui-checkbox-label {
+.Label {
   font-size: 16px;
   color: #4e4c4a;
   line-height: 22.4px;
@@ -17,12 +17,12 @@
   cursor: pointer;
 }
 
-.ui-checkbox-input:disabled + .ui-checkbox-label {
+.Checkbox:disabled + .Label {
   color: #959492;
   cursor: not-allowed;
 }
 
-.ui-checkbox-input + .ui-checkbox-label > span {
+.Label > span {
   display: inline-block;
   vertical-align: bottom;
   width: 20px;
@@ -34,25 +34,25 @@
   font-size: 14px;
 }
 
-.ui-checkbox-input:disabled + .ui-checkbox-label > span {
+.Checkbox:disabled + .Label > span {
   border-color: #959492;
 }
 
-.ui-checkbox-input:focus + .ui-checkbox-label > span {
+.Checkbox:focus + .Label > span {
   box-shadow:
     0 0 0 2px #fff,
     0 0 0 4px #6997d3;
 }
 
-html[dir='rtl'] .ui-checkbox-input + .ui-checkbox-label > span {
+html[dir='rtl'] .Label > span {
   margin-left: 8px;
 }
 
-html:not([dir='rtl']) .ui-checkbox-input + .ui-checkbox-label > span {
+html:not([dir='rtl']) .Label > span {
   margin-right: 8px;
 }
 
-.ui-checkbox-input + .ui-checkbox-label > span::before {
+.Label > span::before {
   font-family: 'Icons', Arial, Helvetica, sans-serif;
   content: '\f00c';
   color: #fff;
@@ -60,11 +60,11 @@ html:not([dir='rtl']) .ui-checkbox-input + .ui-checkbox-label > span {
   vertical-align: top;
 }
 
-.ui-checkbox-input:not(:disabled) + .ui-checkbox-label:hover > span {
+.Checkbox:not(:disabled) + .Label:hover > span {
   border-color: #d7b971;
 }
 
-.ui-checkbox-input:not(:disabled):checked + .ui-checkbox-label > span {
+.Checkbox:not(:disabled):checked + .Label > span {
   background-color: #bd8b13;
   border-color: #bd8b13;
 }

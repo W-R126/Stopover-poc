@@ -1,4 +1,4 @@
-.passenger-picker {
+.PassengerPicker {
   display: block;
   position: relative;
   outline: 0;
@@ -7,24 +7,24 @@
   user-select: none;
 }
 
-.passenger-picker > .wrapper {
+.Wrapper {
   border-radius: 4px;
   border: 1px solid #4e4c4a;
   background-color: #fff;
   overflow: hidden;
 }
 
-.passenger-picker[aria-expanded='true'] > .wrapper,
-.passenger-picker:focus > .wrapper {
+.PassengerPicker[aria-expanded='true'] > .Wrapper,
+.PassengerPicker:focus > .Wrapper {
   box-shadow: 0 0 0 2px #6997d3;
   border-color: #fff;
 }
 
-.passenger-picker[aria-expanded='false'] > .wrapper {
+.PassengerPicker[aria-expanded='false'] > .Wrapper {
   max-height: 50px;
 }
 
-.passenger-picker > .wrapper > .header {
+.Header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -34,56 +34,56 @@
   padding: 11px 15px;
 }
 
-.passenger-picker > .wrapper > .header::after {
+.Header::after {
   font-family: 'Icons', Arial, Helvetica, sans-serif;
   content: '\f107';
   font-size: 22px;
   transition: transform 100ms;
 }
 
-.passenger-picker[aria-expanded='true'] > .wrapper > .header::after {
+.PassengerPicker[aria-expanded='true'] > .Header::after {
   transform: rotateZ(-180deg);
 }
 
-html:not([dir='rtl']) .passenger-picker > .wrapper > .header::after {
+html:not([dir='rtl']) .Header::after {
   margin-left: 16px;
 }
 
-html[dir='rtl'] .passenger-picker > .wrapper > .header::after {
+html[dir='rtl'] .Header::after {
   margin-right: 16px;
 }
 
-.passenger-picker > .wrapper > .header > .passengers {
+.Header > .Passengers {
   position: absolute;
 }
 
-.passenger-picker[aria-expanded='false'] > .wrapper > .modal-wrapper {
+.PassengerPicker[aria-expanded='false'] > .Wrapper > .ModalWrapper {
   display: none;
 }
 
-.passenger-picker > .wrapper > .modal-wrapper > .pickers {
+.Pickers {
   padding: 15px;
   display: flex;
   flex-flow: column;
 }
 
-.passenger-picker > .wrapper > .modal-wrapper > .pickers > :not(:first-child) {
+.Pickers > :not(:first-child) {
   margin-top: 24px;
 }
 
 @media screen and (min-width: 481px) {
-  .passenger-picker:focus {
+  .PassengerPicker:focus {
     position: relative;
     z-index: 1;
   }
 
-  .passenger-picker > .wrapper > .modal-wrapper > .pickers > button {
+  .Pickers > button {
     display: none;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .passenger-picker > .wrapper > .modal-wrapper {
+  .Wrapper > .ModalWrapper {
     position: fixed;
     top: 0;
     left: 0;
@@ -98,7 +98,7 @@ html[dir='rtl'] .passenger-picker > .wrapper > .header::after {
     padding: 16px;
   }
 
-  .passenger-picker > .wrapper > .modal-wrapper > .pickers {
+  .Pickers {
     background-color: #fff;
     border-radius: 8px;
     padding: 16px;

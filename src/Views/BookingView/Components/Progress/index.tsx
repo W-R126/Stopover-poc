@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './Progress.css';
+import css from './Progress.module.css';
 
 export enum ProgressStep {
   flights = 'flights',
@@ -24,11 +24,11 @@ export default function Progress(props: ProgressProps): JSX.Element {
   const { step } = props;
 
   return (
-    <div className="progress">
+    <div className={css.Progress}>
       {Object.keys(ProgressStep).map((progressStep, idx) => (
         <span
           key={`progress-step-${idx}`}
-          className={step === (ProgressStep as any)[progressStep] ? 'current' : undefined}
+          className={step === (ProgressStep as any)[progressStep] ? css.Current : undefined}
         >
           {progressStepLocale[progressStep]}
         </span>

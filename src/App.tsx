@@ -13,7 +13,7 @@ import FlightService from './Services/FlightService';
 export default function App(): JSX.Element {
   const contentService = new ContentService();
   const airportService = new AirportService(contentService);
-  const flightService = new FlightService();
+  const flightService = new FlightService(airportService);
   const locale = 'en-US';
 
   const tripTypes = Object.keys(TripType);

@@ -1,12 +1,13 @@
 import React from 'react';
 import { TripType } from '../../../../Enums/TripType';
 
-import './TripTypePicker.css';
+import css from './TripTypePicker.module.css';
 import Radio from '../../../UI/Radio';
 
 interface TripTypePickerProps {
   value: TripType;
   onChange: (value: TripType) => void;
+  className?: string;
 }
 
 export default class TripTypePicker extends React.Component<TripTypePickerProps, {}> {
@@ -25,10 +26,16 @@ export default class TripTypePicker extends React.Component<TripTypePickerProps,
   }
 
   render(): JSX.Element {
-    const { value } = this.props;
+    const { value, className } = this.props;
+
+    const classList = [css.TripTypePicker];
+
+    if (className) {
+      classList.push(className);
+    }
 
     return (
-      <ul className="trip-type-picker">
+      <ul className={classList.join(' ')}>
         <li>
           <Radio
             id="trip-type-return"

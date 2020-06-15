@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './SearchDetails.css';
+import css from './SearchDetails.module.css';
 import switchDirection from '../../../../Assets/Images/switch.svg';
 import arrowRight from '../../../../Assets/Images/arrow-right.svg';
 import { TripSearchData } from '../../../../Components/TripSearch/TripSearchData';
@@ -10,19 +10,29 @@ interface SearchDetailsProps {
   locale: string;
   data: TripSearchData;
   toggleEdit: () => void;
+  className?: string;
 }
 
-export default function SearchDetails(props: SearchDetailsProps): JSX.Element {
-  const { data, locale, toggleEdit } = props;
+export default function SearchDetails({
+  data,
+  locale,
+  toggleEdit,
+  className,
+}: SearchDetailsProps): JSX.Element {
   const { origin, destination } = data.originDestination;
   const { start, end } = data.dates;
   const { passengers } = data;
 
   const passengerCount = passengers.adults + passengers.children + passengers.infants;
+  const classList = [css.SearchDetails];
+
+  if (className) {
+    classList.push(className);
+  }
 
   return (
-    <div className="search-details">
-      <span className="origin-destination">
+    <div className={classList.join(' ')}>
+      <span className={css.OriginDestination}>
         {origin && (
           <span className="origin">
             <strong>{origin.code}</strong>
@@ -52,7 +62,7 @@ export default function SearchDetails(props: SearchDetailsProps): JSX.Element {
       <span className="passengers">
         {`${passengerCount} Passenger${passengerCount > 1 ? 's' : ''}`}
       </span>
-      <span className="edit-search">
+      <span className={css.EditSearch}>
         <button type="button" onClick={toggleEdit}>
           Edit Search
         </button>

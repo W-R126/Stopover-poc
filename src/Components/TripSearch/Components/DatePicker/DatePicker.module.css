@@ -1,38 +1,38 @@
-.date-picker {
+.DatePicker {
   display: inline-flex;
   flex-flow: row wrap;
   user-select: none;
   position: relative;
 }
 
-.date-picker > .outbound,
-.date-picker > .inbound {
+.Outbound,
+.Inbound {
   width: 50%;
   display: inline-flex;
   flex-flow: column;
 }
 
-.date-picker:not(.return-trip) > .outbound {
+.DatePicker:not(.ReturnTrip) > .Outbound {
   width: 100%;
 }
 
-.date-picker > .outbound > input,
-.date-picker > .inbound > input {
+.Outbound > input,
+.Inbound > input {
   width: 100%;
   z-index: 0;
   cursor: pointer;
 }
 
-.date-picker > .outbound > input:focus,
-.date-picker > .inbound > input:focus {
+.Outbound > input:focus,
+.Inbound > input:focus {
   z-index: 1 !important;
 }
 
-.date-picker[aria-expanded='false'] > .modal-wrapper {
+.DatePicker[aria-expanded='false'] > .ModalWrapper {
   display: none;
 }
 
-.date-picker > .modal-wrapper > .calendar-wrapper {
+.CalendarWrapper {
   width: 700px;
   position: absolute;
   top: 91px;
@@ -46,63 +46,63 @@
   z-index: 1;
 }
 
-html:not([dir='rtl']) .date-picker > .modal-wrapper > .calendar-wrapper {
+html:not([dir='rtl']) .CalendarWrapper {
   right: 0;
 }
 
-html[dir='rtl'] .date-picker > .modal-wrapper > .calendar-wrapper {
+html[dir='rtl'] .CalendarWrapper {
   left: 0;
 }
 
-.date-picker > .modal-wrapper > .calendar-wrapper > button {
+.CalendarWrapper > button {
   width: 100%;
   margin-top: 24px;
 }
 
 @media screen and (max-width: 900px) {
-  .date-picker > .modal-wrapper > .calendar-wrapper {
+  .CalendarWrapper {
     width: 100%;
   }
 }
 
 @media screen and (min-width: 481px) {
-  html[dir='rtl'] .date-picker > .inbound > input,
-  html:not([dir='rtl']) .date-picker.return-trip > .outbound > input {
+  html[dir='rtl'] .Inbound > input,
+  html:not([dir='rtl']) .DatePicker.ReturnTrip > .Outbound > input {
     border-right: 0;
   }
 
-  html:not([dir='rtl']) .date-picker > .inbound > input:not(:focus) {
+  html:not([dir='rtl']) .Inbound > input:not(:focus) {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
 
-  html[dir='rtl'] .date-picker > .inbound > input:not(:focus),
-  html:not([dir='rtl']) .date-picker.return-trip > .outbound > input:not(:focus) {
+  html[dir='rtl'] .Inbound > input:not(:focus),
+  html:not([dir='rtl']) .DatePicker.ReturnTrip > .Outbound > input:not(:focus) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
 
-  html[dir='rtl'] .date-picker.return-trip > .outbound > input:not(:focus) {
+  html[dir='rtl'] .DatePicker.ReturnTrip > .Outbound > input:not(:focus) {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
 
-  .date-picker > .modal-wrapper > .calendar-wrapper > button {
+  .CalendarWrapper > button {
     display: none;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .date-picker > .outbound,
-  .date-picker > .inbound {
+  .Outbound,
+  .Inbound {
     width: 100%;
   }
 
-  .date-picker > .inbound {
+  .Inbound {
     margin-top: 8px;
   }
 
-  .date-picker > .modal-wrapper {
+  .ModalWrapper {
     position: fixed;
     top: 0;
     left: 0;
@@ -115,7 +115,7 @@ html[dir='rtl'] .date-picker > .modal-wrapper > .calendar-wrapper {
     background-color: rgba(0, 0, 0, 0.7);
   }
 
-  .date-picker > .modal-wrapper > .calendar-wrapper {
+  .CalendarWrapper {
     margin-top: calc(50vh - 210px);
     position: static;
     box-shadow: none;

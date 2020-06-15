@@ -1,4 +1,4 @@
-.flight-search-result {
+.FlightSearchResult {
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -7,12 +7,12 @@
   user-select: none;
 }
 
-.flight-search-result > .header > .origin-destination {
+.OriginDestination {
   display: flex;
   align-items: center;
 }
 
-.flight-search-result > .header > .origin-destination > img {
+.OriginDestination > img {
   transform: rotateZ(90deg);
   background-color: #f2e8d0;
   padding: 8px;
@@ -21,29 +21,40 @@
   height: 38px;
 }
 
-.flight-search-result > .header > .origin-destination > strong {
+.OriginDestination > strong {
   margin: 0 16px;
   text-transform: uppercase;
   font-size: 18px;
   font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
 }
 
-.flight-search-result > .result {
+.Result {
   padding-top: 8px;
 }
 
-.flight-search-result > .result > .searching {
+.Searching {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.flight-search-result > .result > .searching > img {
+.Searching > img {
   height: 48px;
   margin: 0 8px;
 }
 
-.flight-search-result > .result > .no-result,
-.flight-search-result > .result > .day-ribbon {
+.NoResult,
+.DayRibbon {
   margin-top: 16px;
+}
+
+.FlightEntries > .FlightEntry {
+  width: 100%;
+  margin-top: 16px;
+}
+
+@media screen and (max-width: 650px) {
+  .FlightSearchResult {
+    padding: 16px;
+  }
 }

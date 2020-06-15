@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './AmountPicker.css';
+import css from './AmountPicker.module.css';
 
 interface AmountPickerProps {
   value: number;
@@ -10,6 +10,7 @@ interface AmountPickerProps {
   title: string;
   description: string;
   onChange: (value: number) => void;
+  className?: string;
 }
 
 export default class AmountPicker extends React.Component<AmountPickerProps, {}> {
@@ -44,18 +45,25 @@ export default class AmountPicker extends React.Component<AmountPickerProps, {}>
       icon,
       title,
       description,
+      className,
     } = this.props;
 
+    const classList = [css.AmountPicker];
+
+    if (className) {
+      classList.push(className);
+    }
+
     return (
-      <div className="amount-picker">
+      <div className={classList.join(' ')}>
         <img src={icon} alt={title} />
-        <div className="info">
-          <span className="title">{title}</span>
-          <span className="description">{description}</span>
+        <div className={css.Info}>
+          <span className={css.Title}>{title}</span>
+          <span className={css.Description}>{description}</span>
         </div>
-        <div className="amount">
+        <div className={css.Amount}>
           <button
-            className="decrease"
+            className={css.Decrease}
             type="button"
             onClick={this.decrease}
             disabled={value === min}
@@ -66,7 +74,7 @@ export default class AmountPicker extends React.Component<AmountPickerProps, {}>
             {value}
           </span>
           <button
-            className="increase"
+            className={css.Increase}
             type="button"
             onClick={this.increase}
             disabled={value === max}

@@ -1,0 +1,79 @@
+.BookingView > .progress {
+  z-index: 1;
+  position: relative;
+}
+
+.BookingView > .ContentWrapper {
+  position: relative;
+}
+
+.CancelSearch {
+  position: absolute;
+  top: 42px;
+  font-size: 0;
+  border: 0;
+  background-color: transparent;
+  outline: 0;
+  cursor: pointer;
+  color: #4e4c4a;
+  transition:
+    right 300ms,
+    left 300ms,
+    top 300ms;
+}
+
+html:not([dir='rtl']) .CancelSearch {
+  right: 42px;
+}
+
+html[dir='rtl'] .CancelSearch {
+  left: 42px;
+}
+
+.CancelSearch::before {
+  content: '×';
+  font-size: 32px;
+  line-height: 0.5;
+}
+
+.SearchDetails,
+.TripSearch {
+  margin-top: 24px;
+  width: 100%;
+}
+
+.SelectFlightHeader {
+  font-size: 18px;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-weight: 300;
+  padding: 24px;
+  transition: padding 300ms;
+}
+
+@media screen and (max-width: 768px) {
+  html:not([dir='rtl']) .CancelSearch {
+    right: 26px;
+  }
+
+  html[dir='rtl'] .CancelSearch {
+    left: 26px;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .CancelSearch {
+    top: 36px;
+  }
+
+  html:not([dir='rtl']) .CancelSearch {
+    right: 18px;
+  }
+
+  html[dir='rtl'] .CancelSearch {
+    left: 18px;
+  }
+
+  .SelectFlightHeader {
+    padding: 16px;
+  }
+}

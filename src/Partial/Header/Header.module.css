@@ -1,4 +1,4 @@
-header {
+.Header {
   height: 93px;
   position: fixed;
   top: 0;
@@ -9,11 +9,11 @@ header {
   z-index: 100;
 }
 
-.header-spacer {
+.HeaderSpacer {
   margin-top: 93px;
 }
 
-header > .content-wrapper {
+.ContentWrapper {
   height: 100%;
   padding: 0 24px !important;
   display: flex;
@@ -21,16 +21,16 @@ header > .content-wrapper {
   align-items: center;
 }
 
-header > .content-wrapper > .logo > img {
+.Logo > img {
   height: 44px;
   vertical-align: top;
 }
 
-header > .content-wrapper > nav {
+.ContentWrapper > nav {
   height: 100%;
 }
 
-header > .content-wrapper > nav > a {
+.ContentWrapper > nav > a {
   font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
   font-size: 18px;
   display: inline-flex;
@@ -44,7 +44,7 @@ header > .content-wrapper > nav > a {
 }
 
 @media screen and (max-width: 1144px) {
-  header > .content-wrapper > nav {
+  .ContentWrapper > nav {
     display: none;
   }
 }

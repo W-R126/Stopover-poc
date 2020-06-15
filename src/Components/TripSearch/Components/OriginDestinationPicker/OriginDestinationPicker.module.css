@@ -1,0 +1,105 @@
+.OriginDestinationPicker {
+  display: inline-flex;
+  flex-flow: row;
+  position: relative;
+  user-select: none;
+}
+
+.OriginDestinationPicker > div {
+  width: 50%;
+}
+
+.OriginDestinationPicker > button {
+  background-color: #fff;
+  border: 1px solid #4e4c4a;
+  padding: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  outline: 0;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+}
+
+.OriginDestinationPicker > button:disabled {
+  cursor: not-allowed;
+}
+
+.OriginDestinationPicker > button:focus {
+  border-color: #fff;
+  box-shadow:
+    0 0 0 2px #6997d3,
+    1px 1px 5px rgba(0, 0, 0, 0.4);
+}
+
+.OriginDestinationPicker > button > img {
+  border: 2px solid #fff;
+  border-radius: 50%;
+  height: 100%;
+  width: 100%;
+}
+
+@media screen and (min-width: 481px) {
+  html:not([dir='rtl']) .Origin > .AirportSearch:not(.AirportSearchFocused) .AirportSearchWrapper,
+  html[dir='rtl'] .Destination > .AirportSearch:not(.AirportSearchFocused) .AirportSearchWrapper {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 1px solid transparent;
+  }
+
+  html:not([dir='rtl']) .Origin > .AirportSearch .AirportSearchWrapper > input,
+  html[dir='rtl'] .Destination > .AirportSearch .AirportSearchWrapper > input {
+    padding-right: 30px;
+  }
+
+  html[dir='rtl'] .Origin > .AirportSearch:not(.AirportSearchFocused) .AirportSearchWrapper,
+  html:not([dir='rtl']) .Destination > .AirportSearch:not(.AirportSearchFocused) .AirportSearchWrapper {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  html[dir='rtl'] .Origin > .AirportSearch .AirportSearchWrapper > input,
+  html:not([dir='rtl']) .Destination > .AirportSearch .AirportSearchWrapper > input {
+    padding-left: 30px;
+  }
+
+  .OriginDestinationPicker > button {
+    position: relative;
+    top: 34px;
+    margin: 0 -17px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .OriginDestinationPicker {
+    flex-flow: row wrap;
+  }
+
+  .OriginDestinationPicker > div {
+    width: 100%;
+  }
+
+  .OriginDestinationPicker > .destination {
+    margin-top: 8px;
+  }
+
+  .OriginDestinationPicker > button {
+    position: absolute;
+    height: 44px;
+    width: 44px;
+    top: 71px;
+  }
+
+  html:not([dir='rtl']) .OriginDestinationPicker > button {
+    right: 8px;
+  }
+
+  html[dir='rtl'] .OriginDestinationPicker > button {
+    left: 8px;
+  }
+
+  .OriginDestinationPicker > button > img {
+    transform: rotateZ(90deg);
+  }
+}

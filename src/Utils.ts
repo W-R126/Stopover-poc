@@ -1,8 +1,17 @@
 import { TripSearchData } from './Components/TripSearch/TripSearchData';
 import { TripType } from './Enums/TripType';
 import { CabinType } from './Enums/CabinType';
+import { CoordinateModel } from './Models/CoordinateModel';
 
 export default class Utils {
+  static async sleep(timeMs: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, timeMs));
+  }
+
+  static getDistance(a: CoordinateModel, b: CoordinateModel): number {
+    return Math.sqrt((a.lat - b.lat) ** 2 + (a.long - b.long) ** 2);
+  }
+
   static getWeekdays(locale: string): string[] {
     const date = new Date(2020, 4, 24);
 
@@ -14,6 +23,32 @@ export default class Utils {
     }
 
     return result;
+  }
+
+  static getTimeDelta(a: Date, b: Date): string {
+    const delta = Math.abs(a.valueOf() - b.valueOf());
+
+    const days = Math.floor(delta / 86400000);
+    const hours = Math.floor((delta - days * 86400000) / 3600000);
+    const minutes = Math.floor((delta - (days * 86400000 + hours * 3600000)) / 60000);
+
+    let result = `${minutes < 10 ? `0${minutes}` : minutes}m`;
+
+    if (hours > 0) {
+      result = `${hours < 10 ? `0${hours}` : hours}h ${result}`;
+    }
+
+    if (days > 0) {
+      result = `${days}d ${result}`;
+    }
+
+    return result;
+  }
+
+  static getHourMinuteString(date: Date): string {
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    return `${hour < 10 ? `0${hour}` : hour}:${minute < 10 ? `0${minute}` : minute}`;
   }
 
   static getDateString(date: Date): string {

@@ -1,7 +1,7 @@
 import React from 'react';
 import Utils from '../../../../Utils';
 
-import './Month.css';
+import css from './Month.module.css';
 
 interface MonthProps {
   month: Date;
@@ -12,6 +12,7 @@ interface MonthProps {
   onSelectionEnd: (end: Date) => void;
   start?: Date;
   end?: Date;
+  className?: string;
 }
 
 interface MonthState {
@@ -138,6 +139,7 @@ export default class Month extends React.Component<MonthProps, MonthState> {
       start,
       span,
       selecting,
+      className,
     } = this.props;
 
     let { end } = this.props;
@@ -149,24 +151,38 @@ export default class Month extends React.Component<MonthProps, MonthState> {
     const { days, hoveredDay } = this.state;
     const negative = (hoveredDay && start && Utils.compareDates(start, hoveredDay) === 1);
 
+    const classList = [css.Month];
+
+    if (className) {
+      classList.push(className);
+    }
+
+    if (selecting) {
+      classList.push(css.Selecting);
+    }
+
+    if (negative) {
+      classList.push(css.Negative);
+    }
+
     return (
-      <div className={`month${selecting ? ' selecting' : ''}${negative ? ' negative' : ''}`}>
-        <span className="title">
+      <div className={classList.join(' ')}>
+        <span className={css.Title}>
           {`${month.toLocaleDateString(locale, { month: 'long' })} ${month.getFullYear()}`}
         </span>
-        <div className="weekdays">
+        <div className={css.Weekdays}>
           {this.weekdays.map((weekday, idx) => (
             <span key={`weekday-${idx}`}>
               {weekday.substr(0, 3)}
             </span>
           ))}
         </div>
-        <div className="days" onMouseOut={(): void => this.onMouseOverDay(undefined)}>
+        <div className={css.Days} onMouseOut={(): void => this.onMouseOverDay(undefined)}>
           {days.map((day, idx) => {
-            const className: string[] = [];
+            const dayClassList: string[] = [];
 
             if (day === undefined || day < this.today) {
-              className.push('disabled');
+              dayClassList.push(css.Disabled);
             } else if (selecting && day && hoveredDay && start) {
               if (
                 (
@@ -180,7 +196,7 @@ export default class Month extends React.Component<MonthProps, MonthState> {
                   && Utils.compareDates(day, start) === 1
                 )
               ) {
-                className.push('in-span');
+                dayClassList.push(css.InSpan);
               }
             }
 
@@ -191,15 +207,15 @@ export default class Month extends React.Component<MonthProps, MonthState> {
               && Utils.compareDates(day, start) === 1
               && Utils.compareDates(day, end) === -1
             ) {
-              className.push('in-span');
+              dayClassList.push(css.InSpan);
             }
 
             if (day && start && Utils.compareDates(day, start) === 0) {
-              className.push('selection-start');
+              dayClassList.push(css.SelectionStart);
             }
 
             if (day && end && Utils.compareDates(day, end) === 0) {
-              className.push('selection-end');
+              dayClassList.push(css.SelectionEnd);
             }
 
             const selected = (
@@ -213,7 +229,7 @@ export default class Month extends React.Component<MonthProps, MonthState> {
             return (
               <span
                 key={`day-${idx}`}
-                className={className.join(' ')}
+                className={dayClassList.join(' ')}
                 role="option"
                 aria-selected={selected}
                 onMouseOver={(): void => this.onMouseOverDay(day)}

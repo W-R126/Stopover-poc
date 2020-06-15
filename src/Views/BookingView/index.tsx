@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
-import './BookingView.css';
+import css from './BookingView.module.css';
 import TripSearch from '../../Components/TripSearch';
 import { TripType } from '../../Enums/TripType';
 import { CabinType } from '../../Enums/CabinType';
@@ -157,22 +157,23 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     const tripSearchValid = Utils.validateTripSearchData(tripSearchData);
 
     return (
-      <div className="booking-view">
+      <div className={css.BookingView}>
         <Progress step={ProgressStep.flights} />
-        <div className="content-wrapper">
+        <div className={`${css.ContentWrapper} content-wrapper`}>
           {editing
             ? (
               <>
                 {tripSearchValid && (
                   <button
                     type="button"
-                    className="btn-cancel-search"
+                    className={css.CancelSearch}
                     onClick={(): void => this.onSearch(true)}
                   >
                     Cancel
                   </button>
                 )}
                 <TripSearch
+                  className={css.TripSearch}
                   replaceOnSearch
                   locale={locale}
                   airportService={airportService}
@@ -184,6 +185,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
             )
             : (
               <SearchDetails
+                className={css.SearchDetails}
                 data={tripSearchData}
                 locale={locale}
                 toggleEdit={this.toggleEdit}
@@ -191,7 +193,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
             )}
           {tripSearchValid && (
             <>
-              <h1 className="select-flight-header">Select outbound flight</h1>
+              <h1 className={css.SelectFlightHeader}>Select outbound flight</h1>
               <FlightSearchResult
                 tripSearchData={tripSearchData}
                 flightService={flightService}

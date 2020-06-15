@@ -1,11 +1,13 @@
 import React from 'react';
 
-import './AirportSearch.css';
+import css from './AirportSearch.module.css';
 import { AirportModel } from '../../../../Models/AirportModel';
 
 interface AirportSearchProps {
   id?: string;
   className?: string;
+  wrapperClassName?: string;
+  focusedClassName?: string;
   style?: React.CSSProperties;
   placeholder?: string;
   tabIndex: number;
@@ -256,10 +258,12 @@ export default class AirportSearch extends React.Component<
   render(): JSX.Element {
     const {
       id,
-      className: propClassName,
+      className,
       style,
       placeholder,
       value,
+      wrapperClassName,
+      focusedClassName,
     } = this.props;
 
     const {
@@ -273,24 +277,34 @@ export default class AirportSearch extends React.Component<
     const { filteredAirports } = this;
 
     const showCount = showCountFactor * 50;
-    const className = ['airport-search'];
+    const classList = [css.AirportSearch];
 
-    if (propClassName) {
-      className.push(propClassName);
+    if (className) {
+      classList.push(className);
     }
 
     if (focused) {
-      className.push('focused');
+      classList.push(css.Focused);
+
+      if (focusedClassName) {
+        classList.push(focusedClassName);
+      }
+    }
+
+    const wrapperClassList = [css.Wrapper];
+
+    if (wrapperClassName) {
+      wrapperClassList.push(wrapperClassName);
     }
 
     return (
       <div
-        className={className.join(' ')}
+        className={classList.join(' ')}
         style={style}
         aria-expanded={expanded}
       >
-        <div className="modal-wrapper">
-          <div className="wrapper">
+        <div className={css.ModalWrapper}>
+          <div className={wrapperClassList.join(' ')}>
             <input
               type="text"
               id={id}
@@ -301,51 +315,59 @@ export default class AirportSearch extends React.Component<
               onKeyDown={this.onKeyDown}
               onBlur={this.onBlur}
             />
-            <div className="result" ref={this.resultRef}>
+            <div className={css.Result} ref={this.resultRef}>
               {filteredAirports.length === 0 && (
-                <div className="no-result">
+                <div className={css.NoResult}>
                   No result
                 </div>
               )}
               {filteredAirports
                 .slice(0, showCount)
-                .map((airport, idx) => (
-                  <div
-                    className={`airport${hoveredIndex === idx ? ' hovered' : ''}`}
-                    key={`airport-${airport.code}`}
-                    role="option"
-                    aria-selected={value?.code === airport.code}
-                    onMouseMove={(): void => {
-                      if (hoveredIndex !== idx) {
-                        this.setState({ hoveredIndex: idx });
-                      }
-                    }}
-                    onMouseDown={(e): void => {
-                      e.stopPropagation();
-                      e.preventDefault();
+                .map((airport, idx) => {
+                  const airportClassList = [css.Airport];
 
-                      this.select(airport);
-                      this.collapse();
-                    }}
-                  >
-                    <div className="row">
-                      <span className="city-name">
-                        {airport.cityName}
-                      </span>
-                      <span className="airport-code">
-                        {airport.code}
-                      </span>
+                  if (hoveredIndex === idx) {
+                    airportClassList.push(css.Hover);
+                  }
+
+                  return (
+                    <div
+                      className={airportClassList.join(' ')}
+                      key={`airport-${airport.code}`}
+                      role="option"
+                      aria-selected={value?.code === airport.code}
+                      onMouseMove={(): void => {
+                        if (hoveredIndex !== idx) {
+                          this.setState({ hoveredIndex: idx });
+                        }
+                      }}
+                      onMouseDown={(e): void => {
+                        e.stopPropagation();
+                        e.preventDefault();
+
+                        this.select(airport);
+                        this.collapse();
+                      }}
+                    >
+                      <div>
+                        <span className={css.CityName}>
+                          {airport.cityName}
+                        </span>
+                        <span className={css.AirportCode}>
+                          {airport.code}
+                        </span>
+                      </div>
+                      <div>
+                        <span className={css.AirportName}>
+                          {airport.name}
+                        </span>
+                        <span className={css.CountryName}>
+                          {airport.countryName}
+                        </span>
+                      </div>
                     </div>
-                    <div className="row">
-                      <span className="airport-name">
-                        {airport.name}
-                      </span>
-                      <span className="country-name">
-                        {airport.countryName}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
             </div>
           </div>
         </div>

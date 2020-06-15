@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './Checkbox.css';
+import css from './Checkbox.module.css';
 
 type CheckboxProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>;
 
@@ -13,12 +13,18 @@ export default function Checkbox(props: CheckboxProps): JSX.Element {
     ...inputProps
   } = props;
 
+  const classList = [css.Label];
+
+  if (className) {
+    classList.push(className);
+  }
+
   return (
     <>
-      <input type="checkbox" className="ui-checkbox-input" id={id} {...inputProps} />
+      <input type="checkbox" className={css.Checkbox} id={id} {...inputProps} />
       <label
         htmlFor={id}
-        className={`ui-checkbox-label${className ? ` ${className}` : ''}`}
+        className={classList.join(' ')}
         style={style}
       >
         <span />

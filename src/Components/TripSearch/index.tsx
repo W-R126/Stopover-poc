@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
-import './TripSearch.css';
+import css from './TripSearch.module.css';
 import { TripType } from '../../Enums/TripType';
 import { CabinType } from '../../Enums/CabinType';
 import AirportService from '../../Services/AirportService';
@@ -23,6 +23,7 @@ interface TripSearchProps extends RouteComponentProps {
   airportService: AirportService;
   onSearch?: () => void;
   replaceOnSearch?: boolean;
+  className?: string;
 }
 
 class TripSearch extends React.Component<TripSearchProps, {}> {
@@ -96,7 +97,12 @@ class TripSearch extends React.Component<TripSearchProps, {}> {
   }
 
   render(): JSX.Element {
-    const { data, airportService, locale } = this.props;
+    const {
+      data,
+      airportService,
+      locale,
+      className,
+    } = this.props;
     const cabinTypeLocale: { [key: string]: string } = {
       all: 'All Cabins',
       economy: 'Economy',
@@ -105,26 +111,37 @@ class TripSearch extends React.Component<TripSearchProps, {}> {
       residence: 'Residence',
     };
 
+    const classList = [css.TripSearch];
+
+    if (className) {
+      classList.push(className);
+    }
+
     return (
-      <div className="trip-search">
+      <div className={classList.join(' ')}>
         <TripTypePicker
+          className={css.TripTypePicker}
           value={data.tripType}
           onChange={this.onTripTypeChange}
         />
         <OriginDestinationPicker
+          className={css.OriginDestinationPicker}
           data={data.originDestination}
           onChange={this.onOriginDestinationChange}
           airportService={airportService}
         />
         <DatePicker
+          className={css.DatePicker}
           locale={locale}
           data={data.dates}
           onChange={this.onDatesChange}
           span={data.tripType === TripType.return}
         />
-        <div className="cabin-type">
+        <div className={css.CabinType}>
           <label htmlFor="cabin-type">Cabin</label>
           <Select
+            className={css.CabinTypeSelect}
+            wrapperClassName={css.CabinTypeSelectWrapper}
             id="cabin-type"
             value={data.cabinType}
             onChange={this.onCabinTypeChange}
@@ -136,16 +153,18 @@ class TripSearch extends React.Component<TripSearchProps, {}> {
             ))}
           </Select>
         </div>
-        <div className="passengers">
+        <div className={css.Passengers}>
           <label htmlFor="passengers">Guests</label>
           <PassengerPicker
+            className={css.PassengerPicker}
+            wrapperClassName={css.PassengerPickerWrapper}
             id="passengers"
             data={data.passengers}
             onChange={this.onPassengersChange}
           />
         </div>
-        <div className="search-flight">
-          <div className="book-with-miles">
+        <div className={css.SearchFlight}>
+          <div className={css.BookWithMiles}>
             <Checkbox
               checked={data.bookWithMiles}
               id="book-with-miles"

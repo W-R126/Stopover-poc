@@ -1,0 +1,21 @@
+.TripTypePicker {
+  display: inline-flex;
+  flex-flow: row wrap;
+  user-select: none;
+}
+
+html:not([dir='rtl']) .TripTypePicker {
+  margin-left: -8px;
+}
+
+html[dir='rtl'] .TripTypePicker {
+  margin-right: -8px;
+}
+
+html:not([dir='rtl']) .TripTypePicker > li {
+  margin-left: 8px;
+}
+
+html[dir='rtl'] .TripTypePicker > li {
+  margin-right: 8px;
+}

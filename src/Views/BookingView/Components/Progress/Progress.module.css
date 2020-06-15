@@ -1,4 +1,4 @@
-.progress {
+.Progress {
   width: 100%;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -8,13 +8,13 @@
   user-select: none;
 }
 
-.progress > span {
+.Progress > span {
   color: #959492;
   display: flex;
   align-items: center;
 }
 
-.progress > span:not(:last-child)::after {
+.Progress > span:not(:last-child)::after {
   display: block;
   content: '';
   border-top: 1px dashed #b8b7b7;
@@ -22,7 +22,7 @@
   margin: 0 16px;
 }
 
-.progress > .current {
+.Progress > .Current {
   color: #bd8b13;
   font-weight: 600;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './Select.css';
+import css from './Select.module.css';
 
 interface SelectProps<T> {
   id?: string;
@@ -9,6 +9,7 @@ interface SelectProps<T> {
   value: T;
   tabIndex: number;
   onChange: (value: T) => void;
+  wrapperClassName?: string;
 }
 
 interface SelectState {
@@ -108,6 +109,7 @@ export default class Select<T> extends React.Component<SelectProps<T>, SelectSta
     const {
       id,
       className,
+      wrapperClassName,
       style,
       value,
       tabIndex,
@@ -116,10 +118,22 @@ export default class Select<T> extends React.Component<SelectProps<T>, SelectSta
     const { options } = this;
     const selected = options.find((option) => option.props.value === value);
 
+    const classList = [css.Select];
+
+    if (className) {
+      classList.push(className);
+    }
+
+    const wrapperClassList = [css.Wrapper];
+
+    if (wrapperClassName) {
+      wrapperClassList.push(wrapperClassName);
+    }
+
     return (
       <div
         id={id}
-        className={`ui-select${className ? ` ${className}` : ''}`}
+        className={classList.join(' ')}
         style={style}
         aria-expanded={expanded}
         aria-controls={`${id ?? ''}-options`}
@@ -129,17 +143,17 @@ export default class Select<T> extends React.Component<SelectProps<T>, SelectSta
         onBlur={this.collapse}
         onKeyDown={this.onKeyDown}
       >
-        <div className="wrapper">
-          <div className="selected">
+        <div className={wrapperClassList.join(' ')}>
+          <div className={css.Selected}>
             {selected}
           </div>
 
-          <div className="modal-wrapper">
-            <div className="options" id={`${id ?? ''}-options`}>
+          <div className={css.ModalWrapper}>
+            <div className={css.Options} id={`${id ?? ''}-options`}>
               {options.map((option) => (
                 <div
                   key={option.key ?? ''}
-                  className="option"
+                  className={css.Option}
                   role="option"
                   aria-selected={option === selected}
                   onClick={(): void => this.select(option.props.value)}

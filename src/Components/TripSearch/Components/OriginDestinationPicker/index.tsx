@@ -1,10 +1,11 @@
 import React from 'react';
 
-import './OriginDestinationPicker.css';
+import css from './OriginDestinationPicker.module.css';
 import toggleBtn from '../../../../Assets/Images/toggle-btn.svg';
 import { AirportModel } from '../../../../Models/AirportModel';
 import AirportSearch from '../AirportSearch';
 import AirportService from '../../../../Services/AirportService';
+import Utils from '../../../../Utils';
 
 export interface OriginDestinationPickerData {
   origin?: AirportModel;
@@ -15,6 +16,7 @@ interface OriginDestinationPickerProps {
   data: OriginDestinationPickerData;
   airportService: AirportService;
   onChange: (data: OriginDestinationPickerData) => void;
+  className?: string;
 }
 
 interface OriginDestinationPickerState {
@@ -72,17 +74,13 @@ export default class OriginDestinationPicker extends React.Component<
     const { airports } = this.state;
 
     let origin = airports[0];
-    let currDistance = Math.abs(
-      (origin.coordinates.lat - lat) + (origin.coordinates.long - long),
-    );
+    let distance = Utils.getDistance(origin.coordinates, { long, lat });
 
     airports.forEach((airport) => {
-      const distance = Math.abs(
-        (airport.coordinates.lat - lat) + (airport.coordinates.long - long),
-      );
+      const nextDistance = Utils.getDistance(airport.coordinates, { long, lat });
 
-      if (distance < currDistance) {
-        currDistance = distance;
+      if (nextDistance < distance) {
+        distance = nextDistance;
         origin = airport;
       }
     });
@@ -102,13 +100,22 @@ export default class OriginDestinationPicker extends React.Component<
 
   render(): JSX.Element {
     const { airports } = this.state;
-    const { data } = this.props;
+    const { data, className } = this.props;
+
+    const classList = [css.OriginDestinationPicker];
+
+    if (className) {
+      classList.push(className);
+    }
 
     return (
-      <div className="origin-destination-picker">
-        <div className="origin">
+      <div className={classList.join(' ')}>
+        <div className={css.Origin}>
           <label htmlFor="trip-origin">Flying from</label>
           <AirportSearch
+            className={css.AirportSearch}
+            wrapperClassName={css.AirportSearchWrapper}
+            focusedClassName={css.AirportSearchFocused}
             airports={airports}
             exclude={data.destination ? [data.destination] : []}
             onChange={this.onOriginChange}
@@ -126,13 +133,15 @@ export default class OriginDestinationPicker extends React.Component<
           <img src={toggleBtn} alt="Switch direction" />
         </button>
 
-        <div className="destination">
+        <div className={css.Destination}>
           <label htmlFor="trip-destination">Flying to</label>
           <AirportSearch
+            className={css.AirportSearch}
+            wrapperClassName={css.AirportSearchWrapper}
+            focusedClassName={css.AirportSearchFocused}
             airports={airports}
             exclude={data.origin ? [data.origin] : []}
             onChange={this.onDestinationChange}
-            className="destination"
             id="trip-destination"
             placeholder="Where are you headed?"
             value={data.destination}

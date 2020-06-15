@@ -2,7 +2,7 @@ import React from 'react';
 
 import Month from './Month';
 
-import './Calendar.css';
+import css from './Calendar.module.css';
 import navigationArrow from '../../../../Assets/Images/navigation-arrow.svg';
 import { CalendarData } from './CalendarData';
 
@@ -13,6 +13,7 @@ interface CalendarProps {
   minDate: Date;
   locale: string;
   onChange: (data: CalendarData) => void;
+  className?: string;
 }
 
 interface CalendarState {
@@ -155,6 +156,7 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
       locale,
       minDate,
       maxDate,
+      className,
     } = this.props;
 
     const {
@@ -166,11 +168,17 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
     const month2 = new Date(month1);
     month2.setMonth(month2.getMonth() + 1);
 
+    const classList = [css.Calendar];
+
+    if (className) {
+      classList.push(className);
+    }
+
     return (
-      <div className="calendar">
+      <div className={classList.join(' ')}>
         <button
           type="button"
-          className="navigate-left"
+          className={css.NavigateBack}
           onClick={this.navigateBack}
           disabled={minDate >= month1}
           tabIndex={-1}
@@ -178,6 +186,7 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
           <img src={navigationArrow} alt="Nagivate left" />
         </button>
         <Month
+          className={css.Month}
           selecting={selecting}
           month={month1}
           span={span}
@@ -189,6 +198,7 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
         />
         {displayTwoMonths && (
           <Month
+            className={css.Month}
             selecting={selecting}
             month={month2}
             span={span}
@@ -201,7 +211,7 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
         )}
         <button
           type="button"
-          className="navigate-right"
+          className={css.NavigateForward}
           onClick={this.navigateForward}
           disabled={maxDate <= (displayTwoMonths ? month2 : month1)}
           tabIndex={-1}

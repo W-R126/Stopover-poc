@@ -1,4 +1,4 @@
-.day-ribbon {
+.DayRibbon {
   display: flex;
   border: 1px solid #dcdbdb;
   border-left: 0;
@@ -6,7 +6,7 @@
   padding: 8px 8px;
 }
 
-.day-ribbon > button {
+.DayRibbon > button {
   font-size: 0;
   border: 0;
   background-color: transparent;
@@ -18,22 +18,22 @@
   color: #4e4c4a;
 }
 
-.day-ribbon > button::before {
+.DayRibbon > button::before {
   font-size: 24px;
   font-family: 'Icons', Arial, Helvetica, sans-serif;
   content: '\f104';
   display: block;
 }
 
-html:not([dir='rtl']) .day-ribbon > .navigate-forward::before {
+html:not([dir='rtl']) .NavigateForward::before {
   transform: scaleX(-1);
 }
 
-html[dir='rtl'] .day-ribbon > .navigate-back::before {
+html[dir='rtl'] .NavigateBack::before {
   transform: scaleX(-1);
 }
 
-.day-ribbon > .day {
+.Day {
   flex-grow: 1;
   display: flex;
   flex-flow: column;
@@ -41,44 +41,40 @@ html[dir='rtl'] .day-ribbon > .navigate-back::before {
   justify-content: center;
   align-items: center;
   border-radius: 8px;
+  color: #b8b7b7;
 }
 
-.day-ribbon > .day:not(.selected):hover {
+.Day:not([aria-selected='true']):hover {
   background-color: #ededec;
   cursor: pointer;
+  color: #4e4c4a;
 }
 
-.day-ribbon > .day.selected {
+.Day[aria-selected='true'] {
   color: #bd8b13;
 }
 
-.day-ribbon > .day > strong {
+.Day > strong {
   font-size: 18px;
   padding-bottom: 8px;
   white-space: nowrap;
 }
 
-.day-ribbon > .day > span {
+.Day > span {
   font-size: 16px;
   text-align: center;
 }
 
-@media screen and (max-width: 650px) {
-  .flight-search-result {
-    padding: 16px;
-  }
-}
-
 @media screen and (max-width: 1130px) {
-  .day-ribbon > .day-0,
-  .day-ribbon > .day-6 {
+  .DayRibbon > :nth-child(2),
+  .DayRibbon > :nth-child(8) {
     display: none;
   }
 }
 
 @media screen and (max-width: 830px) {
-  .day-ribbon > .day-1,
-  .day-ribbon > .day-5 {
+  .DayRibbon > :nth-child(3),
+  .DayRibbon > :nth-child(7) {
     display: none;
   }
 }

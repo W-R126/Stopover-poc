@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './HomeView.css';
+import css from './HomeView.module.css';
 import TripSearch from '../../Components/TripSearch';
 import AirportService from '../../Services/AirportService';
 import { TripSearchData } from '../../Components/TripSearch/TripSearchData';
@@ -53,10 +53,11 @@ export default class HomeView extends React.Component<HomeViewProps, HomeViewSta
     const { airportService, locale } = this.props;
 
     return (
-      <div className="home-view">
-        <div className="top-image" />
-        <div className="content-wrapper">
+      <div className={css.HomeView}>
+        <div className={css.TopImage} />
+        <div className={`${css.ContentWrapper} content-wrapper`}>
           <TripSearch
+            className={css.TripSearch}
             locale={locale}
             data={data}
             onChange={this.onTripSearchChange}

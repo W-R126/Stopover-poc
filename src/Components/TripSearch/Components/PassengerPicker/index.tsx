@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './PassengerPicker.css';
+import css from './PassengerPicker.module.css';
 import adultsIcon from '../../../../Assets/Images/passenger-type-adult.svg';
 import childrenIcon from '../../../../Assets/Images/passenger-type-child.svg';
 import infantsIcon from '../../../../Assets/Images/passenger-type-infant.svg';
@@ -15,6 +15,7 @@ export interface PassengerPickerData {
 interface PassengerPickerProps {
   id?: string;
   className?: string;
+  wrapperClassName?: string;
   style?: React.CSSProperties;
   data: PassengerPickerData;
   tabIndex: number;
@@ -218,6 +219,7 @@ export default class PassengerPicker extends React.Component<
     const {
       id,
       className,
+      wrapperClassName,
       style,
       tabIndex,
       data,
@@ -226,32 +228,44 @@ export default class PassengerPicker extends React.Component<
     const { expanded } = this.state;
     const { passengersDetailed, passengers, maxPassengers } = this;
 
+    const classList = [css.PassengerPicker];
+
+    if (className) {
+      classList.push(className);
+    }
+
+    const wrapperClassList = [css.Wrapper];
+
+    if (wrapperClassName) {
+      wrapperClassList.push(wrapperClassName);
+    }
+
     return (
       <div
         ref={this.selfRef}
         id={id}
-        className={`passenger-picker${className ? ` ${className}` : ''}`}
+        className={classList.join(' ')}
         style={style}
         tabIndex={tabIndex}
         aria-expanded={expanded}
       >
         <div
-          className="wrapper"
+          className={wrapperClassList.join(' ')}
           role="button"
           onClick={this.toggle}
         >
-          <div className="header">
-            <span className="passengers-detailed" ref={this.passengersDetailedRef}>
+          <div className={css.Header}>
+            <span className={css.PassengersDetailed} ref={this.passengersDetailedRef}>
               {passengersDetailed}
             </span>
-            <span className="passengers" ref={this.passengersRef}>
+            <span className={css.Passengers} ref={this.passengersRef}>
               {passengers}
             </span>
           </div>
 
-          <div className="modal-wrapper">
+          <div className={css.ModalWrapper}>
             <div
-              className="pickers"
+              className={css.Pickers}
               role="button"
               onClick={(e): void => {
                 // Don't collapse.
@@ -260,6 +274,7 @@ export default class PassengerPicker extends React.Component<
               }}
             >
               <AmountPicker
+                className={css.AmountPicker}
                 icon={adultsIcon}
                 title="Adults"
                 description="Age 12+"
@@ -269,6 +284,7 @@ export default class PassengerPicker extends React.Component<
                 value={data.adults}
               />
               <AmountPicker
+                className={css.AmountPicker}
                 icon={childrenIcon}
                 title="Children"
                 description="Age 2-11"
@@ -278,6 +294,7 @@ export default class PassengerPicker extends React.Component<
                 value={data.children}
               />
               <AmountPicker
+                className={css.AmountPicker}
                 icon={infantsIcon}
                 title="Infants"
                 description="Under 2"

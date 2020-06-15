@@ -8,7 +8,7 @@ export default abstract class BaseService {
   constructor(baseURL?: string) {
     this.http = axios.create({
       baseURL,
-      withCredentials: true,
+      // withCredentials: true,
     });
   }
 

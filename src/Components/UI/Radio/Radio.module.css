@@ -1,4 +1,4 @@
-.ui-radio-input {
+.Radio {
   height: 0;
   width: 0;
   margin: 0;
@@ -9,7 +9,7 @@
   cursor: pointer;
 }
 
-.ui-radio-input + .ui-radio-label {
+.Label {
   font-size: 16px;
   color: #4e4c4a;
   line-height: 22.4px;
@@ -17,12 +17,12 @@
   cursor: pointer;
 }
 
-.ui-radio-input:disabled + .ui-radio-label {
+.Radio:disabled + .Label {
   color: #959492;
   cursor: not-allowed;
 }
 
-.ui-radio-input + .ui-radio-label > span {
+.Label > span {
   display: inline-block;
   vertical-align: bottom;
   width: 20px;
@@ -35,29 +35,29 @@
   font-size: 14px;
 }
 
-.ui-radio-input:disabled + .ui-radio-label > span {
+.Radio:disabled + .Label > span {
   border-color: #959492;
 }
 
-.ui-radio-input:focus + .ui-radio-label > span {
+.Radio:focus + .Label > span {
   box-shadow:
     0 0 0 3px #fff inset,
     0 0 0 2px #6997d3;
   border-color: #fff;
 }
 
-html:not([dir='rtl']) .ui-radio-input + .ui-radio-label > span {
+html:not([dir='rtl']) .Label > span {
   margin-right: 8px;
 }
 
-html[dir='rtl'] .ui-radio-input + .ui-radio-label > span {
+html[dir='rtl'] .Label > span {
   margin-left: 8px;
 }
 
-.ui-radio-input:not(:disabled) + .ui-radio-label:hover > span {
+.Radio:not(:disabled) + .Label:hover > span {
   background-color: #d7b971;
 }
 
-.ui-radio-input:not(:disabled):checked + .ui-radio-label > span {
+.Radio:not(:disabled):checked + .Label > span {
   background-color: #bd8b13;
 }

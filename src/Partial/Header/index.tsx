@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import './Header.css';
+import css from './Header.module.css';
 import etihadLogo from '../../Assets/Images/header-text-image-web.svg';
 import openExternal from '../../Assets/Images/open-external.svg';
 import searchIcon from '../../Assets/Images/search-icon.svg';
@@ -10,9 +10,9 @@ import account from '../../Assets/Images/account.svg';
 export default function Header(): JSX.Element {
   return (
     <>
-      <header>
-        <div className="content-wrapper">
-          <Link to="/" className="logo">
+      <header className={css.Header}>
+        <div className={`${css.ContentWrapper} content-wrapper`}>
+          <Link to="/" className={css.Logo}>
             <img src={etihadLogo} alt="Etihad Logo" />
           </Link>
           <nav>
@@ -34,7 +34,7 @@ export default function Header(): JSX.Element {
           </nav>
         </div>
       </header>
-      <div className="header-spacer" />
+      <div className={css.HeaderSpacer} />
     </>
   );
 }

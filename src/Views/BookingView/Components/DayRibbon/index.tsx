@@ -1,20 +1,34 @@
 import React from 'react';
 
-import './DayRibbon.css';
+import css from './DayRibbon.module.css';
 
-export default function DayRibbon(): JSX.Element {
+interface DayRibbonProps {
+  className?: string;
+}
+
+export default function DayRibbon({ className }: DayRibbonProps): JSX.Element {
+  const classList = [css.DayRibbon];
+
+  if (className) {
+    classList.push(className);
+  }
+
   return (
-    <div className="day-ribbon">
-      <button type="button" className="navigate-back">
+    <div className={classList.join(' ')}>
+      <button type="button" className={css.NavigateBack}>
         Previous
       </button>
       {[1, 2, 3, 4, 5, 6, 7].map((day, idx) => (
-        <div className={`day day-${idx}${idx === 3 ? ' selected' : ''}`} key={`day-${idx}`}>
+        <div
+          className={css.Day}
+          key={`day-${idx}`}
+          aria-selected={idx === 3}
+        >
           <strong>AED 200</strong>
           <span>{`Tue ${day} May`}</span>
         </div>
       ))}
-      <button type="button" className="navigate-forward">
+      <button type="button" className={css.NavigateForward}>
         Next
       </button>
     </div>

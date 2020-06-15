@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './DatePicker.css';
+import css from './DatePicker.module.css';
 import Calendar from '../Calendar';
 import { CalendarData } from '../Calendar/CalendarData';
 
@@ -9,6 +9,7 @@ interface DatePickerProps {
   span: boolean;
   locale: string;
   onChange: (data: CalendarData) => void;
+  className?: string;
 }
 
 interface DatePickerState {
@@ -108,19 +109,30 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
       data,
       locale,
       onChange,
+      className,
     } = this.props;
     const { expanded } = this.state;
+
+    const classList = [css.DatePicker];
+
+    if (className) {
+      classList.push(className);
+    }
+
+    if (span) {
+      classList.push(css.ReturnTrip);
+    }
 
     return (
       <div
         ref={this.selfRef}
-        className={`date-picker${span ? ' return-trip' : ''}`}
+        className={classList.join(' ')}
         aria-expanded={expanded}
         role="button"
         onClick={this.expand}
         onFocus={this.expand}
       >
-        <div className="outbound">
+        <div className={css.Outbound}>
           <label htmlFor="outbound">Outbound</label>
           <input
             type="text"
@@ -132,7 +144,7 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
         </div>
 
         {span && (
-          <div className="inbound">
+          <div className={css.Inbound}>
             <label htmlFor="inbound">Inbound</label>
             <input
               type="text"
@@ -145,12 +157,12 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
         )}
 
         <div
-          className="modal-wrapper"
+          className={css.ModalWrapper}
           role="button"
           onClick={this.collapse}
         >
           <div
-            className="calendar-wrapper"
+            className={css.CalendarWrapper}
             role="button"
             onClick={(e): void => {
               // Don't collapse.
