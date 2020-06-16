@@ -19,6 +19,7 @@ interface FlightSearchResultProps {
   departure: Date;
   flightService: FlightService;
   onDepartureChange?: (departure: Date) => void;
+  className?: string;
 }
 
 interface FlightSearchResultState {
@@ -149,11 +150,17 @@ export default class FlightSearchResult extends React.Component<
   }
 
   render(): JSX.Element {
-    const { origin, destination } = this.props;
+    const { origin, destination, className } = this.props;
     const { offers, altOffers } = this.state;
 
+    const classList = [css.FlightSearchResult];
+
+    if (className) {
+      classList.push(className);
+    }
+
     return (
-      <div className={css.FlightSearchResult}>
+      <div className={classList.join(' ')}>
         <div>
           <div className={css.OriginDestination}>
             <img src={flightIcon} alt="Flight" />

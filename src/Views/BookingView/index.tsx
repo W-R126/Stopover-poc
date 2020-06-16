@@ -178,6 +178,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
             <>
               <h1 className={css.SelectFlightHeader}>Select outbound flight</h1>
               <FlightSearchResult
+                className={css.FlightSearchResult}
                 onDepartureChange={this.onOutboundChange}
                 cabinType={cabinType}
                 departure={dates.start}

@@ -48,16 +48,29 @@
   margin-top: 16px;
 }
 
-.FlightEntries > .FlightEntry {
+.FlightEntries {
+  display: grid;
+  grid-template-columns:
+    [originDestination] max-content
+    [travelTime] auto
+    [stops] auto
+    [cabinClasses] max-content
+    [showDetails] max-content;
+    gap: 16px;
+  margin-top: 16px;
+}
+
+/* .FlightEntries > .FlightEntry {
   width: 100%;
   margin-top: 16px;
   border-bottom: 1px solid #f3f3f3;
-}
+} */
 
 .ShowMore {
-  margin-top: 24px;
+  margin-top: 8px;
   display: flex;
   justify-content: flex-end;
+  grid-column: 1 / -1;
 }
 
 .ShowMore > span {

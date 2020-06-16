@@ -50,6 +50,10 @@ html[dir='rtl'] .CancelSearch {
   transition: padding 300ms;
 }
 
+.FlightSearchResult {
+  margin-bottom: 24px;
+}
+
 @media screen and (max-width: 768px) {
   html:not([dir='rtl']) .CancelSearch {
     right: 26px;

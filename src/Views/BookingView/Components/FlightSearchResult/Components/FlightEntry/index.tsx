@@ -47,7 +47,8 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
     }
 
     return (
-      <div className={classList.join(' ')}>
+      // <div className={classList.join(' ')}>
+      <>
         <div className={css.OriginDestination}>
           <div className={css.Origin}>
             <strong>
@@ -96,7 +97,8 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
             className={css.FlightDetails}
           />
         </Collapsable>
-      </div>
+        {/* </div> */}
+      </>
     );
   }
 }
