@@ -1,108 +1,134 @@
 import React from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import css from './TripSearch.module.css';
 import { TripType } from '../../Enums/TripType';
 import { CabinType } from '../../Enums/CabinType';
 import AirportService from '../../Services/AirportService';
-import PassengerPicker, { PassengerPickerData } from './Components/PassengerPicker';
-import OriginDestinationPicker, { OriginDestinationPickerData } from './Components/OriginDestinationPicker';
+import PassengerPicker from './Components/PassengerPicker';
+import { PassengerPickerData } from './Components/PassengerPicker/PassengerPickerData';
+import OriginDestinationPicker from './Components/OriginDestinationPicker';
+import { OriginDestinationPickerData } from './Components/OriginDestinationPicker/OriginDestinationPickerData';
 import DatePicker from './Components/DatePicker';
 import TripTypePicker from './Components/TripTypePicker';
 import Select from '../UI/Select';
 import Option from '../UI/Select/Option';
-import { CalendarData } from './Components/Calendar/CalendarData';
+import { CalendarData } from './Components/DatePicker/Components/Calendar/CalendarData';
 import Checkbox from '../UI/Checkbox';
-import Utils from '../../Utils';
-import { TripSearchData } from './TripSearchData';
+import { TripSearchData, copyTripSearchData, compareTripSearchData } from './TripSearchData';
 
-interface TripSearchProps extends RouteComponentProps {
-  data: TripSearchData;
+interface TripSearchProps {
+  data?: TripSearchData;
   locale?: string;
-  onChange: (data: TripSearchData) => void;
+  onChange?: (data: TripSearchData) => void;
   airportService: AirportService;
-  onSearch?: () => void;
-  replaceOnSearch?: boolean;
+  onSearch?: (data: TripSearchData) => void;
   className?: string;
 }
 
-class TripSearch extends React.Component<TripSearchProps, {}> {
-  static readonly defaultProps: Pick<TripSearchProps, 'locale' | 'replaceOnSearch'> = {
+interface TripSearchState {
+  data: TripSearchData;
+}
+
+class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
+  static readonly defaultProps: Pick<TripSearchProps, 'locale'> = {
     locale: 'en-US',
-    replaceOnSearch: false,
   };
 
   constructor(props: TripSearchProps) {
     super(props);
 
+    const { data } = props;
+
+    this.state = {
+      data: copyTripSearchData(data),
+    };
+
+    this.onChange = this.onChange.bind(this);
     this.onTripTypeChange = this.onTripTypeChange.bind(this);
     this.onPassengersChange = this.onPassengersChange.bind(this);
     this.onCabinTypeChange = this.onCabinTypeChange.bind(this);
     this.onOriginDestinationChange = this.onOriginDestinationChange.bind(this);
     this.onDatesChange = this.onDatesChange.bind(this);
+    this.onBookWithMilesChange = this.onBookWithMilesChange.bind(this);
     this.onSearch = this.onSearch.bind(this);
   }
 
+  componentDidUpdate(prevProps: TripSearchProps): void {
+    const { data } = this.props;
+
+    if (!compareTripSearchData(prevProps.data, data)) {
+      this.setState({ data: copyTripSearchData(data) });
+    }
+  }
+
+  private onChange(data: TripSearchData): void {
+    const { onChange } = this.props;
+
+    this.setState({ data });
+
+    if (onChange) {
+      onChange(data);
+    }
+  }
+
   private onTripTypeChange(tripType: TripType): void {
-    this.onFieldChange('tripType', tripType);
+    const { data } = this.state;
+    Object.assign(data, { tripType });
+    this.onChange(data);
   }
 
   private onPassengersChange(passengers: PassengerPickerData): void {
-    this.onFieldChange('passengers', passengers);
+    const { data } = this.state;
+    Object.assign(data, { passengers });
+    this.onChange(data);
   }
 
   private onCabinTypeChange(cabinType: CabinType): void {
-    this.onFieldChange('cabinType', cabinType);
+    const { data } = this.state;
+    Object.assign(data, { cabinType });
+    this.onChange(data);
   }
 
   private onOriginDestinationChange(originDestination: OriginDestinationPickerData): void {
-    this.onFieldChange('originDestination', originDestination);
+    const { data } = this.state;
+    Object.assign(data, { originDestination });
+    this.onChange(data);
   }
 
   private onDatesChange(dates: CalendarData): void {
-    this.onFieldChange('dates', dates);
+    const { data } = this.state;
+    Object.assign(data, { dates });
+    this.onChange(data);
   }
 
-  private onBookWithMilesChange(bookWithMiles: boolean): void {
-    this.onFieldChange('bookWithMiles', bookWithMiles);
-  }
+  private onBookWithMilesChange(e: React.ChangeEvent<HTMLInputElement>): void {
+    const bookWithMiles = e.target.checked;
 
-  private onFieldChange(fieldName: string, value: any): void {
-    const { data, onChange } = this.props;
-
-    Object.assign(data, { [fieldName]: value });
-
-    onChange(data);
+    const { data } = this.state;
+    Object.assign(data, { bookWithMiles });
+    this.onChange(data);
   }
 
   private onSearch(): void {
-    const {
-      history,
-      data,
-      onSearch,
-      replaceOnSearch,
-    } = this.props;
+    const { onSearch } = this.props;
+    const { data } = this.state;
 
     // TODO: Validation.
 
     if (onSearch) {
-      onSearch();
-    }
-
-    if (replaceOnSearch) {
-      history.replace(Utils.getBookingUrl(data));
-    } else {
-      history.push(Utils.getBookingUrl(data));
+      onSearch(data);
     }
   }
 
   render(): JSX.Element {
     const {
-      data,
       airportService,
       locale,
       className,
     } = this.props;
+
+    const { data } = this.state;
+
     const cabinTypeLocale: { [key: string]: string } = {
       all: 'All Cabins',
       economy: 'Economy',
@@ -168,7 +194,7 @@ class TripSearch extends React.Component<TripSearchProps, {}> {
             <Checkbox
               checked={data.bookWithMiles}
               id="book-with-miles"
-              onChange={(e): void => this.onBookWithMilesChange(e.target.checked)}
+              onChange={this.onBookWithMilesChange}
             >
               Book with miles
             </Checkbox>
@@ -186,4 +212,4 @@ class TripSearch extends React.Component<TripSearchProps, {}> {
   }
 }
 
-export default withRouter(TripSearch);
+export default TripSearch;

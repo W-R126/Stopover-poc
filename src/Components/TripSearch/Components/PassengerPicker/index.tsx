@@ -4,13 +4,8 @@ import css from './PassengerPicker.module.css';
 import adultsIcon from '../../../../Assets/Images/passenger-type-adult.svg';
 import childrenIcon from '../../../../Assets/Images/passenger-type-child.svg';
 import infantsIcon from '../../../../Assets/Images/passenger-type-infant.svg';
-import AmountPicker from './AmountPicker';
-
-export interface PassengerPickerData {
-  adults: number;
-  children: number;
-  infants: number;
-}
+import AmountPicker from './Components/AmountPicker';
+import { PassengerPickerData } from './PassengerPickerData';
 
 interface PassengerPickerProps {
   id?: string;

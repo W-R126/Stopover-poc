@@ -3,12 +3,12 @@ import React from 'react';
 import css from './FlightEntry.module.css';
 import Collapsable from '../../../../../../Components/UI/Collapsable';
 import FlightDetails from './Components/FlightDetails';
-import { FlightModel } from '../../../../../../Models/FlightModel';
+import { GroupedOfferModel } from '../../../../../../Models/FlightModel';
 import Utils from '../../../../../../Utils';
 
 interface FlightEntryProps {
   className?: string;
-  data: FlightModel;
+  data: GroupedOfferModel;
 }
 
 interface FlightEntryState {
@@ -46,54 +46,44 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
       classList.push(css.ShowingDetails);
     }
 
-    const start = data.itineraryPart.segments[0];
-
-    const end = data.itineraryPart.segments[data.itineraryPart.segments.length - 1];
-
     return (
       <div className={classList.join(' ')}>
-        <div className={css.DepartureArrival}>
-          <strong>
-            {Utils.getHourMinuteString(start.departure)}
-          </strong>
-          <span>{`${start.origin?.cityName} ${start.origin?.code}`}</span>
-        </div>
-        <span className={css.Arrow} />
-        <div className={css.DepartureArrival}>
-          <strong>
-            {Utils.getHourMinuteString(end.arrival)}
-          </strong>
-          <span>{`${end.destination?.cityName} ${end.destination?.code}`}</span>
+        <div className={css.OriginDestination}>
+          <div className={css.Origin}>
+            <strong>
+              {Utils.getHourMinuteString(data.departure)}
+            </strong>
+            <span>{`${data.origin?.cityName} ${data.origin?.code}`}</span>
+          </div>
+          <span className={css.Arrow} />
+          <div className={css.Destination}>
+            <strong>
+              {Utils.getHourMinuteString(data.arrival)}
+            </strong>
+            <span>{`${data.destination.cityName} ${data.destination.code}`}</span>
+          </div>
         </div>
         <div className={css.TravelTime}>
-          <strong>{Utils.getTimeDelta(start.departure, end.arrival)}</strong>
+          <strong>{Utils.getTimeDelta(data.departure, data.arrival)}</strong>
           <span>Travel time</span>
         </div>
         <div className={css.Stops}>
-          <strong>{`${data.itineraryPart.segments.length - 1} Stop`}</strong>
+          <strong>{`${data.stops.length} Stop`}</strong>
           <span>
-            {
-              data.itineraryPart.segments.length > 1
-                && data
-                  .itineraryPart
-                  .segments
-                  .slice(0, data.itineraryPart.segments.length - 1)
-                  .map((segment) => segment.destination?.code)
-                  .join(', ')
-            }
+            {data.stops.join(', ')}
           </span>
         </div>
         <div className={css.Price}>
-          <button type="button">
-            <strong>From AED 895</strong>
-            <span>Economy</span>
-          </button>
-        </div>
-        <div className={css.Price}>
-          <button type="button">
-            <strong>From AED 895</strong>
-            <span>Business</span>
-          </button>
+          {Object.keys(data.cabinClasses).map((cabinClass, idx) => (
+            <button type="button" key={`cabin-class-${idx}`}>
+              <strong>
+                {`From ${
+                  data.cabinClasses[cabinClass].startingFrom.currency
+                } ${Utils.formatCurrency(data.cabinClasses[cabinClass].startingFrom.amount)}`}
+              </strong>
+              <span>{cabinClass}</span>
+            </button>
+          ))}
         </div>
         <div className={css.ShowDetails}>
           <button type="button" onClick={this.toggleDetails}>
@@ -102,7 +92,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
         </div>
         <Collapsable collapsed={collapsed} className={css.FlightDetailsCollapsable}>
           <FlightDetails
-            segments={data.itineraryPart.segments}
+            segments={data.segments}
             className={css.FlightDetails}
           />
         </Collapsable>

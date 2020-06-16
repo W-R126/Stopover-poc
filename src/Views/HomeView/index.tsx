@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import css from './HomeView.module.css';
 import TripSearch from '../../Components/TripSearch';
@@ -6,8 +7,9 @@ import AirportService from '../../Services/AirportService';
 import { TripSearchData } from '../../Components/TripSearch/TripSearchData';
 import { TripType } from '../../Enums/TripType';
 import { CabinType } from '../../Enums/CabinType';
+import Utils from '../../Utils';
 
-interface HomeViewProps {
+interface HomeViewProps extends RouteComponentProps {
   airportService: AirportService;
   locale: string;
 }
@@ -16,7 +18,7 @@ interface HomeViewState {
   tripSearchData: TripSearchData;
 }
 
-export default class HomeView extends React.Component<HomeViewProps, HomeViewState> {
+class HomeView extends React.Component<HomeViewProps, HomeViewState> {
   constructor(props: HomeViewProps) {
     super(props);
 
@@ -42,10 +44,17 @@ export default class HomeView extends React.Component<HomeViewProps, HomeViewSta
     };
 
     this.onTripSearchChange = this.onTripSearchChange.bind(this);
+    this.onTripSearch = this.onTripSearch.bind(this);
   }
 
   private onTripSearchChange(tripSearchData: TripSearchData): void {
     this.setState({ tripSearchData });
+  }
+
+  private onTripSearch(data: TripSearchData): void {
+    const { history } = this.props;
+
+    history.push(Utils.getBookingUrl(data));
   }
 
   render(): JSX.Element {
@@ -62,9 +71,12 @@ export default class HomeView extends React.Component<HomeViewProps, HomeViewSta
             data={data}
             onChange={this.onTripSearchChange}
             airportService={airportService}
+            onSearch={this.onTripSearch}
           />
         </div>
       </div>
     );
   }
 }
+
+export default withRouter(HomeView);

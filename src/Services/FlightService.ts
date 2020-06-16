@@ -1,8 +1,11 @@
 import BaseService from './BaseService';
-import { TripSearchData } from '../Components/TripSearch/TripSearchData';
-import { FlightModel } from '../Models/FlightModel';
+import { OfferModel, GroupedOfferModel, AltOfferModel } from '../Models/FlightModel';
 import Utils from '../Utils';
 import AirportService from './AirportService';
+import { FlightResponse, ItineraryPart, Segment } from './Responses/FlightResponse';
+import { PassengerPickerData } from '../Components/TripSearch/Components/PassengerPicker/PassengerPickerData';
+import { CabinType } from '../Enums/CabinType';
+import { AirportModel } from '../Models/AirportModel';
 
 export default class FlightService extends BaseService {
   private readonly airportService: AirportService;
@@ -13,58 +16,71 @@ export default class FlightService extends BaseService {
     this.airportService = airportService;
   }
 
-  async getFlights(tripSearchData: TripSearchData): Promise<FlightModel[]> {
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    const { origin, destination } = tripSearchData.originDestination;
-    const { start } = tripSearchData.dates;
-
-    if (!(origin && destination && start)) {
-      return [];
+  async getOffers(
+    cabinType: CabinType,
+    departure: Date,
+    destination: AirportModel,
+    origin: AirportModel,
+    passengers: PassengerPickerData,
+  ): Promise<{
+    altOffers: AltOfferModel[];
+    offers: GroupedOfferModel[];
+  }> {
+    if (!(origin && destination && departure)) {
+      return { altOffers: [], offers: [] };
     }
 
-    const { adults, children, infants } = tripSearchData.passengers;
-    const passengers = {};
+    const { adults, children, infants } = passengers;
+    const passengerData = {};
 
     if (adults > 0) {
-      Object.assign(passengers, { ADT: adults });
+      Object.assign(passengerData, { ADT: adults });
     }
 
     if (children > 0) {
-      Object.assign(passengers, { CHD: children });
+      Object.assign(passengerData, { CHD: children });
     }
 
     if (infants > 0) {
-      Object.assign(passengers, { INF: infants });
+      Object.assign(passengerData, { INF: infants });
     }
 
-    const result = await this.http.post(
+    const result = await this.http.post<FlightResponse>(
       'http://40.80.199.170/flights',
       {
-        passengers,
+        passengers: passengerData,
         searchType: 'BRANDED',
+        currency: 'SEK',
         itineraryParts: [
           {
-            from: {
-              code: origin.code,
-            },
-            to: {
-              code: destination.code,
-            },
-            when: {
-              date: Utils.getDateString(start),
-            },
+            from: { code: origin.code },
+            to: { code: destination.code },
+            when: { date: Utils.getDateString(departure) },
           },
         ],
       },
     );
 
+    const altOffers = result.data.unbundledAlternateDateOffers[0]
+      .filter((altOffer) => altOffer.status === 'AVAILABLE')
+      .map((altOffer) => ({
+        departure: new Date(altOffer.departureDates[0]),
+        total: {
+          amount: altOffer.total.alternatives[0][0].amount,
+          currency: altOffer.total.alternatives[0][0].currency,
+        },
+      }));
+
     const offers = result.data.unbundledOffers[0];
+    const { fareFamilies } = result.data;
     const store: { [key: string]: any } = {};
 
-    const parsedOffers = offers.map((offer: any) => ({
+    const parsedOffers: OfferModel[] = offers.map((offer) => ({
       cabinClass: offer.cabinClass,
       soldout: offer.soldout,
+      brandLabel: fareFamilies
+        .find((ff) => ff.brandId === offer.brandId)?.brandLabel
+        .find((bl) => bl.languageId === 'en_GB')?.marketingText ?? 'Unknown',
       total: {
         amount: offer.total.alternatives[0][0].amount,
         currency: offer.total.alternatives[0][0].currency,
@@ -78,9 +94,71 @@ export default class FlightService extends BaseService {
 
     await Promise.all(airportReqs);
 
-    console.log(parsedOffers);
+    return {
+      altOffers,
+      offers: this.groupOffers(parsedOffers),
+    };
+  }
 
-    return parsedOffers;
+  private groupOffers(offers: OfferModel[]): GroupedOfferModel[] {
+    const result: {
+      [key: string]: GroupedOfferModel;
+    } = {};
+
+    offers.forEach((offer) => {
+      let identifier = '';
+
+      offer.itineraryPart.segments.forEach((segment) => {
+        identifier += `${segment.origin.code};${segment.destination.code};${
+          segment.departure};${segment.arrival}`;
+      });
+
+      if (Object.keys(result).indexOf(identifier) !== -1) {
+        // Unique flight.
+        if (!result[identifier].cabinClasses[offer.cabinClass]) {
+          // Cabin class is not yet added.
+          result[identifier].cabinClasses[offer.cabinClass] = {
+            startingFrom: offer.total,
+            flights: [offer],
+          };
+        } else {
+          // Cabin class already added.
+          const cabinClass = result[identifier].cabinClasses[offer.cabinClass];
+
+          if (
+            cabinClass.flights.findIndex(
+              (flight) => flight.itineraryPart.bookingClass === offer.itineraryPart.bookingClass
+              && flight.total.amount === offer.total.amount,
+            ) === -1
+          ) {
+            // Unqique price/booking class, add it.
+            cabinClass.flights.push(offer);
+          }
+
+          if (offer.total.amount < cabinClass.startingFrom.amount) {
+            // Lowest price.
+            cabinClass.startingFrom = offer.total;
+          }
+        }
+
+        return;
+      }
+
+      const startSegment = offer.itineraryPart.segments[0];
+      const endSegment = offer.itineraryPart.segments[offer.itineraryPart.segments.length - 1];
+
+      result[identifier] = {
+        segments: offer.itineraryPart.segments,
+        cabinClasses: { [offer.cabinClass]: { flights: [offer], startingFrom: offer.total } },
+        departure: startSegment.departure,
+        arrival: endSegment.arrival,
+        origin: startSegment.origin,
+        destination: endSegment.destination,
+        stops: offer.itineraryPart.segments.slice(1).map((segment) => segment.origin.code),
+      };
+    });
+
+    return Object.keys(result).map((key) => result[key]);
   }
 
   private async populateAirports(data: any): Promise<void> {
@@ -96,7 +174,7 @@ export default class FlightService extends BaseService {
     }
   }
 
-  private getItineraryPart(data: any, store: { [key: string]: any }): any {
+  private getItineraryPart(data: ItineraryPart, store: { [key: string]: any }): any {
     if (data['@ref'] !== undefined) {
       if (!store[data['@ref']]) {
         Object.assign(store, { [data['@ref']]: {} });
@@ -105,7 +183,7 @@ export default class FlightService extends BaseService {
       return store[data['@ref']];
     }
 
-    const segments = data.segments.map((segment: any) => this.getSegment(segment, store));
+    const segments = data.segments.map((segment) => this.getSegment(segment, store));
 
     return Object.assign(store, {
       [data['@id']]: {
@@ -116,7 +194,7 @@ export default class FlightService extends BaseService {
     })[data['@id']];
   }
 
-  private getSegment(data: any, store: { [key: string]: any }): any {
+  private getSegment(data: Segment, store: { [key: string]: any }): any {
     if (data['@ref'] !== undefined) {
       if (!store[data['@ref']]) {
         Object.assign(store, { [data['@ref']]: {} });

@@ -3,14 +3,10 @@ import React from 'react';
 import css from './OriginDestinationPicker.module.css';
 import toggleBtn from '../../../../Assets/Images/toggle-btn.svg';
 import { AirportModel } from '../../../../Models/AirportModel';
-import AirportSearch from '../AirportSearch';
+import AirportSearch from './Components/AirportSearch';
 import AirportService from '../../../../Services/AirportService';
 import Utils from '../../../../Utils';
-
-export interface OriginDestinationPickerData {
-  origin?: AirportModel;
-  destination?: AirportModel;
-}
+import { OriginDestinationPickerData } from './OriginDestinationPickerData';
 
 interface OriginDestinationPickerProps {
   data: OriginDestinationPickerData;
@@ -92,9 +88,7 @@ export default class OriginDestinationPicker extends React.Component<
 
   private swapDirections(): void {
     const { data, onChange } = this.props;
-
     Object.assign(data, { origin: data.destination, destination: data.origin });
-
     onChange(data);
   }
 

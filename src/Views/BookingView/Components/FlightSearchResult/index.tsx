@@ -3,31 +3,46 @@ import React from 'react';
 import css from './FlightSearchResult.module.css';
 import spinner from '../../../../Assets/Images/spinner.svg';
 import flightIcon from '../../../../Assets/Images/flight.svg';
-import { TripSearchData } from '../../../../Components/TripSearch/TripSearchData';
-import { FlightModel } from '../../../../Models/FlightModel';
+import { GroupedOfferModel, AltOfferModel } from '../../../../Models/FlightModel';
 import FlightService from '../../../../Services/FlightService';
-import DayRibbon from '../DayRibbon';
+import DayRibbon from './Components/DayRibbon';
 import FlightEntry from './Components/FlightEntry';
+import { PassengerPickerData } from '../../../../Components/TripSearch/Components/PassengerPicker/PassengerPickerData';
+import { CabinType } from '../../../../Enums/CabinType';
+import { AirportModel } from '../../../../Models/AirportModel';
 
 interface FlightSearchResultProps {
-  tripSearchData: TripSearchData;
+  passengers: PassengerPickerData;
+  cabinType: CabinType;
+  origin: AirportModel;
+  destination: AirportModel;
+  departure: Date;
   flightService: FlightService;
+  onDepartureChange?: (departure: Date) => void;
 }
 
 interface FlightSearchResultState {
-  flights?: FlightModel[];
+  offers?: GroupedOfferModel[];
+  altOffers?: AltOfferModel[];
+  showCountFactor: number;
 }
 
 export default class FlightSearchResult extends React.Component<
   FlightSearchResultProps,
   FlightSearchResultState
 > {
+  private readonly showCount = 5;
+
   constructor(props: FlightSearchResultProps) {
     super(props);
 
     this.state = {
-      flights: undefined,
+      offers: undefined,
+      altOffers: undefined,
+      showCountFactor: 1,
     };
+
+    this.onDepartureChange = this.onDepartureChange.bind(this);
   }
 
   componentDidMount(): void {
@@ -35,24 +50,60 @@ export default class FlightSearchResult extends React.Component<
   }
 
   componentDidUpdate(prevProps: FlightSearchResultProps): void {
-    const { tripSearchData } = this.props;
+    const {
+      passengers,
+      cabinType,
+      origin,
+      destination,
+      departure,
+    } = this.props;
 
-    if (tripSearchData !== prevProps.tripSearchData) {
+    if (
+      passengers !== prevProps.passengers
+      || cabinType !== prevProps.cabinType
+      || origin !== prevProps.origin
+      || destination !== prevProps.destination
+      || departure !== prevProps.departure
+    ) {
       this.search();
     }
   }
 
-  private async search(): Promise<void> {
-    const { tripSearchData, flightService } = this.props;
+  private onDepartureChange(departure: Date): void {
+    const { onDepartureChange } = this.props;
 
-    this.setState({ flights: undefined });
+    if (onDepartureChange) {
+      onDepartureChange(departure);
+    }
+  }
+
+  private async search(): Promise<void> {
+    const {
+      flightService,
+      cabinType,
+      departure,
+      destination,
+      origin,
+      passengers,
+    } = this.props;
+
+    this.setState({ offers: undefined, showCountFactor: 1 });
+    const { offers, altOffers } = await flightService.getOffers(
+      cabinType,
+      departure,
+      destination,
+      origin,
+      passengers,
+    );
+
     this.setState({
-      flights: await flightService.getFlights(tripSearchData),
+      offers,
+      altOffers,
     });
   }
 
-  private renderResult(flights: FlightModel[]): JSX.Element {
-    if (flights.length === 0) {
+  private renderResult(offers: GroupedOfferModel[], altOffers: AltOfferModel[]): JSX.Element {
+    if (offers.length === 0) {
       return (
         <div className={css.NoResult}>
           No flights found.
@@ -60,26 +111,46 @@ export default class FlightSearchResult extends React.Component<
       );
     }
 
+    const { showCountFactor } = this.state;
+    const { departure } = this.props;
+    const showCount = showCountFactor * this.showCount;
+
     return (
       <>
-        <DayRibbon className={css.DayRibbon} />
+        <DayRibbon
+          selectedDate={departure}
+          className={css.DayRibbon}
+          altOffers={altOffers}
+          onChange={this.onDepartureChange}
+        />
+
         <div className={css.FlightEntries}>
-          {flights.map((flight, idx) => (
+          {offers.slice(0, showCount).map((flight, idx) => (
             <FlightEntry
               className={css.FlightEntry}
               data={flight}
               key={`flight-entry-${idx}`}
             />
           ))}
+
+          {showCount < offers.length && (
+            <div className={css.ShowMore}>
+              <span
+                role="button"
+                onClick={(): void => this.setState({ showCountFactor: showCountFactor + 1 })}
+              >
+                {`${offers.length - showCount} more flights`}
+              </span>
+            </div>
+          )}
         </div>
       </>
     );
   }
 
   render(): JSX.Element {
-    const { tripSearchData } = this.props;
-    const { originDestination } = tripSearchData;
-    const { flights } = this.state;
+    const { origin, destination } = this.props;
+    const { offers, altOffers } = this.state;
 
     return (
       <div className={css.FlightSearchResult}>
@@ -87,23 +158,19 @@ export default class FlightSearchResult extends React.Component<
           <div className={css.OriginDestination}>
             <img src={flightIcon} alt="Flight" />
             <strong>
-              {`${
-                originDestination.origin?.cityName
-              } to ${
-                originDestination.destination?.cityName
-              }`}
+              {`${origin?.cityName} to ${destination?.cityName}`}
             </strong>
           </div>
         </div>
         <div className={css.Result}>
-          {!flights
+          {!offers
             ? (
               <strong className={css.Searching}>
                 <img src={spinner} alt="Searching" />
                 Searching
               </strong>
             )
-            : (this.renderResult(flights))}
+            : (this.renderResult(offers, altOffers ?? []))}
         </div>
       </div>
     );

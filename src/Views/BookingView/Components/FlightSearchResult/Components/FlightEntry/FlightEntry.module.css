@@ -1,18 +1,25 @@
 .FlightEntry {
   display: grid;
   grid-template-columns:
-    auto
-    auto
-    auto
-    auto
-    auto
-    max-content
-    max-content
-    max-content;
+    [originDestination] max-content
+    [travelTime] auto
+    [stops] auto
+    [cabinClasses] max-content
+    [showDetails] max-content;
     gap: 16px;
 }
 
-.DepartureArrival {
+.OriginDestination {
+  display: grid;
+  grid-template-columns:
+    [origin] max-content
+    [arrow] min-content
+    [destination] max-content;
+  gap: 32px;
+}
+
+.Origin,
+.Destination {
   font-size: 14px;
   padding: 16px 0;
 }
@@ -33,7 +40,8 @@ html[dir='rtl'] .Arrow::after {
   transform: rotateZ(180deg);
 }
 
-.DepartureArrival > strong {
+.Origin > strong,
+.Destination > strong {
   display: block;
   font-size: 18px;
   font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
@@ -80,6 +88,7 @@ html[dir='rtl'] .Arrow::after {
   cursor: pointer;
   height: 100%;
   outline: 0;
+  color: #4e4c4a;
 }
 
 .ShowDetails > button::after {
@@ -92,10 +101,6 @@ html[dir='rtl'] .Arrow::after {
 
 .FlightDetailsCollapsable {
   grid-column: 1 / -1;
-}
-
-.FlightEntry:not(:last-child) .FlightDetails {
-  border-bottom: 1px solid #dcdbdb;
 }
 
 .FlightEntry.ShowingDetails .ShowDetails > button::after {

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import css from './AirportSearch.module.css';
-import { AirportModel } from '../../../../Models/AirportModel';
+import { AirportModel } from '../../../../../../Models/AirportModel';
 
 interface AirportSearchProps {
   id?: string;
@@ -33,6 +33,8 @@ export default class AirportSearch extends React.Component<
     tabIndex: 0,
     exclude: [],
   };
+
+  private readonly showCount = 50;
 
   private readonly resultRef = React.createRef<HTMLDivElement>();
 
@@ -276,7 +278,7 @@ export default class AirportSearch extends React.Component<
 
     const { filteredAirports } = this;
 
-    const showCount = showCountFactor * 50;
+    const showCount = showCountFactor * this.showCount;
     const classList = [css.AirportSearch];
 
     if (className) {

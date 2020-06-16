@@ -31,7 +31,6 @@ interface BookingViewProps extends RouteComponentProps<{
 
 interface BookingState {
   tripSearchData: TripSearchData;
-  newTripSearchData: TripSearchData;
   editing: boolean;
 }
 
@@ -43,13 +42,12 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
 
     this.state = {
       tripSearchData,
-      newTripSearchData: this.copyTripSearchData(tripSearchData),
       editing: false,
     };
 
-    this.onTripSearchChange = this.onTripSearchChange.bind(this);
+    this.onOutboundChange = this.onOutboundChange.bind(this);
+    this.onTripSearch = this.onTripSearch.bind(this);
     this.toggleEdit = this.toggleEdit.bind(this);
-    this.onSearch = this.onSearch.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -65,10 +63,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       destination: await destinationReq,
     });
 
-    const newState = {
-      tripSearchData,
-      newTripSearchData: this.copyTripSearchData(tripSearchData),
-    };
+    const newState = { tripSearchData };
 
     if (!Utils.validateTripSearchData(tripSearchData)) {
       Object.assign(newState, { editing: true });
@@ -77,20 +72,21 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     this.setState(newState);
   }
 
-  private onTripSearchChange(newTripSearchData: TripSearchData): void {
-    this.setState({ newTripSearchData });
+  private onTripSearch(tripSearchData: TripSearchData): void {
+    const { history } = this.props;
+
+    this.setState({ tripSearchData, editing: false });
+
+    history.replace(Utils.getBookingUrl(tripSearchData));
   }
 
-  private onSearch(cancel = false): void {
-    const { tripSearchData, newTripSearchData } = this.state;
+  private onOutboundChange(outbound: Date): void {
+    const { tripSearchData } = this.state;
+    const { dates } = tripSearchData;
 
-    if (cancel) {
-      this.setState({ newTripSearchData: this.copyTripSearchData(tripSearchData) });
-    } else {
-      this.setState({ tripSearchData: this.copyTripSearchData(newTripSearchData) });
-    }
+    Object.assign(dates, { start: outbound });
 
-    this.toggleEdit();
+    this.onTripSearch(tripSearchData);
   }
 
   private getDataFromParams(props: BookingViewProps): TripSearchData {
@@ -130,31 +126,20 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     this.setState({ editing: !editing });
   }
 
-  private copyTripSearchData(data: TripSearchData): TripSearchData {
-    const tripSearchData = JSON.parse(JSON.stringify(data));
-
-    const { dates } = tripSearchData;
-
-    if (dates.end) {
-      dates.end = new Date(dates.end);
-    }
-
-    if (dates.start) {
-      dates.start = new Date(dates.start);
-    }
-
-    return tripSearchData;
-  }
-
   render(): JSX.Element {
     const { locale, airportService, flightService } = this.props;
     const {
       tripSearchData,
-      newTripSearchData,
       editing,
     } = this.state;
 
     const tripSearchValid = Utils.validateTripSearchData(tripSearchData);
+    const {
+      cabinType,
+      dates,
+      originDestination,
+      passengers,
+    } = tripSearchData;
 
     return (
       <div className={css.BookingView}>
@@ -167,19 +152,17 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
                   <button
                     type="button"
                     className={css.CancelSearch}
-                    onClick={(): void => this.onSearch(true)}
+                    onClick={this.toggleEdit}
                   >
                     Cancel
                   </button>
                 )}
                 <TripSearch
                   className={css.TripSearch}
-                  replaceOnSearch
                   locale={locale}
                   airportService={airportService}
-                  data={newTripSearchData}
-                  onChange={this.onTripSearchChange}
-                  onSearch={this.onSearch}
+                  data={tripSearchData}
+                  onSearch={this.onTripSearch}
                 />
               </>
             )
@@ -191,11 +174,16 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
                 toggleEdit={this.toggleEdit}
               />
             )}
-          {tripSearchValid && (
+          {(dates.start && originDestination.destination && originDestination.origin) && (
             <>
               <h1 className={css.SelectFlightHeader}>Select outbound flight</h1>
               <FlightSearchResult
-                tripSearchData={tripSearchData}
+                onDepartureChange={this.onOutboundChange}
+                cabinType={cabinType}
+                departure={dates.start}
+                destination={originDestination.destination}
+                origin={originDestination.origin}
+                passengers={passengers}
                 flightService={flightService}
               />
             </>

@@ -51,6 +51,34 @@
 .FlightEntries > .FlightEntry {
   width: 100%;
   margin-top: 16px;
+  border-bottom: 1px solid #f3f3f3;
+}
+
+.ShowMore {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ShowMore > span {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.ShowMore > span::after {
+  content: '\f107';
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  margin: 0 6px;
+}
+
+html:not([dir='rtl']) .ShowMore > span::after {
+  margin-left: 22px;
+}
+
+html[dir='rtl'] .ShowMore > span::after {
+  margin-right: 22px;
 }
 
 @media screen and (max-width: 650px) {

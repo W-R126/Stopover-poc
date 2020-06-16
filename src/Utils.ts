@@ -12,6 +12,26 @@ export default class Utils {
     return Math.sqrt((a.lat - b.lat) ** 2 + (a.long - b.long) ** 2);
   }
 
+  static formatCurrency(amount: number): string {
+    const original = amount.toString().split('');
+    const offset = original.length % 3;
+    const result: string[] = original.splice(0, offset);
+
+    if (original.length === 0) {
+      return result.join('');
+    }
+
+    original.forEach((num, idx) => {
+      if (idx % 3 === 0 && result.length > 0) {
+        result.push(',');
+      }
+
+      result.push(num);
+    });
+
+    return result.join('');
+  }
+
   static getWeekdays(locale: string): string[] {
     const date = new Date(2020, 4, 24);
 
@@ -59,9 +79,13 @@ export default class Utils {
     return `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`;
   }
 
-  static compareDates(date1: Date, date2: Date): number {
-    const d1 = new Date(date1);
-    const d2 = new Date(date2);
+  static compareDatesSimple(a: Date, b: Date): boolean {
+    return Utils.compareDates(a, b) === 0;
+  }
+
+  static compareDates(a: Date, b: Date): number {
+    const d1 = new Date(a);
+    const d2 = new Date(b);
     d1.setHours(0, 0, 0, 0);
     d2.setHours(0, 0, 0, 0);
 

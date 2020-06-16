@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Month from './Month';
+import Month from './Components/Month';
 
 import css from './Calendar.module.css';
-import navigationArrow from '../../../../Assets/Images/navigation-arrow.svg';
+import navigationArrow from '../../../../../../Assets/Images/navigation-arrow.svg';
 import { CalendarData } from './CalendarData';
 
 interface CalendarProps {
