@@ -40,7 +40,7 @@
   transition: transform 100ms;
 }
 
-.Select[aria-expanded='true'] > .Selected::after {
+.Select[aria-expanded='true'] .Selected::after {
   transform: rotateZ(-180deg);
 }
 

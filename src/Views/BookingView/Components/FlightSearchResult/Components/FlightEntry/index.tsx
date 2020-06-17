@@ -100,7 +100,11 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
           <span>Travel time</span>
         </div>
         <div className={css.Stops}>
-          <strong>{`${data.stops.length} Stop${data.stops.length > 1 ? 's' : ''}`}</strong>
+          <strong>
+            {data.stops.length === 0
+              ? 'Direct'
+              : `${data.stops.length} Stop${data.stops.length > 1 ? 's' : ''}`}
+          </strong>
           <span>
             {data.stops.join(', ')}
           </span>

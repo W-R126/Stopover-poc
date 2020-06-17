@@ -41,7 +41,7 @@
   transition: transform 100ms;
 }
 
-.PassengerPicker[aria-expanded='true'] > .Header::after {
+.PassengerPicker[aria-expanded='true'] .Header::after {
   transform: rotateZ(-180deg);
 }
 
