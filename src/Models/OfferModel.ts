@@ -18,6 +18,7 @@ export interface AltOfferModel {
   departure: Date;
   total: {
     amount: number;
+    tax: number;
     currency: string;
   };
 }
@@ -32,6 +33,7 @@ export interface OfferModel {
   soldout: boolean;
   total: {
     amount: number;
+    tax: number;
     currency: string;
   };
 }
@@ -39,9 +41,10 @@ export interface OfferModel {
 export interface GroupedOfferModel {
   cabinClasses: {
     [cabinClass: string]: {
-      flights: OfferModel[];
+      offers: OfferModel[];
       startingFrom: {
         amount: number;
+        tax: number;
         currency: string;
       };
     };

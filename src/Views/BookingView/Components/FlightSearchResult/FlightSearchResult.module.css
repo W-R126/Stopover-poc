@@ -7,6 +7,13 @@
   user-select: none;
 }
 
+.Header {
+  display: grid;
+  grid-template-columns:
+    auto
+    max-content;
+}
+
 .OriginDestination {
   display: flex;
   align-items: center;
@@ -51,20 +58,14 @@
 .FlightEntries {
   display: grid;
   grid-template-columns:
-    [originDestination] max-content
+    [originDestination] auto
     [travelTime] auto
     [stops] auto
-    [cabinClasses] max-content
-    [showDetails] max-content;
+    [cabinClasses] min-content
+    [showDetails] min-content;
     gap: 16px;
   margin-top: 16px;
 }
-
-/* .FlightEntries > .FlightEntry {
-  width: 100%;
-  margin-top: 16px;
-  border-bottom: 1px solid #f3f3f3;
-} */
 
 .ShowMore {
   margin-top: 8px;

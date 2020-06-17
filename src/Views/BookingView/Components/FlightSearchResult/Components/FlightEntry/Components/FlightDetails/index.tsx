@@ -1,8 +1,8 @@
 import React from 'react';
 
 import css from './FlightDetails.module.css';
-import Segment from './Components/Stop/segment';
-import { SegmentModel } from '../../../../../../../../Models/FlightModel';
+import Segment from './Components/Segment';
+import { SegmentModel } from '../../../../../../../../Models/OfferModel';
 
 interface FlightDetailsProps {
   className?: string;

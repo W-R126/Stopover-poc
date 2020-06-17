@@ -45,7 +45,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       editing: false,
     };
 
-    this.onOutboundChange = this.onOutboundChange.bind(this);
+    this.onOutboundDateChange = this.onOutboundDateChange.bind(this);
     this.onTripSearch = this.onTripSearch.bind(this);
     this.toggleEdit = this.toggleEdit.bind(this);
   }
@@ -80,11 +80,16 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     history.replace(Utils.getBookingUrl(tripSearchData));
   }
 
-  private onOutboundChange(outbound: Date): void {
+  private onOutboundDateChange(start: Date): void {
     const { tripSearchData } = this.state;
     const { dates } = tripSearchData;
 
-    Object.assign(dates, { start: outbound });
+    if (dates.end && Utils.compareDates(dates.end, start) === -1) {
+      // Span is negative, update end to match start
+      Object.assign(dates, { end: new Date(start) });
+    }
+
+    Object.assign(dates, { start });
 
     this.onTripSearch(tripSearchData);
   }
@@ -97,6 +102,8 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     let end = params.inbound ? new Date(params.inbound) : undefined;
 
     if (!end && start) {
+      end = new Date(start);
+    } else if (end && start && Utils.compareDates(end, start) === -1) {
       end = new Date(start);
     }
 
@@ -179,7 +186,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
               <h1 className={css.SelectFlightHeader}>Select outbound flight</h1>
               <FlightSearchResult
                 className={css.FlightSearchResult}
-                onDepartureChange={this.onOutboundChange}
+                onDepartureChange={this.onOutboundDateChange}
                 cabinType={cabinType}
                 departure={dates.start}
                 destination={originDestination.destination}

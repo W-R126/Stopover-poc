@@ -1,7 +1,7 @@
 import React from 'react';
 
 import css from './DayRibbon.module.css';
-import { AltOfferModel } from '../../../../../../Models/FlightModel';
+import { AltOfferModel } from '../../../../../../Models/OfferModel';
 import Utils from '../../../../../../Utils';
 
 interface DayRibbonProps {
@@ -25,9 +25,6 @@ export default function DayRibbon({
 
   return (
     <div className={classList.join(' ')}>
-      <button type="button" className={css.NavigateBack}>
-        Previous
-      </button>
       {altOffers.map((altOffer, idx) => (
         <div
           className={css.Day}
@@ -47,9 +44,6 @@ export default function DayRibbon({
           </span>
         </div>
       ))}
-      <button type="button" className={css.NavigateForward}>
-        Next
-      </button>
     </div>
   );
 }

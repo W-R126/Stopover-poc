@@ -10,7 +10,7 @@ interface CollapsableProps {
 }
 
 interface CollapsableState {
-  maxHeight?: number;
+  height?: number;
 }
 
 export default class Collapsable extends React.Component<CollapsableProps, CollapsableState> {
@@ -18,18 +18,18 @@ export default class Collapsable extends React.Component<CollapsableProps, Colla
     transitionTimeMs: 300,
   };
 
-  private readonly selfRef = React.createRef<HTMLDivElement>();
+  private readonly wrapperRef = React.createRef<HTMLDivElement>();
 
   constructor(props: CollapsableProps) {
     super(props);
 
     this.state = {
-      maxHeight: 0,
+      height: 0,
     };
   }
 
   componentDidMount(): void {
-    this.setMaxHeight();
+    this.setHeight();
   }
 
   componentDidUpdate(prevProps: CollapsableProps): void {
@@ -39,20 +39,20 @@ export default class Collapsable extends React.Component<CollapsableProps, Colla
       return;
     }
 
-    this.setMaxHeight();
+    this.setHeight();
   }
 
-  private async setMaxHeight(): Promise<void> {
+  private async setHeight(): Promise<void> {
     const { collapsed } = this.props;
 
-    const maxHeight = this.selfRef.current?.scrollHeight ?? 0;
+    const height = this.wrapperRef.current?.scrollHeight ?? 0;
 
-    this.setState({ maxHeight: collapsed ? 0 : maxHeight });
+    this.setState({ height: collapsed ? 0 : height });
   }
 
   render(): JSX.Element {
     const { className, children, transitionTimeMs } = this.props;
-    const { maxHeight } = this.state;
+    const { height } = this.state;
 
     const classList = [css.Collapsable];
 
@@ -63,13 +63,14 @@ export default class Collapsable extends React.Component<CollapsableProps, Colla
     return (
       <div
         className={classList.join(' ')}
-        ref={this.selfRef}
         style={{
-          maxHeight,
-          transition: `max-height ${transitionTimeMs}ms`,
+          height,
+          transition: `height ${transitionTimeMs}ms`,
         }}
       >
-        {children}
+        <div ref={this.wrapperRef}>
+          {children}
+        </div>
       </div>
     );
   }

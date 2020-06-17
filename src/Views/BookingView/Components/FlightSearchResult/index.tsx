@@ -3,13 +3,16 @@ import React from 'react';
 import css from './FlightSearchResult.module.css';
 import spinner from '../../../../Assets/Images/spinner.svg';
 import flightIcon from '../../../../Assets/Images/flight.svg';
-import { GroupedOfferModel, AltOfferModel } from '../../../../Models/FlightModel';
+import { GroupedOfferModel, AltOfferModel } from '../../../../Models/OfferModel';
 import FlightService from '../../../../Services/FlightService';
 import DayRibbon from './Components/DayRibbon';
 import FlightEntry from './Components/FlightEntry';
 import { PassengerPickerData } from '../../../../Components/TripSearch/Components/PassengerPicker/PassengerPickerData';
 import { CabinType } from '../../../../Enums/CabinType';
 import { AirportModel } from '../../../../Models/AirportModel';
+import Select from '../../../../Components/UI/Select';
+import Option from '../../../../Components/UI/Select/Option';
+import Utils from '../../../../Utils';
 
 interface FlightSearchResultProps {
   passengers: PassengerPickerData;
@@ -26,12 +29,81 @@ interface FlightSearchResultState {
   offers?: GroupedOfferModel[];
   altOffers?: AltOfferModel[];
   showCountFactor: number;
+  sortingAlgorithm: (a: GroupedOfferModel, b: GroupedOfferModel) => number;
 }
+
+const sortingAlgorithms: {
+  [key: string]: (a: GroupedOfferModel, b: GroupedOfferModel) => number;
+} = {
+  departure: (a: GroupedOfferModel, b: GroupedOfferModel) => Utils.compareDatesExact(
+    a.departure,
+    b.departure,
+  ),
+  arrival: (a: GroupedOfferModel, b: GroupedOfferModel) => Utils.compareDatesExact(
+    a.arrival,
+    b.arrival,
+  ),
+  stopCount: (a: GroupedOfferModel, b: GroupedOfferModel) => {
+    if (a.stops.length < b.stops.length) {
+      return -1;
+    }
+
+    if (a.stops.length > b.stops.length) {
+      return 1;
+    }
+
+    return 0;
+  },
+  travelTime: (a: GroupedOfferModel, b: GroupedOfferModel) => {
+    const aVal = a.arrival.valueOf() - a.departure.valueOf();
+    const bVal = b.arrival.valueOf() - b.departure.valueOf();
+
+    if (aVal < bVal) {
+      return -1;
+    }
+
+    if (aVal > bVal) {
+      return 1;
+    }
+
+    return 0;
+  },
+  economyPrice: (a: GroupedOfferModel, b: GroupedOfferModel) => {
+    const aVal = a.cabinClasses.Economy.startingFrom.amount;
+    const bVal = b.cabinClasses.Economy.startingFrom.amount;
+
+    if (aVal < bVal) {
+      return -1;
+    }
+
+    if (aVal > bVal) {
+      return 1;
+    }
+
+    return 0;
+  },
+  businessPrice: (a: GroupedOfferModel, b: GroupedOfferModel) => {
+    const aVal = a.cabinClasses.Business.startingFrom.amount;
+    const bVal = b.cabinClasses.Business.startingFrom.amount;
+
+    if (aVal < bVal) {
+      return -1;
+    }
+
+    if (aVal > bVal) {
+      return 1;
+    }
+
+    return 0;
+  },
+};
 
 export default class FlightSearchResult extends React.Component<
   FlightSearchResultProps,
   FlightSearchResultState
 > {
+  private readonly flightEntryRefs: (FlightEntry | null)[] = [];
+
   private readonly showCount = 5;
 
   constructor(props: FlightSearchResultProps) {
@@ -41,9 +113,11 @@ export default class FlightSearchResult extends React.Component<
       offers: undefined,
       altOffers: undefined,
       showCountFactor: 1,
+      sortingAlgorithm: sortingAlgorithms.departure,
     };
 
     this.onDepartureChange = this.onDepartureChange.bind(this);
+    this.onFlightEntryExpandDetails = this.onFlightEntryExpandDetails.bind(this);
   }
 
   componentDidMount(): void {
@@ -76,6 +150,14 @@ export default class FlightSearchResult extends React.Component<
     if (onDepartureChange) {
       onDepartureChange(departure);
     }
+  }
+
+  private onFlightEntryExpandDetails(): void {
+    this.flightEntryRefs.forEach((flightEntryRef) => {
+      if (flightEntryRef) {
+        flightEntryRef.collapseDetails();
+      }
+    });
   }
 
   private async search(): Promise<void> {
@@ -112,7 +194,7 @@ export default class FlightSearchResult extends React.Component<
       );
     }
 
-    const { showCountFactor } = this.state;
+    const { showCountFactor, sortingAlgorithm } = this.state;
     const { departure } = this.props;
     const showCount = showCountFactor * this.showCount;
 
@@ -126,11 +208,14 @@ export default class FlightSearchResult extends React.Component<
         />
 
         <div className={css.FlightEntries}>
-          {offers.slice(0, showCount).map((flight, idx) => (
+          {offers.sort(sortingAlgorithm).slice(0, showCount).map((flight, idx) => (
             <FlightEntry
-              className={css.FlightEntry}
+              ref={(ref): void => {
+                this.flightEntryRefs[idx] = ref;
+              }}
               data={flight}
               key={`flight-entry-${idx}`}
+              onExpandDetails={this.onFlightEntryExpandDetails}
             />
           ))}
 
@@ -151,7 +236,7 @@ export default class FlightSearchResult extends React.Component<
 
   render(): JSX.Element {
     const { origin, destination, className } = this.props;
-    const { offers, altOffers } = this.state;
+    const { offers, altOffers, sortingAlgorithm } = this.state;
 
     const classList = [css.FlightSearchResult];
 
@@ -161,12 +246,25 @@ export default class FlightSearchResult extends React.Component<
 
     return (
       <div className={classList.join(' ')}>
-        <div>
+        <div className={css.Header}>
           <div className={css.OriginDestination}>
             <img src={flightIcon} alt="Flight" />
             <strong>
               {`${origin?.cityName} to ${destination?.cityName}`}
             </strong>
+          </div>
+          <div className={css.Actions}>
+            <Select
+              value={sortingAlgorithm}
+              onChange={(value): void => this.setState({ sortingAlgorithm: value })}
+            >
+              <Option value={sortingAlgorithms.departure}>Departure</Option>
+              <Option value={sortingAlgorithms.arrival}>Arrival</Option>
+              <Option value={sortingAlgorithms.stopCount}>Number of stops</Option>
+              <Option value={sortingAlgorithms.travelTime}>Travel time</Option>
+              <Option value={sortingAlgorithms.economyPrice}>Economy price</Option>
+              <Option value={sortingAlgorithms.businessPrice}>Business price</Option>
+            </Select>
           </div>
         </div>
         <div className={css.Result}>

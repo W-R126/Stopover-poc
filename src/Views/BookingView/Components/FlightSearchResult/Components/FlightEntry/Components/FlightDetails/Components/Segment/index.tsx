@@ -2,7 +2,7 @@ import React from 'react';
 
 import css from './Segment.module.css';
 import tailIcon from '../../../../../../../../../../Assets/Images/tail.webp';
-import { SegmentModel } from '../../../../../../../../../../Models/FlightModel';
+import { SegmentModel } from '../../../../../../../../../../Models/OfferModel';
 import Utils from '../../../../../../../../../../Utils';
 
 interface SegmentProps {

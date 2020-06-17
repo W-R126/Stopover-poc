@@ -52,10 +52,10 @@ export default class Utils {
     const hours = Math.floor((delta - days * 86400000) / 3600000);
     const minutes = Math.floor((delta - (days * 86400000 + hours * 3600000)) / 60000);
 
-    let result = `${minutes < 10 ? `0${minutes}` : minutes}m`;
+    let result = `${minutes}m`;
 
     if (hours > 0) {
-      result = `${hours < 10 ? `0${hours}` : hours}h ${result}`;
+      result = `${hours}h ${result}`;
     }
 
     if (days > 0) {
@@ -81,6 +81,21 @@ export default class Utils {
 
   static compareDatesSimple(a: Date, b: Date): boolean {
     return Utils.compareDates(a, b) === 0;
+  }
+
+  static compareDatesExact(a: Date, b: Date): number {
+    const aVal = a.valueOf();
+    const bVal = b.valueOf();
+
+    if (aVal < bVal) {
+      return -1;
+    }
+
+    if (aVal > bVal) {
+      return 1;
+    }
+
+    return 0;
   }
 
   static compareDates(a: Date, b: Date): number {

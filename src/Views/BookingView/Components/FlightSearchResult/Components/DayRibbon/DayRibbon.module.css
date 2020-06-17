@@ -3,34 +3,7 @@
   border: 1px solid #dcdbdb;
   border-left: 0;
   border-right: 0;
-  padding: 8px 8px;
-}
-
-.DayRibbon > button {
-  font-size: 0;
-  border: 0;
-  background-color: transparent;
-  outline: 0;
-  cursor: pointer;
-  width: 24px;
-  text-align: left;
-  padding: 0;
-  color: #4e4c4a;
-}
-
-.DayRibbon > button::before {
-  font-size: 24px;
-  font-family: 'Icons', Arial, Helvetica, sans-serif;
-  content: '\f104';
-  display: block;
-}
-
-html:not([dir='rtl']) .NavigateForward::before {
-  transform: scaleX(-1);
-}
-
-html[dir='rtl'] .NavigateBack::before {
-  transform: scaleX(-1);
+  padding: 8px 0;
 }
 
 .Day {
@@ -66,15 +39,15 @@ html[dir='rtl'] .NavigateBack::before {
 }
 
 @media screen and (max-width: 1130px) {
-  .DayRibbon > :nth-child(2),
-  .DayRibbon > :nth-child(8) {
+  .DayRibbon > :nth-child(1),
+  .DayRibbon > :nth-child(7) {
     display: none;
   }
 }
 
 @media screen and (max-width: 830px) {
-  .DayRibbon > :nth-child(3),
-  .DayRibbon > :nth-child(7) {
+  .DayRibbon > :nth-child(2),
+  .DayRibbon > :nth-child(6) {
     display: none;
   }
 }

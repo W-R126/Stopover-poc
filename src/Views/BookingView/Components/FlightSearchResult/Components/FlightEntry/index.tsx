@@ -3,16 +3,18 @@ import React from 'react';
 import css from './FlightEntry.module.css';
 import Collapsable from '../../../../../../Components/UI/Collapsable';
 import FlightDetails from './Components/FlightDetails';
-import { GroupedOfferModel } from '../../../../../../Models/FlightModel';
+import { GroupedOfferModel } from '../../../../../../Models/OfferModel';
 import Utils from '../../../../../../Utils';
+import PriceDetails from './Components/PriceDetails';
 
 interface FlightEntryProps {
-  className?: string;
   data: GroupedOfferModel;
+  onExpandDetails?: () => void;
 }
 
 interface FlightEntryState {
   collapsed: boolean;
+  selectedCabinClass?: string;
 }
 
 export default class FlightEntry extends React.Component<FlightEntryProps, FlightEntryState> {
@@ -21,33 +23,62 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
 
     this.state = {
       collapsed: true,
+      selectedCabinClass: undefined,
     };
 
     this.toggleDetails = this.toggleDetails.bind(this);
+    this.showOffers = this.showOffers.bind(this);
+    this.collapseDetails = this.collapseDetails.bind(this);
   }
 
   private toggleDetails(): void {
     const { collapsed } = this.state;
 
-    this.setState({ collapsed: !collapsed });
+    if (!collapsed) {
+      this.collapseDetails();
+    } else {
+      this.expandDetails();
+    }
+  }
+
+  private showOffers(cabinClass: string): void {
+    const { collapsed, selectedCabinClass } = this.state;
+
+    if (collapsed) {
+      this.expandDetails();
+    }
+
+    this.setState({
+      selectedCabinClass: cabinClass === selectedCabinClass ? undefined : cabinClass
+    });
+  }
+
+  expandDetails(): void {
+    const { collapsed } = this.state;
+    const { onExpandDetails } = this.props;
+
+    if (onExpandDetails) {
+      onExpandDetails();
+    }
+
+    if (collapsed) {
+      this.setState({ collapsed: false });
+    }
+  }
+
+  collapseDetails(): void {
+    const { collapsed } = this.state;
+
+    if (!collapsed) {
+      this.setState({ collapsed: true, selectedCabinClass: undefined });
+    }
   }
 
   render(): JSX.Element {
-    const { className, data } = this.props;
-    const { collapsed } = this.state;
-
-    const classList = [css.FlightEntry];
-
-    if (className) {
-      classList.push(className);
-    }
-
-    if (!collapsed) {
-      classList.push(css.ShowingDetails);
-    }
+    const { data } = this.props;
+    const { collapsed, selectedCabinClass } = this.state;
 
     return (
-      // <div className={classList.join(' ')}>
       <>
         <div className={css.OriginDestination}>
           <div className={css.Origin}>
@@ -69,14 +100,20 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
           <span>Travel time</span>
         </div>
         <div className={css.Stops}>
-          <strong>{`${data.stops.length} Stop`}</strong>
+          <strong>{`${data.stops.length} Stop${data.stops.length > 1 ? 's' : ''}`}</strong>
           <span>
             {data.stops.join(', ')}
           </span>
         </div>
         <div className={css.Price}>
-          {Object.keys(data.cabinClasses).map((cabinClass, idx) => (
-            <button type="button" key={`cabin-class-${idx}`}>
+          {Object.keys(data.cabinClasses).slice(0, 2).map((cabinClass, idx) => (
+            <button
+              type="button"
+              key={`cabin-class-${idx}`}
+              onClick={(): void => this.showOffers(cabinClass)}
+              role="option"
+              aria-selected={cabinClass === selectedCabinClass}
+            >
               <strong>
                 {`From ${
                   data.cabinClasses[cabinClass].startingFrom.currency
@@ -87,17 +124,27 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
           ))}
         </div>
         <div className={css.ShowDetails}>
-          <button type="button" onClick={this.toggleDetails}>
+          <button
+            type="button"
+            onClick={this.toggleDetails}
+            role="option"
+            aria-selected={!collapsed}
+          >
             Show details
           </button>
         </div>
         <Collapsable collapsed={collapsed} className={css.FlightDetailsCollapsable}>
-          <FlightDetails
-            segments={data.segments}
-            className={css.FlightDetails}
-          />
+          {selectedCabinClass
+            ? (
+              <PriceDetails
+                className={css.PriceDetails}
+                cabinClass={data.cabinClasses[selectedCabinClass]}
+              />
+            )
+            : (
+              <FlightDetails segments={data.segments} />
+            )}
         </Collapsable>
-        {/* </div> */}
       </>
     );
   }

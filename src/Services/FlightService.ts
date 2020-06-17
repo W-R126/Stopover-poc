@@ -1,5 +1,5 @@
 import BaseService from './BaseService';
-import { OfferModel, GroupedOfferModel, AltOfferModel } from '../Models/FlightModel';
+import { OfferModel, GroupedOfferModel, AltOfferModel } from '../Models/OfferModel';
 import Utils from '../Utils';
 import AirportService from './AirportService';
 import { FlightResponse, ItineraryPart, Segment } from './Responses/FlightResponse';
@@ -67,6 +67,7 @@ export default class FlightService extends BaseService {
         departure: new Date(altOffer.departureDates[0]),
         total: {
           amount: altOffer.total.alternatives[0][0].amount,
+          tax: altOffer.taxes.alternatives[0][0].amount,
           currency: altOffer.total.alternatives[0][0].currency,
         },
       }));
@@ -83,6 +84,7 @@ export default class FlightService extends BaseService {
         .find((bl) => bl.languageId === 'en_GB')?.marketingText ?? 'Unknown',
       total: {
         amount: offer.total.alternatives[0][0].amount,
+        tax: offer.taxes.alternatives[0][0].amount,
         currency: offer.total.alternatives[0][0].currency,
       },
       itineraryPart: this.getItineraryPart(offer.itineraryPart[0], store),
@@ -114,25 +116,27 @@ export default class FlightService extends BaseService {
       });
 
       if (Object.keys(result).indexOf(identifier) !== -1) {
-        // Unique flight.
+        // Unique offer.
         if (!result[identifier].cabinClasses[offer.cabinClass]) {
           // Cabin class is not yet added.
           result[identifier].cabinClasses[offer.cabinClass] = {
             startingFrom: offer.total,
-            flights: [offer],
+            offers: [offer],
           };
         } else {
           // Cabin class already added.
           const cabinClass = result[identifier].cabinClasses[offer.cabinClass];
 
           if (
-            cabinClass.flights.findIndex(
-              (flight) => flight.itineraryPart.bookingClass === offer.itineraryPart.bookingClass
-              && flight.total.amount === offer.total.amount,
+            cabinClass.offers.findIndex(
+              (nextOffer) => nextOffer
+                .itineraryPart
+                .bookingClass === offer.itineraryPart.bookingClass
+              && nextOffer.total.amount === offer.total.amount,
             ) === -1
           ) {
             // Unqique price/booking class, add it.
-            cabinClass.flights.push(offer);
+            cabinClass.offers.push(offer);
           }
 
           if (offer.total.amount < cabinClass.startingFrom.amount) {
@@ -149,7 +153,7 @@ export default class FlightService extends BaseService {
 
       result[identifier] = {
         segments: offer.itineraryPart.segments,
-        cabinClasses: { [offer.cabinClass]: { flights: [offer], startingFrom: offer.total } },
+        cabinClasses: { [offer.cabinClass]: { offers: [offer], startingFrom: offer.total } },
         departure: startSegment.departure,
         arrival: endSegment.arrival,
         origin: startSegment.origin,

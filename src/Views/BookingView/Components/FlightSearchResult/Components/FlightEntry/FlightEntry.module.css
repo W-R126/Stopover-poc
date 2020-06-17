@@ -1,14 +1,3 @@
-.FlightEntry {
-  /* display: grid;
-  grid-template-columns:
-    [originDestination] max-content
-    [travelTime] auto
-    [stops] auto
-    [cabinClasses] max-content
-    [showDetails] max-content;
-    gap: 16px; */
-}
-
 .OriginDestination {
   display: grid;
   grid-template-columns:
@@ -62,7 +51,14 @@ html[dir='rtl'] .Arrow::after {
   margin-bottom: 8px;
 }
 
+.Price {
+  display: flex;
+}
+
 .Price > button {
+  display: block;
+  flex-grow: 1;
+  white-space: nowrap;
   border: 0;
   background-color: #ededec;
   cursor: pointer;
@@ -73,6 +69,11 @@ html[dir='rtl'] .Arrow::after {
   line-height: 1;
   outline: 0;
   font-size: 14px;
+}
+
+.Price > button[aria-selected='true'] {
+  color: #fff;
+  background-color: #bd8b13;
 }
 
 html:not([dir='rtl']) .Price > button:not(:first-child) {
@@ -107,11 +108,16 @@ html[dir='rtl'] .Price > button:not(:first-child) {
   transition: transform 100ms;
 }
 
+.ShowDetails > button[aria-selected='true']::after {
+  transform: rotateZ(-180deg);
+}
+
+
 .FlightDetailsCollapsable {
   grid-column: 1 / -1;
   border-bottom: 1px solid #ededec;
 }
 
-.FlightEntry.ShowingDetails .ShowDetails > button::after {
-  transform: rotateZ(-180deg);
+.PriceDetails {
+  margin-bottom: 8px;
 }
