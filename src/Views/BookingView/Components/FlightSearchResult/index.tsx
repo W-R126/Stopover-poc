@@ -12,7 +12,7 @@ import { CabinType } from '../../../../Enums/CabinType';
 import { AirportModel } from '../../../../Models/AirportModel';
 import Select from '../../../../Components/UI/Select';
 import Option from '../../../../Components/UI/Select/Option';
-import Utils from '../../../../Utils';
+import SortAlgorithms from './SortAlgorithms';
 
 interface FlightSearchResultProps {
   passengers: PassengerPickerData;
@@ -32,72 +32,6 @@ interface FlightSearchResultState {
   sortingAlgorithm: (a: GroupedOfferModel, b: GroupedOfferModel) => number;
 }
 
-const sortingAlgorithms: {
-  [key: string]: (a: GroupedOfferModel, b: GroupedOfferModel) => number;
-} = {
-  departure: (a: GroupedOfferModel, b: GroupedOfferModel) => Utils.compareDatesExact(
-    a.departure,
-    b.departure,
-  ),
-  arrival: (a: GroupedOfferModel, b: GroupedOfferModel) => Utils.compareDatesExact(
-    a.arrival,
-    b.arrival,
-  ),
-  stopCount: (a: GroupedOfferModel, b: GroupedOfferModel) => {
-    if (a.stops.length < b.stops.length) {
-      return -1;
-    }
-
-    if (a.stops.length > b.stops.length) {
-      return 1;
-    }
-
-    return 0;
-  },
-  travelTime: (a: GroupedOfferModel, b: GroupedOfferModel) => {
-    const aVal = a.arrival.valueOf() - a.departure.valueOf();
-    const bVal = b.arrival.valueOf() - b.departure.valueOf();
-
-    if (aVal < bVal) {
-      return -1;
-    }
-
-    if (aVal > bVal) {
-      return 1;
-    }
-
-    return 0;
-  },
-  economyPrice: (a: GroupedOfferModel, b: GroupedOfferModel) => {
-    const aVal = a.cabinClasses.Economy.startingFrom.amount;
-    const bVal = b.cabinClasses.Economy.startingFrom.amount;
-
-    if (aVal < bVal) {
-      return -1;
-    }
-
-    if (aVal > bVal) {
-      return 1;
-    }
-
-    return 0;
-  },
-  businessPrice: (a: GroupedOfferModel, b: GroupedOfferModel) => {
-    const aVal = a.cabinClasses.Business.startingFrom.amount;
-    const bVal = b.cabinClasses.Business.startingFrom.amount;
-
-    if (aVal < bVal) {
-      return -1;
-    }
-
-    if (aVal > bVal) {
-      return 1;
-    }
-
-    return 0;
-  },
-};
-
 export default class FlightSearchResult extends React.Component<
   FlightSearchResultProps,
   FlightSearchResultState
@@ -113,7 +47,7 @@ export default class FlightSearchResult extends React.Component<
       offers: undefined,
       altOffers: undefined,
       showCountFactor: 1,
-      sortingAlgorithm: sortingAlgorithms.departure,
+      sortingAlgorithm: SortAlgorithms.departure,
     };
 
     this.onDepartureChange = this.onDepartureChange.bind(this);
@@ -258,12 +192,12 @@ export default class FlightSearchResult extends React.Component<
               value={sortingAlgorithm}
               onChange={(value): void => this.setState({ sortingAlgorithm: value })}
             >
-              <Option value={sortingAlgorithms.departure}>Departure</Option>
-              <Option value={sortingAlgorithms.arrival}>Arrival</Option>
-              <Option value={sortingAlgorithms.stopCount}>Number of stops</Option>
-              <Option value={sortingAlgorithms.travelTime}>Travel time</Option>
-              <Option value={sortingAlgorithms.economyPrice}>Economy price</Option>
-              <Option value={sortingAlgorithms.businessPrice}>Business price</Option>
+              <Option value={SortAlgorithms.departure}>Departure</Option>
+              <Option value={SortAlgorithms.arrival}>Arrival</Option>
+              <Option value={SortAlgorithms.stopCount}>Number of stops</Option>
+              <Option value={SortAlgorithms.travelTime}>Travel time</Option>
+              <Option value={SortAlgorithms.economyPrice}>Economy price</Option>
+              <Option value={SortAlgorithms.businessPrice}>Business price</Option>
             </Select>
           </div>
         </div>
