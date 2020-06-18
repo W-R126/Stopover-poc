@@ -7,6 +7,8 @@ export interface SegmentModel {
   destination: AirportModel;
   cabinClass: string;
   bookingClass: string;
+  equipment: string;
+  milesEarned: number;
   flight: {
     airlineCode: string;
     flightNumber: number;
@@ -28,6 +30,7 @@ export interface OfferModel {
   brandLabel: string;
   itineraryPart: {
     bookingClass: string;
+    milesEarned: number;
     segments: SegmentModel[];
   };
   soldout: boolean;

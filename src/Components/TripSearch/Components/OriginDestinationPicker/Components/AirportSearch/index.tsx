@@ -19,7 +19,7 @@ interface AirportSearchProps {
 
 interface AirportSearchState {
   query: string;
-  expanded: boolean;
+  collapsed: boolean;
   focused: boolean;
   hoveredIndex: number;
   showCountFactor: number;
@@ -43,7 +43,7 @@ export default class AirportSearch extends React.Component<
 
     this.state = {
       query: props.value ? this.getAirportQueryName(props.value) : '',
-      expanded: false,
+      collapsed: true,
       focused: false,
       hoveredIndex: 0,
       showCountFactor: 1,
@@ -128,7 +128,7 @@ export default class AirportSearch extends React.Component<
   }
 
   private onKeyDown(e: React.KeyboardEvent<HTMLInputElement>): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
     let { hoveredIndex } = this.state;
     const { filteredAirports } = this;
 
@@ -138,7 +138,7 @@ export default class AirportSearch extends React.Component<
       return;
     }
 
-    if (expanded) {
+    if (!collapsed) {
       if (e.key === 'Enter') {
         this.select(filteredAirports[hoveredIndex]);
         this.setState({ hoveredIndex: 0 });
@@ -230,15 +230,15 @@ export default class AirportSearch extends React.Component<
   }
 
   private expand(): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
 
-    if (!expanded) {
+    if (collapsed) {
       this.toggle();
     }
   }
 
   private collapse(): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
     const { value } = this.props;
 
     if (!value) {
@@ -246,15 +246,15 @@ export default class AirportSearch extends React.Component<
       this.setState({ query: '' });
     }
 
-    if (expanded) {
+    if (!collapsed) {
       this.toggle();
     }
   }
 
   private toggle(): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
 
-    this.setState({ expanded: !expanded });
+    this.setState({ collapsed: !collapsed });
   }
 
   render(): JSX.Element {
@@ -270,7 +270,7 @@ export default class AirportSearch extends React.Component<
 
     const {
       query,
-      expanded,
+      collapsed,
       focused,
       hoveredIndex,
       showCountFactor,
@@ -303,7 +303,7 @@ export default class AirportSearch extends React.Component<
       <div
         className={classList.join(' ')}
         style={style}
-        aria-expanded={expanded}
+        aria-expanded={!collapsed}
       >
         <div className={css.ModalWrapper}>
           <div className={wrapperClassList.join(' ')}>

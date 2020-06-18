@@ -13,7 +13,7 @@ interface DatePickerProps {
 }
 
 interface DatePickerState {
-  expanded: boolean;
+  collapsed: boolean;
 }
 
 export default class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
@@ -30,7 +30,7 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
     super(props);
 
     this.state = {
-      expanded: false,
+      collapsed: true,
     };
 
     this.expand = this.expand.bind(this);
@@ -76,9 +76,9 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
   }
 
   private expand(): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
 
-    if (!expanded) {
+    if (collapsed) {
       const { data } = this.props;
 
       if (this.calendarRef.current && data.start) {
@@ -87,19 +87,19 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
         );
       }
 
-      this.setState({ expanded: true });
+      this.setState({ collapsed: false });
     }
   }
 
   private collapse(): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
 
     if (this.calendarRef.current && this.calendarRef.current.state.selecting) {
       this.calendarRef.current.abortSelection();
     }
 
-    if (expanded) {
-      this.setState({ expanded: false });
+    if (!collapsed) {
+      this.setState({ collapsed: true });
     }
   }
 
@@ -111,7 +111,7 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
       onChange,
       className,
     } = this.props;
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
 
     const classList = [css.DatePicker];
 
@@ -127,7 +127,7 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
       <div
         ref={this.selfRef}
         className={classList.join(' ')}
-        aria-expanded={expanded}
+        aria-expanded={!collapsed}
         role="button"
         onClick={this.expand}
         onFocus={this.expand}

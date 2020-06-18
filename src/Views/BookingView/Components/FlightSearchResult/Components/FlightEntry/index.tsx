@@ -49,7 +49,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
     }
 
     this.setState({
-      selectedCabinClass: cabinClass === selectedCabinClass ? undefined : cabinClass
+      selectedCabinClass: cabinClass === selectedCabinClass ? undefined : cabinClass,
     });
   }
 

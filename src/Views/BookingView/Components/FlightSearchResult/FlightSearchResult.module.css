@@ -14,6 +14,10 @@
     max-content;
 }
 
+.Actions {
+  display: flex;
+}
+
 .OriginDestination {
   display: flex;
   align-items: center;

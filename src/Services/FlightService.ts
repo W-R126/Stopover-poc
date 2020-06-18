@@ -1,19 +1,23 @@
 import BaseService from './BaseService';
-import { OfferModel, GroupedOfferModel, AltOfferModel } from '../Models/OfferModel';
+import { OfferModel, GroupedOfferModel, AltOfferModel, SegmentModel } from '../Models/OfferModel';
 import Utils from '../Utils';
 import AirportService from './AirportService';
 import { FlightResponse, ItineraryPart, Segment } from './Responses/FlightResponse';
 import { PassengerPickerData } from '../Components/TripSearch/Components/PassengerPicker/PassengerPickerData';
 import { CabinType } from '../Enums/CabinType';
 import { AirportModel } from '../Models/AirportModel';
+import ContentService from './ContentService';
 
 export default class FlightService extends BaseService {
   private readonly airportService: AirportService;
 
-  constructor(airportService: AirportService, baseURL?: string) {
+  private readonly contentService: ContentService;
+
+  constructor(airportService: AirportService, contentService: ContentService, baseURL?: string) {
     super(baseURL);
 
     this.airportService = airportService;
+    this.contentService = contentService;
   }
 
   async getOffers(
@@ -75,6 +79,7 @@ export default class FlightService extends BaseService {
     const offers = result.data.unbundledOffers[0];
     const { fareFamilies } = result.data;
     const store: { [key: string]: any } = {};
+    const flightModels = await this.contentService.get('flightModels');
 
     const parsedOffers: OfferModel[] = offers.map((offer) => ({
       cabinClass: offer.cabinClass,
@@ -87,7 +92,7 @@ export default class FlightService extends BaseService {
         tax: offer.taxes.alternatives[0][0].amount,
         currency: offer.total.alternatives[0][0].currency,
       },
-      itineraryPart: this.getItineraryPart(offer.itineraryPart[0], store),
+      itineraryPart: this.getItineraryPart(offer.itineraryPart[0], flightModels, store),
     }));
 
     const airportReqs = Object.keys(store)
@@ -178,7 +183,16 @@ export default class FlightService extends BaseService {
     }
   }
 
-  private getItineraryPart(data: ItineraryPart, store: { [key: string]: any }): any {
+  private getItineraryPart(
+    data: ItineraryPart,
+    flightModels: { [key: string]: string },
+    store: { [key: string]: any },
+  ): {
+    bookingClass: string;
+    type: string;
+    segments: SegmentModel[];
+    milesEarned: number;
+  } {
     if (data['@ref'] !== undefined) {
       if (!store[data['@ref']]) {
         Object.assign(store, { [data['@ref']]: {} });
@@ -187,18 +201,41 @@ export default class FlightService extends BaseService {
       return store[data['@ref']];
     }
 
-    const segments = data.segments.map((segment) => this.getSegment(segment, store));
+    const segments = data.segments.map((segment) => this.getSegment(segment, flightModels, store));
 
     return Object.assign(store, {
       [data['@id']]: {
         bookingClass: data.bookingClass,
         type: 'itinerary',
         segments,
+        milesEarned: segments.reduce(
+          (prev, curr) => prev + curr.milesEarned,
+          0,
+        ),
       },
     })[data['@id']];
   }
 
-  private getSegment(data: Segment, store: { [key: string]: any }): any {
+  private getSegment(
+    data: Segment,
+    flightModels: { [key: string]: string },
+    store: { [key: string]: any },
+  ): {
+    type: string;
+    arrival: Date;
+    departure: Date;
+    cabinClass: string;
+    bookingClass: string;
+    destinationCode: string;
+    originCode: string;
+    equipment: string;
+    milesEarned: number;
+    flight: {
+      airlineCode: string;
+      flightNumber: number;
+      operatingAirlineCode: string;
+    };
+  } {
     if (data['@ref'] !== undefined) {
       if (!store[data['@ref']]) {
         Object.assign(store, { [data['@ref']]: {} });
@@ -216,6 +253,8 @@ export default class FlightService extends BaseService {
         bookingClass: data.bookingClass,
         destinationCode: data.destination,
         originCode: data.origin,
+        equipment: flightModels[data.equipment] ?? 'N/A',
+        milesEarned: data.segmentOfferInformation.flightsMiles,
         flight: {
           airlineCode: data.flight.airlineCode,
           flightNumber: data.flight.flightNumber,

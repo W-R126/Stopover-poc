@@ -86,7 +86,7 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, Pri
               </td>
               {offers.map((offer, idx) => (
                 <TableCell selected={selectedOffer === offer} key={`item-${idx}`}>
-                  {`${Utils.formatCurrency(800)} miles`}
+                  {`${Utils.formatCurrency(offer.itineraryPart.milesEarned)} miles`}
                 </TableCell>
               ))}
             </tr>

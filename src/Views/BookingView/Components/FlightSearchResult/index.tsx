@@ -13,6 +13,7 @@ import { AirportModel } from '../../../../Models/AirportModel';
 import Select from '../../../../Components/UI/Select';
 import Option from '../../../../Components/UI/Select/Option';
 import SortAlgorithms from './SortAlgorithms';
+import Menu from '../../../../Components/UI/Menu';
 
 interface FlightSearchResultProps {
   passengers: PassengerPickerData;
@@ -187,7 +188,12 @@ export default class FlightSearchResult extends React.Component<
               {`${origin?.cityName} to ${destination?.cityName}`}
             </strong>
           </div>
+
           <div className={css.Actions}>
+            <Menu>
+              Oh hai
+            </Menu>
+
             <Select
               value={sortingAlgorithm}
               onChange={(value): void => this.setState({ sortingAlgorithm: value })}
@@ -200,7 +206,9 @@ export default class FlightSearchResult extends React.Component<
               <Option value={SortAlgorithms.businessPrice}>Business price</Option>
             </Select>
           </div>
+
         </div>
+
         <div className={css.Result}>
           {!offers
             ? (

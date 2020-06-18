@@ -13,7 +13,7 @@ interface SelectProps<T> {
 }
 
 interface SelectState {
-  expanded: boolean;
+  collapsed: boolean;
 }
 
 export default class Select<T> extends React.Component<SelectProps<T>, SelectState> {
@@ -25,7 +25,7 @@ export default class Select<T> extends React.Component<SelectProps<T>, SelectSta
     super(props);
 
     this.state = {
-      expanded: false,
+      collapsed: true,
     };
 
     this.onKeyDown = this.onKeyDown.bind(this);
@@ -84,25 +84,25 @@ export default class Select<T> extends React.Component<SelectProps<T>, SelectSta
   }
 
   private expand(): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
 
-    if (!expanded) {
+    if (collapsed) {
       this.toggle();
     }
   }
 
   private collapse(): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
 
-    if (expanded) {
+    if (!collapsed) {
       this.toggle();
     }
   }
 
   private toggle(): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
 
-    this.setState({ expanded: !expanded });
+    this.setState({ collapsed: !collapsed });
   }
 
   render(): JSX.Element {
@@ -114,7 +114,7 @@ export default class Select<T> extends React.Component<SelectProps<T>, SelectSta
       value,
       tabIndex,
     } = this.props;
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
     const { options } = this;
     const selected = options.find((option) => option.props.value === value);
 
@@ -135,7 +135,7 @@ export default class Select<T> extends React.Component<SelectProps<T>, SelectSta
         id={id}
         className={classList.join(' ')}
         style={style}
-        aria-expanded={expanded}
+        aria-expanded={!collapsed}
         aria-controls={`${id ?? ''}-options`}
         tabIndex={tabIndex}
         role="combobox"

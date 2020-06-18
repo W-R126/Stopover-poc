@@ -50,7 +50,7 @@ export default function Segment({
         <span className={css.Tail}>
           {`${segment.flight.airlineCode} ${segment.flight.flightNumber}`}
         </span>
-        <span className={css.FlightModel}>Airbus A380</span>
+        <span className={css.FlightModel}>{segment.equipment}</span>
       </span>
       {layoverSegment && (
         <span className={css.Layover}>

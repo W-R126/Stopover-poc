@@ -3,6 +3,7 @@ import BaseService from './BaseService';
 import CityNames from './Content/CityNames';
 import CountryNames from './Content/CountryNames';
 import AirportNames from './Content/AirportNames';
+import FlightModels from './Content/FlightModels';
 
 export default class ContentService extends BaseService {
   async get(resource: string): Promise<any> {
@@ -10,6 +11,9 @@ export default class ContentService extends BaseService {
       let data;
 
       switch (resource) {
+        case 'flightModels':
+          data = FlightModels;
+          break;
         case 'cityNames':
           data = CityNames;
           break;

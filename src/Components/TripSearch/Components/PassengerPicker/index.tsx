@@ -18,7 +18,7 @@ interface PassengerPickerProps {
 }
 
 interface PassengerPickerState {
-  expanded: boolean;
+  collapsed: boolean;
 }
 
 export default class PassengerPicker extends React.Component<
@@ -41,7 +41,7 @@ export default class PassengerPicker extends React.Component<
     super(props);
 
     this.state = {
-      expanded: false,
+      collapsed: true,
     };
 
     this.onKeyDown = this.onKeyDown.bind(this);
@@ -99,9 +99,9 @@ export default class PassengerPicker extends React.Component<
   }
 
   private onFocusOutside(e: any): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
 
-    if (!expanded || !this.selfRef.current || this.selfRef.current.contains(e.target)) {
+    if (collapsed || !this.selfRef.current || this.selfRef.current.contains(e.target)) {
       return;
     }
 
@@ -189,25 +189,25 @@ export default class PassengerPicker extends React.Component<
   }
 
   private expand(): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
 
-    if (!expanded) {
+    if (collapsed) {
       this.toggle();
     }
   }
 
   private collapse(): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
 
-    if (expanded) {
+    if (!collapsed) {
       this.toggle();
     }
   }
 
   private toggle(): void {
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
 
-    this.setState({ expanded: !expanded });
+    this.setState({ collapsed: !collapsed });
   }
 
   render(): JSX.Element {
@@ -220,7 +220,7 @@ export default class PassengerPicker extends React.Component<
       data,
     } = this.props;
 
-    const { expanded } = this.state;
+    const { collapsed } = this.state;
     const { passengersDetailed, passengers, maxPassengers } = this;
 
     const classList = [css.PassengerPicker];
@@ -242,7 +242,7 @@ export default class PassengerPicker extends React.Component<
         className={classList.join(' ')}
         style={style}
         tabIndex={tabIndex}
-        aria-expanded={expanded}
+        aria-expanded={!collapsed}
       >
         <div
           className={wrapperClassList.join(' ')}
