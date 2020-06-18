@@ -17,11 +17,6 @@
   cursor: pointer;
 }
 
-.Checkbox:disabled + .Label {
-  color: #959492;
-  cursor: not-allowed;
-}
-
 .Label > span {
   display: inline-block;
   vertical-align: bottom;
@@ -34,6 +29,19 @@
   font-size: 14px;
 }
 
+html[dir='rtl'] .Label > span {
+  margin-left: 8px;
+}
+
+html:not([dir='rtl']) .Label > span {
+  margin-right: 8px;
+}
+
+.Checkbox:disabled + .Label {
+  color: #959492;
+  cursor: not-allowed;
+}
+
 .Checkbox:disabled + .Label > span {
   border-color: #959492;
 }
@@ -42,14 +50,6 @@
   box-shadow:
     0 0 0 2px #fff,
     0 0 0 4px #6997d3;
-}
-
-html[dir='rtl'] .Label > span {
-  margin-left: 8px;
-}
-
-html:not([dir='rtl']) .Label > span {
-  margin-right: 8px;
 }
 
 .Label > span::before {

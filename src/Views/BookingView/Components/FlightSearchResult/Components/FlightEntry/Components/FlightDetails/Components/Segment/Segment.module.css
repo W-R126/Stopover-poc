@@ -1,6 +1,5 @@
 .Segment {
   display: grid;
-  display: grid;
   grid-template-columns:
     [tail] 80px
     [dotted] 20px
@@ -56,10 +55,6 @@
   grid-column: content;
   color: #a6a6a6;
   padding: 8px 0;
-}
-
-.Location {
-  grid-column: content;
 }
 
 .Flight {

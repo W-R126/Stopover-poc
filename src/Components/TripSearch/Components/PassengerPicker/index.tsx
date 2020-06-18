@@ -99,9 +99,7 @@ export default class PassengerPicker extends React.Component<
   }
 
   private onFocusOutside(e: any): void {
-    const { collapsed } = this.state;
-
-    if (collapsed || !this.selfRef.current || this.selfRef.current.contains(e.target)) {
+    if (!this.selfRef.current || this.selfRef.current.contains(e.target)) {
       return;
     }
 

@@ -1,5 +1,10 @@
 import BaseService from './BaseService';
-import { OfferModel, GroupedOfferModel, AltOfferModel, SegmentModel } from '../Models/OfferModel';
+import {
+  OfferModel,
+  GroupedOfferModel,
+  AltOfferModel,
+  SegmentModel,
+} from '../Models/OfferModel';
 import Utils from '../Utils';
 import AirportService from './AirportService';
 import { FlightResponse, ItineraryPart, Segment } from './Responses/FlightResponse';
@@ -30,10 +35,6 @@ export default class FlightService extends BaseService {
     altOffers: AltOfferModel[];
     offers: GroupedOfferModel[];
   }> {
-    if (!(origin && destination && departure)) {
-      return { altOffers: [], offers: [] };
-    }
-
     const { adults, children, infants } = passengers;
     const passengerData = {};
 

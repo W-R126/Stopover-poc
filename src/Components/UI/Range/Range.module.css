@@ -1,0 +1,14 @@
+.Range {
+  display: inline-block;
+  position: relative;
+}
+
+.Range > input {
+  width: 100%;
+}
+
+.Value {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  display: none;
+}

@@ -1,3 +1,89 @@
 .Menu {
   position: relative;
+  height: 50px;
+  font-size: 18px;
+  color: #4e4c4a;
+  outline: 0;
+  user-select: none;
+}
+
+.Header {
+  border-radius: 4px;
+  border: 1px solid #b8b7b7;
+  background-color: #fff;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 100%;
+  line-height: 1;
+}
+
+.Menu[aria-expanded='false']:focus > .Header {
+  box-shadow: 0 0 0 2px #6997d3;
+  border-color: #fff;
+}
+
+.Header::after {
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f107';
+  font-size: 22px;
+  transition: transform 100ms;
+}
+
+html:not([dir='rtl']) .Header::after {
+  margin-left: 16px;
+}
+
+html[dir='rtl'] .Header::after {
+  margin-right: 16px;
+}
+
+.Menu[aria-expanded='true'] .Header::after {
+  transform: rotateZ(-180deg);
+}
+
+.Body {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0 0 0 2px #6997d3;
+  border: 1px solid #fff;
+}
+
+html:not([dir='rtl']) .Body {
+  right: 0;
+}
+
+html[dir='rtl'] .Body {
+  left: 0;
+}
+
+.Menu[aria-expanded='false'] .Body {
+  visibility: hidden;
+}
+
+.InnerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 49px;
+  padding: 0 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #dcdbdb;
+}
+
+.InnerHeader::after {
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f107';
+  font-size: 22px;
+  transition: transform 100ms;
+}
+
+.Menu[aria-expanded='true'] .InnerHeader::after {
+  transform: rotateZ(-180deg);
 }

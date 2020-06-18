@@ -11,6 +11,7 @@ import { PassengerPickerData } from '../../../../Components/TripSearch/Component
 import { CabinType } from '../../../../Enums/CabinType';
 import { AirportModel } from '../../../../Models/AirportModel';
 import Select from '../../../../Components/UI/Select';
+import Range from '../../../../Components/UI/Range';
 import Option from '../../../../Components/UI/Select/Option';
 import SortAlgorithms from './SortAlgorithms';
 import Menu from '../../../../Components/UI/Menu';
@@ -31,6 +32,18 @@ interface FlightSearchResultState {
   altOffers?: AltOfferModel[];
   showCountFactor: number;
   sortingAlgorithm: (a: GroupedOfferModel, b: GroupedOfferModel) => number;
+  filters: {
+    duration?: number;
+    departureTime?: number;
+    stops?: number;
+    price?: number;
+  };
+  dirtyFilters: {
+    duration: number;
+    departureTime: number;
+    stops: number;
+    price: number;
+  };
 }
 
 export default class FlightSearchResult extends React.Component<
@@ -49,10 +62,23 @@ export default class FlightSearchResult extends React.Component<
       altOffers: undefined,
       showCountFactor: 1,
       sortingAlgorithm: SortAlgorithms.departure,
+      filters: {
+        departureTime: undefined,
+        duration: undefined,
+        price: undefined,
+        stops: undefined,
+      },
+      dirtyFilters: {
+        departureTime: 0,
+        duration: 0,
+        price: 0,
+        stops: 0,
+      },
     };
 
     this.onDepartureChange = this.onDepartureChange.bind(this);
     this.onFlightEntryExpandDetails = this.onFlightEntryExpandDetails.bind(this);
+    this.clearFilters = this.clearFilters.bind(this);
   }
 
   componentDidMount(): void {
@@ -120,6 +146,21 @@ export default class FlightSearchResult extends React.Component<
     });
   }
 
+  private clearFilters(e: React.MouseEvent<HTMLSpanElement>): void {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const { filters } = this.state;
+    Object.assign(filters, {
+      duration: undefined,
+      stops: undefined,
+      price: undefined,
+      departureTime: undefined,
+    });
+
+    this.setState({ filters });
+  }
+
   private renderResult(offers: GroupedOfferModel[], altOffers: AltOfferModel[]): JSX.Element {
     if (offers.length === 0) {
       return (
@@ -156,12 +197,12 @@ export default class FlightSearchResult extends React.Component<
 
           {showCount < offers.length && (
             <div className={css.ShowMore}>
-              <span
+              <div
                 role="button"
                 onClick={(): void => this.setState({ showCountFactor: showCountFactor + 1 })}
               >
                 {`${offers.length - showCount} more flights`}
-              </span>
+              </div>
             </div>
           )}
         </div>
@@ -171,7 +212,13 @@ export default class FlightSearchResult extends React.Component<
 
   render(): JSX.Element {
     const { origin, destination, className } = this.props;
-    const { offers, altOffers, sortingAlgorithm } = this.state;
+    const {
+      offers,
+      altOffers,
+      sortingAlgorithm,
+      filters,
+      dirtyFilters,
+    } = this.state;
 
     const classList = [css.FlightSearchResult];
 
@@ -190,11 +237,70 @@ export default class FlightSearchResult extends React.Component<
           </div>
 
           <div className={css.Actions}>
-            <Menu>
-              Oh hai
+            <Menu
+              header={(
+                <div>
+                  Filters
+                  {Object
+                    .keys(filters)
+                    .filter((key) => (filters as any)[key] !== undefined)
+                    .length !== 0 && (
+                    <span role="button" onClick={this.clearFilters}>
+                      ×
+                    </span>
+                  )}
+                </div>
+              )}
+              className={css.Filters}
+              headerClassName={css.FiltersHeader}
+            >
+              <div className={css.FilterOptions}>
+                <label>Flight duration</label>
+                <Range
+                  min={1}
+                  max={50}
+                  value={dirtyFilters.duration}
+                  onChange={(duration): void => {
+                    Object.assign(dirtyFilters, { duration });
+                    this.setState({ dirtyFilters });
+                  }}
+                />
+                <label>Departure time</label>
+                <Range
+                  min={1}
+                  max={50}
+                  value={dirtyFilters.departureTime}
+                  onChange={(departureTime): void => {
+                    Object.assign(dirtyFilters, { departureTime });
+                    this.setState({ dirtyFilters });
+                  }}
+                />
+                <label>Number of stops</label>
+                <Range
+                  min={1}
+                  max={50}
+                  value={dirtyFilters.stops}
+                  onChange={(stops): void => {
+                    Object.assign(dirtyFilters, { stops });
+                    this.setState({ dirtyFilters });
+                  }}
+                />
+                <label>Price</label>
+                <Range
+                  min={1}
+                  max={50}
+                  value={dirtyFilters.price}
+                  onChange={(price): void => {
+                    Object.assign(dirtyFilters, { price });
+                    this.setState({ dirtyFilters });
+                  }}
+                />
+              </div>
             </Menu>
 
             <Select
+              className={css.Sorting}
+              wrapperClassName={css.SortingWrapper}
               value={sortingAlgorithm}
               onChange={(value): void => this.setState({ sortingAlgorithm: value })}
             >

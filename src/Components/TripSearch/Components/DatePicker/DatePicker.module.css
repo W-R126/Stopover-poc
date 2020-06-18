@@ -66,8 +66,7 @@ html[dir='rtl'] .CalendarWrapper {
 }
 
 @media screen and (min-width: 481px) {
-  html[dir='rtl'] .Inbound > input,
-  html:not([dir='rtl']) .DatePicker.ReturnTrip > .Outbound > input {
+  html[dir='rtl'] .Inbound > input {
     border-right: 0;
   }
 
@@ -76,7 +75,15 @@ html[dir='rtl'] .CalendarWrapper {
     border-bottom-left-radius: 0;
   }
 
-  html[dir='rtl'] .Inbound > input:not(:focus),
+  html[dir='rtl'] .Inbound > input:not(:focus) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  html:not([dir='rtl']) .DatePicker.ReturnTrip > .Outbound > input {
+    border-right: 0;
+  }
+
   html:not([dir='rtl']) .DatePicker.ReturnTrip > .Outbound > input:not(:focus) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;

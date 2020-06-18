@@ -76,6 +76,16 @@ html[dir='rtl'] .Arrow::after {
   background-color: #bd8b13;
 }
 
+.ShowDetails > button {
+  font-size: 0;
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+  height: 100%;
+  outline: 0;
+  color: #4e4c4a;
+}
+
 html:not([dir='rtl']) .Price > button:not(:first-child) {
   margin-left: 16px;
 }
@@ -90,16 +100,6 @@ html[dir='rtl'] .Price > button:not(:first-child) {
   font-size: 18px;
 }
 
-.ShowDetails > button {
-  font-size: 0;
-  border: 0;
-  background-color: transparent;
-  cursor: pointer;
-  height: 100%;
-  outline: 0;
-  color: #4e4c4a;
-}
-
 .ShowDetails > button::after {
   display: block;
   content: '\f107';
@@ -111,7 +111,6 @@ html[dir='rtl'] .Price > button:not(:first-child) {
 .ShowDetails > button[aria-selected='true']::after {
   transform: rotateZ(-180deg);
 }
-
 
 .FlightDetailsCollapsable {
   grid-column: 1 / -1;

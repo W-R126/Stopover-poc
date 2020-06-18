@@ -17,11 +17,6 @@
   cursor: pointer;
 }
 
-.Radio:disabled + .Label {
-  color: #959492;
-  cursor: not-allowed;
-}
-
 .Label > span {
   display: inline-block;
   vertical-align: bottom;
@@ -35,6 +30,19 @@
   font-size: 14px;
 }
 
+html:not([dir='rtl']) .Label > span {
+  margin-right: 8px;
+}
+
+html[dir='rtl'] .Label > span {
+  margin-left: 8px;
+}
+
+.Radio:disabled + .Label {
+  color: #959492;
+  cursor: not-allowed;
+}
+
 .Radio:disabled + .Label > span {
   border-color: #959492;
 }
@@ -44,14 +52,6 @@
     0 0 0 3px #fff inset,
     0 0 0 2px #6997d3;
   border-color: #fff;
-}
-
-html:not([dir='rtl']) .Label > span {
-  margin-right: 8px;
-}
-
-html[dir='rtl'] .Label > span {
-  margin-left: 8px;
 }
 
 .Radio:not(:disabled) + .Label:hover > span {
