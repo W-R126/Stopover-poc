@@ -144,34 +144,17 @@ export default class Utils {
       return undefined;
     }
 
-    // TODO: Check day to get correct positive/negative.
-
     const date = new Date();
-    const [hours1, minutes1] = date.toLocaleTimeString('sv-SE', { timeZone: tz1 }).split(':');
-    const [hours2, minutes2] = date.toLocaleTimeString('sv-SE', { timeZone: tz2 }).split(':');
+    const date1 = new Date(date.toLocaleString('sv-SE', { timeZone: tz1 }));
+    const date2 = new Date(date.toLocaleString('sv-SE', { timeZone: tz2 }));
 
-    const minutesTotal1 = Number.parseInt(hours1, 10) * 60 + Number.parseInt(minutes1, 10);
-    const minutesTotal2 = Number.parseInt(hours2, 10) * 60 + Number.parseInt(minutes2, 10);
+    const timeDeltaMs = date2.valueOf() - date1.valueOf();
 
-    const delta = minutesTotal2 - minutesTotal1;
-    const hours = Math.floor(Math.abs(delta) / 60);
-    const minutes = Math.abs(delta) % 60;
-
-    if (hours === 0 && minutes === 0) {
-      return undefined;
+    if (timeDeltaMs < 0) {
+      return `-${Utils.getTimeDeltaFromMs(timeDeltaMs)}`;
     }
 
-    let result = delta < 0 ? '-' : '+';
-
-    if (hours !== 0) {
-      result += `${hours}h`;
-    }
-
-    if (minutes !== 0) {
-      result += `${minutes}m`;
-    }
-
-    return result;
+    return `+${Utils.getTimeDeltaFromMs(timeDeltaMs)}`;
   }
 
   static getHourMinuteString(date: Date, timeZone?: string): string {
