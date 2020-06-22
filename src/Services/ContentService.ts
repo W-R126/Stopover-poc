@@ -5,6 +5,8 @@ import CountryNames from './Content/CountryNames';
 import AirportNames from './Content/AirportNames';
 import FlightModels from './Content/FlightModels';
 import TimeZones from './Content/TimeZones';
+import MainMenu from './Content/MainMenu';
+import Common from './Content/Common';
 
 export default class ContentService extends BaseService {
   async get(resource: string): Promise<any> {
@@ -12,6 +14,12 @@ export default class ContentService extends BaseService {
       let data;
 
       switch (resource) {
+        case 'common':
+          data = Common;
+          break;
+        case 'mainMenu':
+          data = MainMenu;
+          break;
         case 'timeZones':
           data = TimeZones;
           break;

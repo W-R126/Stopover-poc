@@ -1,50 +1,39 @@
 .Header {
-  height: 93px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   position: fixed;
+  z-index: 1000;
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  z-index: 100;
+  display: flex;
+  justify-content: center;
+  transition:
+    top 200ms,
+    height 200ms;
+  user-select: none;
+}
+
+.Wrapper {
+  flex-basis: 1376px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 24px;
+  transition: margin 300ms;
+  min-width: 0;
+}
+
+.Wrapper > a {
+  text-decoration: none;
 }
 
 .HeaderSpacer {
-  margin-top: 93px;
+  transition: height 200ms;
 }
 
-.ContentWrapper {
-  height: 100%;
-  padding: 0 24px !important;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.Logo > img {
-  height: 44px;
-  vertical-align: top;
-}
-
-.ContentWrapper > nav {
-  height: 100%;
-}
-
-.ContentWrapper > nav > a {
-  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
-  font-size: 18px;
-  display: inline-flex;
-  vertical-align: top;
-  height: 100%;
-  align-items: center;
-  color: #4e4c4a;
-  text-decoration: none;
-  padding: 0 20px;
-  margin: 0 1px;
-}
-
-@media screen and (max-width: 1144px) {
-  .ContentWrapper > nav {
-    display: none;
+@media screen and (max-width: 768px) {
+  .Wrapper {
+    margin: 0 16px;
   }
 }

@@ -1,0 +1,11 @@
+.ExternalLink > img {
+  vertical-align: middle;
+}
+
+html:not([dir='rtl']) .Icon {
+  margin-left: 7px;
+}
+
+html[dir='rtl'] .Icon {
+  margin-right: 7px;
+}

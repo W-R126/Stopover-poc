@@ -1,0 +1,107 @@
+.EtihadLogo {
+  display: inline-flex;
+  color: #bd8b13;
+  user-select: none;
+  font-size: 0.85rem;
+  direction: ltr;
+}
+
+.EtihadLogo.Right {
+  flex-flow: row;
+}
+
+.EtihadLogo.Bottom {
+  flex-flow: column;
+}
+
+.Images {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+
+.ArabicWordmark > img,
+.EnglishWordmark > img {
+  vertical-align: top;
+}
+
+.ArabicWordmark {
+  height: 0;
+  overflow: hidden;
+  transition: height 200ms;
+}
+
+.ArabicWordmark > img {
+  height: 1.7em;
+}
+
+.EtihadLogo.ArabicVisible .ArabicWordmark {
+  height: 2em;
+}
+
+.EnglishWordmark > img {
+  height: 1.12em;
+}
+
+.EntityName {
+  height: 0;
+  overflow: hidden;
+  transition: height 200ms;
+}
+
+.EtihadLogo.EntityVisible .EntityName {
+  height: 1.45em;
+}
+
+.EntityName > span {
+  display: block;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  margin-top: 0.4em;
+  font-size: 1.05em;
+}
+
+.BrandPlatform {
+  font-size: 1.59em;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  transition: width 200ms;
+}
+
+.BrandPlatform::before {
+  content: '';
+}
+
+.BrandPlatform > span {
+  text-align: center;
+  transition: margin-top 200ms;
+}
+
+.EtihadLogo.BrandVisible .BrandPlatform {
+  width: auto;
+}
+
+.EtihadLogo.Right .BrandPlatform::before {
+  border-left: 1px solid #d7b971;
+  margin: 0 0.4em;
+}
+
+.EtihadLogo.Right .BrandPlatform > span {
+  margin-top: -0.15em;
+}
+
+.EtihadLogo.Right.ArabicVisible .BrandPlatform > span {
+  margin-top: 1.08em;
+}
+
+.EtihadLogo.Bottom .BrandPlatform {
+  flex-flow: column;
+  font-size: 1.2em;
+}
+
+.EtihadLogo.Bottom .BrandPlatform::before {
+  border-top: 1px solid #bd8b13;
+  margin: 0.4em 0;
+}

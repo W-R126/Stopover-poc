@@ -1,0 +1,187 @@
+.Hamburger {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.Hamburger.Hidden {
+  display: none;
+}
+
+.Static {
+  display: flex;
+  height: 100%;
+}
+
+.Static > li {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.Static > li > a {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  text-decoration: none;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  font-weight: 900;
+  color: #4e4c4a;
+  font-size: 18px;
+  padding: 0 8px;
+}
+
+.Static > li:hover > a,
+.Static > li.Hover > a,
+.Static > li > a.Active {
+  color: #000;
+}
+
+.Static > li > a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  border-bottom: 3px solid #000;
+  opacity: 0;
+  transition:
+    opacity 200ms,
+    width 200ms,
+    left 200ms;
+}
+
+.Static > li:hover > a::after,
+.Static > li.Hover > a::after,
+.Static > li > a.Active::after {
+  left: 2px;
+  width: calc(100% - 4px);
+  opacity: 1;
+}
+
+.Static > li > a.Active::after {
+  border-bottom-color: #bd8b13;
+}
+
+.ToggleIcon {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+  outline: 0;
+}
+
+.ToggleIcon > span {
+  display: block;
+  position: relative;
+  width: 24px;
+  height: 14px;
+  border-bottom: 2px solid #4e4c4a;
+}
+
+.ToggleIcon > span::before,
+.ToggleIcon > span::after {
+  position: absolute;
+  bottom: 0;
+  display: block;
+  width: 100%;
+  content: '';
+  border-bottom: 2px solid #4e4c4a;
+}
+
+.ToggleIcon > span::before {
+  bottom: 4px;
+}
+
+.ToggleIcon > span::after {
+  bottom: 10px;
+}
+
+html:not([dir='rtl']) .ToggleIcon {
+  margin-left: 8px;
+}
+
+html[dir='rtl'] .ToggleIcon {
+  margin-right: 8px;
+}
+
+.Menu {
+  display: block;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  width: 290px;
+  overflow: hidden;
+  transition:
+    left 300ms,
+    right 300ms;
+}
+
+.Menu > .Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  width: 290px;
+  transition:
+    height 200ms,
+    right 300ms,
+    left 300ms;
+  background-color: #fff;
+  position: relative;
+  z-index: 1;
+  border-bottom: 1px solid #dcdbdb;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.Menu > .Header > .Search {
+  flex-grow: 1;
+  height: calc(100% - 16px);
+  width: 100%;
+  max-height: 50px;
+  margin: 8px 0;
+}
+
+html:not([dir='rtl']) .Menu[aria-expanded='true'] {
+  right: 0;
+}
+
+html:not([dir='rtl']) .Menu[aria-expanded='false'] {
+  right: -300px;
+}
+
+html[dir='rtl'] .Menu[aria-expanded='true'] {
+  left: 0;
+}
+
+html[dir='rtl'] .Menu[aria-expanded='false'] {
+  left: -300px;
+}
+
+.Menu[aria-expanded='true'] .ToggleIcon > span {
+  border-bottom: 0;
+}
+
+.Menu[aria-expanded='true'] .ToggleIcon > span::after {
+  transform: rotateZ(45deg);
+  bottom: 50%;
+}
+
+.Menu[aria-expanded='true'] .ToggleIcon > span::before {
+  transform: rotateZ(-45deg);
+  bottom: 50%;
+}
+
+.Content {
+  overflow: auto;
+}
+
+.NoResult {
+  padding: 16px;
+}

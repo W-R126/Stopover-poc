@@ -1,0 +1,45 @@
+.Header > span {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.Header > span > a {
+  display: inline-block;
+  padding: 16px;
+  color: #4e4c4a;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.Header > span:not(.External) {
+  border-bottom: 1px solid #dcdbdb;
+}
+
+.Header > .External {
+  display: block;
+}
+
+.Header > .External > a {
+  display: block;
+}
+
+.Header > span > a:hover {
+  color: #000;
+}
+
+.Header > span:not(.External)::after {
+  content: '\f107';
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  padding: 16px;
+  transition: transform 100ms;
+}
+
+.Header:hover,
+.HeaderLink[aria-expanded='true'] > .Header {
+  background-color: #efede7;
+}
+
+.HeaderLink[aria-expanded='true'] > .Header > span:not(.External)::after {
+  transform: rotateZ(-180deg);
+}

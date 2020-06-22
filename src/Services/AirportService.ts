@@ -66,7 +66,7 @@ export default class AirportService extends BaseService {
         result.push({
           searchString: searchStringItems.join(' ').toLowerCase(),
           code: airport.code,
-          timeZone: timeZone,
+          timeZone,
           name: airportName,
           cityCode: airport.cityCode,
           cityName,

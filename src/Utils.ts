@@ -36,6 +36,32 @@ function createStore(store: Storage): {
 }
 
 export default class Utils {
+  static deepCopy(obj: any): any {
+    if (obj instanceof Array) {
+      const result: any[] = [];
+
+      obj.forEach((item) => result.push(Utils.deepCopy(item)));
+
+      return result;
+    }
+
+    if (obj instanceof Date) {
+      return new Date(obj);
+    }
+
+    if (obj instanceof Object) {
+      const result: { [key: string]: any } = {};
+
+      Object.keys(obj).forEach((key) => {
+        result[key] = Utils.deepCopy(obj[key]);
+      });
+
+      return result;
+    }
+
+    return obj;
+  }
+
   static localStore = createStore(localStorage);
 
   static sessionStore = createStore(sessionStorage);

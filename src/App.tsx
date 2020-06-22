@@ -22,7 +22,7 @@ export default function App(): JSX.Element {
 
   return (
     <div id="app">
-      <Header />
+      <Header contentService={contentService} />
       <Switch>
         <Route exact path="/">
           <HomeView airportService={airportService} locale={locale} />
