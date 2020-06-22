@@ -1,7 +1,9 @@
 import { GroupedOfferModel } from '../../../../Models/OfferModel';
 import Utils from '../../../../Utils';
 
-const SortAlgorithms: { [key: string]: (a: GroupedOfferModel, b: GroupedOfferModel) => number} = {
+export type SortAlgorithm = (a: GroupedOfferModel, b: GroupedOfferModel) => number;
+
+const SortAlgorithms: { [key: string]: SortAlgorithm} = {
   departure: (a: GroupedOfferModel, b: GroupedOfferModel) => Utils.compareDatesExact(
     a.departure,
     b.departure,

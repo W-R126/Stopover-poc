@@ -12,7 +12,7 @@ import { CabinType } from '../../../../Enums/CabinType';
 import { AirportModel } from '../../../../Models/AirportModel';
 import Select from '../../../../Components/UI/Select';
 import Option from '../../../../Components/UI/Select/Option';
-import SortAlgorithms from './SortAlgorithms';
+import SortAlgorithms, { SortAlgorithm } from './SortAlgorithms';
 import Filters from './Components/Filters';
 
 interface FlightSearchResultProps {
@@ -30,7 +30,7 @@ interface FlightSearchResultState {
   offers?: GroupedOfferModel[];
   altOffers?: AltOfferModel[];
   showCountFactor: number;
-  sortingAlgorithm: (a: GroupedOfferModel, b: GroupedOfferModel) => number;
+  sortingAlgorithm: SortAlgorithm;
 }
 
 export default class FlightSearchResult extends React.Component<
@@ -53,6 +53,7 @@ export default class FlightSearchResult extends React.Component<
 
     this.onDepartureChange = this.onDepartureChange.bind(this);
     this.onFlightEntryExpandDetails = this.onFlightEntryExpandDetails.bind(this);
+    this.onSortingChange = this.onSortingChange.bind(this);
   }
 
   componentDidMount(): void {
@@ -93,6 +94,12 @@ export default class FlightSearchResult extends React.Component<
         flightEntryRef.collapseDetails();
       }
     });
+  }
+
+  private onSortingChange(sortingAlgorithm: SortAlgorithm): void {
+    this.onFlightEntryExpandDetails();
+
+    this.setState({ sortingAlgorithm });
   }
 
   private async search(): Promise<void> {
@@ -200,7 +207,7 @@ export default class FlightSearchResult extends React.Component<
               className={css.Sorting}
               wrapperClassName={css.SortingWrapper}
               value={sortingAlgorithm}
-              onChange={(value): void => this.setState({ sortingAlgorithm: value })}
+              onChange={this.onSortingChange}
             >
               <Option value={SortAlgorithms.departure}>Departure</Option>
               <Option value={SortAlgorithms.arrival}>Arrival</Option>
