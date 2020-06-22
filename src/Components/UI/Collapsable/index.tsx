@@ -14,7 +14,7 @@ interface CollapsableState {
 }
 
 export default class Collapsable extends React.Component<CollapsableProps, CollapsableState> {
-  static readonly defaultProps = {
+  static readonly defaultProps: Pick<CollapsableProps, 'transitionTimeMs'> = {
     transitionTimeMs: 300,
   };
 

@@ -107,14 +107,16 @@ export default class Utils {
     return result;
   }
 
-  static getTimeDelta(a: Date, b: Date): string {
-    const delta = Math.abs(a.valueOf() - b.valueOf());
+  static getTimeDeltaFromMs(timeMs: number): string {
+    const days = Math.floor(timeMs / 86400000);
+    const hours = Math.floor((timeMs - days * 86400000) / 3600000);
+    const minutes = Math.floor((timeMs - (days * 86400000 + hours * 3600000)) / 60000);
 
-    const days = Math.floor(delta / 86400000);
-    const hours = Math.floor((delta - days * 86400000) / 3600000);
-    const minutes = Math.floor((delta - (days * 86400000 + hours * 3600000)) / 60000);
+    let result = '';
 
-    let result = `${minutes}m`;
+    if (minutes > 0) {
+      result = `${minutes}m`;
+    }
 
     if (hours > 0) {
       result = `${hours}h ${result}`;
@@ -127,6 +129,12 @@ export default class Utils {
     return result;
   }
 
+  static getTimeDelta(a: Date, b: Date): string {
+    const delta = Math.abs(a.valueOf() - b.valueOf());
+
+    return Utils.getTimeDeltaFromMs(delta);
+  }
+
   static withLeadingZero(num: number): string {
     return `${num < 10 ? '0' : ''}${num}`;
   }
@@ -135,6 +143,8 @@ export default class Utils {
     if (!(tz1 && tz2)) {
       return undefined;
     }
+
+    // TODO: Check day to get correct positive/negative.
 
     const date = new Date();
     const [hours1, minutes1] = date.toLocaleTimeString('sv-SE', { timeZone: tz1 }).split(':');

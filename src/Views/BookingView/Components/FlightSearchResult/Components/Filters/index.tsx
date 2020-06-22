@@ -2,11 +2,15 @@ import React from 'react';
 
 import css from './Filters.module.css';
 import Menu from '../../../../../../Components/UI/Menu';
-import Range from '../../../../../../Components/UI/Range';
+import RangeSlider from '../../../../../../Components/UI/RangeSlider';
+import { GroupedOfferModel } from '../../../../../../Models/OfferModel';
+import Utils from '../../../../../../Utils';
 
 interface FiltersProps {
   headerClassName?: string;
   className?: string;
+  offers?: GroupedOfferModel[];
+  onChange: (filters?: (groupedOffer: GroupedOfferModel) => boolean) => void;
 }
 
 interface FiltersState {
@@ -14,6 +18,23 @@ interface FiltersState {
   departureTime: number;
   stops: number;
   price: number;
+  durationSpan: {
+    min: number;
+    max: number;
+  };
+  departureTimeSpan: {
+    min: number;
+    max: number;
+  };
+  stopsSpan: {
+    min: number;
+    max: number;
+  };
+  priceSpan: {
+    min: number;
+    max: number;
+  };
+  filtersActive: boolean;
 }
 
 export default class Filters extends React.Component<FiltersProps, FiltersState> {
@@ -22,44 +43,247 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
 
     this.state = {
       duration: 0,
-      departureTime: 1,
-      stops: 1,
-      price: 1,
+      departureTime: 0,
+      stops: 0,
+      price: 0,
+      durationSpan: {
+        min: 0,
+        max: 0,
+      },
+      departureTimeSpan: {
+        min: 0,
+        max: 0,
+      },
+      stopsSpan: {
+        min: 0,
+        max: 0,
+      },
+      priceSpan: {
+        min: 0,
+        max: 0,
+      },
+      filtersActive: false,
     };
 
     this.clearFilters = this.clearFilters.bind(this);
+  }
+
+  componentDidMount(): void {
+    this.setFilterSpans();
+  }
+
+  componentDidUpdate(prevProps: FiltersProps): void {
+    const { offers } = this.props;
+
+    if (prevProps.offers !== offers) {
+      this.setFilterSpans();
+    }
+  }
+
+  private async onFiltersChange(filter: any): Promise<void> {
+    Object.assign(filter, { filtersActive: true });
+
+    await new Promise((resolve) => this.setState(filter, resolve));
+
+    const { onChange } = this.props;
+    const {
+      // duration,
+      // departureTime,
+      stops,
+      price,
+    } = this.state;
+
+    onChange((groupedOffer: GroupedOfferModel): boolean => {
+      if (groupedOffer.stops.length > stops) {
+        return false;
+      }
+
+      let priceOk = false;
+
+      ['Economy', 'Business'].forEach((cc) => {
+        if (!groupedOffer.cabinClasses[cc]) {
+          return;
+        }
+
+        groupedOffer.cabinClasses[cc].offers.forEach((ccOffer) => {
+          if (ccOffer.total.amount >= price) {
+            priceOk = true;
+          }
+        });
+      });
+
+      if (!priceOk) {
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  private setFilterSpans(): void {
+    const { offers } = this.props;
+
+    if (!offers) {
+      return;
+    }
+
+    const durationSpan = {
+      min: -1,
+      max: -1,
+    };
+
+    const departureTimeSpan = {
+      min: -1,
+      max: -1,
+    };
+
+    const stopsSpan = {
+      min: -1,
+      max: -1,
+    };
+
+    const priceSpan = {
+      min: -1,
+      max: -1,
+    };
+
+    offers.forEach((offer) => {
+      ['Economy', 'Business'].forEach((cabinClass) => {
+        if (!offer.cabinClasses[cabinClass]) {
+          return;
+        }
+
+        offer.cabinClasses[cabinClass].offers.forEach((ccOffer) => {
+          // Get price span.
+          const { amount } = ccOffer.total;
+
+          if (priceSpan.min === -1) {
+            priceSpan.min = amount;
+          }
+
+          if (priceSpan.max === -1) {
+            priceSpan.max = amount;
+          }
+
+          if (priceSpan.min > amount) {
+            priceSpan.min = amount;
+          }
+
+          if (priceSpan.max < amount) {
+            priceSpan.max = amount;
+          }
+        });
+      });
+
+      // Get stops span.
+      const stops = offer.stops.length;
+
+      if (stopsSpan.min === -1) {
+        stopsSpan.min = stops;
+      }
+
+      if (stopsSpan.max === -1) {
+        stopsSpan.max = stops;
+      }
+
+      if (stopsSpan.min > stops) {
+        stopsSpan.min = stops;
+      }
+
+      if (stopsSpan.max < stops) {
+        stopsSpan.max = stops;
+      }
+
+      // Get departure time span.
+      const departure = offer.departure.valueOf();
+
+      if (departureTimeSpan.min === -1) {
+        departureTimeSpan.min = departure;
+      }
+
+      if (departureTimeSpan.max === -1) {
+        departureTimeSpan.max = departure;
+      }
+
+      if (departureTimeSpan.min > departure) {
+        departureTimeSpan.min = departure;
+      }
+
+      if (departureTimeSpan.max < departure) {
+        departureTimeSpan.max = departure;
+      }
+
+      // Get duration span.
+      const durationDelta = offer.arrival.valueOf() - departure;
+
+      if (durationSpan.min === -1) {
+        durationSpan.min = durationDelta;
+      }
+
+      if (durationSpan.max === -1) {
+        durationSpan.max = durationDelta;
+      }
+
+      if (durationSpan.min > durationDelta) {
+        durationSpan.min = durationDelta;
+      }
+
+      if (durationSpan.max < durationDelta) {
+        durationSpan.max = durationDelta;
+      }
+    });
+
+    this.setState({
+      priceSpan,
+      stopsSpan,
+      departureTimeSpan,
+      durationSpan,
+      price: priceSpan.min,
+      departureTime: departureTimeSpan.min,
+      duration: durationSpan.min,
+      stops: stopsSpan.max,
+    });
   }
 
   private clearFilters(e: React.MouseEvent<HTMLSpanElement>): void {
     e.preventDefault();
     e.stopPropagation();
 
-    const {
-      duration,
-      departureTime,
-      stops,
-      price,
-    } = this.state;
+    this.setFilterSpans();
 
-    // Object.assign(filters, {
-    //   duration: undefined,
-    //   stops: undefined,
-    //   price: undefined,
-    //   departureTime: undefined,
-    // });
+    this.setState({ filtersActive: false });
 
-    // this.setState({ filters });
+    const { onChange } = this.props;
+
+    onChange(undefined);
   }
 
   render(): JSX.Element {
-    const filters = {};
-    const { headerClassName, className } = this.props;
+    const { headerClassName, className, offers } = this.props;
+
+    const headerClassList = [css.Header];
+
+    if (headerClassName) {
+      headerClassList.push(headerClassName);
+    }
+
+    let currency = '';
+
+    if (offers) {
+      currency = offers[0]
+        .cabinClasses[Object.keys(offers[0].cabinClasses)[0]].startingFrom.currency;
+    }
 
     const {
       duration,
       price,
       stops,
       departureTime,
+      departureTimeSpan,
+      priceSpan,
+      stopsSpan,
+      durationSpan,
+      filtersActive,
     } = this.state;
 
     return (
@@ -67,10 +291,7 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
         header={(
           <div>
             Filters
-            {Object
-              .keys(filters)
-              .filter((key) => (filters as any)[key] !== undefined)
-              .length !== 0 && (
+            {filtersActive && (
               <span role="button" onClick={this.clearFilters}>
                 ×
               </span>
@@ -78,47 +299,53 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
           </div>
         )}
         className={className}
-        headerClassName={headerClassName}
+        headerClassName={headerClassList.join(' ')}
+        innerHeaderClassName={css.Header}
       >
         <div className={css.FilterOptions}>
           <label>Flight duration</label>
-          <Range
-            min={0}
-            max={50}
-            step={5}
+          <RangeSlider
+            min={durationSpan.min}
+            max={durationSpan.max}
             value={duration}
+            step={1800000}
+            valueFormatter={(value): string => Utils.getTimeDeltaFromMs(value)}
             onChange={(nextDuration): void => {
-              this.setState({ duration: nextDuration });
+              this.onFiltersChange({ duration: nextDuration });
             }}
           />
 
           <label>Departure time</label>
-          <Range
-            min={1}
-            max={107}
+          <RangeSlider
+            min={departureTimeSpan.min}
+            max={departureTimeSpan.max}
             value={departureTime}
+            step={900000}
+            valueFormatter={(value): string => Utils.getHourMinuteString(new Date(value))}
             onChange={(nextDepartureTime): void => {
-              this.setState({ departureTime: nextDepartureTime });
+              this.onFiltersChange({ departureTime: nextDepartureTime });
             }}
           />
 
-          <label>Number of stops</label>
-          <Range
-            min={1}
-            max={50}
+          <label>Max number of stops</label>
+          <RangeSlider
+            min={stopsSpan.min}
+            max={stopsSpan.max}
             value={stops}
+            valueFormatter={(value): string => `${value} stops`}
             onChange={(nextStops): void => {
-              this.setState({ stops: nextStops });
+              this.onFiltersChange({ stops: nextStops });
             }}
           />
 
           <label>Price</label>
-          <Range
-            min={1}
-            max={50}
+          <RangeSlider
+            min={priceSpan.min}
+            max={priceSpan.max}
             value={price}
+            valueFormatter={(value): string => `${currency} ${Utils.formatCurrency(value)}`}
             onChange={(nextPrice): void => {
-              this.setState({ price: nextPrice });
+              this.onFiltersChange({ price: nextPrice });
             }}
           />
         </div>

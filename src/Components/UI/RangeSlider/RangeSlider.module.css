@@ -1,11 +1,11 @@
-.Range {
+.RangeSlider {
   display: inline-block;
   position: relative;
   user-select: none;
   width: 200px;
 }
 
-.Range::after {
+.RangeSlider::after {
   content: '';
   width: calc(100% - 8px);
   height: 1px;
@@ -17,7 +17,7 @@
   z-index: 0;
 }
 
-.Range > input {
+.RangeSlider > input {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
@@ -30,7 +30,7 @@
   cursor: pointer;
 }
 
-.Range > input::-webkit-slider-thumb {
+.RangeSlider > input::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 16px;
@@ -39,11 +39,15 @@
   background-color: #bd8b13;
 }
 
-.Range > input::-moz-range-thumb {
+.RangeSlider > input::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background-color: #bd8b13;
+}
+
+.RangeSlider > input:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 5px rgba(189, 139, 19, 0.3);
 }
 
 .Value {

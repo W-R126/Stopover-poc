@@ -1,6 +1,6 @@
 import React from 'react';
 
-import css from './Range.module.css';
+import css from './RangeSlider.module.css';
 
 interface RangeProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -18,7 +18,7 @@ interface RangeState {
   showValue: boolean;
 }
 
-export default class Range extends React.Component<RangeProps, RangeState> {
+export default class RangeSlider extends React.Component<RangeProps, RangeState> {
   static readonly defaultProps: Pick<RangeProps, 'displayValue' | 'valueFormatter'> = {
     displayValue: true,
     valueFormatter: (value: number) => value.toString(),
@@ -36,48 +36,35 @@ export default class Range extends React.Component<RangeProps, RangeState> {
     this.state = {
       showValue: false,
     };
-
-    this.onChange = this.onChange.bind(this);
   }
 
-  private onChange(e: React.ChangeEvent<HTMLInputElement>): void {
-    const { onChange } = this.props;
-
-    onChange(Number.parseInt(e.target.value, 10));
+  componentDidUpdate(): void {
+    this.setValuePos();
   }
 
-  private getValuePos(): number {
+  private setValuePos(): void {
     const selfRef = this.selfRef.current;
     const valueRef = this.valueRef.current;
 
     if (!(selfRef && valueRef)) {
-      return 0;
+      return;
     }
 
     const { value, min, max } = this.props;
     const delta = Math.abs(min - max);
-    const percent = ((value - min) / delta);
+    let percent = ((value - min) / delta);
     const valueWidth = valueRef.getBoundingClientRect().width;
     const selfWidth = selfRef.getBoundingClientRect().width - 16;
 
-    return (8 - valueWidth / 2) + selfWidth * percent;
+    if (Number.isNaN(percent)) {
+      percent = 0;
+    }
+
+    valueRef.style.left = `${(8 - valueWidth / 2) + selfWidth * percent}px`;
   }
 
-  private async showValue(
-    e: React.MouseEvent<HTMLInputElement>,
-    showValue: boolean,
-  ): Promise<void> {
+  private async showValue(showValue: boolean): Promise<void> {
     this.showingValue = showValue;
-
-    const { onMouseUp, onMouseDown } = this.props;
-
-    if (showValue && onMouseDown) {
-      onMouseDown(e);
-    }
-
-    if (!showValue && onMouseUp) {
-      onMouseUp(e);
-    }
 
     if (!showValue) {
       const cancel = await new Promise((resolve) => setTimeout(
@@ -90,6 +77,7 @@ export default class Range extends React.Component<RangeProps, RangeState> {
       }
     }
 
+    this.setValuePos();
     this.setState({ showValue });
   }
 
@@ -97,17 +85,17 @@ export default class Range extends React.Component<RangeProps, RangeState> {
     const {
       className,
       style,
-      displayValue,
-      onChange,
-      onMouseDown,
-      onMouseUp,
       value,
       valueFormatter,
+      displayValue,
+      onMouseDown,
+      onMouseUp,
+      onChange,
       ...props
     } = this.props;
 
     const { showValue } = this.state;
-    const classList = [css.Range];
+    const classList = [css.RangeSlider];
 
     if (className) {
       classList.push(className);
@@ -119,19 +107,39 @@ export default class Range extends React.Component<RangeProps, RangeState> {
         className={classList.join(' ')}
         style={style}
       >
-        <div
-          ref={this.valueRef}
-          className={css.Value}
-          style={{ left: this.getValuePos(), visibility: showValue ? undefined : 'hidden' }}
-        >
-          {valueFormatter(value)}
-        </div>
+        {!displayValue
+          ? undefined
+          : (
+            <div
+              ref={this.valueRef}
+              className={css.Value}
+              style={{ visibility: showValue ? undefined : 'hidden' }}
+            >
+              {valueFormatter(value)}
+            </div>
+          )}
         <input
           type="range"
           value={value}
-          onChange={this.onChange}
-          onMouseDown={(e): Promise<void> => this.showValue(e, true)}
-          onMouseUp={(e): Promise<void> => this.showValue(e, false)}
+          onChange={(e): void => {
+            if (onChange) {
+              onChange(Number.parseInt(e.target.value, 10));
+            }
+          }}
+          onMouseDown={(e): void => {
+            if (onMouseDown) {
+              onMouseDown(e);
+            }
+
+            this.showValue(true);
+          }}
+          onMouseUp={(e): void => {
+            if (onMouseUp) {
+              onMouseUp(e);
+            }
+
+            this.showValue(false);
+          }}
           {...props}
         />
       </div>

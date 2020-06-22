@@ -11,3 +11,14 @@
 .FilterOptions > label {
   margin: 8px 0;
 }
+
+.Header > div {
+  display: flex;
+  align-items: center;
+}
+
+.Header > div > span {
+  font-size: 32px;
+  display: inline-block;
+  margin: 0 8px;
+}

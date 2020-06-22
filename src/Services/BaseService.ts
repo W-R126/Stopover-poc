@@ -8,7 +8,6 @@ export default abstract class BaseService {
   constructor(baseURL?: string) {
     this.http = axios.create({
       baseURL,
-      // withCredentials: true,
     });
   }
 
@@ -18,12 +17,16 @@ export default abstract class BaseService {
    * @param key Unique key that identifies the request.
    * @param exec Execution body.
    */
-  protected async createRequest<T>(key: string, exec: () => Promise<T>): Promise<T> {
+  protected async createRequest<T>(
+    key: string,
+    exec: (...args: any[]) => Promise<T>,
+    ...args: any[]
+  ): Promise<T> {
     if (this.pendingRequests[key]) {
       return this.pendingRequests[key];
     }
 
-    const pending = exec();
+    const pending = exec(...args);
 
     this.pendingRequests[key] = pending;
 

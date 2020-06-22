@@ -5,6 +5,7 @@ import css from './Menu.module.css';
 interface MenuProps {
   className?: string;
   headerClassName?: string;
+  innerHeaderClassName?: string;
   header: React.ReactNode;
   tabIndex: number;
 }
@@ -99,6 +100,7 @@ export default class Menu extends React.Component<MenuProps, MenuState> {
     const {
       className,
       headerClassName,
+      innerHeaderClassName,
       tabIndex,
       header,
       children,
@@ -115,6 +117,12 @@ export default class Menu extends React.Component<MenuProps, MenuState> {
 
     if (headerClassName) {
       headerClassList.push(headerClassName);
+    }
+
+    const innerHeaderClassList = [css.InnerHeader];
+
+    if (innerHeaderClassName) {
+      innerHeaderClassList.push(innerHeaderClassName);
     }
 
     return (
@@ -136,7 +144,7 @@ export default class Menu extends React.Component<MenuProps, MenuState> {
 
         <div className={css.Body}>
           <div
-            className={css.InnerHeader}
+            className={innerHeaderClassList.join(' ')}
             onClick={this.toggle}
             role="button"
           >

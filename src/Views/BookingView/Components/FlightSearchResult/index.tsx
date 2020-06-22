@@ -13,7 +13,7 @@ import { AirportModel } from '../../../../Models/AirportModel';
 import Select from '../../../../Components/UI/Select';
 import Option from '../../../../Components/UI/Select/Option';
 import SortAlgorithms, { SortAlgorithm } from './SortAlgorithms';
-import Filters from './Components/Filters';
+// import Filters from './Components/Filters';
 
 interface FlightSearchResultProps {
   passengers: PassengerPickerData;
@@ -31,6 +31,7 @@ interface FlightSearchResultState {
   altOffers?: AltOfferModel[];
   showCountFactor: number;
   sortingAlgorithm: SortAlgorithm;
+  filters?: (groupedOffer: GroupedOfferModel) => boolean;
 }
 
 export default class FlightSearchResult extends React.Component<
@@ -49,11 +50,13 @@ export default class FlightSearchResult extends React.Component<
       altOffers: undefined,
       showCountFactor: 1,
       sortingAlgorithm: SortAlgorithms.departure,
+      filters: undefined,
     };
 
     this.onDepartureChange = this.onDepartureChange.bind(this);
     this.onFlightEntryExpandDetails = this.onFlightEntryExpandDetails.bind(this);
     this.onSortingChange = this.onSortingChange.bind(this);
+    this.onFiltersChange = this.onFiltersChange.bind(this);
   }
 
   componentDidMount(): void {
@@ -102,6 +105,12 @@ export default class FlightSearchResult extends React.Component<
     this.setState({ sortingAlgorithm });
   }
 
+  private onFiltersChange(filters: any): void {
+    this.onFlightEntryExpandDetails();
+
+    this.setState({ filters });
+  }
+
   private async search(): Promise<void> {
     const {
       flightService,
@@ -136,9 +145,15 @@ export default class FlightSearchResult extends React.Component<
       );
     }
 
-    const { showCountFactor, sortingAlgorithm } = this.state;
+    const { showCountFactor, sortingAlgorithm, filters } = this.state;
     const { departure } = this.props;
     const showCount = showCountFactor * this.showCount;
+
+    let nextOffers = offers.sort(sortingAlgorithm);
+
+    if (filters) {
+      nextOffers = nextOffers.filter(filters);
+    }
 
     return (
       <>
@@ -150,7 +165,7 @@ export default class FlightSearchResult extends React.Component<
         />
 
         <div className={css.FlightEntries}>
-          {offers.sort(sortingAlgorithm).slice(0, showCount).map((flight, idx) => (
+          {nextOffers.slice(0, showCount).map((flight, idx) => (
             <FlightEntry
               ref={(ref): void => {
                 this.flightEntryRefs[idx] = ref;
@@ -201,7 +216,12 @@ export default class FlightSearchResult extends React.Component<
           </div>
 
           <div className={css.Actions}>
-            <Filters headerClassName={css.FiltersHeader} className={css.Filters} />
+            {/* <Filters
+              headerClassName={css.FiltersHeader}
+              className={css.Filters}
+              offers={offers}
+              onChange={this.onFiltersChange}
+            /> */}
 
             <Select
               className={css.Sorting}

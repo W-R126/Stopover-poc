@@ -24,6 +24,8 @@ export default class FlightService extends BaseService {
 
     this.airportService = airportService;
     this.contentService = contentService;
+
+    this.getOffersAux = this.getOffersAux.bind(this);
   }
 
   async getOffers(
@@ -32,6 +34,29 @@ export default class FlightService extends BaseService {
     destination: AirportModel,
     origin: AirportModel,
     passengers: PassengerPickerData,
+  ): Promise<{
+    altOffers: AltOfferModel[];
+    offers: GroupedOfferModel[];
+  }> {
+    return this.createRequest(
+      `getOffers/${cabinType}/${departure.valueOf()}/${destination.code}/${origin.code}/${
+        passengers.adults}/${passengers.children}/${passengers.infants}`,
+      this.getOffersAux,
+      cabinType,
+      departure,
+      destination,
+      origin,
+      passengers,
+    );
+  }
+
+  private async getOffersAux(
+    cabinType: CabinType,
+    departure: Date,
+    destination: AirportModel,
+    origin: AirportModel,
+    passengers: PassengerPickerData,
+    currency = 'AED',
   ): Promise<{
     altOffers: AltOfferModel[];
     offers: GroupedOfferModel[];
@@ -67,7 +92,7 @@ export default class FlightService extends BaseService {
       {
         passengers: passengerData,
         searchType: 'BRANDED',
-        currency: 'AED',
+        currency,
         itineraryParts: [
           {
             from: { code: origin.code },
@@ -76,9 +101,7 @@ export default class FlightService extends BaseService {
           },
         ],
       },
-      {
-        headers,
-      },
+      { headers },
     );
 
     const { sessionContext } = result.data;

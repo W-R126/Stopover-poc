@@ -1064,6 +1064,10 @@ export default [
     timeZone: 'Europe/Dublin',
   },
   {
+    code: 'NJC',
+    timeZone: 'Asia/Yekaterinburg',
+  },
+  {
     code: 'TYS',
     timeZone: 'America/New_York',
   },
