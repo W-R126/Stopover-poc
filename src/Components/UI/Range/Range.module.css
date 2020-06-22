@@ -1,14 +1,74 @@
 .Range {
   display: inline-block;
   position: relative;
+  user-select: none;
+  width: 200px;
+}
+
+.Range::after {
+  content: '';
+  width: calc(100% - 8px);
+  height: 1px;
+  top: calc(50% - 1px);
+  left: 4px;
+  position: absolute;
+  background-color: #bd8b13;
+  display: block;
+  z-index: 0;
 }
 
 .Range > input {
+  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
+  margin: 0;
+  height: 16px;
+  background-color: transparent;
+  outline: 0;
+  z-index: 1;
+  position: relative;
+  cursor: pointer;
+}
+
+.Range > input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #bd8b13;
+}
+
+.Range > input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #bd8b13;
 }
 
 .Value {
   position: absolute;
-  bottom: calc(100% + 10px);
-  display: none;
+  bottom: calc(100% + 16px);
+  padding: 8px;
+  background-color: #bd8b13;
+  color: #fff;
+  min-width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 900;
+  border-radius: 2px;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.Value::after {
+  position: absolute;
+  top: 100%;
+  content: '';
+  display: block;
+  border: 10px solid transparent;
+  border-bottom: 0;
+  border-top-color: #bd8b13;
 }

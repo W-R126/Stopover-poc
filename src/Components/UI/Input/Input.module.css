@@ -1,0 +1,24 @@
+.Input {
+  border: 1px solid #b8b7b7;
+  border-radius: 4px;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  padding: 11px 16px;
+  height: 50px;
+  color: #4e4c4a;
+  outline: 0;
+}
+
+.Input:focus {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px #6997d3;
+}
+
+.Input:disabled {
+  cursor: not-allowed;
+  background-color: #fff;
+}
+
+.Input::placeholder {
+  color: #959492;
+}

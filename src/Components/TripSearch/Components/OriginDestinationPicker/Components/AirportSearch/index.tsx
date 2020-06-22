@@ -2,6 +2,7 @@ import React from 'react';
 
 import css from './AirportSearch.module.css';
 import { AirportModel } from '../../../../../../Models/AirportModel';
+import Input from '../../../../../UI/Input';
 
 interface AirportSearchProps {
   id?: string;
@@ -307,7 +308,7 @@ export default class AirportSearch extends React.Component<
       >
         <div className={css.ModalWrapper}>
           <div className={wrapperClassList.join(' ')}>
-            <input
+            <Input
               type="text"
               id={id}
               placeholder={placeholder}

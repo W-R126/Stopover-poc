@@ -3,6 +3,7 @@ import React from 'react';
 import css from './DatePicker.module.css';
 import Calendar from './Components/Calendar';
 import { CalendarData } from './Components/Calendar/CalendarData';
+import Input from '../../../UI/Input';
 
 interface DatePickerProps {
   data: CalendarData;
@@ -134,7 +135,7 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
       >
         <div className={css.Outbound}>
           <label htmlFor="outbound">Outbound</label>
-          <input
+          <Input
             type="text"
             id="outbound"
             placeholder="DD/MMM/YYYY"
@@ -146,7 +147,7 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
         {span && (
           <div className={css.Inbound}>
             <label htmlFor="inbound">Inbound</label>
-            <input
+            <Input
               type="text"
               id="inbound"
               placeholder="DD/MMM/YYYY"

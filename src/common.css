@@ -23,32 +23,6 @@ body {
   color: #4e4c4a;
 }
 
-/* Input element. */
-input:not([type='checkbox']):not([type='radio']):not([type='range']) {
-  border: 1px solid #b8b7b7;
-  border-radius: 4px;
-  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
-  font-size: 20px;
-  padding: 11px 16px;
-  height: 50px;
-  color: #4e4c4a;
-  outline: 0;
-}
-
-input:not([type='checkbox']):not([type='radio']):not([type='range']):focus {
-  border-color: transparent;
-  box-shadow: 0 0 0 2px #6997d3;
-}
-
-input:not([type='checkbox']):not([type='radio']):not([type='range']):disabled {
-  cursor: not-allowed;
-  background-color: #fff;
-}
-
-input:not([type='checkbox']):not([type='radio']):not([type='range'])::placeholder {
-  color: #959492;
-}
-
 label {
   display: inline-block;
   margin-bottom: 10px;

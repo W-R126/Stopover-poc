@@ -30,20 +30,6 @@ html[dir='rtl'] .Filters:not(:focus) .FiltersHeader {
   border-bottom-left-radius: 0;
 }
 
-.FilterOptions {
-  display: grid;
-  grid-template-columns:
-    auto
-    max-content;
-    gap: 16px;
-  margin: 12px 16px;
-  align-items: center;
-}
-
-.FilterOptions > label {
-  margin: 8px 0;
-}
-
 html:not([dir='rtl']) .Sorting {
   margin-left: -1px;
 }
@@ -112,30 +98,32 @@ html[dir='rtl'] .Sorting {
   grid-column: 1 / -1;
 }
 
-.ShowMore > span {
+.ShowMore > button {
   display: flex;
   cursor: pointer;
   font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
-  font-weight: 900;
   padding: 16px 24px;
   align-items: center;
   justify-content: center;
   background-color: #ededec;
   border-radius: 4px;
+  border: 0;
+  outline: 0;
+  font-size: 16px;
 }
 
-.ShowMore > span::after {
+.ShowMore > button::after {
   content: '\f107';
   font-family: 'Icons', Arial, Helvetica, sans-serif;
   font-size: 24px;
   font-weight: 100;
 }
 
-html:not([dir='rtl']) .ShowMore > span::after {
+html:not([dir='rtl']) .ShowMore > button::after {
   margin-left: 16px;
 }
 
-html[dir='rtl'] .ShowMore > span::after {
+html[dir='rtl'] .ShowMore > button::after {
   margin-right: 16px;
 }
 

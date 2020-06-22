@@ -36,6 +36,14 @@ const SortAlgorithms: { [key: string]: (a: GroupedOfferModel, b: GroupedOfferMod
     return 0;
   },
   economyPrice: (a: GroupedOfferModel, b: GroupedOfferModel) => {
+    if (!a.cabinClasses.Economy) {
+      return 1;
+    }
+
+    if (!b.cabinClasses.Economy) {
+      return -1;
+    }
+
     const aVal = a.cabinClasses.Economy.startingFrom.amount;
     const bVal = b.cabinClasses.Economy.startingFrom.amount;
 
@@ -50,6 +58,14 @@ const SortAlgorithms: { [key: string]: (a: GroupedOfferModel, b: GroupedOfferMod
     return 0;
   },
   businessPrice: (a: GroupedOfferModel, b: GroupedOfferModel) => {
+    if (!a.cabinClasses.Business) {
+      return 1;
+    }
+
+    if (!b.cabinClasses.Business) {
+      return -1;
+    }
+
     const aVal = a.cabinClasses.Business.startingFrom.amount;
     const bVal = b.cabinClasses.Business.startingFrom.amount;
 

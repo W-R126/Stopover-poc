@@ -58,6 +58,7 @@ html[dir='rtl'] .Arrow::after {
 .Price > button {
   display: block;
   flex-grow: 1;
+  flex-basis: 0;
   white-space: nowrap;
   border: 0;
   background-color: #ededec;
