@@ -19,4 +19,6 @@
   max-width: 1240px;
   width: 100%;
   margin-bottom: 24px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
 }

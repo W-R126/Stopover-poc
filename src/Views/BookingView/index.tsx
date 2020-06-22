@@ -12,6 +12,7 @@ import SearchDetails from './Components/SearchDetails';
 import FlightSearchResult from './Components/FlightSearchResult';
 import FlightService from '../../Services/FlightService';
 import Utils from '../../Utils';
+import Collapsable from '../../Components/UI/Collapsable';
 
 interface BookingViewProps extends RouteComponentProps<{
   originCode: string;

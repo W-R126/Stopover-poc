@@ -151,10 +151,10 @@ export default class Utils {
     const timeDeltaMs = date2.valueOf() - date1.valueOf();
 
     if (timeDeltaMs < 0) {
-      return `-${Utils.getTimeDeltaFromMs(timeDeltaMs)}`;
+      return `-${Utils.getTimeDeltaFromMs(Math.abs(timeDeltaMs))}`;
     }
 
-    return `+${Utils.getTimeDeltaFromMs(timeDeltaMs)}`;
+    return `+${Utils.getTimeDeltaFromMs(Math.abs(timeDeltaMs))}`;
   }
 
   static getHourMinuteString(date: Date, timeZone?: string): string {
