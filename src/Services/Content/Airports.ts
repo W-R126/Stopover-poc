@@ -13,8 +13,8 @@ export default [
     cityCode: 'ABA',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 53.7512,
+      long: 91.3998,
     },
   },
   {
@@ -49,8 +49,8 @@ export default [
     cityCode: 'ABV',
     countryCode: 'NG',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 9.0040,
+      long: 7.2691,
     },
   },
   {
@@ -427,8 +427,8 @@ export default [
     cityCode: 'BAX',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 53.3613,
+      long: 83.5474,
     },
   },
   {
@@ -445,8 +445,8 @@ export default [
     cityCode: 'BJS',
     countryCode: 'CN',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 39.5098,
+      long: 116.4105,
     },
   },
   {
@@ -463,8 +463,8 @@ export default [
     cityCode: 'EGO',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 50.6451,
+      long: 36.5706,
     },
   },
   {
@@ -1048,8 +1048,8 @@ export default [
     cityCode: 'DKR',
     countryCode: 'SN',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 14.6709,
+      long: 17.0673,
     },
   },
   {
@@ -1318,8 +1318,8 @@ export default [
     cityCode: 'LYP',
     countryCode: 'PK',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 31.3630,
+      long: 72.9876,
     },
   },
   {
@@ -1435,8 +1435,8 @@ export default [
     cityCode: 'GAN',
     countryCode: 'MV',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 0.6904,
+      long: 73.1564,
     },
   },
   {
@@ -1507,8 +1507,8 @@ export default [
     cityCode: 'RGK',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 51.9576,
+      long: 85.9179,
     },
   },
   {
@@ -1930,8 +1930,8 @@ export default [
     cityCode: 'KEJ',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 55.2821,
+      long: 86.1192,
     },
   },
   {
@@ -2317,8 +2317,8 @@ export default [
     cityCode: 'LPK',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 52.6982,
+      long: 39.5247,
     },
   },
   {
@@ -2866,8 +2866,8 @@ export default [
     cityCode: 'MMK',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 68.7847,
+      long: 32.7590,
     },
   },
   {
@@ -2920,8 +2920,8 @@ export default [
     cityCode: 'NYM',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 65.4800,
+      long: 72.6924,
     },
   },
   {
@@ -3073,8 +3073,8 @@ export default [
     cityCode: 'NHA',
     countryCode: 'VN',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 12.0108,
+      long: 109.2165,
     },
   },
   {
@@ -3100,8 +3100,8 @@ export default [
     cityCode: 'NJC',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 60.9515,
+      long: 76.4951,
     },
   },
   {
@@ -3136,8 +3136,8 @@ export default [
     cityCode: 'NOZ',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 53.8035,
+      long: 86.8634,
     },
   },
   {
@@ -3163,8 +3163,8 @@ export default [
     cityCode: 'NQZ',
     countryCode: 'KZ',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 51.0281,
+      long: 71.4633,
     },
   },
   {
@@ -3370,8 +3370,8 @@ export default [
     cityCode: 'PEZ',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 53.1183,
+      long: 45.0230,
     },
   },
   {
@@ -3874,8 +3874,8 @@ export default [
     cityCode: 'RTW',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 51.5582,
+      long: 46.0312,
     },
   },
   {
@@ -3964,8 +3964,8 @@ export default [
     cityCode: 'SHE',
     countryCode: 'CN',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 41.6353,
+      long: 123.4965,
     },
   },
   {
@@ -4333,8 +4333,8 @@ export default [
     cityCode: 'TOF',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 56.3883,
+      long: 85.2096,
     },
   },
   {
@@ -4468,8 +4468,8 @@ export default [
     cityCode: 'UKK',
     countryCode: 'KZ',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 50.0261,
+      long: 82.5061,
     },
   },
   {
@@ -4684,8 +4684,8 @@ export default [
     cityCode: 'YNB',
     countryCode: 'SA',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 24.1502,
+      long: 38.0632,
     },
   },
   {
@@ -4738,8 +4738,8 @@ export default [
     cityCode: 'ZIA',
     countryCode: 'RU',
     coordinates: {
-      lat: 0,
-      long: 0,
+      lat: 55.5619,
+      long: 38.1181,
     },
   },
   {
