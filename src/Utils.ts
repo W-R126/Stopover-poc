@@ -101,10 +101,47 @@ export default class Utils {
     return result;
   }
 
-  static getHourMinuteString(date: Date): string {
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-    return `${hour < 10 ? `0${hour}` : hour}:${minute < 10 ? `0${minute}` : minute}`;
+  static withLeadingZero(num: number): string {
+    return `${num < 10 ? '0' : ''}${num}`;
+  }
+
+  static getTimeZoneDelta(tz1?: string, tz2?: string): string | undefined {
+    if (!(tz1 && tz2)) {
+      return undefined;
+    }
+
+    const date = new Date();
+    const [hours1, minutes1] = date.toLocaleTimeString('sv-SE', { timeZone: tz1 }).split(':');
+    const [hours2, minutes2] = date.toLocaleTimeString('sv-SE', { timeZone: tz2 }).split(':');
+
+    const minutesTotal1 = Number.parseInt(hours1, 10) * 60 + Number.parseInt(minutes1, 10);
+    const minutesTotal2 = Number.parseInt(hours2, 10) * 60 + Number.parseInt(minutes2, 10);
+
+    const delta = minutesTotal2 - minutesTotal1;
+    const hours = Math.floor(Math.abs(delta) / 60);
+    const minutes = Math.abs(delta) % 60;
+
+    let result = delta < 0 ? '-' : '+';
+
+    if (hours !== 0) {
+      result += `${hours}h`;
+    }
+
+    if (minutes !== 0) {
+      result += `${minutes}m`;
+    }
+
+    return result;
+  }
+
+  static getHourMinuteString(date: Date, timeZone?: string): string {
+    let [hour, minute] = date.toLocaleTimeString('sv-SE').split(':');
+
+    if (timeZone) {
+      [hour, minute] = date.toLocaleTimeString('sv-SE', { timeZone }).split(':');
+    }
+
+    return `${hour}:${minute}`;
   }
 
   static getDateString(date: Date): string {
@@ -112,7 +149,7 @@ export default class Utils {
     const month = date.getMonth() + 1;
     const day = date.getDate();
 
-    return `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`;
+    return `${year}-${Utils.withLeadingZero(month)}-${Utils.withLeadingZero(day)}`;
   }
 
   static compareDatesSimple(a: Date, b: Date): boolean {

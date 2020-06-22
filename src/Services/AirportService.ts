@@ -27,14 +27,18 @@ export default class AirportService extends BaseService {
       const cityNamesReq = this.contentService.get('cityNames');
       const countryNamesReq = this.contentService.get('countryNames');
       const airportNamesReq = this.contentService.get('airportNames');
+      const timeZonesReq = this.contentService.get('timeZones');
 
       const cityNames = await cityNamesReq;
       const countryNames = await countryNamesReq;
       const airportNames = await airportNamesReq;
+      const timeZones = await timeZonesReq;
 
       const result: AirportModel[] = [];
 
       Airports.forEach((airport) => {
+        const timeZone = timeZones.find((tz: any) => tz.code === airport.code)?.timeZone;
+
         const airportName = airportNames.find(
           (name: any) => name.code === airport.code,
         )?.name;
@@ -62,6 +66,7 @@ export default class AirportService extends BaseService {
         result.push({
           searchString: searchStringItems.join(' ').toLowerCase(),
           code: airport.code,
+          timeZone: timeZone,
           name: airportName,
           cityCode: airport.cityCode,
           cityName,

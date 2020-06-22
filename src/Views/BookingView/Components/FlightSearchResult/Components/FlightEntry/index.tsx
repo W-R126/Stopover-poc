@@ -77,20 +77,22 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
   render(): JSX.Element {
     const { data } = this.props;
     const { collapsed, selectedCabinClass } = this.state;
+    const timeZoneDelta = Utils.getTimeZoneDelta(data.origin.timeZone, data.destination.timeZone);
 
     return (
       <>
         <div className={css.OriginDestination}>
           <div className={css.Origin}>
             <strong>
-              {Utils.getHourMinuteString(data.departure)}
+              {Utils.getHourMinuteString(data.departure, data.origin.timeZone)}
             </strong>
             <span>{`${data.origin?.cityName} ${data.origin?.code}`}</span>
           </div>
           <span className={css.Arrow} />
           <div className={css.Destination}>
             <strong>
-              {Utils.getHourMinuteString(data.arrival)}
+              {Utils.getHourMinuteString(data.arrival, data.destination.timeZone)}
+              {timeZoneDelta}
             </strong>
             <span>{`${data.destination.cityName} ${data.destination.code}`}</span>
           </div>

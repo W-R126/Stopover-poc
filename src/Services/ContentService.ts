@@ -4,6 +4,7 @@ import CityNames from './Content/CityNames';
 import CountryNames from './Content/CountryNames';
 import AirportNames from './Content/AirportNames';
 import FlightModels from './Content/FlightModels';
+import TimeZones from './Content/TimeZones';
 
 export default class ContentService extends BaseService {
   async get(resource: string): Promise<any> {
@@ -11,6 +12,9 @@ export default class ContentService extends BaseService {
       let data;
 
       switch (resource) {
+        case 'timeZones':
+          data = TimeZones;
+          break;
         case 'flightModels':
           data = FlightModels;
           break;

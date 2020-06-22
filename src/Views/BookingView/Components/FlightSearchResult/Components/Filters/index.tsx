@@ -21,7 +21,7 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
     super(props);
 
     this.state = {
-      duration: 1,
+      duration: 0,
       departureTime: 1,
       stops: 1,
       price: 1,
@@ -83,8 +83,9 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
         <div className={css.FilterOptions}>
           <label>Flight duration</label>
           <Range
-            min={1}
+            min={0}
             max={50}
+            step={5}
             value={duration}
             onChange={(nextDuration): void => {
               this.setState({ duration: nextDuration });

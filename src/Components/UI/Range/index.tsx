@@ -6,10 +6,6 @@ interface RangeProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   'type'| 'value' | 'onChange' | 'min' | 'max'
 > {
-  unit?: {
-    plural: string;
-    singular: string;
-  };
   value: number;
   min: number;
   max: number;
@@ -99,7 +95,6 @@ export default class Range extends React.Component<RangeProps, RangeState> {
 
   render(): JSX.Element {
     const {
-      unit,
       className,
       style,
       displayValue,
@@ -129,9 +124,7 @@ export default class Range extends React.Component<RangeProps, RangeState> {
           className={css.Value}
           style={{ left: this.getValuePos(), visibility: showValue ? undefined : 'hidden' }}
         >
-          {`${valueFormatter(value)}${unit
-            ? ` ${value === 1 ? unit.singular : unit.plural}`
-            : ''}`}
+          {valueFormatter(value)}
         </div>
         <input
           type="range"
