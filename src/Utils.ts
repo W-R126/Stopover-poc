@@ -3,7 +3,43 @@ import { TripType } from './Enums/TripType';
 import { CabinType } from './Enums/CabinType';
 import { CoordinateModel } from './Models/CoordinateModel';
 
+function createStore(store: Storage): {
+  get: <T>(key: string, def?: T) => T | undefined;
+  set: <T>(key: string, data?: T) => void;
+  remove: (key: string) => void;
+} {
+  return {
+    get: <T>(key: string, def?: T): T | undefined => {
+      let data = null;
+
+      if (store) {
+        data = store.getItem(key);
+      }
+
+      if (data === null) {
+        return def;
+      }
+
+      return JSON.parse(data);
+    },
+    set: <T>(key: string, data?: T): void => {
+      if (store) {
+        store.setItem(key, JSON.stringify(data));
+      }
+    },
+    remove: (key: string): void => {
+      if (store) {
+        store.removeItem(key);
+      }
+    },
+  };
+}
+
 export default class Utils {
+  static localStore = createStore(localStorage);
+
+  static sessionStore = createStore(sessionStorage);
+
   static async sleep(timeMs: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, timeMs));
   }

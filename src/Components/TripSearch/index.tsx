@@ -15,6 +15,7 @@ import Option from '../UI/Select/Option';
 import { CalendarData } from './Components/DatePicker/Components/Calendar/CalendarData';
 import Checkbox from '../UI/Checkbox';
 import { TripSearchData, copyTripSearchData, compareTripSearchData } from './TripSearchData';
+import Button from '../UI/Button';
 
 interface TripSearchProps {
   data?: TripSearchData;
@@ -199,13 +200,9 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
               Book with miles
             </Checkbox>
           </div>
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={this.onSearch}
-          >
+          <Button onClick={this.onSearch}>
             Search flight
-          </button>
+          </Button>
         </div>
       </div>
     );

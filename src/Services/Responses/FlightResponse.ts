@@ -20,6 +20,12 @@ export interface FlightResponse {
   conversionRatesFound: boolean;
   retainedItineraryPartOffer: RetainedItineraryPartOffer;
   messages: Message[];
+  sessionContext: SessionContext;
+}
+
+export interface SessionContext {
+  sessionId: string;
+  tabSessionId: string;
 }
 
 export interface Advisory {

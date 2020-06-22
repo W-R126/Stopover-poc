@@ -4,6 +4,7 @@ import css from './DatePicker.module.css';
 import Calendar from './Components/Calendar';
 import { CalendarData } from './Components/Calendar/CalendarData';
 import Input from '../../../UI/Input';
+import Button from '../../../UI/Button';
 
 interface DatePickerProps {
   data: CalendarData;
@@ -178,14 +179,9 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
               data={data}
               onChange={onChange}
             />
-            <button
-              className="btn-primary"
-              type="button"
-              onClick={this.collapse}
-              disabled={!(data.end && data.start)}
-            >
+            <Button onClick={this.collapse} disabled={!(data.end && data.start)}>
               Done
-            </button>
+            </Button>
           </div>
         </div>
       </div>

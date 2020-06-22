@@ -6,6 +6,7 @@ import childrenIcon from '../../../../Assets/Images/passenger-type-child.svg';
 import infantsIcon from '../../../../Assets/Images/passenger-type-infant.svg';
 import AmountPicker from './Components/AmountPicker';
 import { PassengerPickerData } from './PassengerPickerData';
+import Button from '../../../UI/Button';
 
 interface PassengerPickerProps {
   id?: string;
@@ -296,13 +297,9 @@ export default class PassengerPicker extends React.Component<
                 onChange={this.onInfantsChange}
                 value={data.infants}
               />
-              <button
-                type="button"
-                className="btn-done btn-primary"
-                onClick={this.toggle}
-              >
+              <Button onClick={this.toggle}>
                 Done
-              </button>
+              </Button>
             </div>
           </div>
         </div>

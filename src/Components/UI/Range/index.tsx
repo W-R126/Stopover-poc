@@ -1,7 +1,6 @@
 import React from 'react';
 
 import css from './Range.module.css';
-import Utils from '../../../Utils';
 
 interface RangeProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,

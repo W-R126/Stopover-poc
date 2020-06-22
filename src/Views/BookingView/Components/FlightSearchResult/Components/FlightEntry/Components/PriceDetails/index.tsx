@@ -9,6 +9,7 @@ import upgradeIcon from '../../../../../../../../Assets/Images/upgrade-seat.svg'
 import calendarIcon from '../../../../../../../../Assets/Images/calendar.svg';
 import { OfferModel } from '../../../../../../../../Models/OfferModel';
 import Utils from '../../../../../../../../Utils';
+import Button from '../../../../../../../../Components/UI/Button';
 
 interface PriceDetailsProps {
   cabinClass: {
@@ -155,13 +156,9 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, Pri
               <td />
               {offers.map((offer, idx) => (
                 <TableCell selected={selectedOffer === offer} key={`item-${idx}`}>
-                  <button
-                    type="button"
-                    className="btn-primary"
-                    onClick={(): void => this.selectOffer(offer)}
-                  >
+                  <Button onClick={(): void => this.selectOffer(offer)}>
                     {`${offer.total.currency} ${Utils.formatCurrency(offer.total.amount)}`}
-                  </button>
+                  </Button>
                 </TableCell>
               ))}
             </tr>

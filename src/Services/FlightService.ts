@@ -12,6 +12,7 @@ import { PassengerPickerData } from '../Components/TripSearch/Components/Passeng
 import { CabinType } from '../Enums/CabinType';
 import { AirportModel } from '../Models/AirportModel';
 import ContentService from './ContentService';
+import SessionManager from '../SessionManager';
 
 export default class FlightService extends BaseService {
   private readonly airportService: AirportService;
@@ -50,12 +51,23 @@ export default class FlightService extends BaseService {
       Object.assign(passengerData, { INF: infants });
     }
 
+    const headers: { [key: string]: string } = {};
+    const { sessionId, tabSessionId } = SessionManager;
+
+    if (sessionId) {
+      headers['session-id'] = sessionId;
+    }
+
+    if (tabSessionId) {
+      headers['tab-session-id'] = tabSessionId;
+    }
+
     const result = await this.http.post<FlightResponse>(
       'http://40.80.199.170/flights',
       {
         passengers: passengerData,
         searchType: 'BRANDED',
-        currency: 'SEK',
+        currency: 'AED',
         itineraryParts: [
           {
             from: { code: origin.code },
@@ -64,7 +76,14 @@ export default class FlightService extends BaseService {
           },
         ],
       },
+      {
+        headers,
+      },
     );
+
+    const { sessionContext } = result.data;
+    SessionManager.sessionId = sessionContext.sessionId;
+    SessionManager.tabSessionId = sessionContext.tabSessionId;
 
     const altOffers = result.data.unbundledAlternateDateOffers[0]
       .filter((altOffer) => altOffer.status === 'AVAILABLE')
