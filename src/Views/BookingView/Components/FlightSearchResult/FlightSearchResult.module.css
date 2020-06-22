@@ -110,6 +110,7 @@ html[dir='rtl'] .Sorting {
   border: 0;
   outline: 0;
   font-size: 16px;
+  color: #4e4c4a;
 }
 
 .ShowMore > button::after {

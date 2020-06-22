@@ -25,25 +25,29 @@ export default function DayRibbon({
 
   return (
     <div className={classList.join(' ')}>
-      {altOffers.map((altOffer, idx) => (
-        <div
-          className={css.Day}
-          key={`day-${idx}`}
-          aria-selected={Utils.compareDatesSimple(selectedDate, altOffer.departure)}
-          role="option"
-          onClick={(): void => onChange(altOffer.departure)}
-        >
-          <strong>
-            {`${altOffer.total?.currency} ${Utils.formatCurrency(altOffer.total?.amount ?? 0)}`}
-          </strong>
-          <span>
-            {altOffer.departure.toLocaleDateString(
-              'en-US',
-              { weekday: 'short', day: 'numeric', month: 'short' },
-            )}
-          </span>
-        </div>
-      ))}
+      {altOffers.map((altOffer, idx) => {
+        const selected = Utils.compareDatesSimple(selectedDate, altOffer.departure);
+
+        return (
+          <div
+            className={css.Day}
+            key={`day-${idx}`}
+            aria-selected={selected}
+            role="option"
+            onClick={selected ? undefined : (): void => onChange(altOffer.departure)}
+          >
+            <strong>
+              {`${altOffer.total?.currency} ${Utils.formatCurrency(altOffer.total?.amount ?? 0)}`}
+            </strong>
+            <span>
+              {altOffer.departure.toLocaleDateString(
+                'en-US',
+                { weekday: 'short', day: 'numeric', month: 'short' },
+              )}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }

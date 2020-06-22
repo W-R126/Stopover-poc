@@ -147,6 +147,10 @@ export default class Utils {
     const hours = Math.floor(Math.abs(delta) / 60);
     const minutes = Math.abs(delta) % 60;
 
+    if (hours === 0 && minutes === 0) {
+      return undefined;
+    }
+
     let result = delta < 0 ? '-' : '+';
 
     if (hours !== 0) {

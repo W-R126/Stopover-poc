@@ -92,7 +92,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
           <div className={css.Destination}>
             <strong>
               {Utils.getHourMinuteString(data.arrival, data.destination.timeZone)}
-              {timeZoneDelta}
+              {timeZoneDelta && (<span className={css.TimeZoneDelta}>{timeZoneDelta}</span>)}
             </strong>
             <span>{`${data.destination.cityName} ${data.destination.code}`}</span>
           </div>
