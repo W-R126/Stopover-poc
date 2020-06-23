@@ -21,6 +21,7 @@
 body {
   font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
   color: #4e4c4a;
+  transition: padding 200ms;
 }
 
 label {

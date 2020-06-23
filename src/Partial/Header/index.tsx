@@ -122,6 +122,10 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
     } = this.state;
     const { contentService } = this.props;
 
+    document.body.style.paddingTop = `${mode === 'desktop'
+      ? this.desktopHeight
+      : this.mobileHeight}px`;
+
     return (
       <>
         <header
@@ -141,12 +145,6 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
             <Menu contentService={contentService} headerHeight={height} />
           </div>
         </header>
-        <div
-          className={css.HeaderSpacer}
-          style={{
-            height: mode === 'desktop' ? this.desktopHeight : this.mobileHeight,
-          }}
-        />
       </>
     );
   }

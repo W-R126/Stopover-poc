@@ -135,10 +135,6 @@ export default class Utils {
     return Utils.getTimeDeltaFromMs(delta);
   }
 
-  static withLeadingZero(num: number): string {
-    return `${num < 10 ? '0' : ''}${num}`;
-  }
-
   static getTimeZoneDelta(tz1?: string, tz2?: string): string | undefined {
     if (!(tz1 && tz2)) {
       return undefined;
@@ -168,11 +164,7 @@ export default class Utils {
   }
 
   static getDateString(date: Date): string {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-
-    return `${year}-${Utils.withLeadingZero(month)}-${Utils.withLeadingZero(day)}`;
+    return date.toLocaleDateString('sv-SE');
   }
 
   static compareDatesSimple(a: Date, b: Date): boolean {

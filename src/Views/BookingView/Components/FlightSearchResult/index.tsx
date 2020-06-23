@@ -3,7 +3,7 @@ import React from 'react';
 import css from './FlightSearchResult.module.css';
 import spinner from '../../../../Assets/Images/spinner.svg';
 import flightIcon from '../../../../Assets/Images/flight.svg';
-import { GroupedOfferModel, AltOfferModel } from '../../../../Models/OfferModel';
+import { GroupedOfferModel, AltOfferModel, OfferModel } from '../../../../Models/OfferModel';
 import FlightService from '../../../../Services/FlightService';
 import DayRibbon from './Components/DayRibbon';
 import FlightEntry from './Components/FlightEntry';
@@ -13,7 +13,6 @@ import { AirportModel } from '../../../../Models/AirportModel';
 import Select from '../../../../Components/UI/Select';
 import Option from '../../../../Components/UI/Select/Option';
 import SortAlgorithms, { SortAlgorithm } from './SortAlgorithms';
-// import Filters from './Components/Filters';
 
 interface FlightSearchResultProps {
   passengers: PassengerPickerData;
@@ -22,8 +21,10 @@ interface FlightSearchResultProps {
   destination: AirportModel;
   departure: Date;
   flightService: FlightService;
-  onDepartureChange?: (departure: Date) => void;
   className?: string;
+  onDepartureChange?: (departure: Date) => void;
+  onOfferChange: (offer?: OfferModel) => void;
+  selectedOffer?: OfferModel;
 }
 
 interface FlightSearchResultState {
@@ -146,7 +147,7 @@ export default class FlightSearchResult extends React.Component<
     }
 
     const { showCountFactor, sortingAlgorithm, filters } = this.state;
-    const { departure } = this.props;
+    const { departure, onOfferChange, selectedOffer } = this.props;
     const showCount = showCountFactor * this.showCount;
 
     let nextOffers = offers.sort(sortingAlgorithm);
@@ -173,6 +174,8 @@ export default class FlightSearchResult extends React.Component<
               data={flight}
               key={`flight-entry-${idx}`}
               onExpandDetails={this.onFlightEntryExpandDetails}
+              onOfferChange={onOfferChange}
+              selectedOffer={selectedOffer}
             />
           ))}
 
@@ -216,13 +219,6 @@ export default class FlightSearchResult extends React.Component<
           </div>
 
           <div className={css.Actions}>
-            {/* <Filters
-              headerClassName={css.FiltersHeader}
-              className={css.Filters}
-              offers={offers}
-              onChange={this.onFiltersChange}
-            /> */}
-
             <Select
               className={css.Sorting}
               wrapperClassName={css.SortingWrapper}

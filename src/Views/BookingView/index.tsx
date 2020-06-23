@@ -6,13 +6,14 @@ import TripSearch from '../../Components/TripSearch';
 import { TripType } from '../../Enums/TripType';
 import { CabinType } from '../../Enums/CabinType';
 import AirportService from '../../Services/AirportService';
-import { TripSearchData } from '../../Components/TripSearch/TripSearchData';
+import { TripSearchData, validateTripSearchData } from '../../Components/TripSearch/TripSearchData';
 import Progress, { ProgressStep } from './Components/Progress';
 import SearchDetails from './Components/SearchDetails';
 import FlightSearchResult from './Components/FlightSearchResult';
 import FlightService from '../../Services/FlightService';
 import Utils from '../../Utils';
-import Collapsable from '../../Components/UI/Collapsable';
+import ShoppingCart from './Components/ShoppingCart';
+import { OfferModel } from '../../Models/OfferModel';
 
 interface BookingViewProps extends RouteComponentProps<{
   originCode: string;
@@ -33,6 +34,7 @@ interface BookingViewProps extends RouteComponentProps<{
 interface BookingState {
   tripSearchData: TripSearchData;
   editing: boolean;
+  outboundOffer?: OfferModel;
 }
 
 class BookingView extends React.Component<BookingViewProps, BookingState> {
@@ -44,10 +46,12 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     this.state = {
       tripSearchData,
       editing: false,
+      outboundOffer: undefined,
     };
 
     this.onOutboundDateChange = this.onOutboundDateChange.bind(this);
     this.onTripSearch = this.onTripSearch.bind(this);
+    this.onOutboundOfferChange = this.onOutboundOfferChange.bind(this);
     this.toggleEdit = this.toggleEdit.bind(this);
   }
 
@@ -66,7 +70,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
 
     const newState = { tripSearchData };
 
-    if (!Utils.validateTripSearchData(tripSearchData)) {
+    if (!validateTripSearchData(tripSearchData)) {
       Object.assign(newState, { editing: true });
     }
 
@@ -93,6 +97,10 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     Object.assign(dates, { start });
 
     this.onTripSearch(tripSearchData);
+  }
+
+  private onOutboundOfferChange(outboundOffer?: OfferModel): void {
+    this.setState({ outboundOffer });
   }
 
   private getDataFromParams(props: BookingViewProps): TripSearchData {
@@ -139,9 +147,10 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     const {
       tripSearchData,
       editing,
+      outboundOffer,
     } = this.state;
 
-    const tripSearchValid = Utils.validateTripSearchData(tripSearchData);
+    const tripSearchValid = validateTripSearchData(tripSearchData);
     const {
       cabinType,
       dates,
@@ -194,10 +203,13 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
                 origin={originDestination.origin}
                 passengers={passengers}
                 flightService={flightService}
+                onOfferChange={this.onOutboundOfferChange}
+                selectedOffer={outboundOffer}
               />
             </>
           )}
         </div>
+        <ShoppingCart outboundOffer={outboundOffer} />
       </div>
     );
   }

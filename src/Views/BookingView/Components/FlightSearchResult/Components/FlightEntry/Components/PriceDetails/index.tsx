@@ -20,10 +20,8 @@ interface PriceDetailsProps {
     };
   };
   className?: string;
-}
-
-interface PriceDetailsState {
   selectedOffer?: OfferModel;
+  onOfferChange: (offer?: OfferModel) => void;
 }
 
 function TableCell({ children, selected }: {
@@ -43,22 +41,21 @@ function TableCell({ children, selected }: {
   );
 }
 
-export default class PriceDetails extends React.Component<PriceDetailsProps, PriceDetailsState> {
+export default class PriceDetails extends React.Component<PriceDetailsProps, {}> {
   constructor(props: PriceDetailsProps) {
     super(props);
 
-    this.state = {
-      selectedOffer: undefined,
-    };
+    this.state = {};
   }
 
-  private selectOffer(selectedOffer: OfferModel): void {
-    this.setState({ selectedOffer });
+  private selectOffer(selectedOffer?: OfferModel): void {
+    const { onOfferChange } = this.props;
+
+    onOfferChange(selectedOffer);
   }
 
   render(): JSX.Element {
-    const { cabinClass: { offers }, className } = this.props;
-    const { selectedOffer } = this.state;
+    const { cabinClass: { offers }, className, selectedOffer } = this.props;
 
     const classList = [css.PriceDetails];
 
@@ -156,7 +153,15 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, Pri
               <td />
               {offers.map((offer, idx) => (
                 <TableCell selected={selectedOffer === offer} key={`item-${idx}`}>
-                  <Button onClick={(): void => this.selectOffer(offer)}>
+                  <Button
+                    onClick={(): void => {
+                      if (offer === selectedOffer) {
+                        this.selectOffer(undefined);
+                      } else {
+                        this.selectOffer(offer);
+                      }
+                    }}
+                  >
                     {`${offer.total.currency} ${Utils.formatCurrency(offer.total.amount)}`}
                   </Button>
                 </TableCell>

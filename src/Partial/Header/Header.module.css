@@ -28,10 +28,6 @@
   text-decoration: none;
 }
 
-.HeaderSpacer {
-  transition: height 200ms;
-}
-
 @media screen and (max-width: 768px) {
   .Wrapper {
     margin: 0 16px;
