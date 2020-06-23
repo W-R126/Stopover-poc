@@ -125,6 +125,7 @@ export default class FlightService extends BaseService {
     const flightModels = await this.contentService.get('flightModels');
 
     const parsedOffers: OfferModel[] = offers.map((offer) => ({
+      basketHash: offer.shoppingBasketHashCode,
       cabinClass: offer.cabinClass,
       soldout: offer.soldout,
       brandLabel: fareFamilies

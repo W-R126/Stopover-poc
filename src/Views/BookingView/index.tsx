@@ -35,9 +35,12 @@ interface BookingState {
   tripSearchData: TripSearchData;
   editing: boolean;
   outboundOffer?: OfferModel;
+  outboundOfferHash?: number;
 }
 
 class BookingView extends React.Component<BookingViewProps, BookingState> {
+  private readonly outboundOfferKey = 'Booking.outboundOfferHash';
+
   constructor(props: BookingViewProps) {
     super(props);
 
@@ -47,6 +50,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       tripSearchData,
       editing: false,
       outboundOffer: undefined,
+      outboundOfferHash: Utils.sessionStore.get<number>(this.outboundOfferKey),
     };
 
     this.onOutboundDateChange = this.onOutboundDateChange.bind(this);
@@ -100,7 +104,9 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
   }
 
   private onOutboundOfferChange(outboundOffer?: OfferModel): void {
-    this.setState({ outboundOffer });
+    Utils.sessionStore.set(this.outboundOfferKey, outboundOffer?.basketHash);
+
+    this.setState({ outboundOffer, outboundOfferHash: outboundOffer?.basketHash });
   }
 
   private getDataFromParams(props: BookingViewProps): TripSearchData {
@@ -148,6 +154,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       tripSearchData,
       editing,
       outboundOffer,
+      outboundOfferHash,
     } = this.state;
 
     const tripSearchValid = validateTripSearchData(tripSearchData);
@@ -205,6 +212,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
                 flightService={flightService}
                 onOfferChange={this.onOutboundOfferChange}
                 selectedOffer={outboundOffer}
+                selectedOfferHash={outboundOfferHash}
               />
             </>
           )}

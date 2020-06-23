@@ -25,6 +25,7 @@ interface FlightSearchResultProps {
   onDepartureChange?: (departure: Date) => void;
   onOfferChange: (offer?: OfferModel) => void;
   selectedOffer?: OfferModel;
+  selectedOfferHash?: number;
 }
 
 interface FlightSearchResultState {
@@ -60,8 +61,28 @@ export default class FlightSearchResult extends React.Component<
     this.onFiltersChange = this.onFiltersChange.bind(this);
   }
 
-  componentDidMount(): void {
-    this.search();
+  async componentDidMount(): Promise<void> {
+    await this.search();
+
+    const { selectedOfferHash } = this.props;
+    const { offers, showCountFactor } = this.state;
+
+    if (offers && selectedOfferHash !== undefined) {
+      // Expand search result to show selected offer.
+      this.getFilteredAndSorted(offers).forEach((offer, idx) => {
+        Object.keys(offer.cabinClasses).forEach((cc) => {
+          if (offer.cabinClasses[cc].offers.findIndex(
+            (ccOffer) => ccOffer.basketHash === selectedOfferHash,
+          ) !== -1) {
+            if (idx > showCountFactor * this.showCount) {
+              this.setState({
+                showCountFactor: Math.ceil(idx / this.showCount),
+              });
+            }
+          }
+        });
+      });
+    }
   }
 
   componentDidUpdate(prevProps: FlightSearchResultProps): void {
@@ -85,7 +106,9 @@ export default class FlightSearchResult extends React.Component<
   }
 
   private onDepartureChange(departure: Date): void {
-    const { onDepartureChange } = this.props;
+    const { onDepartureChange, onOfferChange } = this.props;
+
+    onOfferChange(undefined);
 
     if (onDepartureChange) {
       onDepartureChange(departure);
@@ -112,6 +135,18 @@ export default class FlightSearchResult extends React.Component<
     this.setState({ filters });
   }
 
+  private getFilteredAndSorted(offers: GroupedOfferModel[]): GroupedOfferModel[] {
+    const { sortingAlgorithm, filters } = this.state;
+
+    let nextOffers = offers;
+
+    if (filters) {
+      nextOffers = nextOffers.filter(filters);
+    }
+
+    return nextOffers.sort(sortingAlgorithm);
+  }
+
   private async search(): Promise<void> {
     const {
       flightService,
@@ -120,6 +155,8 @@ export default class FlightSearchResult extends React.Component<
       destination,
       origin,
       passengers,
+      selectedOfferHash,
+      onOfferChange,
     } = this.props;
 
     this.setState({ offers: undefined, showCountFactor: 1 });
@@ -135,6 +172,18 @@ export default class FlightSearchResult extends React.Component<
       offers,
       altOffers,
     });
+
+    if (selectedOfferHash !== undefined) {
+      offers.forEach((offer) => {
+        Object.keys(offer.cabinClasses).forEach((cc) => {
+          offer.cabinClasses[cc].offers.forEach((ccOffer) => {
+            if (ccOffer.basketHash === selectedOfferHash) {
+              onOfferChange(ccOffer);
+            }
+          });
+        });
+      });
+    }
   }
 
   private renderResult(offers: GroupedOfferModel[], altOffers: AltOfferModel[]): JSX.Element {
@@ -146,15 +195,14 @@ export default class FlightSearchResult extends React.Component<
       );
     }
 
-    const { showCountFactor, sortingAlgorithm, filters } = this.state;
-    const { departure, onOfferChange, selectedOffer } = this.props;
+    const { showCountFactor } = this.state;
+    const {
+      departure,
+      onOfferChange,
+      selectedOffer,
+      selectedOfferHash,
+    } = this.props;
     const showCount = showCountFactor * this.showCount;
-
-    let nextOffers = offers.sort(sortingAlgorithm);
-
-    if (filters) {
-      nextOffers = nextOffers.filter(filters);
-    }
 
     return (
       <>
@@ -166,7 +214,7 @@ export default class FlightSearchResult extends React.Component<
         />
 
         <div className={css.FlightEntries}>
-          {nextOffers.slice(0, showCount).map((flight, idx) => (
+          {this.getFilteredAndSorted(offers).slice(0, showCount).map((flight, idx) => (
             <FlightEntry
               ref={(ref): void => {
                 this.flightEntryRefs[idx] = ref;
@@ -176,6 +224,7 @@ export default class FlightSearchResult extends React.Component<
               onExpandDetails={this.onFlightEntryExpandDetails}
               onOfferChange={onOfferChange}
               selectedOffer={selectedOffer}
+              selectedOfferHash={selectedOfferHash}
             />
           ))}
 

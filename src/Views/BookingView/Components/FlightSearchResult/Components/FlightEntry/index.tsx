@@ -12,6 +12,7 @@ interface FlightEntryProps {
   onExpandDetails: () => void;
   onOfferChange: (offer?: OfferModel) => void;
   selectedOffer?: OfferModel;
+  selectedOfferHash?: number;
 }
 
 interface FlightEntryState {
@@ -33,6 +34,18 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
     this.collapseDetails = this.collapseDetails.bind(this);
   }
 
+  componentDidMount(): void {
+    const { selectedOfferHash, data } = this.props;
+
+    Object.keys(data.cabinClasses).forEach((cc) => {
+      if (data.cabinClasses[cc].offers.findIndex(
+        (ccOffer) => ccOffer.basketHash === selectedOfferHash,
+      ) !== -1) {
+        this.showOffers(cc);
+      }
+    });
+  }
+
   private toggleDetails(): void {
     const { collapsed } = this.state;
 
@@ -45,12 +58,9 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
 
   private showOffers(cabinClass: string): void {
     const { collapsed, selectedCabinClass } = this.state;
-    const { onOfferChange } = this.props;
 
     if (collapsed) {
       this.expandDetails();
-    } else {
-      onOfferChange(undefined);
     }
 
     this.setState({
@@ -60,9 +70,8 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
 
   expandDetails(): void {
     const { collapsed } = this.state;
-    const { onExpandDetails, onOfferChange } = this.props;
+    const { onExpandDetails } = this.props;
 
-    onOfferChange(undefined);
     onExpandDetails();
 
     if (collapsed) {
@@ -72,9 +81,6 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
 
   collapseDetails(): void {
     const { collapsed } = this.state;
-    const { onOfferChange } = this.props;
-
-    onOfferChange(undefined);
 
     if (!collapsed) {
       this.setState({ collapsed: true, selectedCabinClass: undefined });
@@ -82,7 +88,13 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
   }
 
   render(): JSX.Element {
-    const { data, onOfferChange, selectedOffer } = this.props;
+    const {
+      data,
+      onOfferChange,
+      selectedOffer,
+      selectedOfferHash,
+    } = this.props;
+
     const { collapsed, selectedCabinClass } = this.state;
     const timeZoneDelta = Utils.getTimeZoneDelta(data.origin.timeZone, data.destination.timeZone);
 
@@ -132,6 +144,9 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
               onClick={(): void => this.showOffers(cabinClass)}
               role="option"
               aria-selected={cabinClass === selectedCabinClass}
+              className={data.cabinClasses[cabinClass].offers.findIndex(
+                (offer) => offer.basketHash === selectedOfferHash,
+              ) === -1 ? undefined : css.Selected}
             >
               <strong>
                 {`From ${

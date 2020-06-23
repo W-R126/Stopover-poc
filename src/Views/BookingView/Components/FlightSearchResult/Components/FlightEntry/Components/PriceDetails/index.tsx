@@ -70,7 +70,10 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
             <tr>
               <td />
               {offers.map((offer, idx) => (
-                <TableCell selected={selectedOffer === offer} key={`item-${idx}`}>
+                <TableCell
+                  selected={selectedOffer?.basketHash === offer.basketHash}
+                  key={`item-${idx}`}
+                >
                   {offer.brandLabel}
                 </TableCell>
               ))}
@@ -83,7 +86,10 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
                 Miles earned
               </td>
               {offers.map((offer, idx) => (
-                <TableCell selected={selectedOffer === offer} key={`item-${idx}`}>
+                <TableCell
+                  selected={selectedOffer?.basketHash === offer.basketHash}
+                  key={`item-${idx}`}
+                >
                   {`${Utils.formatCurrency(offer.itineraryPart.milesEarned)} miles`}
                 </TableCell>
               ))}
@@ -95,7 +101,10 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
                 Baggage allowance
               </td>
               {offers.map((offer, idx) => (
-                <TableCell selected={selectedOffer === offer} key={`item-${idx}`}>
+                <TableCell
+                  selected={selectedOffer?.basketHash === offer.basketHash}
+                  key={`item-${idx}`}
+                >
                   30kg
                 </TableCell>
               ))}
@@ -107,7 +116,10 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
                 Refund fee
               </td>
               {offers.map((offer, idx) => (
-                <TableCell selected={selectedOffer === offer} key={`item-${idx}`}>
+                <TableCell
+                  selected={selectedOffer?.basketHash === offer.basketHash}
+                  key={`item-${idx}`}
+                >
                   {`${offer.total.currency} ${Utils.formatCurrency(100)}`}
                 </TableCell>
               ))}
@@ -119,7 +131,10 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
                 Priority check-in
               </td>
               {offers.map((offer, idx) => (
-                <TableCell selected={selectedOffer === offer} key={`item-${idx}`}>
+                <TableCell
+                  selected={selectedOffer?.basketHash === offer.basketHash}
+                  key={`item-${idx}`}
+                >
                   No
                 </TableCell>
               ))}
@@ -127,11 +142,14 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
 
             <tr>
               <td>
-                <img src={upgradeIcon} alt="Upgrade eligible" />
-                Upgrade eligible
+                <img src={upgradeIcon} alt="Eligible for upgrade" />
+                Eligible for upgrade
               </td>
               {offers.map((offer, idx) => (
-                <TableCell selected={selectedOffer === offer} key={`item-${idx}`}>
+                <TableCell
+                  selected={selectedOffer?.basketHash === offer.basketHash}
+                  key={`item-${idx}`}
+                >
                   No
                 </TableCell>
               ))}
@@ -143,7 +161,10 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
                 Date change fee
               </td>
               {offers.map((offer, idx) => (
-                <TableCell selected={selectedOffer === offer} key={`item-${idx}`}>
+                <TableCell
+                  selected={selectedOffer?.basketHash === offer.basketHash}
+                  key={`item-${idx}`}
+                >
                   {`${offer.total.currency} ${Utils.formatCurrency(100)}`}
                 </TableCell>
               ))}
@@ -152,7 +173,10 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
             <tr>
               <td />
               {offers.map((offer, idx) => (
-                <TableCell selected={selectedOffer === offer} key={`item-${idx}`}>
+                <TableCell
+                  selected={selectedOffer?.basketHash === offer.basketHash}
+                  key={`item-${idx}`}
+                >
                   <Button
                     onClick={(): void => {
                       if (offer === selectedOffer) {

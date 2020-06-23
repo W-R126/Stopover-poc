@@ -28,6 +28,7 @@ export interface AltOfferModel {
 export interface OfferModel {
   cabinClass: string;
   brandLabel: string;
+  basketHash: number;
   itineraryPart: {
     bookingClass: string;
     milesEarned: number;

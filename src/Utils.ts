@@ -24,7 +24,11 @@ function createStore(store: Storage): {
     },
     set: <T>(key: string, data?: T): void => {
       if (store) {
-        store.setItem(key, JSON.stringify(data));
+        if (data === undefined) {
+          store.removeItem(key);
+        } else {
+          store.setItem(key, JSON.stringify(data));
+        }
       }
     },
     remove: (key: string): void => {
