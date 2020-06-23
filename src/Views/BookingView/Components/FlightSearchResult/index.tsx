@@ -64,25 +64,7 @@ export default class FlightSearchResult extends React.Component<
   async componentDidMount(): Promise<void> {
     await this.search();
 
-    const { selectedOfferHash } = this.props;
-    const { offers, showCountFactor } = this.state;
-
-    if (offers && selectedOfferHash !== undefined) {
-      // Expand search result to show selected offer.
-      this.getFilteredAndSorted(offers).forEach((offer, idx) => {
-        Object.keys(offer.cabinClasses).forEach((cc) => {
-          if (offer.cabinClasses[cc].offers.findIndex(
-            (ccOffer) => ccOffer.basketHash === selectedOfferHash,
-          ) !== -1) {
-            if (idx > showCountFactor * this.showCount) {
-              this.setState({
-                showCountFactor: Math.ceil(idx / this.showCount),
-              });
-            }
-          }
-        });
-      });
-    }
+    this.expandSelectedIntoView();
   }
 
   componentDidUpdate(prevProps: FlightSearchResultProps): void {
@@ -126,13 +108,13 @@ export default class FlightSearchResult extends React.Component<
   private onSortingChange(sortingAlgorithm: SortAlgorithm): void {
     this.onFlightEntryExpandDetails();
 
-    this.setState({ sortingAlgorithm });
+    this.setState({ sortingAlgorithm }, this.expandSelectedIntoView);
   }
 
   private onFiltersChange(filters: any): void {
     this.onFlightEntryExpandDetails();
 
-    this.setState({ filters });
+    this.setState({ filters }, this.expandSelectedIntoView);
   }
 
   private getFilteredAndSorted(offers: GroupedOfferModel[]): GroupedOfferModel[] {
@@ -145,6 +127,28 @@ export default class FlightSearchResult extends React.Component<
     }
 
     return nextOffers.sort(sortingAlgorithm);
+  }
+
+  private expandSelectedIntoView(): void {
+    const { selectedOfferHash } = this.props;
+    const { offers, showCountFactor } = this.state;
+
+    if (offers && selectedOfferHash !== undefined) {
+      // Expand search result to show selected offer.
+      this.getFilteredAndSorted(offers).forEach((offer, idx) => {
+        Object.keys(offer.cabinClasses).forEach((cc) => {
+          if (offer.cabinClasses[cc].offers.findIndex(
+            (ccOffer) => ccOffer.basketHash === selectedOfferHash,
+          ) !== -1) {
+            if (idx >= showCountFactor * this.showCount) {
+              this.setState({
+                showCountFactor: Math.ceil((idx + 1) / this.showCount),
+              });
+            }
+          }
+        });
+      });
+    }
   }
 
   private async search(): Promise<void> {
