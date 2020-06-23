@@ -84,7 +84,14 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
   private onTripSearch(tripSearchData: TripSearchData): void {
     const { history } = this.props;
 
-    this.setState({ tripSearchData, editing: false });
+    Utils.sessionStore.remove(this.outboundOfferKey);
+
+    this.setState({
+      tripSearchData,
+      editing: false,
+      outboundOffer: undefined,
+      outboundOfferHash: undefined,
+    });
 
     history.replace(Utils.getBookingUrl(tripSearchData));
   }
