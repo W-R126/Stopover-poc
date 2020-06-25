@@ -3,7 +3,7 @@ import React from 'react';
 import css from './Filters.module.css';
 import Menu from '../../../../../../Components/UI/Menu';
 import RangeSlider from '../../../../../../Components/UI/RangeSlider';
-import { GroupedOfferModel } from '../../../../../../Models/OfferModel';
+import { GroupedOfferModel, OfferModel } from '../../../../../../Models/OfferModel';
 import Utils from '../../../../../../Utils';
 
 interface FiltersProps {
@@ -101,11 +101,11 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
       let priceOk = false;
 
       ['Economy', 'Business'].forEach((cc) => {
-        if (!groupedOffer.cabinClasses[cc]) {
+        if (!(groupedOffer.cabinClasses as any)[cc]) {
           return;
         }
 
-        groupedOffer.cabinClasses[cc].offers.forEach((ccOffer) => {
+        (groupedOffer.cabinClasses as any)[cc].offers.forEach((ccOffer: OfferModel) => {
           if (ccOffer.total.amount >= price) {
             priceOk = true;
           }
@@ -149,11 +149,11 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
 
     offers.forEach((offer) => {
       ['Economy', 'Business'].forEach((cabinClass) => {
-        if (!offer.cabinClasses[cabinClass]) {
+        if (!(offer.cabinClasses as any)[cabinClass]) {
           return;
         }
 
-        offer.cabinClasses[cabinClass].offers.forEach((ccOffer) => {
+        (offer.cabinClasses as any)[cabinClass].offers.forEach((ccOffer: OfferModel) => {
           // Get price span.
           const { amount } = ccOffer.total;
 
@@ -270,8 +270,9 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
     let currency = '';
 
     if (offers) {
-      currency = offers[0]
-        .cabinClasses[Object.keys(offers[0].cabinClasses)[0]].startingFrom.currency;
+      currency = (offers[0].cabinClasses as any)[
+        Object.keys(offers[0].cabinClasses)[0]
+      ].startingFrom.currency;
     }
 
     const {

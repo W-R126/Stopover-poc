@@ -65,6 +65,7 @@
   font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
   display: flex;
   overflow: hidden;
+  padding-top: 0.5px;
   white-space: nowrap;
   width: 0;
   transition: width 200ms;

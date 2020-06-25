@@ -38,8 +38,8 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
 
     // Expand offers upon mount.
     Object.keys(data.cabinClasses).forEach((cc) => {
-      if (data.cabinClasses[cc].offers.findIndex(
-        (ccOffer) => ccOffer.basketHash === selectedOffer?.basketHash,
+      if ((data.cabinClasses as any)[cc].offers.findIndex(
+        (ccOffer: OfferModel) => ccOffer.basketHash === selectedOffer?.basketHash,
       ) !== -1) {
         this.showOffers(cc);
       }
@@ -136,26 +136,31 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
         </div>
 
         <div className={css.Price}>
-          {Object.keys(data.cabinClasses).slice(0, 2).map((cabinClass, idx) => (
-            <button
-              type="button"
-              key={`cabin-class-${idx}`}
-              onClick={(): void => this.showOffers(cabinClass)}
-              role="option"
-              aria-selected={cabinClass === selectedCabinClass}
-              className={data.cabinClasses[cabinClass].offers.findIndex(
-                (offer) => offer.basketHash === selectedOffer?.basketHash,
-              ) === -1 ? undefined : css.Selected}
-            >
-              <strong>
-                {`From ${
-                  data.cabinClasses[cabinClass].startingFrom.currency
-                } ${Utils.formatCurrency(data.cabinClasses[cabinClass].startingFrom.amount)}`}
-              </strong>
+          {Object
+            .keys(data.cabinClasses)
+            .filter((cc) => cc === 'Economy' || cc === 'Business')
+            .map((cabinClass, idx) => (
+              <button
+                type="button"
+                key={`cabin-class-${idx}`}
+                onClick={(): void => this.showOffers(cabinClass)}
+                role="option"
+                aria-selected={cabinClass === selectedCabinClass}
+                className={(data.cabinClasses as any)[cabinClass].offers.findIndex(
+                  (offer: OfferModel) => offer.basketHash === selectedOffer?.basketHash,
+                ) === -1 ? undefined : css.Selected}
+              >
+                <strong>
+                  {`From ${
+                    (data.cabinClasses as any)[cabinClass].startingFrom.currency
+                  } ${Utils.formatCurrency(
+                    (data.cabinClasses as any)[cabinClass].startingFrom.amount,
+                  )}`}
+                </strong>
 
-              <span>{cabinClass}</span>
-            </button>
-          ))}
+                <span>{cabinClass}</span>
+              </button>
+            ))}
         </div>
 
         <div className={css.ShowDetails}>
@@ -174,7 +179,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
             ? (
               <PriceDetails
                 className={css.PriceDetails}
-                cabinClass={data.cabinClasses[selectedCabinClass]}
+                cabinClass={(data.cabinClasses as any)[selectedCabinClass]}
                 onOfferChange={onOfferChange}
                 selectedOffer={selectedOffer}
               />

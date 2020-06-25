@@ -9,12 +9,8 @@ export default class StopOverService extends BaseService {
       const result = await this.http.post<StopOverResponse>(
         '/stopoverEligibility',
         { shoppingBasketHashCode: hash },
-        {
-          headers: SessionManager.getSessionHeaders(),
-        },
+        { headers: SessionManager.getSessionHeaders() },
       );
-
-      SessionManager.setSessionHeaders(result.headers);
 
       if (result.status === 200) {
         return {
@@ -30,26 +26,43 @@ export default class StopOverService extends BaseService {
     return undefined;
   }
 
-  async acceptStopOver(): Promise<any> {
+  async acceptStopOver(
+    hash: number,
+    airportCode: string,
+    days: number,
+  ): Promise<any> {
+    try {
+      const result = await this.http.post(
+        '/confirmStopover',
+        {
+          stopoverItineraryParts: [{
+            selectedOriginalOfferRef: hash,
+            stopover: {
+              airportCode,
+              days,
+            },
+          }],
+        },
+        { headers: SessionManager.getSessionHeaders() },
+      );
+
+      console.log(result);
+    } catch (err) {
+      //
+    }
+
     return undefined;
   }
 
-  async rejectStopOver(airportCode: string, days: number[]): Promise<any> {
+  async rejectStopOver(airportCode: string): Promise<undefined> {
     try {
-      const result = await this.http.post(
+      await this.http.post(
         '/rejectStopover',
         {
-          stopover: {
-            airportCode,
-            days,
-          },
+          stopover: { airportCode },
         },
-        {
-          headers: SessionManager.getSessionHeaders(),
-        },
+        { headers: SessionManager.getSessionHeaders() },
       );
-
-      SessionManager.setSessionHeaders(result.headers);
     } catch (err) {
       //
     }

@@ -8,8 +8,8 @@ import { CustomerSegment } from '../../Models/StopOverModel';
 import Data from './Data';
 
 interface StopOverPromptProps {
-  onAccept: () => void;
-  onReject: (airportCode?: string, days?: number[]) => void;
+  onAccept: (airportCode?: string, days?: number) => void;
+  onReject: (airportCode?: string) => void;
 }
 
 interface StopOverPromptState {
@@ -34,13 +34,23 @@ export default class StopOverPrompt extends React.Component<
     };
 
     this.onReject = this.onReject.bind(this);
+    this.onAccept = this.onAccept.bind(this);
   }
 
   private onReject(): void {
     const { onReject } = this.props;
+    const { airportCode } = this.state;
+
+    onReject(airportCode);
+  }
+
+  private onAccept(): void {
+    const { onAccept } = this.props;
     const { airportCode, days } = this.state;
 
-    onReject(airportCode, days);
+    const nextDays = days ? days[0] : undefined;
+
+    onAccept(airportCode, nextDays);
   }
 
   show(
@@ -64,7 +74,6 @@ export default class StopOverPrompt extends React.Component<
   }
 
   render(): JSX.Element | null {
-    const { onAccept } = this.props;
     const { show, customerSegment } = this.state;
 
     if (!(show && customerSegment)) {
@@ -117,7 +126,7 @@ export default class StopOverPrompt extends React.Component<
                 Maybe another time
               </Button>
 
-              <Button className={css.Accept} onClick={onAccept}>
+              <Button className={css.Accept} onClick={this.onAccept}>
                 Book Stop Over
               </Button>
             </div>

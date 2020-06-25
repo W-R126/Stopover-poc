@@ -160,8 +160,12 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     this.stopOverPromptRef.current.show(result.customerSegment, result.days, result.airportCode);
   }
 
-  private async onAcceptStopOver(): Promise<void> {
-    const { history } = this.props;
+  private async onAcceptStopOver(
+    airportCode?: string,
+    days?: number,
+  ): Promise<void> {
+    const { history, stopOverService } = this.props;
+    const { outboundOfferHash } = this.state;
 
     if (!this.stopOverPromptRef.current) {
       return;
@@ -169,10 +173,18 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
 
     await this.stopOverPromptRef.current.hide();
 
+    if (airportCode && days !== undefined && outboundOfferHash !== undefined) {
+      await stopOverService.acceptStopOver(
+        outboundOfferHash,
+        airportCode,
+        days,
+      );
+    }
+
     history.push('/stopover-accepted');
   }
 
-  private async onRejectStopOver(airportCode?: string, days?: number[]): Promise<void> {
+  private async onRejectStopOver(airportCode?: string): Promise<void> {
     const { history, stopOverService } = this.props;
 
     if (!this.stopOverPromptRef.current) {
@@ -181,8 +193,8 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
 
     await this.stopOverPromptRef.current.hide();
 
-    if (airportCode && days) {
-      await stopOverService.rejectStopOver(airportCode, days);
+    if (airportCode) {
+      await stopOverService.rejectStopOver(airportCode);
     }
 
     history.push('/select-inbound');

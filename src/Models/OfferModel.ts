@@ -44,14 +44,9 @@ export interface OfferModel {
 
 export interface GroupedOfferModel {
   cabinClasses: {
-    [cabinClass: string]: {
-      offers: OfferModel[];
-      startingFrom: {
-        amount: number;
-        tax: number;
-        currency: string;
-      };
-    };
+    Economy?: CabinClass;
+    Business?: CabinClass;
+    First?: CabinClass;
   };
   segments: SegmentModel[];
   departure: Date;
@@ -59,6 +54,15 @@ export interface GroupedOfferModel {
   origin: AirportModel;
   destination: AirportModel;
   stops: string[];
+}
+
+export interface CabinClass {
+  offers: OfferModel[];
+  startingFrom: {
+    amount: number;
+    tax: number;
+    currency: string;
+  };
 }
 
 export function findOfferFromHash(
@@ -74,7 +78,7 @@ export function findOfferFromHash(
     const cabinClasses = Object.keys(offer.cabinClasses);
 
     for (let j = 0; j < cabinClasses.length; j += 1) {
-      const cc = offer.cabinClasses[cabinClasses[j]];
+      const cc: CabinClass = (offer.cabinClasses as any)[cabinClasses[j]];
 
       for (let k = 0; k < cc.offers.length; k += 1) {
         const ccOffer = cc.offers[k];

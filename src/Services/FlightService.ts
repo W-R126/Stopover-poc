@@ -7,6 +7,7 @@ import {
   GroupedOfferModel,
   AltOfferModel,
   SegmentModel,
+  CabinClass,
 } from '../Models/OfferModel';
 import Utils from '../Utils';
 import AirportService from './AirportService';
@@ -166,15 +167,17 @@ export default class FlightService extends BaseService {
 
       if (Object.keys(result).indexOf(identifier) !== -1) {
         // Unique offer.
-        if (!result[identifier].cabinClasses[offer.cabinClass]) {
+        if (!(result[identifier].cabinClasses as any)[offer.cabinClass]) {
           // Cabin class is not yet added.
-          result[identifier].cabinClasses[offer.cabinClass] = {
+          (result[identifier].cabinClasses as any)[offer.cabinClass] = {
             startingFrom: offer.total,
             offers: [offer],
           };
         } else {
           // Cabin class already added.
-          const cabinClass = result[identifier].cabinClasses[offer.cabinClass];
+          const cabinClass: CabinClass = (
+            result[identifier].cabinClasses as any
+          )[offer.cabinClass];
 
           if (
             cabinClass.offers.findIndex(

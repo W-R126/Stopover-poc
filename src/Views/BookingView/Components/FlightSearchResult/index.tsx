@@ -118,8 +118,8 @@ export default class FlightSearchResult extends React.Component<
     // Expand search result to show selected offer.
     this.getFilteredAndSorted(offers).forEach((offer, idx) => {
       Object.keys(offer.cabinClasses).forEach((cc) => {
-        if (offer.cabinClasses[cc].offers.findIndex(
-          (ccOffer) => ccOffer.basketHash === selectedOffer.basketHash,
+        if ((offer.cabinClasses as any)[cc].offers.findIndex(
+          (ccOffer: OfferModel) => ccOffer.basketHash === selectedOffer.basketHash,
         ) !== -1) {
           if (idx >= showCountFactor * this.showCount) {
             this.setState({
