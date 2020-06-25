@@ -4,9 +4,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import css from './HomeView.module.css';
 import TripSearch from '../../Components/TripSearch';
 import AirportService from '../../Services/AirportService';
-import { TripSearchData } from '../../Components/TripSearch/TripSearchData';
-import { TripType } from '../../Enums/TripType';
-import { CabinType } from '../../Enums/CabinType';
+import { TripSearchData, defaultTripSearchData } from '../../Components/TripSearch/TripSearchData';
 import Utils from '../../Utils';
 
 interface HomeViewProps extends RouteComponentProps {
@@ -23,24 +21,7 @@ class HomeView extends React.Component<HomeViewProps, HomeViewState> {
     super(props);
 
     this.state = {
-      tripSearchData: {
-        tripType: TripType.return,
-        passengers: {
-          adults: 1,
-          children: 0,
-          infants: 0,
-        },
-        cabinType: CabinType.all,
-        originDestination: {
-          origin: undefined,
-          destination: undefined,
-        },
-        dates: {
-          start: undefined,
-          end: undefined,
-        },
-        bookWithMiles: false,
-      },
+      tripSearchData: defaultTripSearchData(),
     };
 
     this.onTripSearchChange = this.onTripSearchChange.bind(this);

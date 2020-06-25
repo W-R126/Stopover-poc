@@ -9,11 +9,14 @@ import BookingView from './Views/BookingView';
 import { TripType } from './Enums/TripType';
 import { CabinType } from './Enums/CabinType';
 import FlightService from './Services/FlightService';
+import Config from './Config';
+import StopOverService from './Services/StopOverService';
 
-export default function App(): JSX.Element {
+export default function App({ config }: { config: Config }): JSX.Element {
   const contentService = new ContentService();
   const airportService = new AirportService(contentService);
-  const flightService = new FlightService(airportService, contentService);
+  const flightService = new FlightService(airportService, contentService, config.apiBaseURL);
+  const stopOverService = new StopOverService(config.apiBaseURL);
   const locale = 'en-US';
 
   const tripTypes = Object.keys(TripType);
@@ -27,6 +30,7 @@ export default function App(): JSX.Element {
         <Route exact path="/">
           <HomeView airportService={airportService} locale={locale} />
         </Route>
+
         <Route
           path={
             `/booking/:originCode([a-z]{3})/:destinationCode([a-z]{3})/:cabinType(${
@@ -37,10 +41,19 @@ export default function App(): JSX.Element {
           }
         >
           <BookingView
+            stopOverService={stopOverService}
             airportService={airportService}
             flightService={flightService}
             locale={locale}
           />
+        </Route>
+
+        <Route path="/select-inbound">
+          <strong>Select inbound flight.</strong>
+        </Route>
+
+        <Route path="/stopover-accepted">
+          <strong>Stopover was accepted.</strong>
         </Route>
       </Switch>
     </div>

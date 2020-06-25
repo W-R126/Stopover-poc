@@ -14,7 +14,12 @@ import Select from '../UI/Select';
 import Option from '../UI/Select/Option';
 import { CalendarData } from './Components/DatePicker/Components/Calendar/CalendarData';
 import Checkbox from '../UI/Checkbox';
-import { TripSearchData, copyTripSearchData, compareTripSearchData } from './TripSearchData';
+import {
+  TripSearchData,
+  copyTripSearchData,
+  compareTripSearchData,
+  validateTripSearchData,
+} from './TripSearchData';
 import Button from '../UI/Button';
 
 interface TripSearchProps {
@@ -74,39 +79,46 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
 
   private onTripTypeChange(tripType: TripType): void {
     const { data } = this.state;
-    Object.assign(data, { tripType });
+    data.tripType = tripType;
+
     this.onChange(data);
   }
 
   private onPassengersChange(passengers: PassengerPickerData): void {
     const { data } = this.state;
-    Object.assign(data, { passengers });
+    data.passengers = passengers;
+
     this.onChange(data);
   }
 
   private onCabinTypeChange(cabinType: CabinType): void {
     const { data } = this.state;
-    Object.assign(data, { cabinType });
+    data.cabinType = cabinType;
+
     this.onChange(data);
   }
 
   private onOriginDestinationChange(originDestination: OriginDestinationPickerData): void {
     const { data } = this.state;
-    Object.assign(data, { originDestination });
+    data.origin = originDestination.origin;
+    data.destination = originDestination.destination;
+
     this.onChange(data);
   }
 
   private onDatesChange(dates: CalendarData): void {
     const { data } = this.state;
-    Object.assign(data, { dates });
+    data.outbound = dates.start;
+    data.inbound = dates.end;
+
     this.onChange(data);
   }
 
   private onBookWithMilesChange(e: React.ChangeEvent<HTMLInputElement>): void {
-    const bookWithMiles = e.target.checked;
-
     const { data } = this.state;
-    Object.assign(data, { bookWithMiles });
+    const bookWithMiles = e.target.checked;
+    data.bookWithMiles = bookWithMiles;
+
     this.onChange(data);
   }
 
@@ -115,6 +127,10 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
     const { data } = this.state;
 
     // TODO: Validation.
+    if (!validateTripSearchData(data)) {
+      // TODO: Invalid data, display messages.
+      return;
+    }
 
     if (onSearch) {
       onSearch(data);
@@ -153,14 +169,14 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
         />
         <OriginDestinationPicker
           className={css.OriginDestinationPicker}
-          data={data.originDestination}
+          data={{ origin: data.origin, destination: data.destination }}
           onChange={this.onOriginDestinationChange}
           airportService={airportService}
         />
         <DatePicker
           className={css.DatePicker}
           locale={locale}
-          data={data.dates}
+          data={{ start: data.outbound, end: data.inbound }}
           onChange={this.onDatesChange}
           span={data.tripType === TripType.return}
         />

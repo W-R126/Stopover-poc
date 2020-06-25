@@ -12,7 +12,6 @@ interface FlightEntryProps {
   onExpandDetails: () => void;
   onOfferChange: (offer?: OfferModel) => void;
   selectedOffer?: OfferModel;
-  selectedOfferHash?: number;
 }
 
 interface FlightEntryState {
@@ -35,11 +34,12 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
   }
 
   componentDidMount(): void {
-    const { selectedOfferHash, data } = this.props;
+    const { selectedOffer, data } = this.props;
 
+    // Expand offers upon mount.
     Object.keys(data.cabinClasses).forEach((cc) => {
       if (data.cabinClasses[cc].offers.findIndex(
-        (ccOffer) => ccOffer.basketHash === selectedOfferHash,
+        (ccOffer) => ccOffer.basketHash === selectedOffer?.basketHash,
       ) !== -1) {
         this.showOffers(cc);
       }
@@ -56,7 +56,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
     }
   }
 
-  private showOffers(cabinClass: string): void {
+  showOffers(cabinClass: string): void {
     const { collapsed, selectedCabinClass } = this.state;
 
     if (collapsed) {
@@ -92,7 +92,6 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
       data,
       onOfferChange,
       selectedOffer,
-      selectedOfferHash,
     } = this.props;
 
     const { collapsed, selectedCabinClass } = this.state;
@@ -145,7 +144,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
               role="option"
               aria-selected={cabinClass === selectedCabinClass}
               className={data.cabinClasses[cabinClass].offers.findIndex(
-                (offer) => offer.basketHash === selectedOfferHash,
+                (offer) => offer.basketHash === selectedOffer?.basketHash,
               ) === -1 ? undefined : css.Selected}
             >
               <strong>

@@ -210,50 +210,29 @@ export default class Utils {
   static getBookingUrl(data: TripSearchData): string {
     let result = '/booking';
 
-    result += `/${data.originDestination.origin?.code ?? ''}`;
-    result += `/${data.originDestination.destination?.code ?? ''}`;
+    result += `/${data.origin?.code ?? ''}`;
+    result += `/${data.destination?.code ?? ''}`;
     result += `/${CabinType[data.cabinType]}`;
     result += `/${data.passengers.adults}`;
     result += `/${data.passengers.children}`;
     result += `/${data.passengers.infants}`;
     result += `/${TripType[data.tripType]}`;
 
-    if (data.dates.start) {
-      result += `/${Utils.getDateString(data.dates.start)}`;
+    if (data.outbound) {
+      result += `/${Utils.getDateString(data.outbound)}`;
     } else {
       result += '/';
     }
 
     if (data.tripType === TripType.return) {
-      if (data.dates.end) {
-        result += `/${Utils.getDateString(data.dates.end)}`;
-      } else if (data.dates.start) {
-        result += `/${Utils.getDateString(data.dates.start)}`;
+      if (data.inbound) {
+        result += `/${Utils.getDateString(data.inbound)}`;
+      } else if (data.outbound) {
+        // Inbound is missing, set it to outbound.
+        result += `/${Utils.getDateString(data.outbound)}`;
       }
     }
 
     return result;
-  }
-
-  static validateTripSearchData(tripSearchData: TripSearchData): boolean {
-    const { originDestination, dates, passengers } = tripSearchData;
-
-    if (!(originDestination.destination && originDestination.origin)) {
-      return false;
-    }
-
-    if (tripSearchData.tripType === TripType.return && !dates.end) {
-      return false;
-    }
-
-    if (passengers.adults + passengers.children > 9) {
-      return false;
-    }
-
-    if (passengers.infants > passengers.adults) {
-      return false;
-    }
-
-    return true;
   }
 }

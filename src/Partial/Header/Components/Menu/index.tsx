@@ -48,10 +48,8 @@ export default class Menu extends React.Component<MenuProps, MenuState> {
     const commonReq = contentService.get('common');
     const menuReq = contentService.get('mainMenu');
 
-    Object.assign(content, {
-      common: await commonReq,
-      menu: await menuReq,
-    });
+    content.common = await commonReq;
+    content.menu = await menuReq;
 
     window.addEventListener('resize', this.onResize);
 

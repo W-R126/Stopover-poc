@@ -1,0 +1,31 @@
+.Offer {
+  background-color: #fff;
+  padding-bottom: 16px;
+}
+
+.Image {
+  width: 100%;
+  height: 200px;
+  background-size: cover;
+  background-position: center center;
+}
+
+.Offer > h1 {
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  text-align: center;
+  padding: 8px 8px 0;
+  font-size: 18px;
+}
+
+.Offer > p {
+  text-align: center;
+  padding: 8px;
+}
+
+.Offer > strong {
+  display: inline-block;
+  width: 100%;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  text-align: center;
+  font-size: 20px;
+}

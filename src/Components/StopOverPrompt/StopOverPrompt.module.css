@@ -1,0 +1,88 @@
+.StopOverPrompt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  z-index: 5000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  user-select: none;
+}
+
+.Background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-position: center center;
+  background-size: cover;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.Content {
+  background-color: rgba(255, 255, 255, 0.7);
+  width: 1000px;
+  border-radius: 8px;
+  padding: 40px;
+}
+
+.Content > h1 {
+  color: #bd8b13;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  font-style: italic;
+  text-align: center;
+  font-size: 33px;
+  margin: 16px 0;
+}
+
+.Content > p {
+  text-align: center;
+  font-size: 18px;
+  line-height: 25px;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+}
+
+.Content > p > strong {
+  color: #bd8b13;
+}
+
+.LogoContainer {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.Logo {
+  font-size: 20px;
+}
+
+.Offers {
+  display: flex;
+  margin: 24px 0;
+  justify-content: center;
+  flex-flow: row wrap;
+  width: 100%;
+}
+
+.Offer {
+  margin: 0 8px;
+  width: calc(33% - 16px);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid #fff;
+}
+
+.Actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 16px;
+}
+
+.Reject {
+  margin-right: 16px;
+}

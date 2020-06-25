@@ -13,7 +13,15 @@ import FlightSearchResult from './Components/FlightSearchResult';
 import FlightService from '../../Services/FlightService';
 import Utils from '../../Utils';
 import ShoppingCart from './Components/ShoppingCart';
-import { OfferModel } from '../../Models/OfferModel';
+import {
+  OfferModel,
+  GroupedOfferModel,
+  AltOfferModel,
+  findOfferFromHash,
+} from '../../Models/OfferModel';
+import { AirportModel } from '../../Models/AirportModel';
+import StopOverService from '../../Services/StopOverService';
+import StopOverPrompt from '../../Components/StopOverPrompt';
 
 interface BookingViewProps extends RouteComponentProps<{
   originCode: string;
@@ -26,6 +34,7 @@ interface BookingViewProps extends RouteComponentProps<{
   outbound: string;
   inbound?: string;
 }> {
+  stopOverService: StopOverService;
   airportService: AirportService;
   flightService: FlightService;
   locale: string;
@@ -34,12 +43,19 @@ interface BookingViewProps extends RouteComponentProps<{
 interface BookingState {
   tripSearchData: TripSearchData;
   editing: boolean;
-  outboundOffer?: OfferModel;
+  outboundOffers?: {
+    offers: GroupedOfferModel[];
+    altOffers: AltOfferModel[];
+  };
   outboundOfferHash?: number;
 }
 
 class BookingView extends React.Component<BookingViewProps, BookingState> {
   private readonly outboundOfferKey = 'Booking.outboundOfferHash';
+
+  private readonly flightSearchResultRef = React.createRef<FlightSearchResult>();
+
+  private readonly stopOverPromptRef = React.createRef<StopOverPrompt>();
 
   constructor(props: BookingViewProps) {
     super(props);
@@ -47,15 +63,18 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     const tripSearchData = this.getDataFromParams(props);
 
     this.state = {
+      outboundOffers: undefined,
       tripSearchData,
       editing: false,
-      outboundOffer: undefined,
       outboundOfferHash: Utils.sessionStore.get<number>(this.outboundOfferKey),
     };
 
     this.onOutboundDateChange = this.onOutboundDateChange.bind(this);
     this.onTripSearch = this.onTripSearch.bind(this);
     this.onOutboundOfferChange = this.onOutboundOfferChange.bind(this);
+    this.onSelectInbound = this.onSelectInbound.bind(this);
+    this.onAcceptStopOver = this.onAcceptStopOver.bind(this);
+    this.onRejectStopOver = this.onRejectStopOver.bind(this);
     this.toggleEdit = this.toggleEdit.bind(this);
   }
 
@@ -67,18 +86,18 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     const originReq = airportService.getAirport(params.originCode);
     const destinationReq = airportService.getAirport(params.destinationCode);
 
-    Object.assign(tripSearchData.originDestination, {
-      origin: await originReq,
-      destination: await destinationReq,
-    });
+    tripSearchData.origin = await originReq;
+    tripSearchData.destination = await destinationReq;
 
-    const newState = { tripSearchData };
+    const newState: Partial<BookingState> = { tripSearchData };
 
     if (!validateTripSearchData(tripSearchData)) {
-      Object.assign(newState, { editing: true });
+      newState.editing = true;
+    } else {
+      this.searchOffers(tripSearchData);
     }
 
-    this.setState(newState);
+    this.setState(newState as BookingState);
   }
 
   private onTripSearch(tripSearchData: TripSearchData): void {
@@ -89,23 +108,29 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     this.setState({
       tripSearchData,
       editing: false,
-      outboundOffer: undefined,
       outboundOfferHash: undefined,
     });
+
+    this.searchOffers(tripSearchData);
+
+    if (this.flightSearchResultRef.current) {
+      // Reset the show counter of flight search result.
+      this.flightSearchResultRef.current.resetShowCounter();
+    }
 
     history.replace(Utils.getBookingUrl(tripSearchData));
   }
 
-  private onOutboundDateChange(start: Date): void {
+  private onOutboundDateChange(outbound: Date): void {
     const { tripSearchData } = this.state;
-    const { dates } = tripSearchData;
+    const { inbound } = tripSearchData;
 
-    if (dates.end && Utils.compareDates(dates.end, start) === -1) {
+    if (inbound && Utils.compareDates(inbound, outbound) === -1) {
       // Span is negative, update end to match start
-      Object.assign(dates, { end: new Date(start) });
+      tripSearchData.inbound = new Date(outbound);
     }
 
-    Object.assign(dates, { start });
+    tripSearchData.outbound = outbound;
 
     this.onTripSearch(tripSearchData);
   }
@@ -113,20 +138,67 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
   private onOutboundOfferChange(outboundOffer?: OfferModel): void {
     Utils.sessionStore.set(this.outboundOfferKey, outboundOffer?.basketHash);
 
-    this.setState({ outboundOffer, outboundOfferHash: outboundOffer?.basketHash });
+    this.setState({ outboundOfferHash: outboundOffer?.basketHash });
+  }
+
+  private async onSelectInbound(): Promise<void> {
+    const { stopOverService, history } = this.props;
+    const { outboundOfferHash } = this.state;
+
+    if (outboundOfferHash === undefined) {
+      return;
+    }
+
+    const result = await stopOverService.getStopOver(outboundOfferHash);
+
+    if (!(result && this.stopOverPromptRef.current)) {
+      history.push('/select-inbound');
+
+      return;
+    }
+
+    this.stopOverPromptRef.current.show(result.customerSegment, result.days, result.airportCode);
+  }
+
+  private async onAcceptStopOver(): Promise<void> {
+    const { history } = this.props;
+
+    if (!this.stopOverPromptRef.current) {
+      return;
+    }
+
+    await this.stopOverPromptRef.current.hide();
+
+    history.push('/stopover-accepted');
+  }
+
+  private async onRejectStopOver(airportCode?: string, days?: number[]): Promise<void> {
+    const { history, stopOverService } = this.props;
+
+    if (!this.stopOverPromptRef.current) {
+      return;
+    }
+
+    await this.stopOverPromptRef.current.hide();
+
+    if (airportCode && days) {
+      await stopOverService.rejectStopOver(airportCode, days);
+    }
+
+    history.push('/select-inbound');
   }
 
   private getDataFromParams(props: BookingViewProps): TripSearchData {
     const { match } = props;
     const { params } = match;
 
-    const start = params.outbound ? new Date(params.outbound) : undefined;
-    let end = params.inbound ? new Date(params.inbound) : undefined;
+    const outbound = params.outbound ? new Date(params.outbound) : undefined;
+    let inbound = params.inbound ? new Date(params.inbound) : undefined;
 
-    if (!end && start) {
-      end = new Date(start);
-    } else if (end && start && Utils.compareDates(end, start) === -1) {
-      end = new Date(start);
+    if (!inbound && outbound) {
+      inbound = new Date(outbound);
+    } else if (inbound && outbound && Utils.compareDates(inbound, outbound) === -1) {
+      inbound = new Date(outbound);
     }
 
     return {
@@ -137,16 +209,32 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
         infants: Number.parseInt(params.infants, 10),
       },
       cabinType: (CabinType as any)[params.cabinType],
-      originDestination: {
-        origin: undefined,
-        destination: undefined,
-      },
-      dates: {
-        start,
-        end,
-      },
+      origin: undefined,
+      destination: undefined,
+      outbound,
+      inbound,
       bookWithMiles: false,
     };
+  }
+
+  private async searchOffers(data: TripSearchData): Promise<void> {
+    const { flightService } = this.props;
+
+    // Reset in- and outbound offers.
+    await new Promise(
+      (resolve) => this.setState({ outboundOffers: undefined }, resolve),
+    );
+
+    const outboundOffersReq = flightService.getOffers(
+      data.cabinType,
+      data.outbound as Date,
+      data.destination as AirportModel,
+      data.origin as AirportModel,
+      data.passengers,
+    );
+
+    const outboundOffers = await outboundOffersReq;
+    this.setState({ outboundOffers });
   }
 
   private toggleEdit(): void {
@@ -156,38 +244,39 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
   }
 
   render(): JSX.Element {
-    const { locale, airportService, flightService } = this.props;
+    const { locale, airportService } = this.props;
     const {
+      outboundOffers,
       tripSearchData,
       editing,
-      outboundOffer,
       outboundOfferHash,
     } = this.state;
 
-    const tripSearchValid = validateTripSearchData(tripSearchData);
-    const {
-      cabinType,
-      dates,
-      originDestination,
-      passengers,
-    } = tripSearchData;
+    const { outbound, origin, destination } = tripSearchData;
+    const outboundOffer = findOfferFromHash(outboundOffers?.offers, outboundOfferHash);
 
     return (
       <div className={css.BookingView}>
+        <StopOverPrompt
+          onAccept={this.onAcceptStopOver}
+          onReject={this.onRejectStopOver}
+          ref={this.stopOverPromptRef}
+        />
+
         <Progress step={ProgressStep.flights} />
+
         <div className={`${css.ContentWrapper} content-wrapper`}>
           {editing
             ? (
               <>
-                {tripSearchValid && (
-                  <button
-                    type="button"
-                    className={css.CancelSearch}
-                    onClick={this.toggleEdit}
-                  >
-                    Cancel
-                  </button>
-                )}
+                <button
+                  type="button"
+                  className={css.CancelSearch}
+                  onClick={this.toggleEdit}
+                >
+                  Cancel
+                </button>
+
                 <TripSearch
                   className={css.TripSearch}
                   locale={locale}
@@ -205,26 +294,30 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
                 toggleEdit={this.toggleEdit}
               />
             )}
-          {(dates.start && originDestination.destination && originDestination.origin) && (
+
+          {(outbound && destination && origin) && (
             <>
               <h1 className={css.SelectFlightHeader}>Select outbound flight</h1>
               <FlightSearchResult
+                ref={this.flightSearchResultRef}
+                origin={origin}
+                destination={destination}
+                offers={outboundOffers?.offers}
+                altOffers={outboundOffers?.altOffers}
+                selectedDepartureDate={outbound}
                 className={css.FlightSearchResult}
                 onDepartureChange={this.onOutboundDateChange}
-                cabinType={cabinType}
-                departure={dates.start}
-                destination={originDestination.destination}
-                origin={originDestination.origin}
-                passengers={passengers}
-                flightService={flightService}
                 onOfferChange={this.onOutboundOfferChange}
                 selectedOffer={outboundOffer}
-                selectedOfferHash={outboundOfferHash}
               />
             </>
           )}
         </div>
-        <ShoppingCart outboundOffer={outboundOffer} />
+
+        <ShoppingCart
+          outboundOffer={outboundOffer}
+          onSelectInbound={this.onSelectInbound}
+        />
       </div>
     );
   }

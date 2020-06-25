@@ -9,6 +9,7 @@ import Button from '../../../../Components/UI/Button';
 interface ShoppingCartProps {
   outboundOffer?: OfferModel;
   className?: string;
+  onSelectInbound: () => void;
 }
 
 export default class ShoppingCart extends React.Component<ShoppingCartProps, {}> {
@@ -19,7 +20,7 @@ export default class ShoppingCart extends React.Component<ShoppingCartProps, {}>
   }
 
   render(): JSX.Element {
-    const { className, outboundOffer } = this.props;
+    const { className, outboundOffer, onSelectInbound } = this.props;
 
     const classList = [css.ShoppingCart];
 
@@ -89,7 +90,7 @@ export default class ShoppingCart extends React.Component<ShoppingCartProps, {}>
             </div>
 
             <div className={css.SelectInbound}>
-              <Button>
+              <Button onClick={onSelectInbound}>
                 Select return flight
               </Button>
             </div>

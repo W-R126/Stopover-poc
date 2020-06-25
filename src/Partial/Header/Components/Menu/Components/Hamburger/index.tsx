@@ -75,13 +75,13 @@ export default class Hamburger extends React.Component<HamburgerProps, Hamburger
 
     document.body.style.overflow = collapsed ? 'hidden' : '';
 
-    const newState = { collapsed: !collapsed };
+    const newState: Partial<HamburgerState> = { collapsed: !collapsed };
 
     if (!collapsed) {
-      Object.assign(newState, { filter: '' });
+      newState.filter = '';
     }
 
-    await new Promise((resolve) => this.setState(newState, resolve));
+    await new Promise((resolve) => this.setState(newState as HamburgerState, resolve));
     this.toggleAll();
   }
 

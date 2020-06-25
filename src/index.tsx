@@ -5,11 +5,14 @@ import { BrowserRouter } from 'react-router-dom';
 import './reset.css';
 import './common.css';
 import App from './App';
+import Config from './Config';
+
+const config = new Config();
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <App config={config} />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root'),

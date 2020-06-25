@@ -49,17 +49,15 @@ export default class OriginDestinationPicker extends React.Component<
   }
 
   private onOriginChange(origin?: AirportModel): void {
-    this.onKeyChange('origin', origin);
+    const { data, onChange } = this.props;
+    data.origin = origin;
+
+    onChange(data);
   }
 
   private onDestinationChange(destination?: AirportModel): void {
-    this.onKeyChange('destination', destination);
-  }
-
-  private onKeyChange(key: string, value: any): void {
     const { data, onChange } = this.props;
-
-    Object.assign(data, { [key]: value });
+    data.destination = destination;
 
     onChange(data);
   }
@@ -88,7 +86,10 @@ export default class OriginDestinationPicker extends React.Component<
 
   private swapDirections(): void {
     const { data, onChange } = this.props;
-    Object.assign(data, { origin: data.destination, destination: data.origin });
+    const { origin, destination } = data;
+    data.origin = destination;
+    data.destination = origin;
+
     onChange(data);
   }
 

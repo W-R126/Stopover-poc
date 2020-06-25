@@ -32,3 +32,28 @@
   color: #4e4c4a;
   border-color: #dcdbdb;
 }
+
+.Secondary {
+  background-color: transparent;
+  border: 2px solid #4e4c4a;
+  color: #4e4c4a;
+}
+
+.Secondary:hover {
+  background-color: #4e4c4a;
+  border-color: #4e4c4a;
+  color: #fff;
+}
+
+.Secondary:focus {
+  background-color: #4e4c4a;
+  border-color: #fff;
+  box-shadow: 0 0 0 2px #6997d3;
+  color: #fff;
+}
+
+.Secondary:disabled {
+  background-color: #dcdbdb;
+  color: #4e4c4a;
+  border-color: #dcdbdb;
+}

@@ -79,25 +79,25 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
   private onSelectionStart(start: Date): void {
     const { onChange, data } = this.props;
 
-    Object.assign(data, { end: undefined, start });
+    data.end = undefined;
+    data.start = start;
 
     onChange(data);
-
     this.setState({ selecting: true });
   }
 
   private onSelectionEnd(end: Date): void {
-    const { onChange, data } = this.props;
+    const { onChange } = this.props;
+    let { data } = this.props;
 
-    Object.assign(data, { end });
+    data.end = end;
 
     if ((data.start && data.end) && data.end < data.start) {
       // Swap start and end if span is negative.
-      Object.assign(data, { start: data.end, end: data.start });
+      data = { start: data.end, end: data.start };
     }
 
     onChange(data);
-
     this.setState({ selecting: false });
   }
 

@@ -58,7 +58,7 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
     const { scrollY } = window;
     const { mode, collapsed, height } = this.state;
     const scrollHeight = mode === 'desktop' ? this.desktopHeight : this.mobileHeight;
-    const newState = {};
+    const newState: Partial<HeaderState> = {};
 
     let direction = 'up';
 
@@ -70,46 +70,50 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
 
     if (scrollY > scrollHeight && height === this.desktopHeight) {
       // Scroll is above threshold, set to mobile height.
-      Object.assign(newState, { height: this.mobileHeight });
+      newState.height = this.mobileHeight;
     } else if (scrollY <= scrollHeight && height !== scrollHeight) {
       // Scroll is below threshold, set to current device height.
-      Object.assign(newState, { height: scrollHeight });
+      newState.height = scrollHeight;
     }
 
     if (direction === 'down') {
       if (!collapsed && scrollY > scrollHeight) {
         // Hide header.
-        Object.assign(newState, { collapsed: true });
+        newState.collapsed = true;
       }
     } else if (collapsed) {
       // Show header.
-      Object.assign(newState, { collapsed: false });
+      newState.collapsed = false;
     }
 
-    this.setState(newState);
+    if (Object.keys(newState).length > 0) {
+      this.setState(newState as HeaderState);
+    }
   }
 
   private onResize(): void {
     const { innerWidth } = window;
     const { mode, showBrandPlatform } = this.state;
-    const newState = {};
+    const newState: Partial<HeaderState> = {};
 
     if (innerWidth < this.showBrandPlatformThreshold && showBrandPlatform) {
-      Object.assign(newState, { showBrandPlatform: false });
+      newState.showBrandPlatform = false;
     } else if (innerWidth > this.showBrandPlatformThreshold && !showBrandPlatform) {
-      Object.assign(newState, { showBrandPlatform: true });
+      newState.showBrandPlatform = true;
     }
 
     if (mode === 'desktop' && innerWidth <= this.mobileThreshold) {
       // Switch to mobile.
-      Object.assign(newState, { mode: 'mobile', height: this.mobileHeight });
+      newState.mode = 'mobile';
+      newState.height = this.mobileHeight;
     } else if (mode === 'mobile' && innerWidth > this.mobileThreshold) {
       // Switch to desktop.
-      Object.assign(newState, { mode: 'desktop', height: this.desktopHeight });
+      newState.mode = 'desktop';
+      newState.height = this.desktopHeight;
     }
 
     if (Object.keys(newState).length > 0) {
-      this.setState(newState);
+      this.setState(newState as HeaderState);
     }
   }
 

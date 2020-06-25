@@ -1,3 +1,6 @@
+import moment from 'moment-timezone';
+import { AxiosResponse } from 'axios';
+
 import BaseService from './BaseService';
 import {
   OfferModel,
@@ -61,52 +64,49 @@ export default class FlightService extends BaseService {
     altOffers: AltOfferModel[];
     offers: GroupedOfferModel[];
   }> {
-    const { adults, children, infants } = passengers;
-    const passengerData = {};
+    const passengerData: Partial<{ ADT: number; CHD: number; INF: number }> = {};
+    const airportsReq = this.airportService.getAirports();
 
-    if (adults > 0) {
-      Object.assign(passengerData, { ADT: adults });
+    if (passengers.adults > 0) {
+      passengerData.ADT = passengers.adults;
     }
 
-    if (children > 0) {
-      Object.assign(passengerData, { CHD: children });
+    if (passengers.children > 0) {
+      passengerData.CHD = passengers.children;
     }
 
-    if (infants > 0) {
-      Object.assign(passengerData, { INF: infants });
+    if (passengers.infants > 0) {
+      passengerData.INF = passengers.infants;
     }
 
-    const headers: { [key: string]: string } = {};
-    const { sessionId, tabSessionId } = SessionManager;
+    let result: AxiosResponse<FlightResponse> | undefined;
 
-    if (sessionId) {
-      headers['session-id'] = sessionId;
+    try {
+      result = await this.http.post<FlightResponse>(
+        '/flights',
+        {
+          passengers: passengerData,
+          searchType: 'BRANDED',
+          currency,
+          itineraryParts: [
+            {
+              from: { code: origin.code },
+              to: { code: destination.code },
+              when: { date: Utils.getDateString(departure) },
+            },
+          ],
+        },
+        { headers: SessionManager.getSessionHeaders() },
+      );
+    } catch (err) {
+      //
     }
 
-    if (tabSessionId) {
-      headers['tab-session-id'] = tabSessionId;
+    if (!result) {
+      return { altOffers: [], offers: [] };
     }
 
-    const result = await this.http.post<FlightResponse>(
-      'http://40.80.199.170/flights',
-      {
-        passengers: passengerData,
-        searchType: 'BRANDED',
-        currency,
-        itineraryParts: [
-          {
-            from: { code: origin.code },
-            to: { code: destination.code },
-            when: { date: Utils.getDateString(departure) },
-          },
-        ],
-      },
-      { headers },
-    );
-
-    const { sessionContext } = result.data;
-    SessionManager.sessionId = sessionContext.sessionId;
-    SessionManager.tabSessionId = sessionContext.tabSessionId;
+    SessionManager.setSessionHeaders(result.headers);
 
     const altOffers = result.data.unbundledAlternateDateOffers[0]
       .filter((altOffer) => altOffer.status === 'AVAILABLE')
@@ -123,6 +123,7 @@ export default class FlightService extends BaseService {
     const { fareFamilies } = result.data;
     const store: { [key: string]: any } = {};
     const flightModels = await this.contentService.get('flightModels');
+    const airports = await airportsReq;
 
     const parsedOffers: OfferModel[] = offers.map((offer) => ({
       basketHash: offer.shoppingBasketHashCode,
@@ -136,14 +137,13 @@ export default class FlightService extends BaseService {
         tax: offer.taxes.alternatives[0][0].amount,
         currency: offer.total.alternatives[0][0].currency,
       },
-      itineraryPart: this.getItineraryPart(offer.itineraryPart[0], flightModels, store),
+      itineraryPart: this.getItineraryPart(
+        offer.itineraryPart[0],
+        flightModels,
+        airports,
+        store,
+      ),
     }));
-
-    const airportReqs = Object.keys(store)
-      .filter((key) => store[key].type === 'segment')
-      .map((key) => this.populateAirports(store[key]));
-
-    await Promise.all(airportReqs);
 
     return {
       altOffers,
@@ -214,22 +214,10 @@ export default class FlightService extends BaseService {
     return Object.keys(result).map((key) => result[key]);
   }
 
-  private async populateAirports(data: any): Promise<void> {
-    if (!data.origin) {
-      Object.assign(data, { origin: await this.airportService.getAirport(data.originCode) });
-    }
-
-    if (!data.destination) {
-      Object.assign(
-        data,
-        { destination: await this.airportService.getAirport(data.destinationCode) },
-      );
-    }
-  }
-
   private getItineraryPart(
     data: ItineraryPart,
     flightModels: { [key: string]: string },
+    airports: AirportModel[],
     store: { [key: string]: any },
   ): {
     bookingClass: string;
@@ -245,7 +233,12 @@ export default class FlightService extends BaseService {
       return store[data['@ref']];
     }
 
-    const segments = data.segments.map((segment) => this.getSegment(segment, flightModels, store));
+    const segments = data.segments.map((segment) => this.getSegment(
+      segment,
+      flightModels,
+      airports,
+      store,
+    ));
 
     return Object.assign(store, {
       [data['@id']]: {
@@ -263,6 +256,7 @@ export default class FlightService extends BaseService {
   private getSegment(
     data: Segment,
     flightModels: { [key: string]: string },
+    airports: AirportModel[],
     store: { [key: string]: any },
   ): {
     type: string;
@@ -270,8 +264,8 @@ export default class FlightService extends BaseService {
     departure: Date;
     cabinClass: string;
     bookingClass: string;
-    destinationCode: string;
-    originCode: string;
+    origin: AirportModel;
+    destination: AirportModel;
     equipment: string;
     milesEarned: number;
     flight: {
@@ -288,15 +282,20 @@ export default class FlightService extends BaseService {
       return store[data['@ref']];
     }
 
+    const origin = airports.find((airport) => airport.code === data.origin);
+    const destination = airports.find((airport) => airport.code === data.destination);
+    const departure = moment.tz(data.departure, origin?.timeZone ?? '').toDate();
+    const arrival = moment.tz(data.arrival, destination?.timeZone ?? '').toDate();
+
     return Object.assign(store, {
       [data['@id']]: {
         type: 'segment',
-        arrival: new Date(data.arrival),
-        departure: new Date(data.departure),
+        arrival,
+        departure,
         cabinClass: data.cabinClass,
         bookingClass: data.bookingClass,
-        destinationCode: data.destination,
-        originCode: data.origin,
+        origin,
+        destination,
         equipment: flightModels[data.equipment] ?? 'N/A',
         milesEarned: data.segmentOfferInformation.flightsMiles,
         flight: {

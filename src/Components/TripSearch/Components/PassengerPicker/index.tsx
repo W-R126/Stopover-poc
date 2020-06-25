@@ -126,30 +126,26 @@ export default class PassengerPicker extends React.Component<
 
   private onAdultsChange(adults: number): void {
     const { data, onChange } = this.props;
-    const newData = { adults };
+    data.adults = adults;
 
     if (data.infants > adults) {
       // More infants than adults, reduce number of infants.
-      Object.assign(newData, { infants: adults });
+      data.infants = adults;
     }
-
-    Object.assign(data, newData);
 
     onChange(data);
   }
 
   private onChildrenChange(children: number): void {
-    this.onChange('children', children);
+    const { data, onChange } = this.props;
+    data.children = children;
+
+    onChange(data);
   }
 
   private onInfantsChange(infants: number): void {
-    this.onChange('infants', infants);
-  }
-
-  private onChange(key: string, value: number): void {
     const { data, onChange } = this.props;
-
-    Object.assign(data, { [key]: value });
+    data.infants = infants;
 
     onChange(data);
   }

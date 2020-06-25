@@ -19,8 +19,8 @@ export default function SearchDetails({
   toggleEdit,
   className,
 }: SearchDetailsProps): JSX.Element {
-  const { origin, destination } = data.originDestination;
-  const { start, end } = data.dates;
+  const { origin, destination } = data;
+  const { outbound, inbound } = data;
   const { passengers } = data;
 
   const passengerCount = passengers.adults + passengers.children + passengers.infants;
@@ -52,10 +52,10 @@ export default function SearchDetails({
       </span>
       <span className="dates">
         {`${
-          start && start.toLocaleDateString(locale, { month: 'long', day: 'numeric' })
+          outbound && outbound.toLocaleDateString(locale, { month: 'long', day: 'numeric' })
         }${
-          (data.tripType === TripType.return && end) ? ` to ${
-            end.toLocaleDateString(locale, { month: 'long', day: 'numeric' })
+          (data.tripType === TripType.return && inbound) ? ` to ${
+            inbound.toLocaleDateString(locale, { month: 'long', day: 'numeric' })
           }` : ''
         }`}
       </span>
