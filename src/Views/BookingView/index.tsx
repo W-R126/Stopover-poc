@@ -3,8 +3,8 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import css from './BookingView.module.css';
 import TripSearch from '../../Components/TripSearch';
-import { TripType } from '../../Enums/TripType';
-import { CabinType } from '../../Enums/CabinType';
+import { TripTypeEnum } from '../../Enums/TripTypeEnum';
+import { CabinClassEnum } from '../../Enums/CabinClassEnum';
 import AirportService from '../../Services/AirportService';
 import { TripSearchData, validateTripSearchData } from '../../Components/TripSearch/TripSearchData';
 import Progress, { ProgressStep } from './Components/Progress';
@@ -26,7 +26,7 @@ import StopOverPrompt from '../../Components/StopOverPrompt';
 interface BookingViewProps extends RouteComponentProps<{
   originCode: string;
   destinationCode: string;
-  cabinType: string;
+  cabinClass: string;
   adults: string;
   children: string;
   infants: string;
@@ -186,6 +186,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
 
   private async onRejectStopOver(airportCode?: string): Promise<void> {
     const { history, stopOverService } = this.props;
+    const { tripSearchData } = this.state;
 
     if (!this.stopOverPromptRef.current) {
       return;
@@ -197,7 +198,11 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       await stopOverService.rejectStopOver(airportCode);
     }
 
-    history.push('/select-inbound');
+    if (tripSearchData.tripType === TripTypeEnum.return) {
+      history.push('/select-inbound');
+    } else {
+      history.push('/passenger-details');
+    }
   }
 
   private getDataFromParams(props: BookingViewProps): TripSearchData {
@@ -214,13 +219,13 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     }
 
     return {
-      tripType: (TripType as any)[params.tripType],
+      tripType: (TripTypeEnum as any)[params.tripType],
       passengers: {
         adults: Number.parseInt(params.adults, 10),
         children: Number.parseInt(params.children, 10),
         infants: Number.parseInt(params.infants, 10),
       },
-      cabinType: (CabinType as any)[params.cabinType],
+      cabinClass: (CabinClassEnum as any)[params.cabinClass],
       origin: undefined,
       destination: undefined,
       outbound,
@@ -238,7 +243,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     );
 
     const outboundOffersReq = flightService.getOffers(
-      data.cabinType,
+      data.cabinClass,
       data.outbound as Date,
       data.destination as AirportModel,
       data.origin as AirportModel,
@@ -264,7 +269,12 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       outboundOfferHash,
     } = this.state;
 
-    const { outbound, origin, destination } = tripSearchData;
+    const {
+      cabinClass,
+      outbound,
+      origin,
+      destination,
+    } = tripSearchData;
     const outboundOffer = findOfferFromHash(outboundOffers?.offers, outboundOfferHash);
 
     return (
@@ -311,6 +321,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
             <>
               <h1 className={css.SelectFlightHeader}>Select outbound flight</h1>
               <FlightSearchResult
+                cabinClass={cabinClass}
                 ref={this.flightSearchResultRef}
                 origin={origin}
                 destination={destination}

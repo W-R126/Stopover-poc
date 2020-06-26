@@ -47,6 +47,7 @@ export interface GroupedOfferModel {
     Economy?: CabinClass;
     Business?: CabinClass;
     First?: CabinClass;
+    Residence?: CabinClass;
   };
   segments: SegmentModel[];
   departure: Date;

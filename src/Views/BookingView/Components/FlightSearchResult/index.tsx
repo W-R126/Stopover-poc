@@ -10,8 +10,11 @@ import Select from '../../../../Components/UI/Select';
 import Option from '../../../../Components/UI/Select/Option';
 import SortAlgorithms, { SortAlgorithm } from './SortAlgorithms';
 import { AirportModel } from '../../../../Models/AirportModel';
+import { CabinClassEnum } from '../../../../Enums/CabinClassEnum';
+import Utils from '../../../../Utils';
 
 interface FlightSearchResultProps {
+  cabinClass: CabinClassEnum;
   origin: AirportModel;
   destination: AirportModel;
   offers?: GroupedOfferModel[];
@@ -37,6 +40,22 @@ export default class FlightSearchResult extends React.Component<
 
   private readonly showCount = 5;
 
+  private readonly economySort = (
+    <Option value={SortAlgorithms.economyPrice}>Economy price</Option>
+  );
+
+  private readonly businessSort = (
+    <Option value={SortAlgorithms.businessPrice}>Business price</Option>
+  );
+
+  private readonly firstSort = (
+    <Option value={SortAlgorithms.firstPrice}>First class price</Option>
+  );
+
+  private readonly residenceSort = (
+    <Option value={SortAlgorithms.residencePrice}>Residence price</Option>
+  );
+
   constructor(props: FlightSearchResultProps) {
     super(props);
 
@@ -61,6 +80,8 @@ export default class FlightSearchResult extends React.Component<
 
     if (prevProps.offers !== offers) {
       this.expandSelectedIntoView();
+      // Reset sorting to departure.
+      this.setState({ sortingAlgorithm: SortAlgorithms.departure });
     }
   }
 
@@ -97,8 +118,24 @@ export default class FlightSearchResult extends React.Component<
 
   private getFilteredAndSorted(offers: GroupedOfferModel[]): GroupedOfferModel[] {
     const { sortingAlgorithm, filters } = this.state;
+    const { cabinClass } = this.props;
+    const cabinClasses = Utils.getCabinClasses(cabinClass);
 
     let nextOffers = offers;
+
+    nextOffers = nextOffers.filter((offer) => {
+      // Filter on cabin classes.
+      let hasCabinClass = false;
+
+      for (let i = 0; i < cabinClasses.length; i += 1) {
+        if ((offer.cabinClasses as any)[cabinClasses[i]]) {
+          hasCabinClass = true;
+          break;
+        }
+      }
+
+      return hasCabinClass;
+    });
 
     if (filters) {
       nextOffers = nextOffers.filter(filters);
@@ -149,6 +186,7 @@ export default class FlightSearchResult extends React.Component<
       onOfferChange,
       selectedDepartureDate,
       selectedOffer,
+      cabinClass,
     } = this.props;
 
     const showCount = showCountFactor * this.showCount;
@@ -163,8 +201,9 @@ export default class FlightSearchResult extends React.Component<
         />
 
         <div className={css.FlightEntries}>
-          {this.getFilteredAndSorted(offers).slice(0, showCount).map((offer, idx) => (
+          {offers.slice(0, showCount).map((offer, idx) => (
             <FlightEntry
+              cabinClass={cabinClass}
               ref={(ref): void => {
                 this.flightEntryRefs[idx] = ref;
               }}
@@ -198,6 +237,7 @@ export default class FlightSearchResult extends React.Component<
       className,
       origin,
       destination,
+      cabinClass,
     } = this.props;
     const { sortingAlgorithm } = this.state;
 
@@ -205,6 +245,12 @@ export default class FlightSearchResult extends React.Component<
 
     if (className) {
       classList.push(className);
+    }
+
+    let filteredOffers: GroupedOfferModel[] = [];
+
+    if (offers) {
+      filteredOffers = this.getFilteredAndSorted(offers);
     }
 
     return (
@@ -218,21 +264,31 @@ export default class FlightSearchResult extends React.Component<
           </div>
 
           <div className={css.Actions}>
-            <Select
-              className={css.Sorting}
-              wrapperClassName={css.SortingWrapper}
-              value={sortingAlgorithm}
-              onChange={this.onSortingChange}
-            >
-              <Option value={SortAlgorithms.departure}>Departure</Option>
-              <Option value={SortAlgorithms.arrival}>Arrival</Option>
-              <Option value={SortAlgorithms.stopCount}>Number of stops</Option>
-              <Option value={SortAlgorithms.travelTime}>Travel time</Option>
-              <Option value={SortAlgorithms.economyPrice}>Economy price</Option>
-              <Option value={SortAlgorithms.businessPrice}>Business price</Option>
-            </Select>
-          </div>
+            {filteredOffers.length > 0 && (
+              <Select
+                className={css.Sorting}
+                wrapperClassName={css.SortingWrapper}
+                value={sortingAlgorithm}
+                onChange={this.onSortingChange}
+              >
+                <Option value={SortAlgorithms.departure}>Departure</Option>
+                <Option value={SortAlgorithms.arrival}>Arrival</Option>
+                <Option value={SortAlgorithms.stopCount}>Number of stops</Option>
+                <Option value={SortAlgorithms.travelTime}>Travel time</Option>
 
+                {cabinClass === CabinClassEnum.economy && this.economySort}
+
+                {(cabinClass === CabinClassEnum.economy || cabinClass === CabinClassEnum.business)
+                  && this.businessSort}
+
+                {(cabinClass === CabinClassEnum.business || cabinClass === CabinClassEnum.first)
+                  && this.firstSort}
+
+                {(cabinClass === CabinClassEnum.first || cabinClass === CabinClassEnum.residence)
+                  && this.residenceSort}
+              </Select>
+            )}
+          </div>
         </div>
 
         <div className={css.Result}>
@@ -243,7 +299,7 @@ export default class FlightSearchResult extends React.Component<
                 Searching
               </strong>
             )
-            : (this.renderResult(offers, altOffers ?? []))}
+            : (this.renderResult(filteredOffers, altOffers ?? []))}
         </div>
       </div>
     );

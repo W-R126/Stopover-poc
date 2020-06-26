@@ -19,12 +19,12 @@
   width: 360px;
 }
 
-.CabinType {
+.CabinClass {
   margin-top: 16px;
   width: calc((100% - 376px) / 2);
 }
 
-.CabinTypeSelect {
+.CabinClassSelect {
   width: 100%;
 }
 
@@ -51,19 +51,19 @@
 }
 
 @media screen and (min-width: 651px) {
-  html:not([dir='rtl']) .CabinTypeSelect[aria-expanded='false'] > .CabinTypeSelectWrapper,
+  html:not([dir='rtl']) .CabinClassSelect[aria-expanded='false'] > .CabinClassSelectWrapper,
   html[dir='rtl'] .Passengers > .PassengerPicker[aria-expanded='false'] > .PassengerPickerWrapper {
     border-right: 0;
     padding-right: 1px;
   }
 
-  html[dir='rtl'] .CabinTypeSelect[aria-expanded='false']:not(:focus) > .CabinTypeSelectWrapper,
+  html[dir='rtl'] .CabinClassSelect[aria-expanded='false']:not(:focus) > .CabinClassSelectWrapper,
   html:not([dir='rtl']) .Passengers > .PassengerPicker[aria-expanded='false']:not(:focus) > .PassengerPickerWrapper {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
 
-  html:not([dir='rtl']) .CabinTypeSelect[aria-expanded='false']:not(:focus) > .CabinTypeSelectWrapper,
+  html:not([dir='rtl']) .CabinClassSelect[aria-expanded='false']:not(:focus) > .CabinClassSelectWrapper,
   html[dir='rtl'] .Passengers > .PassengerPicker[aria-expanded='false']:not(:focus) > .PassengerPickerWrapper {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
@@ -96,7 +96,7 @@
     margin-top: 16px;
   }
 
-  .CabinType {
+  .CabinClass {
     width: 50%;
   }
 
@@ -123,7 +123,7 @@
     margin-top: 8px;
   }
 
-  .CabinType {
+  .CabinClass {
     margin-top: 8px;
     width: 100%;
   }

@@ -15,7 +15,7 @@ export default {
     plural: 'Guests',
     singular: 'Guest',
   },
-  cabinTypes: {
+  cabinClasses: {
     all: 'All Cabins',
     economy: 'Economy',
     business: 'Business',

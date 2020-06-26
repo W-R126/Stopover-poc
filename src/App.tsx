@@ -6,8 +6,8 @@ import HomeView from './Views/HomeView';
 import ContentService from './Services/ContentService';
 import AirportService from './Services/AirportService';
 import BookingView from './Views/BookingView';
-import { TripType } from './Enums/TripType';
-import { CabinType } from './Enums/CabinType';
+import { TripTypeEnum } from './Enums/TripTypeEnum';
+import { CabinClassEnum } from './Enums/CabinClassEnum';
 import FlightService from './Services/FlightService';
 import Config from './Config';
 import StopOverService from './Services/StopOverService';
@@ -19,8 +19,8 @@ export default function App({ config }: { config: Config }): JSX.Element {
   const stopOverService = new StopOverService(config.apiBaseURL);
   const locale = 'en-US';
 
-  const tripTypes = Object.keys(TripType);
-  const cabinTypes = Object.keys(CabinType);
+  const tripTypes = Object.keys(TripTypeEnum);
+  const cabinClasses = Object.keys(CabinClassEnum);
   const dateExpr = '[0-9]{4}-[0-9]{2}-[0-9]{2}';
 
   return (
@@ -33,8 +33,8 @@ export default function App({ config }: { config: Config }): JSX.Element {
 
         <Route
           path={
-            `/booking/:originCode([a-z]{3})/:destinationCode([a-z]{3})/:cabinType(${
-              cabinTypes.join('|')
+            `/booking/:originCode([a-z]{3})/:destinationCode([a-z]{3})/:cabinClass(${
+              cabinClasses.join('|')
             })/:adults([1-9]{1})/:children([0-9]{1})/:infants([0-9]{1})/:tripType(${
               tripTypes.join('|')
             })/:outbound(${dateExpr})?/:inbound(${dateExpr})?`

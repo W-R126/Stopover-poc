@@ -4,7 +4,7 @@ import css from './SearchDetails.module.css';
 import switchDirection from '../../../../Assets/Images/switch.svg';
 import arrowRight from '../../../../Assets/Images/arrow-right.svg';
 import { TripSearchData } from '../../../../Components/TripSearch/TripSearchData';
-import { TripType } from '../../../../Enums/TripType';
+import { TripTypeEnum } from '../../../../Enums/TripTypeEnum';
 
 interface SearchDetailsProps {
   locale: string;
@@ -40,8 +40,8 @@ export default function SearchDetails({
           </span>
         )}
         <img
-          src={data.tripType === TripType.return ? switchDirection : arrowRight}
-          alt={data.tripType === TripType.return ? 'Round trip' : 'One way'}
+          src={data.tripType === TripTypeEnum.return ? switchDirection : arrowRight}
+          alt={data.tripType === TripTypeEnum.return ? 'Round trip' : 'One way'}
         />
         {destination && (
           <span className="destination">
@@ -54,7 +54,7 @@ export default function SearchDetails({
         {`${
           outbound && outbound.toLocaleDateString(locale, { month: 'long', day: 'numeric' })
         }${
-          (data.tripType === TripType.return && inbound) ? ` to ${
+          (data.tripType === TripTypeEnum.return && inbound) ? ` to ${
             inbound.toLocaleDateString(locale, { month: 'long', day: 'numeric' })
           }` : ''
         }`}

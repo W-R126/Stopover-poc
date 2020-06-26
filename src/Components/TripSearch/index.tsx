@@ -1,8 +1,8 @@
 import React from 'react';
 
 import css from './TripSearch.module.css';
-import { TripType } from '../../Enums/TripType';
-import { CabinType } from '../../Enums/CabinType';
+import { TripTypeEnum } from '../../Enums/TripTypeEnum';
+import { CabinClassEnum } from '../../Enums/CabinClassEnum';
 import AirportService from '../../Services/AirportService';
 import PassengerPicker from './Components/PassengerPicker';
 import { PassengerPickerData } from './Components/PassengerPicker/PassengerPickerData';
@@ -52,7 +52,7 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
     this.onChange = this.onChange.bind(this);
     this.onTripTypeChange = this.onTripTypeChange.bind(this);
     this.onPassengersChange = this.onPassengersChange.bind(this);
-    this.onCabinTypeChange = this.onCabinTypeChange.bind(this);
+    this.onCabinClassChange = this.onCabinClassChange.bind(this);
     this.onOriginDestinationChange = this.onOriginDestinationChange.bind(this);
     this.onDatesChange = this.onDatesChange.bind(this);
     this.onBookWithMilesChange = this.onBookWithMilesChange.bind(this);
@@ -77,7 +77,7 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
     }
   }
 
-  private onTripTypeChange(tripType: TripType): void {
+  private onTripTypeChange(tripType: TripTypeEnum): void {
     const { data } = this.state;
     data.tripType = tripType;
 
@@ -91,9 +91,9 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
     this.onChange(data);
   }
 
-  private onCabinTypeChange(cabinType: CabinType): void {
+  private onCabinClassChange(cabinClass: CabinClassEnum): void {
     const { data } = this.state;
-    data.cabinType = cabinType;
+    data.cabinClass = cabinClass;
 
     this.onChange(data);
   }
@@ -146,8 +146,7 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
 
     const { data } = this.state;
 
-    const cabinTypeLocale: { [key: string]: string } = {
-      all: 'All Cabins',
+    const cabinClassLocale: { [key: string]: string } = {
       economy: 'Economy',
       business: 'Business',
       first: 'First Class',
@@ -167,35 +166,39 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
           value={data.tripType}
           onChange={this.onTripTypeChange}
         />
+
         <OriginDestinationPicker
           className={css.OriginDestinationPicker}
           data={{ origin: data.origin, destination: data.destination }}
           onChange={this.onOriginDestinationChange}
           airportService={airportService}
         />
+
         <DatePicker
           className={css.DatePicker}
           locale={locale}
           data={{ start: data.outbound, end: data.inbound }}
           onChange={this.onDatesChange}
-          span={data.tripType === TripType.return}
+          span={data.tripType === TripTypeEnum.return}
         />
-        <div className={css.CabinType}>
+
+        <div className={css.CabinClass}>
           <label htmlFor="cabin-type">Cabin</label>
           <Select
-            className={css.CabinTypeSelect}
-            wrapperClassName={css.CabinTypeSelectWrapper}
+            className={css.CabinClassSelect}
+            wrapperClassName={css.CabinClassSelectWrapper}
             id="cabin-type"
-            value={data.cabinType}
-            onChange={this.onCabinTypeChange}
+            value={data.cabinClass}
+            onChange={this.onCabinClassChange}
           >
-            {Object.keys(CabinType).map((cabinType, idx) => (
-              <Option value={(CabinType as any)[cabinType]} key={`cabin-type-option-${idx}`}>
-                {cabinTypeLocale[cabinType]}
+            {Object.keys(CabinClassEnum).map((cc, idx) => (
+              <Option value={(CabinClassEnum as any)[cc]} key={`cabin-type-option-${idx}`}>
+                {cabinClassLocale[cc]}
               </Option>
             ))}
           </Select>
         </div>
+
         <div className={css.Passengers}>
           <label htmlFor="passengers">Guests</label>
           <PassengerPicker
@@ -206,6 +209,7 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
             onChange={this.onPassengersChange}
           />
         </div>
+
         <div className={css.SearchFlight}>
           <div className={css.BookWithMiles}>
             <Checkbox
@@ -216,6 +220,7 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
               Book with miles
             </Checkbox>
           </div>
+
           <Button onClick={this.onSearch}>
             Search flight
           </Button>

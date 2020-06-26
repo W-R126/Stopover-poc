@@ -39,7 +39,7 @@ export default class StopOverService extends BaseService {
             selectedOriginalOfferRef: hash,
             stopover: {
               airportCode,
-              days,
+              // days, TODO: ?
             },
           }],
         },

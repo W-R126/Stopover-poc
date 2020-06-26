@@ -6,9 +6,11 @@ import FlightDetails from './Components/FlightDetails';
 import { GroupedOfferModel, OfferModel } from '../../../../../../Models/OfferModel';
 import Utils from '../../../../../../Utils';
 import PriceDetails from './Components/PriceDetails';
+import { CabinClassEnum } from '../../../../../../Enums/CabinClassEnum';
 
 interface FlightEntryProps {
   data: GroupedOfferModel;
+  cabinClass: CabinClassEnum;
   onExpandDetails: () => void;
   onOfferChange: (offer?: OfferModel) => void;
   selectedOffer?: OfferModel;
@@ -87,15 +89,17 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
     }
   }
 
-  render(): JSX.Element {
+  render(): JSX.Element | null {
     const {
       data,
+      cabinClass,
       onOfferChange,
       selectedOffer,
     } = this.props;
 
     const { collapsed, selectedCabinClass } = this.state;
     const timeZoneDelta = Utils.getTimeZoneDelta(data.origin.timeZone, data.destination.timeZone);
+    const cabinClasses = Utils.getCabinClasses(cabinClass);
 
     return (
       <>
@@ -136,31 +140,34 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
         </div>
 
         <div className={css.Price}>
-          {Object
-            .keys(data.cabinClasses)
-            .filter((cc) => cc === 'Economy' || cc === 'Business')
-            .map((cabinClass, idx) => (
+          {cabinClasses.map((cc, idx) => {
+            if ((data.cabinClasses as any)[cc] === undefined) {
+              return null;
+            }
+
+            return (
               <button
                 type="button"
                 key={`cabin-class-${idx}`}
-                onClick={(): void => this.showOffers(cabinClass)}
+                onClick={(): void => this.showOffers(cc)}
                 role="option"
-                aria-selected={cabinClass === selectedCabinClass}
-                className={(data.cabinClasses as any)[cabinClass].offers.findIndex(
+                aria-selected={cc === selectedCabinClass}
+                className={(data.cabinClasses as any)[cc].offers.findIndex(
                   (offer: OfferModel) => offer.basketHash === selectedOffer?.basketHash,
                 ) === -1 ? undefined : css.Selected}
               >
                 <strong>
                   {`From ${
-                    (data.cabinClasses as any)[cabinClass].startingFrom.currency
+                    (data.cabinClasses as any)[cc].startingFrom.currency
                   } ${Utils.formatCurrency(
-                    (data.cabinClasses as any)[cabinClass].startingFrom.amount,
+                    (data.cabinClasses as any)[cc].startingFrom.amount,
                   )}`}
                 </strong>
 
-                <span>{cabinClass}</span>
+                <span>{cc}</span>
               </button>
-            ))}
+            );
+          })}
         </div>
 
         <div className={css.ShowDetails}>

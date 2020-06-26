@@ -1,9 +1,62 @@
 import { GroupedOfferModel } from '../../../../Models/OfferModel';
 import Utils from '../../../../Utils';
+import { CabinClassEnum } from '../../../../Enums/CabinClassEnum';
 
 export type SortAlgorithm = (a: GroupedOfferModel, b: GroupedOfferModel) => number;
 
-const SortAlgorithms: { [key: string]: SortAlgorithm} = {
+function getCabinClassSort(cabinClass: CabinClassEnum): any {
+  let cabinClassName = 'Economy';
+
+  switch (cabinClass) {
+    case CabinClassEnum.economy:
+      break;
+    case CabinClassEnum.business:
+      cabinClassName = 'Business';
+      break;
+    case CabinClassEnum.first:
+      cabinClassName = 'First';
+      break;
+    case CabinClassEnum.residence:
+      cabinClassName = 'Residence';
+      break;
+    default:
+      break;
+  }
+
+  return (a: GroupedOfferModel, b: GroupedOfferModel): number => {
+    if (!(a.cabinClasses as any)[cabinClassName]) {
+      return 1;
+    }
+
+    if (!(b.cabinClasses as any)[cabinClassName]) {
+      return -1;
+    }
+
+    const aVal = (a.cabinClasses as any)[cabinClassName]?.startingFrom.amount ?? 0;
+    const bVal = (b.cabinClasses as any)[cabinClassName]?.startingFrom.amount ?? 0;
+
+    if (aVal < bVal) {
+      return -1;
+    }
+
+    if (aVal > bVal) {
+      return 1;
+    }
+
+    return 0;
+  };
+}
+
+const SortAlgorithms: {
+  departure: SortAlgorithm;
+  arrival: SortAlgorithm;
+  stopCount: SortAlgorithm;
+  travelTime: SortAlgorithm;
+  economyPrice: SortAlgorithm;
+  businessPrice: SortAlgorithm;
+  firstPrice: SortAlgorithm;
+  residencePrice: SortAlgorithm;
+} = {
   departure: (a: GroupedOfferModel, b: GroupedOfferModel) => Utils.compareDatesExact(
     a.departure,
     b.departure,
@@ -37,50 +90,10 @@ const SortAlgorithms: { [key: string]: SortAlgorithm} = {
 
     return 0;
   },
-  economyPrice: (a: GroupedOfferModel, b: GroupedOfferModel) => {
-    if (!a.cabinClasses.Economy) {
-      return 1;
-    }
-
-    if (!b.cabinClasses.Economy) {
-      return -1;
-    }
-
-    const aVal = a.cabinClasses.Economy.startingFrom.amount;
-    const bVal = b.cabinClasses.Economy.startingFrom.amount;
-
-    if (aVal < bVal) {
-      return -1;
-    }
-
-    if (aVal > bVal) {
-      return 1;
-    }
-
-    return 0;
-  },
-  businessPrice: (a: GroupedOfferModel, b: GroupedOfferModel) => {
-    if (!a.cabinClasses.Business) {
-      return 1;
-    }
-
-    if (!b.cabinClasses.Business) {
-      return -1;
-    }
-
-    const aVal = a.cabinClasses.Business.startingFrom.amount;
-    const bVal = b.cabinClasses.Business.startingFrom.amount;
-
-    if (aVal < bVal) {
-      return -1;
-    }
-
-    if (aVal > bVal) {
-      return 1;
-    }
-
-    return 0;
-  },
+  economyPrice: getCabinClassSort(CabinClassEnum.economy),
+  businessPrice: getCabinClassSort(CabinClassEnum.business),
+  firstPrice: getCabinClassSort(CabinClassEnum.first),
+  residencePrice: getCabinClassSort(CabinClassEnum.residence),
 };
 
 export default SortAlgorithms;

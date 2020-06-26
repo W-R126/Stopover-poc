@@ -1,12 +1,12 @@
-import { TripType } from '../../Enums/TripType';
+import { TripTypeEnum } from '../../Enums/TripTypeEnum';
 import { PassengerPickerData, comparePassengerPickerData, copyPassengerPickerData } from './Components/PassengerPicker/PassengerPickerData';
-import { CabinType } from '../../Enums/CabinType';
+import { CabinClassEnum } from '../../Enums/CabinClassEnum';
 import { AirportModel } from '../../Models/AirportModel';
 
 export interface TripSearchData {
-  tripType: TripType;
+  tripType: TripTypeEnum;
   passengers: PassengerPickerData;
-  cabinType: CabinType;
+  cabinClass: CabinClassEnum;
   origin?: AirportModel;
   destination?: AirportModel;
   outbound?: Date;
@@ -16,10 +16,10 @@ export interface TripSearchData {
 
 export function defaultTripSearchData(): TripSearchData {
   return {
-    tripType: TripType.return,
+    tripType: TripTypeEnum.return,
     passengers: copyPassengerPickerData(undefined),
     bookWithMiles: false,
-    cabinType: CabinType.all,
+    cabinClass: CabinClassEnum.economy,
     origin: undefined,
     destination: undefined,
     outbound: undefined,
@@ -36,7 +36,7 @@ export function copyTripSearchData(data?: TripSearchData): TripSearchData {
     tripType: data.tripType,
     passengers: copyPassengerPickerData(data.passengers),
     bookWithMiles: data.bookWithMiles,
-    cabinType: data.cabinType,
+    cabinClass: data.cabinClass,
     origin: data.origin,
     destination: data.destination,
     outbound: data.outbound ? new Date(data.outbound) : undefined,
@@ -55,7 +55,7 @@ export function compareTripSearchData(a?: TripSearchData, b?: TripSearchData): b
 
   return (
     a.bookWithMiles === b.bookWithMiles
-    && a.cabinType === b.cabinType
+    && a.cabinClass === b.cabinClass
     && a.tripType === b.tripType
     && a.outbound?.valueOf() === b.outbound?.valueOf()
     && a.inbound?.valueOf() === b.inbound?.valueOf()
@@ -76,7 +76,7 @@ export function validateTripSearchData(data: TripSearchData): boolean {
     return false;
   }
 
-  if (data.tripType === TripType.return && !data.inbound) {
+  if (data.tripType === TripTypeEnum.return && !data.inbound) {
     return false;
   }
 

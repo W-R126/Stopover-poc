@@ -1,5 +1,4 @@
-export enum CabinType {
-  all = 'all',
+export enum CabinClassEnum {
   economy = 'economy',
   business = 'business',
   first = 'first',

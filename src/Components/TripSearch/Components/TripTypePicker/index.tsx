@@ -1,12 +1,12 @@
 import React from 'react';
-import { TripType } from '../../../../Enums/TripType';
+import { TripTypeEnum } from '../../../../Enums/TripTypeEnum';
 
 import css from './TripTypePicker.module.css';
 import Radio from '../../../UI/Radio';
 
 interface TripTypePickerProps {
-  value: TripType;
-  onChange: (value: TripType) => void;
+  value: TripTypeEnum;
+  onChange: (value: TripTypeEnum) => void;
   className?: string;
 }
 
@@ -21,7 +21,7 @@ export default class TripTypePicker extends React.Component<TripTypePickerProps,
     const { onChange } = this.props;
 
     if (e.target.checked) {
-      onChange((TripType as any)[e.target.value]);
+      onChange((TripTypeEnum as any)[e.target.value]);
     }
   }
 
@@ -40,8 +40,8 @@ export default class TripTypePicker extends React.Component<TripTypePickerProps,
           <Radio
             id="trip-type-return"
             name="trip-type"
-            checked={value === TripType.return}
-            value={TripType.return}
+            checked={value === TripTypeEnum.return}
+            value={TripTypeEnum.return}
             onChange={this.onChange}
           >
             Return
@@ -51,8 +51,8 @@ export default class TripTypePicker extends React.Component<TripTypePickerProps,
           <Radio
             id="trip-type-one-way"
             name="trip-type"
-            checked={value === TripType.oneway}
-            value={TripType.oneway}
+            checked={value === TripTypeEnum.oneway}
+            value={TripTypeEnum.oneway}
             onChange={this.onChange}
           >
             One way
@@ -62,8 +62,8 @@ export default class TripTypePicker extends React.Component<TripTypePickerProps,
           <Radio
             id="trip-type-multi-city"
             name="trip-type"
-            checked={value === TripType.multicity}
-            value={TripType.multicity}
+            checked={value === TripTypeEnum.multicity}
+            value={TripTypeEnum.multicity}
             onChange={this.onChange}
           >
             Multi city

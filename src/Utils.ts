@@ -1,6 +1,6 @@
 import { TripSearchData } from './Components/TripSearch/TripSearchData';
-import { TripType } from './Enums/TripType';
-import { CabinType } from './Enums/CabinType';
+import { TripTypeEnum } from './Enums/TripTypeEnum';
+import { CabinClassEnum } from './Enums/CabinClassEnum';
 import { CoordinateModel } from './Models/CoordinateModel';
 
 function createStore(store: Storage): {
@@ -40,6 +40,29 @@ function createStore(store: Storage): {
 }
 
 export default class Utils {
+  static getCabinClasses(cabinClass: CabinClassEnum): string[] {
+    let result: string[] = [];
+
+    switch (cabinClass) {
+      case CabinClassEnum.economy:
+        result = ['Economy', 'Business'];
+        break;
+      case CabinClassEnum.business:
+        result = ['Business', 'First'];
+        break;
+      case CabinClassEnum.first:
+        result = ['First', 'Residence'];
+        break;
+      case CabinClassEnum.residence:
+        result = ['Residence'];
+        break;
+      default:
+        break;
+    }
+
+    return result;
+  }
+
   static deepCopy(obj: any): any {
     if (obj instanceof Array) {
       const result: any[] = [];
@@ -212,11 +235,11 @@ export default class Utils {
 
     result += `/${data.origin?.code ?? ''}`;
     result += `/${data.destination?.code ?? ''}`;
-    result += `/${CabinType[data.cabinType]}`;
+    result += `/${CabinClassEnum[data.cabinClass]}`;
     result += `/${data.passengers.adults}`;
     result += `/${data.passengers.children}`;
     result += `/${data.passengers.infants}`;
-    result += `/${TripType[data.tripType]}`;
+    result += `/${TripTypeEnum[data.tripType]}`;
 
     if (data.outbound) {
       result += `/${Utils.getDateString(data.outbound)}`;
@@ -224,7 +247,7 @@ export default class Utils {
       result += '/';
     }
 
-    if (data.tripType === TripType.return) {
+    if (data.tripType === TripTypeEnum.return) {
       if (data.inbound) {
         result += `/${Utils.getDateString(data.inbound)}`;
       } else if (data.outbound) {

@@ -13,7 +13,7 @@ import Utils from '../Utils';
 import AirportService from './AirportService';
 import { FlightResponse, ItineraryPart, Segment } from './Responses/FlightResponse';
 import { PassengerPickerData } from '../Components/TripSearch/Components/PassengerPicker/PassengerPickerData';
-import { CabinType } from '../Enums/CabinType';
+import { CabinClassEnum } from '../Enums/CabinClassEnum';
 import { AirportModel } from '../Models/AirportModel';
 import ContentService from './ContentService';
 import SessionManager from '../SessionManager';
@@ -33,7 +33,7 @@ export default class FlightService extends BaseService {
   }
 
   async getOffers(
-    cabinType: CabinType,
+    cabinClass: CabinClassEnum,
     departure: Date,
     destination: AirportModel,
     origin: AirportModel,
@@ -43,10 +43,10 @@ export default class FlightService extends BaseService {
     offers: GroupedOfferModel[];
   }> {
     return this.createRequest(
-      `getOffers/${cabinType}/${departure.valueOf()}/${destination.code}/${origin.code}/${
+      `getOffers/${cabinClass}/${departure.valueOf()}/${destination.code}/${origin.code}/${
         passengers.adults}/${passengers.children}/${passengers.infants}`,
       this.getOffersAux,
-      cabinType,
+      cabinClass,
       departure,
       destination,
       origin,
@@ -55,7 +55,7 @@ export default class FlightService extends BaseService {
   }
 
   private async getOffersAux(
-    cabinType: CabinType,
+    cabinClass: CabinClassEnum,
     departure: Date,
     destination: AirportModel,
     origin: AirportModel,
