@@ -6,7 +6,7 @@ import TripSearch from '../../Components/TripSearch';
 import { TripTypeEnum } from '../../Enums/TripTypeEnum';
 import { CabinClassEnum } from '../../Enums/CabinClassEnum';
 import AirportService from '../../Services/AirportService';
-import { TripSearchData, validateTripSearchData, getTripSearchDelta } from '../../Components/TripSearch/TripSearchData';
+import { TripSearchData, validateTripSearchData, getTripSearchDelta, copyTripSearchData } from '../../Components/TripSearch/TripSearchData';
 import Progress, { ProgressStep } from './Components/Progress';
 import SearchDetails from './Components/SearchDetails';
 import FlightSearchResult from './Components/FlightSearchResult';
@@ -120,6 +120,9 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     ) {
       // Only search if cabin class was not the only thing that changed.
       this.searchOffers(data);
+    } else if (this.flightSearchResultRef.current) {
+      // Collapse all flight result details.
+      this.flightSearchResultRef.current.collapseAll();
     }
 
     if (this.flightSearchResultRef.current) {
@@ -133,15 +136,16 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
   private onOutboundDateChange(outbound: Date): void {
     const { tripSearchData } = this.state;
     const { inbound } = tripSearchData;
+    const data = copyTripSearchData(tripSearchData);
 
     if (inbound && Utils.compareDates(inbound, outbound) === -1) {
       // Span is negative, update end to match start
-      tripSearchData.inbound = new Date(outbound);
+      data.inbound = new Date(outbound);
     }
 
-    tripSearchData.outbound = outbound;
+    data.outbound = outbound;
 
-    this.onTripSearch(tripSearchData);
+    this.onTripSearch(data);
   }
 
   private onOutboundOfferChange(outboundOffer?: OfferModel): void {

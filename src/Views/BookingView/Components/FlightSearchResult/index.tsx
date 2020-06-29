@@ -76,10 +76,13 @@ export default class FlightSearchResult extends React.Component<
   }
 
   componentDidUpdate(prevProps: FlightSearchResultProps): void {
-    const { offers } = this.props;
+    const { offers, cabinClass } = this.props;
 
     if (prevProps.offers !== offers) {
       this.expandSelectedIntoView();
+    }
+
+    if (prevProps.cabinClass !== cabinClass) {
       // Reset sorting to departure.
       this.setState({ sortingAlgorithm: SortAlgorithms.departure });
     }
@@ -142,6 +145,14 @@ export default class FlightSearchResult extends React.Component<
     }
 
     return nextOffers.sort(sortingAlgorithm);
+  }
+
+  collapseAll(): void {
+    this.flightEntryRefs.forEach((flightEntryRef) => {
+      if (flightEntryRef) {
+        flightEntryRef.collapseDetails();
+      }
+    });
   }
 
   private expandSelectedIntoView(): void {
