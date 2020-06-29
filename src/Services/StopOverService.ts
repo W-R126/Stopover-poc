@@ -39,14 +39,12 @@ export default class StopOverService extends BaseService {
             selectedOriginalOfferRef: hash,
             stopover: {
               airportCode,
-              // days, TODO: ?
+              days,
             },
           }],
         },
         { headers: SessionManager.getSessionHeaders() },
       );
-
-      console.log(result);
     } catch (err) {
       //
     }

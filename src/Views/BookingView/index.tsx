@@ -115,8 +115,8 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     });
 
     if (
-      Object.keys(delta).length > 0 &&
-      !(Object.keys(delta).length === 1 && delta.cabinClass !== undefined)
+      Object.keys(delta).length > 0
+      && !(Object.keys(delta).length === 1 && delta.cabinClass !== undefined)
     ) {
       // Only search if cabin class was not the only thing that changed.
       this.searchOffers(data);
@@ -252,7 +252,6 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     );
 
     const outboundOffersReq = flightService.getOffers(
-      data.cabinClass,
       data.outbound as Date,
       data.destination as AirportModel,
       data.origin as AirportModel,
