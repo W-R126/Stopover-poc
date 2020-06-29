@@ -256,10 +256,19 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     );
 
     const outboundOffersReq = flightService.getOffers(
-      data.outbound as Date,
-      data.destination as AirportModel,
-      data.origin as AirportModel,
       data.passengers,
+      {
+        departure: data.outbound as Date,
+        destination: data.destination as AirportModel,
+        origin: data.origin as AirportModel,
+      },
+      data.tripType !== TripTypeEnum.return
+        ? undefined
+        : {
+          departure: data.inbound as Date,
+          destination: data.origin as AirportModel,
+          origin: data.destination as AirportModel,
+        },
     );
 
     const outboundOffers = await outboundOffersReq;

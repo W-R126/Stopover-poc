@@ -27,35 +27,20 @@ export default class FlightService extends BaseService {
 
     this.airportService = airportService;
     this.contentService = contentService;
-
-    this.getOffersAux = this.getOffersAux.bind(this);
   }
 
   async getOffers(
-    departure: Date,
-    destination: AirportModel,
-    origin: AirportModel,
     passengers: PassengerPickerData,
-  ): Promise<{
-    altOffers: AltOfferModel[];
-    offers: GroupedOfferModel[];
-  }> {
-    return this.createRequest(
-      `getOffers/${departure.valueOf()}/${destination.code}/${origin.code}/${
-        passengers.adults}/${passengers.children}/${passengers.infants}`,
-      this.getOffersAux,
-      departure,
-      destination,
-      origin,
-      passengers,
-    );
-  }
-
-  private async getOffersAux(
-    departure: Date,
-    destination: AirportModel,
-    origin: AirportModel,
-    passengers: PassengerPickerData,
+    outbound: {
+      departure: Date;
+      destination: AirportModel;
+      origin: AirportModel;
+    },
+    inbound?: {
+      departure: Date;
+      destination: AirportModel;
+      origin: AirportModel;
+    },
     currency = 'AED',
   ): Promise<{
     altOffers: AltOfferModel[];
@@ -78,6 +63,22 @@ export default class FlightService extends BaseService {
 
     let result: AxiosResponse<FlightResponse> | undefined;
 
+    const itineraryParts = [
+      {
+        from: { code: outbound.origin.code },
+        to: { code: outbound.destination.code },
+        when: { date: Utils.getDateString(outbound.departure) },
+      },
+    ];
+
+    if (inbound) {
+      itineraryParts.push({
+        from: { code: inbound.origin.code },
+        to: { code: inbound.destination.code },
+        when: { date: Utils.getDateString(inbound.departure) },
+      });
+    }
+
     try {
       result = await this.http.post<FlightResponse>(
         '/flights',
@@ -85,13 +86,7 @@ export default class FlightService extends BaseService {
           passengers: passengerData,
           searchType: 'BRANDED',
           currency,
-          itineraryParts: [
-            {
-              from: { code: origin.code },
-              to: { code: destination.code },
-              when: { date: Utils.getDateString(departure) },
-            },
-          ],
+          itineraryParts,
         },
         { headers: SessionManager.getSessionHeaders() },
       );
