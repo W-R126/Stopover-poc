@@ -6,7 +6,7 @@ import TripSearch from '../../Components/TripSearch';
 import { TripTypeEnum } from '../../Enums/TripTypeEnum';
 import { CabinClassEnum } from '../../Enums/CabinClassEnum';
 import AirportService from '../../Services/AirportService';
-import { TripSearchData, validateTripSearchData } from '../../Components/TripSearch/TripSearchData';
+import { TripSearchData, validateTripSearchData, getTripSearchDelta } from '../../Components/TripSearch/TripSearchData';
 import Progress, { ProgressStep } from './Components/Progress';
 import SearchDetails from './Components/SearchDetails';
 import FlightSearchResult from './Components/FlightSearchResult';
@@ -100,25 +100,34 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     this.setState(newState as BookingState);
   }
 
-  private onTripSearch(tripSearchData: TripSearchData): void {
+  private onTripSearch(data: TripSearchData): void {
     const { history } = this.props;
+    const { tripSearchData } = this.state;
 
     Utils.sessionStore.remove(this.outboundOfferKey);
 
+    const delta = getTripSearchDelta(tripSearchData, data);
+
     this.setState({
-      tripSearchData,
+      tripSearchData: data,
       editing: false,
       outboundOfferHash: undefined,
     });
 
-    this.searchOffers(tripSearchData);
+    if (
+      Object.keys(delta).length > 0 &&
+      !(Object.keys(delta).length === 1 && delta.cabinClass !== undefined)
+    ) {
+      // Only search if cabin class was not the only thing that changed.
+      this.searchOffers(data);
+    }
 
     if (this.flightSearchResultRef.current) {
       // Reset the show counter of flight search result.
       this.flightSearchResultRef.current.resetShowCounter();
     }
 
-    history.replace(Utils.getBookingUrl(tripSearchData));
+    history.replace(Utils.getBookingUrl(data));
   }
 
   private onOutboundDateChange(outbound: Date): void {

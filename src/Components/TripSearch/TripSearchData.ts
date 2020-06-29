@@ -90,3 +90,44 @@ export function validateTripSearchData(data: TripSearchData): boolean {
 
   return true;
 }
+
+export function getTripSearchDelta(
+  data1: TripSearchData,
+  data2: TripSearchData,
+): Partial<TripSearchData> {
+  const result: Partial<TripSearchData> = {};
+
+  if (data1.bookWithMiles !== data2.bookWithMiles) {
+    result.bookWithMiles = data2.bookWithMiles;
+  }
+
+  if (data1.cabinClass !== data2.cabinClass) {
+    result.cabinClass = data2.cabinClass;
+  }
+
+  if (data1.destination?.code !== data2.destination?.code) {
+    result.destination = data2.destination;
+  }
+
+  if (data1.inbound?.valueOf() !== data2.inbound?.valueOf()) {
+    result.inbound = data2.inbound;
+  }
+
+  if (data1.origin?.code !== data2.origin?.code) {
+    result.origin = data2.origin;
+  }
+
+  if (data1.outbound?.valueOf() !== data2.outbound?.valueOf()) {
+    result.outbound = data2.outbound;
+  }
+
+  if (!comparePassengerPickerData(data1.passengers, data2.passengers)) {
+    result.passengers = data2.passengers;
+  }
+
+  if (data1.tripType !== data2.tripType) {
+    result.tripType = data2.tripType;
+  }
+
+  return result;
+}
