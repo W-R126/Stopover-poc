@@ -95,6 +95,8 @@ export default class FlightService extends BaseService {
         },
         { headers: SessionManager.getSessionHeaders() },
       );
+
+      SessionManager.setSessionHeaders(result.headers);
     } catch (err) {
       //
     }
@@ -102,8 +104,6 @@ export default class FlightService extends BaseService {
     if (!result) {
       return { altOffers: [], offers: [] };
     }
-
-    SessionManager.setSessionHeaders(result.headers);
 
     const altOffers = result.data.unbundledAlternateDateOffers[0]
       .filter((altOffer) => altOffer.status === 'AVAILABLE')

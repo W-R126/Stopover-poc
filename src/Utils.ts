@@ -102,7 +102,8 @@ export default class Utils {
   }
 
   static formatCurrency(amount: number): string {
-    const original = amount.toString().split('');
+    const [a, b] = amount.toString().split('.');
+    const original = a.toString().split('');
     const offset = original.length % 3;
     const result: string[] = original.splice(0, offset);
 
@@ -117,6 +118,11 @@ export default class Utils {
 
       result.push(num);
     });
+
+    if (b !== undefined) {
+      const fraction = Number.parseInt(b, 10);
+      return `${result.join('')}.${fraction < 10 ? `${fraction}0` : fraction}`;
+    }
 
     return result.join('');
   }

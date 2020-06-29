@@ -12,6 +12,8 @@ export default class StopOverService extends BaseService {
         { headers: SessionManager.getSessionHeaders() },
       );
 
+      SessionManager.setSessionHeaders(result.headers);
+
       if (result.status === 200) {
         return {
           airportCode: result.data.airportCode,
@@ -45,6 +47,8 @@ export default class StopOverService extends BaseService {
         },
         { headers: SessionManager.getSessionHeaders() },
       );
+
+      SessionManager.setSessionHeaders(result.headers);
     } catch (err) {
       //
     }
@@ -54,13 +58,15 @@ export default class StopOverService extends BaseService {
 
   async rejectStopOver(airportCode: string): Promise<undefined> {
     try {
-      await this.http.post(
+      const result = await this.http.post(
         '/rejectStopover',
         {
           stopover: { airportCode },
         },
         { headers: SessionManager.getSessionHeaders() },
       );
+
+      SessionManager.setSessionHeaders(result.headers);
     } catch (err) {
       //
     }
