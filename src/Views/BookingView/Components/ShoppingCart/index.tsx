@@ -1,5 +1,6 @@
 import React from 'react';
 
+import commonCss from '../../../../common.module.css';
 import css from './ShoppingCart.module.css';
 import flightIcon from '../../../../Assets/Images/flight-white.svg';
 import { OfferModel } from '../../../../Models/OfferModel';
@@ -54,7 +55,7 @@ export default class ShoppingCart extends React.Component<ShoppingCartProps, {}>
 
     return (
       <div className={classList.join(' ')}>
-        <div className={`${css.ContentWrapper} content-wrapper`}>
+        <div className={`${css.ContentWrapper} ${commonCss.ContentWrapper}`}>
           <div className={css.Items}>
             {outboundOfferData && (
               <div className={css.OutboundOffer}>

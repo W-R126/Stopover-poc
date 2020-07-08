@@ -1,0 +1,93 @@
+.Progress {
+  padding: 24px 0;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.Progress > .ContentWrapper {
+  display: grid;
+  grid-template-columns:
+    1fr
+    max-content
+    1fr;
+}
+
+.NavigateBack {
+  align-self: center;
+}
+
+.NavigateBack > a {
+  text-decoration: none;
+  color: #4e4c4a;
+}
+
+.NavigateBack > a::before {
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f104';
+  margin-right: 16px;
+}
+
+.StepContainer {
+  display: grid;
+  grid-template-columns:
+    max-content
+    max-content
+    max-content;
+  gap: 0 40px;
+}
+
+.Step {
+  display: inline-flex;
+  text-align: center;
+  flex-flow: column;
+  align-items: center;
+  font-size: 14px;
+  user-select: none;
+  font-weight: 900;
+}
+
+.Step > strong {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  background-color: #a6a6a6;
+  border-radius: 50%;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.Step.Active > strong {
+  background-color: #4e4c4a;
+}
+
+.Step.Active > span {
+  color: #4e4c4a;
+}
+
+.Step.Done > strong {
+  background-color: #7a9a01;
+}
+
+.Step.Done > span {
+  color: #7a9a01;
+}
+
+.NavigateForward {
+  align-self: center;
+  justify-self: flex-end;
+  background-color: #7a9a01;
+  border-color: #7a9a01;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.NavigateForward:hover {
+  background-color: #95ae34;
+  border-color: #95ae34;
+}
+
+.NavigateForward:focus {
+  border-color: #fff;
+}

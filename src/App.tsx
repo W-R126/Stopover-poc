@@ -11,6 +11,7 @@ import { CabinClassEnum } from './Enums/CabinClassEnum';
 import FlightService from './Services/FlightService';
 import Config from './Config';
 import StopOverService from './Services/StopOverService';
+import StopOverView from './Views/StopOverView';
 
 export default function App({ config }: { config: Config }): JSX.Element {
   const contentService = new ContentService();
@@ -46,6 +47,10 @@ export default function App({ config }: { config: Config }): JSX.Element {
             flightService={flightService}
             locale={locale}
           />
+        </Route>
+
+        <Route path="/stopover/:progressStep(hotels|experiences|inbound)">
+          <StopOverView />
         </Route>
 
         <Route path="/select-inbound">

@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
+import commonCss from '../../common.module.css';
 import css from './BookingView.module.css';
 import TripSearch from '../../Components/TripSearch';
 import { TripTypeEnum } from '../../Enums/TripTypeEnum';
@@ -199,7 +200,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       );
     }
 
-    history.push('/stopover-accepted');
+    history.push('/stopover/hotels');
   }
 
   private async onRejectStopOver(airportCode?: string): Promise<void> {
@@ -313,7 +314,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
 
         <Progress step={ProgressStep.flights} />
 
-        <div className={`${css.ContentWrapper} content-wrapper`}>
+        <div className={`${css.ContentWrapper} ${commonCss.ContentWrapper}`}>
           {editing
             ? (
               <>

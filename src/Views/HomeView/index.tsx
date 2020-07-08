@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
+import commonCss from '../../common.module.css';
 import css from './HomeView.module.css';
 import TripSearch from '../../Components/TripSearch';
 import AirportService from '../../Services/AirportService';
@@ -45,7 +46,7 @@ class HomeView extends React.Component<HomeViewProps, HomeViewState> {
     return (
       <div className={css.HomeView}>
         <div className={css.TopImage} />
-        <div className={`${css.ContentWrapper} content-wrapper`}>
+        <div className={`${css.ContentWrapper} ${commonCss.ContentWrapper}`}>
           <TripSearch
             className={css.TripSearch}
             locale={locale}

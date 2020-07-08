@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 
 import './reset.css';
-import './common.css';
+import './common.module.css';
 import App from './App';
 import Config from './Config';
 

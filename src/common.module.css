@@ -32,7 +32,7 @@ label {
 }
 
 /* Content wrapper. */
-.content-wrapper {
+.ContentWrapper {
   max-width: 1440px;
   padding: 0 24px;
   width: 100%;
@@ -40,13 +40,8 @@ label {
   transition: padding 300ms;
 }
 
-/* External link. */
-.external-link > img {
-  margin-left: 7px;
-}
-
 @media screen and (max-width: 768px) {
-  .content-wrapper {
+  .ContentWrapper {
     padding: 0 8px;
   }
 }
