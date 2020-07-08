@@ -37,6 +37,10 @@ export default class StopOverPrompt extends React.Component<
     this.onAccept = this.onAccept.bind(this);
   }
 
+  componentWillUnmount(): void {
+    document.body.style.overflow = '';
+  }
+
   private onReject(): void {
     const { onReject } = this.props;
     const { airportCode } = this.state;
