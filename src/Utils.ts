@@ -200,6 +200,10 @@ export default class Utils {
     return date.toLocaleDateString('sv-SE');
   }
 
+  static getFullDateString(date: Date): string {
+    return `${this.getDateString(date)} ${this.getHourMinuteString(date)}`;
+  }
+
   static compareDatesSimple(a: Date, b: Date): boolean {
     return Utils.compareDates(a, b) === 0;
   }

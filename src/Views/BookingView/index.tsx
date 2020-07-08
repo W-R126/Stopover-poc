@@ -6,7 +6,12 @@ import TripSearch from '../../Components/TripSearch';
 import { TripTypeEnum } from '../../Enums/TripTypeEnum';
 import { CabinClassEnum } from '../../Enums/CabinClassEnum';
 import AirportService from '../../Services/AirportService';
-import { TripSearchData, validateTripSearchData, getTripSearchDelta, copyTripSearchData } from '../../Components/TripSearch/TripSearchData';
+import {
+  TripSearchData,
+  validateTripSearchData,
+  getTripSearchDelta,
+  copyTripSearchData,
+} from '../../Components/TripSearch/TripSearchData';
 import Progress, { ProgressStep } from './Components/Progress';
 import SearchDetails from './Components/SearchDetails';
 import FlightSearchResult from './Components/FlightSearchResult';

@@ -1,16 +1,15 @@
 import React from 'react';
-
 import css from './FlightSearchResult.module.css';
 import spinner from '../../../../Assets/Images/spinner.svg';
 import flightIcon from '../../../../Assets/Images/flight.svg';
 import { GroupedOfferModel, AltOfferModel, OfferModel } from '../../../../Models/OfferModel';
 import DayRibbon from './Components/DayRibbon';
 import FlightEntry from './Components/FlightEntry';
-import Select from '../../../../Components/UI/Select';
-import Option from '../../../../Components/UI/Select/Option';
 import SortAlgorithms, { SortAlgorithm } from './SortAlgorithms';
 import { AirportModel } from '../../../../Models/AirportModel';
 import { CabinClassEnum } from '../../../../Enums/CabinClassEnum';
+import Filters from './Components/Filters';
+import SortMenu, { SortMenuItem } from './Components/SortMenu';
 import Utils from '../../../../Utils';
 
 interface FlightSearchResultProps {
@@ -40,21 +39,12 @@ export default class FlightSearchResult extends React.Component<
 
   private readonly showCount = 5;
 
-  private readonly economySort = (
-    <Option value={SortAlgorithms.economyPrice}>Economy price</Option>
-  );
-
-  private readonly businessSort = (
-    <Option value={SortAlgorithms.businessPrice}>Business price</Option>
-  );
-
-  private readonly firstSort = (
-    <Option value={SortAlgorithms.firstPrice}>First class price</Option>
-  );
-
-  private readonly residenceSort = (
-    <Option value={SortAlgorithms.residencePrice}>Residence price</Option>
-  );
+  private readonly SORT_ITEMS = [
+    { value: SortAlgorithms.departure, label: 'Departure' },
+    { value: SortAlgorithms.arrival, label: 'Arrival' },
+    { value: SortAlgorithms.stopCount, label: 'Number of stops' },
+    { value: SortAlgorithms.travelTime, label: 'Travel time' },
+  ]
 
   constructor(props: FlightSearchResultProps) {
     super(props);
@@ -147,12 +137,24 @@ export default class FlightSearchResult extends React.Component<
     return nextOffers.sort(sortingAlgorithm);
   }
 
-  collapseAll(): void {
-    this.flightEntryRefs.forEach((flightEntryRef) => {
-      if (flightEntryRef) {
-        flightEntryRef.collapseDetails();
-      }
-    });
+  private getSortItems(): SortMenuItem[] {
+    const returnSortItem = [...this.SORT_ITEMS];
+    const { cabinClass } = this.props;
+
+    if (cabinClass === CabinClassEnum.economy) {
+      returnSortItem.push({ value: SortAlgorithms.economyPrice, label: 'Economy price' });
+    }
+    if (cabinClass === CabinClassEnum.economy || cabinClass === CabinClassEnum.business) {
+      returnSortItem.push({ value: SortAlgorithms.businessPrice, label: 'Business price' });
+    }
+
+    if (cabinClass === CabinClassEnum.business || cabinClass === CabinClassEnum.first) {
+      returnSortItem.push({ value: SortAlgorithms.firstPrice, label: 'First class price' });
+    }
+    if (cabinClass === CabinClassEnum.first || cabinClass === CabinClassEnum.residence) {
+      returnSortItem.push({ value: SortAlgorithms.residencePrice, label: 'Residence price' });
+    }
+    return returnSortItem;
   }
 
   private expandSelectedIntoView(): void {
@@ -176,6 +178,14 @@ export default class FlightSearchResult extends React.Component<
           }
         }
       });
+    });
+  }
+
+  collapseAll(): void {
+    this.flightEntryRefs.forEach((flightEntryRef) => {
+      if (flightEntryRef) {
+        flightEntryRef.collapseDetails();
+      }
     });
   }
 
@@ -248,7 +258,6 @@ export default class FlightSearchResult extends React.Component<
       className,
       origin,
       destination,
-      cabinClass,
     } = this.props;
     const { sortingAlgorithm } = this.state;
 
@@ -266,6 +275,7 @@ export default class FlightSearchResult extends React.Component<
 
     return (
       <div className={classList.join(' ')}>
+
         <div className={css.Header}>
           <div className={css.OriginDestination}>
             <img src={flightIcon} alt="Flight" />
@@ -275,30 +285,20 @@ export default class FlightSearchResult extends React.Component<
           </div>
 
           <div className={css.Actions}>
-            {filteredOffers.length > 0 && (
-              <Select
-                className={css.Sorting}
-                wrapperClassName={css.SortingWrapper}
-                value={sortingAlgorithm}
-                onChange={this.onSortingChange}
-              >
-                <Option value={SortAlgorithms.departure}>Departure</Option>
-                <Option value={SortAlgorithms.arrival}>Arrival</Option>
-                <Option value={SortAlgorithms.stopCount}>Number of stops</Option>
-                <Option value={SortAlgorithms.travelTime}>Travel time</Option>
-
-                {cabinClass === CabinClassEnum.economy && this.economySort}
-
-                {(cabinClass === CabinClassEnum.economy || cabinClass === CabinClassEnum.business)
-                  && this.businessSort}
-
-                {(cabinClass === CabinClassEnum.business || cabinClass === CabinClassEnum.first)
-                  && this.firstSort}
-
-                {(cabinClass === CabinClassEnum.first || cabinClass === CabinClassEnum.residence)
-                  && this.residenceSort}
-              </Select>
-            )}
+            {offers !== undefined && offers?.length > 0
+              && (
+                <>
+                  <Filters
+                    offers={offers}
+                    onChange={this.onFiltersChange}
+                  />
+                  <SortMenu
+                    sortItems={this.getSortItems()}
+                    selectedSort={sortingAlgorithm}
+                    changeSort={this.onSortingChange}
+                  />
+                </>
+              )}
           </div>
         </div>
 
