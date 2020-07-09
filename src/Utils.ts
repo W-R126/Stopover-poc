@@ -240,6 +240,18 @@ export default class Utils {
     return 0;
   }
 
+  static compareCheckIn(a = '00:00:00', b = '00:00:00'): number {
+    const aSplit = a.split(':');
+    const bSplit = b.split(':');
+
+    const aSeconds = (+aSplit[0]) * 60 * 60 + (+aSplit[1]) * 60 + (+aSplit[2]);
+    const bSeconds = (+bSplit[0]) * 60 * 60 + (+bSplit[1]) * 60 + (+bSplit[2]);
+
+    if (aSeconds < bSeconds) return -1;
+    if (aSeconds > bSeconds) return 1;
+    return 0;
+  }
+
   static getBookingUrl(data: TripSearchData): string {
     let result = '/booking';
 

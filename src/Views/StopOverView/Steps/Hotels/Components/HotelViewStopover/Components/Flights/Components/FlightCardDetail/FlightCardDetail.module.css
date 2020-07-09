@@ -1,0 +1,62 @@
+.Container {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #f3f3f3;
+  margin: 25px -25px 0 -25px;
+  padding: 0 25px;
+  flex: 1 1 100%;
+}
+
+.Container h4 {
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 23px;
+  color: #bd8b13;
+  margin: 25px 0 5px 0;
+}
+
+.FlightContent {
+  display: flex;
+  justify-content: space-between;
+}
+
+.FlightContent .Item {
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px;
+}
+
+.FlightContent .Item p {
+  text-align: center;
+  margin-top: 5px;
+}
+
+.FlightContent .Item p:first-child {
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.FlightContent .Item:first-child {
+  padding-left: 0;
+}
+
+.FlightContent .Item:last-child {
+  padding-right: 0;
+}
+
+.OfferInformation {
+  display: flex;
+  flex: 1 1 100%;
+}
+
+.OfferInformation .OfferItem {
+  font-size: 14px;
+  margin-right: 25px;
+}
+
+.OfferInformation .OfferItem span {
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  margin-left: 10px;
+}

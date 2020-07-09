@@ -49,8 +49,16 @@ export default class StopOverService extends BaseService {
       );
 
       SessionManager.setSessionHeaders(result.headers);
+
+      if (result.status === 200) {
+        return {
+          airSearchResults: result.data.airSearchResults,
+          hotelAvailabilityInfos: result.data.hotelAvailabilityInfos,
+        };
+      }
+      return undefined;
     } catch (err) {
-      //
+
     }
 
     return undefined;

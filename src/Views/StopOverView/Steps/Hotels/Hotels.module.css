@@ -1,0 +1,500 @@
+.HotelView {
+  background: transparent;
+}
+
+.AngleDown {
+  display: flex;
+  align-items: center;
+}
+
+.AngleDown::after {
+  display: block;
+  content: '\f107';
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  font-size: 22px;
+}
+
+.AngleUp {
+  display: flex;
+  align-items: center;
+}
+
+.AngleUp::after {
+  display: block;
+  content: '\f106';
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  font-size: 22px;
+}
+
+.AngleLeft {
+  display: flex;
+  align-items: center;
+}
+
+.AngleLeft::after {
+  display: block;
+  content: '\f104';
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  font-size: 22px;
+}
+
+.Header {
+  height: 80px;
+  padding: 18px 0;
+  display: flex;
+  align-items: center;
+}
+
+.Header svg {
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.HeaderFlex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.HeaderLeft {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.HeaderLeft p {
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  color: #4e4c4a;
+  margin: 0;
+  margin-left: 12px;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
+}
+
+.Header img {
+  width: 309px;
+  height: 25px;
+}
+
+.Header button {
+  width: 160px;
+  height: 45px;
+  background: #7a9a01;
+  border-radius: 8px;
+  border: 1px solid #7a9a01;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 23px;
+  text-align: center;
+  color: #fff;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+}
+
+.TopWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 26px;
+  padding-bottom: 31px;
+}
+
+.FullContainer {
+  width: 100%;
+  max-width: 1374px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.NumberWrap {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #4e4c4a;
+  margin: 0 auto 3px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 21px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.TopItem {
+  text-align: center;
+  position: relative;
+  padding: 0 20px;
+}
+
+.TopItem p {
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  color: #4e4c4a;
+  margin: 0;
+}
+
+.TopItem::after {
+  border-bottom: 1px solid #a6a6a6;
+  width: 110px;
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 58%;
+}
+
+.AfterNone::after {
+  display: none;
+}
+
+.Card {
+  background: #fff;
+  box-shadow: 0 0 5px #b8b7b7;
+  border-radius: 8px;
+}
+
+.CardImageWrap {
+  position: relative;
+}
+
+.RecommendedWrap {
+  width: 50px !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  height: 100%;
+}
+
+.InnerWrap {
+  display: flex;
+}
+
+.LeftWrap {
+  background: #f2f2f2;
+  border-radius: 0 0 0 8px;
+  width: 50%;
+  padding: 24px 21px;
+}
+
+.InnerScrollWrap {
+  height: 500px;
+  overflow: auto;
+  margin: 0 -20px;
+  padding: 0 20px;
+}
+
+.InnerScrollWrap::-webkit-scrollbar {
+  width: 10px;
+}
+
+.InnerScrollWrap::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: transparent;
+}
+
+.InnerScrollWrap::-webkit-scrollbar-thumb {
+  background-color: #b8b7b7;
+  border-radius: 10px;
+}
+
+.RightWrap {
+  border-radius: 0 0 8px 0;
+  height: 700px;
+  width: 50%;
+  padding: 24px 21px;
+  overflow: auto;
+  background: #fdf7ea;
+}
+
+.RightWrap::-webkit-scrollbar {
+  width: 10px;
+}
+
+.RightWrap::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: transparent;
+}
+
+.RightWrap::-webkit-scrollbar-thumb {
+  background-color: #b8b7b7;
+  border-radius: 10px;
+}
+
+.HotelTop {
+  min-height: 95px;
+}
+
+.HotelTop img {
+  display: block;
+  margin: 0 auto 4px;
+}
+
+.HotelTop p {
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 23px;
+  text-align: center;
+  color: #4e4c4a;
+  margin: 0;
+  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+}
+
+.HotelTop .DayDuaration {
+  font-size: 14px;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+  color: #bd8b13;
+}
+
+.FilterWrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.InnerFilter {
+  display: flex;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  color: #4e4c4a;
+  align-items: center;
+  margin: 0 33px 0 0;
+  cursor: pointer;
+}
+
+.InnerFilter:last-child {
+  margin-right: 10px;
+}
+
+.InnerFilter .AngleDown {
+  margin-left: 6px;
+}
+
+.HotelCard {
+  background: #fff;
+  box-shadow: 0 0 5px #b8b7b7;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  display: flex;
+  overflow: hidden;
+}
+
+.HotelCard img {
+  width: 166px;
+  margin-right: 19px;
+}
+
+.CardRight {
+  display: flex;
+  width: 100%;
+  padding: 20px 20px 20px 0;
+}
+
+.CardInnerLeft {
+  width: 100%;
+  flex-direction: column;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Name {
+  font-weight: 500;
+  font-size: 16px;
+  color: #4e4c4a;
+  margin-bottom: 4px;
+  width: 165px;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+}
+
+.NameFlex {
+  display: flex;
+  align-items: flex-start;
+}
+
+.Country {
+  font-weight: 400;
+  color: #4e4c4a;
+  font-size: 12px;
+  margin-bottom: 0;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
+}
+
+.CheckIn {
+  font-weight: 500;
+  font-size: 14px;
+  color: #f68d2e;
+  margin: 18px 0;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+}
+
+.PremierText {
+  font-weight: normal;
+  font-size: 14px;
+  color: #4e4c4a;
+  margin: 0;
+  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+}
+
+.CardInnerRight {
+  width: 30%;
+  text-align: right;
+  flex-direction: column;
+  display: flex;
+  justify-content: space-between;
+}
+
+.NightsText {
+  font-weight: normal;
+  font-size: 12px;
+  color: #4e4c4a;
+  margin-bottom: 5px;
+  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+}
+
+.Price {
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 100%;
+  color: #4e4c4a;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+}
+
+.CardInnerRight button {
+  background: #005f96;
+  border-radius: 8px;
+  width: 120px;
+  height: 35px;
+  border: 1px solid #005f96;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;
+  color: #fff;
+  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+  margin-top: 2rem;
+  outline: none !important;
+  cursor: pointer;
+}
+
+.HotelTop h4 {
+  text-align: center;
+  color: #bd8b13;
+  font-size: 16px;
+  font-weight: normal;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+}
+
+.RightCard {
+  background: #fff;
+  box-shadow: 0 0 5px #b8b7b7;
+  border-radius: 8px;
+  margin-top: 39px;
+}
+
+.MoreFlights {
+  padding: 21px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.MoreFlights p {
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  color: #4e4c4a;
+  margin-left: 15px;
+  cursor: pointer;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+}
+
+.SelectCard {
+  background: #fff;
+  box-shadow: 0 4px 21px -15px #b8b7b7;
+  border-radius: 8px;
+  padding: 31px 29px;
+  padding-bottom: 11px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  margin-top: -19px;
+  margin-bottom: 20px;
+}
+
+.BorderCard {
+  background: #fff;
+  box-shadow: 0 0 3px #b8b7b7;
+  border-radius: 8px;
+  width: 100%;
+  height: 445px;
+}
+
+.BorderCardTop {
+  display: flex;
+  align-items: center;
+  padding: 21px 16px;
+}
+
+.BorderCardTop p {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 23px;
+  margin: 0;
+  color: #4e4c4a;
+  margin-left: 17px;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+}
+
+.BorderCardTop img {
+  width: 40px;
+  height: 40px;
+}
+
+.GrayWrap {
+  padding: 15px;
+  background: #4e4c4a;
+  border-radius: 0;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;
+  color: #fff;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
+}
+
+.SelectItem {
+  border-bottom: 1px solid #f3f3f3;
+  padding: 16px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.SelectLeft h4 {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 21px;
+  color: #4e4c4a;
+  margin: 0;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
+}
+
+.SelectLeft p {
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;
+  color: #4e4c4a;
+  margin: 0;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
+}
+
+.SelectItem button {
+  width: 171px;
+  height: 50px;
+  background: #f3f3f3;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 119.9%;
+  color: #71706e;
+  border: 1px solid #f3f3f3;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+}

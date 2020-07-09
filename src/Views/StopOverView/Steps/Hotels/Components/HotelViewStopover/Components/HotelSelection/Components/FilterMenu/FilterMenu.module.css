@@ -1,0 +1,173 @@
+.Container {
+  display: flex;
+  position: relative;
+}
+
+.Header {
+  display: flex;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  color: #4e4c4a;
+  align-items: center;
+  margin: 0 33px 0 0;
+  cursor: pointer;
+}
+
+.Header .AngleDown {
+  display: flex;
+  align-items: center;
+  margin-left: 6px;
+}
+
+.Header .AngleDown::after {
+  display: block;
+  content: '\f107';
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  font-size: 22px;
+}
+
+.Dropdown {
+  position: absolute;
+  background: #fff;
+  box-shadow: 0 0 8px #a6a6a6;
+  border-radius: 8px;
+  width: 420px;
+  right: 10px;
+  top: 0;
+  padding: 20px 30px 34px;
+  z-index: 1;
+}
+
+.ContentHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.HotelCalss {
+  display: flex;
+  flex-direction: column;
+  margin-top: 37px;
+}
+
+.SubTitle {
+  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 350;
+  font-size: 14px;
+  line-height: 14px;
+  color: #4e4c4a;
+  margin: 0 0 20px 0;
+}
+
+.SliderContainer {
+  margin-top: 33px;
+}
+
+.SliderContainer input[type=range] {
+  -webkit-appearance: none;
+  margin: 18px 0;
+  width: 100%;
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+
+.SliderContainer input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 1px;
+  cursor: pointer;
+  background: #bd8b13;
+  border-radius: 0;
+}
+
+.SliderContainer input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #bd8b13;
+}
+
+.SliderContainer input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 1px;
+  cursor: pointer;
+  background: #bd8b13;
+  border-radius: 0;
+  border: none;
+}
+
+.SliderContainer input[type=range]::-ms-track {
+  width: 100%;
+  height: 1px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  border-width: 16px 0;
+  color: transparent;
+}
+
+.SliderContainer input[type=range]::-ms-fill-lower {
+  background: #bd8b13;
+  border: none;
+  border-radius: 15px;
+}
+
+.SliderContainer input[type=range]:focus::-ms-fill-lower {
+  background: #bd8b13;
+}
+
+.SliderContainer input[type=range]::-ms-fill-upper {
+  background: #bd8b13;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.SliderContainer input[type=range]:focus::-ms-fill-upper {
+  background: #bd8b13;
+}
+
+.SliderContainer input[type=range]::-webkit-slider-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+  background: #bd8b13;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -9px;
+}
+
+.SliderContainer input[type=range]::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+  background: #bd8b13;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -9px;
+}
+
+.CheckBoxRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 21px;
+}
+
+.CheckBoxRow .ChekcBoxItemDiv {
+  flex: 1 1 100%;
+}
+
+.CheckBoxRow .ChekcBoxItemDiv:first-child {
+  flex: 1 0 140px;
+}
+
+.CheckBoxRow .ChekcBoxItemDiv:last-child {
+  flex: 1 0 100px;
+}
+
+.CheckBoxRow:last-child {
+  margin-bottom: 0;
+}
+
+.AmentityClass {
+  margin-top: 39px;
+}

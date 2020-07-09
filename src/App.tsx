@@ -60,6 +60,7 @@ export default function App({ config }: { config: Config }): JSX.Element {
         <Route path="/stopover-accepted">
           <strong>Stopover was accepted.</strong>
         </Route>
+
       </Switch>
     </div>
   );

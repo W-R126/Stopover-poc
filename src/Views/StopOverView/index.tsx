@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
+import Plane from '../../Assets/Images/plane.svg';
 
 import commonCss from '../../common.module.css';
 import css from './StopOverView.module.css';
@@ -86,6 +87,34 @@ export default function StopOverView(): JSX.Element {
         {progressStep === 'hotels' && (<Hotels />)}
         {progressStep === 'experiences' && (<Experiences />)}
         {progressStep === 'inbound' && (<Inbound />)}
+      </div>
+
+      <div className={css.Footer}>
+        <div className={css.FullContainer}>
+          <div className={css.FooterFlex}>
+            <div className={css.FooterLeft}>
+              <div className={css.FlightWrap}>
+                <img src={Plane} alt="" />
+                <p>Flights</p>
+              </div>
+              <div className={css.FooterDate}>
+                <h3>03 June 2020</h3>
+                <p>
+                  London (LHR) - Abu Dhabi (AUH)
+                  <a href="/#">Edit flight</a>
+                </p>
+              </div>
+            </div>
+            <div className={css.FooterRight}>
+              <p>Total</p>
+              <div className={css.FooterFlexRight}>
+                <p>Details</p>
+                <span className={css.AngleDown} />
+                <h4>AED 1,000</h4>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
