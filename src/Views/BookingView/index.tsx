@@ -134,6 +134,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     if (this.flightSearchResultRef.current) {
       // Reset the show counter of flight search result.
       this.flightSearchResultRef.current.resetShowCounter();
+      this.flightSearchResultRef.current.clearFilterState();
     }
 
     history.replace(Utils.getBookingUrl(data));

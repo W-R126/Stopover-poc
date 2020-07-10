@@ -120,7 +120,7 @@ export default class FilterMenu extends React.Component<FilterMenuProps, FilterM
     const { filterValue } = this.props;
     for (let i = 0; i < HOTEL_AMENTITY_RANGE.length; i += 3) {
       renderTemp.push(
-        <div className={css.CheckBoxRow}>
+        <div className={css.CheckBoxRow} key={i}>
           {
             HOTEL_AMENTITY_RANGE.map((item: any, nIndex: number) => {
               if (i <= nIndex && nIndex < i + 3) {

@@ -200,8 +200,17 @@ export default class Utils {
     return date.toLocaleDateString('sv-SE');
   }
 
-  static getFullDateString(date: Date): string {
-    return `${this.getDateString(date)} ${this.getHourMinuteString(date)}`;
+  static getFullDateString(date: Date, timeZone?: string): string {
+    let strDate;
+    let strHours;
+    if (timeZone) {
+      strDate = date.toLocaleDateString('sv-SE', { timeZone });
+      strHours = this.getHourMinuteString(date, timeZone);
+    } else {
+      strDate = date.toLocaleDateString('sv-SE');
+      strHours = this.getHourMinuteString(date);
+    }
+    return `${strDate} ${strHours}`;
   }
 
   static compareDatesSimple(a: Date, b: Date): boolean {

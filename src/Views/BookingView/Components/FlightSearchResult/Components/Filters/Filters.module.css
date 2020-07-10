@@ -80,7 +80,7 @@
   font-size: 14px;
   line-height: 14px;
   color: #4e4c4a;
-  margin: 0 0 0 9px 0;
+  margin: 0;
 }
 
 .FilterLabel span {
@@ -100,12 +100,37 @@
   margin-bottom: 20px;
 }
 
-.StopsDiv .RadioLabel {
+.StopsDiv label {
   font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 350;
   font-size: 14px;
-  line-height: 14px;
   color: #71706e;
-  margin: 0 0 0 4px;
+  margin-bottom: 10px;
+}
+
+.RangeDiv .FilterLabel {
+  display: flex;
+  align-items: center;
+}
+
+.RangeDiv .FilterLabel.PriceLabel {
+  margin-bottom: 10px;
+  z-index: 2;
+}
+
+.PriceSelect {
+  height: 30px;
+  margin-left: auto;
+}
+
+.PriceSelectWrapper {
+  width: 164px;
+  font-size: 14px !important;
+  height: 30px;
+}
+
+.PriceSelectWrapper > div:first-child {
+  height: 30px;
+  border-bottom: none;
 }

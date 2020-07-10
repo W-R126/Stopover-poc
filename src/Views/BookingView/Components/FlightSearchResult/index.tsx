@@ -8,9 +8,10 @@ import FlightEntry from './Components/FlightEntry';
 import SortAlgorithms, { SortAlgorithm } from './SortAlgorithms';
 import { AirportModel } from '../../../../Models/AirportModel';
 import { CabinClassEnum } from '../../../../Enums/CabinClassEnum';
-import Filters from './Components/Filters';
+import Filters, { PriceOptionItem } from './Components/Filters';
 import SortMenu, { SortMenuItem } from './Components/SortMenu';
 import Utils from '../../../../Utils';
+import Common from '../../../../Services/Content/Common';
 
 interface FlightSearchResultProps {
   cabinClass: CabinClassEnum;
@@ -36,6 +37,8 @@ export default class FlightSearchResult extends React.Component<
   FlightSearchResultState
 > {
   private readonly flightEntryRefs: (FlightEntry | null)[] = [];
+
+  private readonly flightFilterRefs = React.createRef<Filters>();
 
   private readonly showCount = 5;
 
@@ -157,6 +160,26 @@ export default class FlightSearchResult extends React.Component<
     return returnSortItem;
   }
 
+  private getFilterPriceOptions(): PriceOptionItem[] {
+    const returnSortItem = [];
+    const { cabinClass } = this.props;
+
+    if (cabinClass === CabinClassEnum.economy) {
+      returnSortItem.push({ value: Common.cabinClasses.economy, label: 'Economy price' });
+    }
+    if (cabinClass === CabinClassEnum.economy || cabinClass === CabinClassEnum.business) {
+      returnSortItem.push({ value: Common.cabinClasses.business, label: 'Business price' });
+    }
+
+    if (cabinClass === CabinClassEnum.business || cabinClass === CabinClassEnum.first) {
+      returnSortItem.push({ value: Common.cabinClasses.first, label: 'First class price' });
+    }
+    if (cabinClass === CabinClassEnum.first || cabinClass === CabinClassEnum.residence) {
+      returnSortItem.push({ value: Common.cabinClasses.residence, label: 'Residence price' });
+    }
+    return returnSortItem;
+  }
+
   private expandSelectedIntoView(): void {
     const { showCountFactor } = this.state;
     const { offers, selectedOffer } = this.props;
@@ -191,6 +214,13 @@ export default class FlightSearchResult extends React.Component<
 
   resetShowCounter(): void {
     this.setState({ showCountFactor: 1 });
+  }
+
+  clearFilterState(): void {
+    if (this.flightFilterRefs.current) {
+      this.setState({ filters: undefined });
+      this.flightFilterRefs.current.setFilterSpans();
+    }
   }
 
   private renderResult(offers: GroupedOfferModel[], altOffers: AltOfferModel[]): JSX.Element {
@@ -291,6 +321,8 @@ export default class FlightSearchResult extends React.Component<
                   <Filters
                     offers={offers}
                     onChange={this.onFiltersChange}
+                    priceOptions={this.getFilterPriceOptions()}
+                    ref={this.flightFilterRefs}
                   />
                   <SortMenu
                     sortItems={this.getSortItems()}
