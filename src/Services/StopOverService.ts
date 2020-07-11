@@ -32,17 +32,38 @@ export default class StopOverService extends BaseService {
     hash: number,
     airportCode: string,
     days: number,
+    outbound: Date,
+    inbound?: Date,
   ): Promise<any> {
     try {
+      let nextInbound;
+
+      const minInbound = new Date(outbound);
+      minInbound.setDate(minInbound.getDate() + days + 1);
+
+      if (inbound) {
+        nextInbound = inbound;
+
+        if (minInbound > inbound) {
+          nextInbound = minInbound;
+        }
+      }
+
+      const stopover = {
+        airportCode,
+        days,
+      };
+
+      if (nextInbound) {
+        Object.assign(stopover, { nextLegDateModifier: nextInbound.toLocaleDateString('sv-SE') });
+      }
+
       const result = await this.http.post(
         '/confirmStopover',
         {
           stopoverItineraryParts: [{
             selectedOriginalOfferRef: hash,
-            stopover: {
-              airportCode,
-              days,
-            },
+            stopover,
           }],
         },
         { headers: SessionManager.getSessionHeaders() },

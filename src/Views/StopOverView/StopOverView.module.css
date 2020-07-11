@@ -1,10 +1,13 @@
 .StopOverView {
-  background: #f7f6f3;
+  background: #fff;
 }
 
 .Progress {
-  padding: 26px 0 31px;
-  background-color: transparent;
+  padding: 24px 0;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  margin-bottom: 40px;
+  user-select: none;
 }
 
 .Progress > .ContentWrapper {
@@ -70,7 +73,19 @@
 }
 
 .Step.Done > strong {
+  font-size: 0;
   background-color: #7a9a01;
+}
+
+.Step.Done > strong::before {
+  content: '';
+  height: 14px;
+  width: 8px;
+  border-bottom: 2px solid #fff;
+  border-right: 2px solid #fff;
+  transform: rotateZ(45deg);
+  position: relative;
+  top: -1px;
 }
 
 .Step.Done > span {
@@ -93,4 +108,114 @@
 
 .NavigateForward:focus {
   border-color: #fff;
+}
+
+.Footer {
+  background: #fff;
+  height: 80px;
+  margin-top: 55px;
+  border-top: 3px solid #bd8b13;
+  padding: 10px 0;
+}
+
+.FullContainer {
+  width: 100%;
+  max-width: 1374px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.FooterFlex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.FooterLeft {
+  display: flex;
+  align-items: center;
+}
+
+.FlightWrap {
+  width: 45px;
+  margin-right: 20px;
+}
+
+.FlightWrap p {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  color: #bd8b13;
+  margin: 0;
+  margin-top: 4px;
+  text-align: center;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+}
+
+.FlightWrap img {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  display: block;
+}
+
+.FooterDate h3 {
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 13px;
+  margin-bottom: 2px;
+  color: #4e4c4a;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+}
+
+.FooterDate p {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 13px;
+  color: #4e4c4a;
+  margin: 0;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
+}
+
+.FooterDate a {
+  color: #005f96;
+  display: block;
+  text-decoration: none;
+}
+
+.FooterRight {
+  text-align: right;
+}
+
+.FooterRight p {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  margin: 0;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
+}
+
+.FooterFlexRight {
+  display: flex;
+  align-items: center;
+}
+
+.FooterFlexRight p {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  color: #4e4c4a;
+  margin: 0;
+  margin-right: 6px;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
+}
+
+.FooterFlexRight h4 {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 23px;
+  color: #4e4c4a;
+  margin: 0;
+  margin-left: 14px;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
 }

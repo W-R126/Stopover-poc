@@ -8,13 +8,15 @@ import { CustomerSegment } from '../../Models/StopOverModel';
 import Data from './Data';
 
 interface StopOverPromptProps {
-  onAccept: (airportCode?: string, days?: number) => void;
+  onAccept: (outbound?: Date, inbound?: Date, airportCode?: string, days?: number) => void;
   onReject: (airportCode?: string) => void;
 }
 
 interface StopOverPromptState {
   show: boolean;
   customerSegment?: CustomerSegment;
+  outbound?: Date;
+  inbound?: Date;
   days?: number[];
   airportCode?: string;
 }
@@ -29,6 +31,8 @@ export default class StopOverPrompt extends React.Component<
     this.state = {
       show: false,
       customerSegment: undefined,
+      outbound: undefined,
+      inbound: undefined,
       days: undefined,
       airportCode: undefined,
     };
@@ -50,24 +54,34 @@ export default class StopOverPrompt extends React.Component<
 
   private onAccept(): void {
     const { onAccept } = this.props;
-    const { airportCode, days } = this.state;
+    const {
+      outbound,
+      inbound,
+      airportCode,
+      days,
+    } = this.state;
 
     const nextDays = days ? days[0] : undefined;
 
-    onAccept(airportCode, nextDays);
+    onAccept(outbound, inbound, airportCode, nextDays);
   }
 
   show(
     customerSegment: CustomerSegment,
     days: number[],
     airportCode: string,
+    outbound: Date,
+    inbound?: Date,
   ): void {
     this.setState({
       show: true,
       customerSegment,
       days,
       airportCode,
+      outbound,
+      inbound,
     });
+
     document.body.style.overflow = 'hidden';
   }
 

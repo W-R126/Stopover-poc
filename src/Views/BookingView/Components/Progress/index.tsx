@@ -28,7 +28,7 @@ export default function Progress(props: ProgressProps): JSX.Element {
       {Object.keys(ProgressStep).map((progressStep, idx) => (
         <span
           key={`progress-step-${idx}`}
-          className={step === (ProgressStep as any)[progressStep] ? css.Current : undefined}
+          className={step === progressStep ? css.Current : undefined}
         >
           {progressStepLocale[progressStep]}
         </span>

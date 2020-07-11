@@ -1,0 +1,119 @@
+.SelectedExperience {
+  background-color: #f3f3f3;
+  border-radius: 4px;
+  cursor: grab;
+  padding: 16px;
+}
+
+.SelectedExperience.Dragging {
+  z-index: 100;
+  position: fixed;
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.Details {
+  display: grid;
+  grid-template-columns:
+    max-content
+    1fr
+    max-content
+    max-content
+    max-content;
+    gap: 16px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.DragHint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+}
+
+.DragHint > span {
+  display: flex;
+}
+
+.DragHint > span::before,
+.DragHint > span::after {
+  display: block;
+  border-radius: 50%;
+  content: '';
+  width: 4px;
+  height: 4px;
+  background-color: #4e4c4a;
+  margin: 1px;
+}
+
+.Title {
+  color: #bd8b13;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+}
+
+.Price {
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+}
+
+.Remove {
+  border: 0;
+  background-color: transparent;
+  padding: 0 4px;
+  font-size: 30px;
+  line-height: 0.5;
+  cursor: pointer;
+  align-self: center;
+  outline: 0;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+}
+
+.Time {
+  border-top: 1px solid #b8b7b7;
+  padding-top: 16px;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.TimeSlots {
+  margin-top: 16px;
+  display: flex;
+  font-size: 16px;
+}
+
+.TimeSlot {
+  display: inline-block;
+  flex-grow: 1;
+}
+
+.TimeSlots > .TimeSlot:not(:first-child) {
+  margin-left: 8px;
+}
+
+.TimeSlot > input {
+  display: none;
+}
+
+.TimeSlot > label {
+  display: block;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #b8b7b7;
+  padding: 8px;
+  width: 100%;
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
+}
+
+.TimeSlot > input:checked + label {
+  background-color: #bd8b13;
+  color: #fff;
+  border-color: #bd8b13;
+}
+
+.TimeSlot > input:disabled + label {
+  background-color: #d2d2d2;
+  border-color: #d2d2d2;
+  text-decoration: line-through;
+}

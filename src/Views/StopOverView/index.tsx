@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import Plane from '../../Assets/Images/plane.svg';
 
 import commonCss from '../../common.module.css';
 import css from './StopOverView.module.css';
@@ -8,8 +7,18 @@ import Button from '../../Components/UI/Button';
 import Hotels from './Steps/Hotels';
 import Experiences from './Steps/Experiences';
 import Inbound from './Steps/Inbound';
+import ShoppingCart from '../../Components/ShoppingCart';
+import ShoppingCartItem from '../../Components/ShoppingCart/ShoppingCartItem';
 
-export default function StopOverView(): JSX.Element {
+interface StopOverProps {
+  startDate?: Date;
+  endDate?: Date;
+}
+
+export default function StopOverView({
+  startDate = new Date(2020, 7, 5),
+  endDate = new Date(2020, 7, 7),
+}: StopOverProps): JSX.Element {
   const history = useHistory();
   const { progressStep } = useParams<{ progressStep: 'hotels' | 'experiences' | 'inbound' }>();
 
@@ -85,37 +94,26 @@ export default function StopOverView(): JSX.Element {
 
       <div className={`${css.ContentWrapper} ${commonCss.ContentWrapper}`}>
         {progressStep === 'hotels' && (<Hotels />)}
-        {progressStep === 'experiences' && (<Experiences />)}
+        {progressStep === 'experiences' && (
+          <Experiences
+            startDate={startDate}
+            endDate={endDate}
+          />
+        )}
         {progressStep === 'inbound' && (<Inbound />)}
       </div>
 
-      <div className={css.Footer}>
-        <div className={css.FullContainer}>
-          <div className={css.FooterFlex}>
-            <div className={css.FooterLeft}>
-              <div className={css.FlightWrap}>
-                <img src={Plane} alt="" />
-                <p>Flights</p>
-              </div>
-              <div className={css.FooterDate}>
-                <h3>03 June 2020</h3>
-                <p>
-                  London (LHR) - Abu Dhabi (AUH)
-                  <a href="/#">Edit flight</a>
-                </p>
-              </div>
-            </div>
-            <div className={css.FooterRight}>
-              <p>Total</p>
-              <div className={css.FooterFlexRight}>
-                <p>Details</p>
-                <span className={css.AngleDown} />
-                <h4>AED 1,000</h4>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ShoppingCart>
+        <ShoppingCartItem price={1000}>
+          London - Abu Dhabi
+        </ShoppingCartItem>
+        <ShoppingCartItem price={1200}>
+          Emirates Palace Hotel
+        </ShoppingCartItem>
+        <ShoppingCartItem price={1700}>
+          Abu Dhabi - Melbourne
+        </ShoppingCartItem>
+      </ShoppingCart>
     </div>
   );
 }

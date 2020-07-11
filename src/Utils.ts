@@ -127,6 +127,10 @@ export default class Utils {
     return result.join('');
   }
 
+  static getDaysDelta(date1: Date, date2: Date): number {
+    return Math.floor(Math.abs(date1.valueOf() - date2.valueOf()) / (1000 * 60 * 60 * 24));
+  }
+
   static getWeekdays(locale: string): string[] {
     const date = new Date(2020, 4, 24);
 

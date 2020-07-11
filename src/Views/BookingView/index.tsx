@@ -163,7 +163,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
 
   private async onSelectInbound(): Promise<void> {
     const { stopOverService, history } = this.props;
-    const { outboundOfferHash } = this.state;
+    const { outboundOfferHash, tripSearchData } = this.state;
 
     if (outboundOfferHash === undefined) {
       return;
@@ -177,10 +177,18 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       return;
     }
 
-    this.stopOverPromptRef.current.show(result.customerSegment, result.days, result.airportCode);
+    this.stopOverPromptRef.current.show(
+      result.customerSegment,
+      result.days,
+      result.airportCode,
+      tripSearchData.outbound as Date,
+      tripSearchData.tripType === TripTypeEnum.return ? tripSearchData.inbound : undefined,
+    );
   }
 
   private async onAcceptStopOver(
+    outbound?: Date,
+    inbound?: Date,
     airportCode?: string,
     days?: number,
   ): Promise<void> {
@@ -193,13 +201,13 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
 
     await this.stopOverPromptRef.current.hide();
 
-    if (airportCode && days !== undefined && outboundOfferHash !== undefined) {
-      await stopOverService.acceptStopOver(
-        outboundOfferHash,
-        airportCode,
-        days,
-      );
-    }
+    await stopOverService.acceptStopOver(
+      outboundOfferHash as number,
+      airportCode as string,
+      days as number,
+      outbound as Date,
+      inbound,
+    );
 
     history.push('/stopover/hotels');
   }
@@ -239,13 +247,13 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     }
 
     return {
-      tripType: (TripTypeEnum as any)[params.tripType],
+      tripType: params.tripType as TripTypeEnum,
       passengers: {
         adults: Number.parseInt(params.adults, 10),
         children: Number.parseInt(params.children, 10),
         infants: Number.parseInt(params.infants, 10),
       },
-      cabinClass: (CabinClassEnum as any)[params.cabinClass],
+      cabinClass: params.cabinClass as CabinClassEnum,
       origin: undefined,
       destination: undefined,
       outbound,

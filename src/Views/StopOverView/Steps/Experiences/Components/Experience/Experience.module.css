@@ -1,0 +1,124 @@
+.Experience {
+  display: grid;
+  grid-template-columns:
+    [recommended] max-content
+    [dragHint] max-content
+    [info] 1fr;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  cursor: grab;
+  background-color: #fff;
+}
+
+.Experience.Dragging {
+  transform: scale(0.8);
+  z-index: 100;
+  position: fixed;
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.Recommended {
+  color: #fff;
+  background-color: #7a9a01;
+  writing-mode: vertical-lr;
+  transform: rotateZ(180deg);
+  padding: 16px;
+  font-size: 14px;
+}
+
+.DragHint {
+  width: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+}
+
+.DragHint > span {
+  display: flex;
+}
+
+.DragHint > span::before,
+.DragHint > span::after {
+  display: block;
+  border-radius: 50%;
+  content: '';
+  width: 4px;
+  height: 4px;
+  background-color: #4e4c4a;
+  margin: 1px;
+}
+
+.Info {
+  padding: 16px 16px 16px 0;
+  display: grid;
+  grid-template-columns:
+    [image] max-content
+    [details] 1fr
+    [pricing] max-content;
+}
+
+.Image {
+  height: 100px;
+  width: 100px;
+  border-radius: 8px;
+}
+
+.Details {
+  display: grid;
+  grid-template-rows:
+    max-content
+    1fr
+    max-content;
+  gap: 8px 0;
+  padding: 0 16px;
+}
+
+.Details > .Title {
+  font-size: 18px;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  font-weight: 900;
+}
+
+.Details > .Location {
+  font-size: 14px;
+}
+
+.Details > .OpeningHours {
+  font-size: 14px;
+  color: #f68d2e;
+}
+
+.Pricing {
+  display: grid;
+  grid-template-rows:
+    max-content
+    1fr
+    max-content;
+  gap: 8px 0;
+}
+
+.Pricing > .Quantity {
+  font-size: 14px;
+  justify-self: flex-end;
+}
+
+.Pricing > .Price {
+  font-size: 20px;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  font-weight: 900;
+  justify-self: flex-end;
+}
+
+.Pricing > .ViewDetails {
+  color: #005f96;
+  font-size: 16px;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  padding: 0;
+  outline: 0;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
