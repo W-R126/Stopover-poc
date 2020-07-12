@@ -3,18 +3,29 @@ import React from 'react';
 import css from './ShoppingCart.module.css';
 import commonCss from '../../common.module.css';
 import Utils from '../../Utils';
+import Button from '../UI/Button';
 
-interface ShoppingCart {
+export interface ShoppingCartItemProps<T> {
+  className?: string;
+  price: number;
+  item: T;
+}
+
+interface ShoppingCartProps {
   className?: string;
   currency?: string;
   children: React.ReactNode;
+  proceedLabel?: string;
+  proceedAction?: () => void;
 }
 
 export default function ShoppingCart({
   className,
   children,
   currency = 'AED',
-}: ShoppingCart): JSX.Element {
+  proceedLabel,
+  proceedAction,
+}: ShoppingCartProps): JSX.Element {
   const classList = [css.ShoppingCart];
 
   if (className) {
@@ -43,6 +54,12 @@ export default function ShoppingCart({
               <span>Total</span>
               <strong>{`${currency} ${Utils.formatCurrency(total)}`}</strong>
             </span>
+
+            {proceedLabel && proceedAction && (
+              <Button type="primary" onClick={proceedAction}>
+                {proceedLabel}
+              </Button>
+            )}
           </div>
         </div>
       </div>

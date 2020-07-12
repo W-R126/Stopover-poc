@@ -1,4 +1,3 @@
-import moment from 'moment-timezone';
 import { AxiosResponse } from 'axios';
 
 import BaseService from './BaseService';
@@ -9,13 +8,14 @@ import {
   SegmentModel,
   CabinClass,
 } from '../Models/OfferModel';
-import Utils from '../Utils';
 import AirportService from './AirportService';
 import { FlightResponse, ItineraryPart, Segment } from './Responses/FlightResponse';
-import { PassengerPickerData } from '../Components/TripSearch/Components/PassengerPicker/PassengerPickerData';
 import { AirportModel } from '../Models/AirportModel';
 import ContentService from './ContentService';
 import SessionManager from '../SessionManager';
+import { LegModel } from '../Models/LegModel';
+import DateUtils from '../DateUtils';
+import { GuestsModel } from '../Models/GuestsModel';
 
 export default class FlightService extends BaseService {
   private readonly airportService: AirportService;
@@ -30,17 +30,8 @@ export default class FlightService extends BaseService {
   }
 
   async getOffers(
-    passengers: PassengerPickerData,
-    outbound: {
-      departure: Date;
-      destination: AirportModel;
-      origin: AirportModel;
-    },
-    inbound?: {
-      departure: Date;
-      destination: AirportModel;
-      origin: AirportModel;
-    },
+    passengers: GuestsModel,
+    legs: LegModel[],
     currency = 'AED',
   ): Promise<{
     altOffers: AltOfferModel[];
@@ -63,21 +54,11 @@ export default class FlightService extends BaseService {
 
     let result: AxiosResponse<FlightResponse> | undefined;
 
-    const itineraryParts = [
-      {
-        from: { code: outbound.origin.code },
-        to: { code: outbound.destination.code },
-        when: { date: Utils.getDateString(outbound.departure) },
-      },
-    ];
-
-    if (inbound) {
-      itineraryParts.push({
-        from: { code: inbound.origin.code },
-        to: { code: inbound.destination.code },
-        when: { date: Utils.getDateString(inbound.departure) },
-      });
-    }
+    const itineraryParts = legs.map((leg) => ({
+      from: { code: leg.origin?.code },
+      to: { code: leg.destination?.code },
+      when: { date: DateUtils.getDateString(leg.outbound as Date) },
+    }));
 
     try {
       result = await this.http.post<FlightResponse>(
@@ -117,25 +98,33 @@ export default class FlightService extends BaseService {
     const flightModels = await this.contentService.get('flightModels');
     const airports = await airportsReq;
 
-    const parsedOffers: OfferModel[] = offers.map((offer) => ({
-      basketHash: offer.shoppingBasketHashCode,
-      cabinClass: offer.cabinClass,
-      soldout: offer.soldout,
-      brandLabel: fareFamilies
-        .find((ff) => ff.brandId === offer.brandId)?.brandLabel
-        .find((bl) => bl.languageId === 'en_GB')?.marketingText ?? 'Unknown',
-      total: {
-        amount: offer.total.alternatives[0][0].amount,
-        tax: offer.taxes.alternatives[0][0].amount,
-        currency: offer.total.alternatives[0][0].currency,
-      },
-      itineraryPart: this.getItineraryPart(
+    const parsedOffers: OfferModel[] = offers.map((offer) => {
+      const itineraryPart = this.getItineraryPart(
         offer.itineraryPart[0],
         flightModels,
         airports,
         store,
-      ),
-    }));
+      );
+
+      return {
+        basketHash: offer.shoppingBasketHashCode,
+        cabinClass: offer.cabinClass,
+        soldout: offer.soldout,
+        brandLabel: fareFamilies
+          .find((ff) => ff.brandId === offer.brandId)?.brandLabel
+          .find((bl) => bl.languageId === 'en_GB')?.marketingText ?? 'Unknown',
+        total: {
+          amount: offer.total.alternatives[0][0].amount,
+          tax: offer.taxes.alternatives[0][0].amount,
+          currency: offer.total.alternatives[0][0].currency,
+        },
+        origin: legs[0].origin as AirportModel,
+        destination: legs[0].destination as AirportModel,
+        departure: itineraryPart.segments[0].departure,
+        arrival: itineraryPart.segments[itineraryPart.segments.length - 1].arrival,
+        itineraryPart,
+      };
+    });
 
     return {
       altOffers,
@@ -278,8 +267,8 @@ export default class FlightService extends BaseService {
 
     const origin = airports.find((airport) => airport.code === data.origin);
     const destination = airports.find((airport) => airport.code === data.destination);
-    const departure = moment.tz(data.departure, origin?.timeZone ?? '').toDate();
-    const arrival = moment.tz(data.arrival, destination?.timeZone ?? '').toDate();
+    const departure = new Date(data.departure);
+    const arrival = new Date(data.arrival);
 
     return Object.assign(store, {
       [data['@id']]: {

@@ -5,16 +5,17 @@ import commonCss from '../../common.module.css';
 import css from './HomeView.module.css';
 import TripSearch from '../../Components/TripSearch';
 import AirportService from '../../Services/AirportService';
-import { TripSearchData, defaultTripSearchData } from '../../Components/TripSearch/TripSearchData';
-import Utils from '../../Utils';
+import { TripModel, copyTrip, tripToUrl } from '../../Models/TripModel';
+import ContentService from '../../Services/ContentService';
+import AppState from '../../AppState';
 
 interface HomeViewProps extends RouteComponentProps {
   airportService: AirportService;
-  locale: string;
+  contentService: ContentService;
 }
 
 interface HomeViewState {
-  tripSearchData: TripSearchData;
+  trip: TripModel;
 }
 
 class HomeView extends React.Component<HomeViewProps, HomeViewState> {
@@ -22,26 +23,29 @@ class HomeView extends React.Component<HomeViewProps, HomeViewState> {
     super(props);
 
     this.state = {
-      tripSearchData: defaultTripSearchData(),
+      trip: copyTrip(),
     };
 
     this.onTripSearchChange = this.onTripSearchChange.bind(this);
     this.onTripSearch = this.onTripSearch.bind(this);
   }
 
-  private onTripSearchChange(tripSearchData: TripSearchData): void {
-    this.setState({ tripSearchData });
+  private onTripSearchChange(trip: TripModel): void {
+    this.setState({ trip });
   }
 
-  private onTripSearch(data: TripSearchData): void {
+  private onTripSearch(trip: TripModel): void {
     const { history } = this.props;
 
-    history.push(Utils.getBookingUrl(data));
+    AppState.tripSearch = trip;
+    AppState.outboundOffer = undefined;
+
+    history.push(`/booking?${tripToUrl(trip)}`);
   }
 
   render(): JSX.Element {
-    const { tripSearchData: data } = this.state;
-    const { airportService, locale } = this.props;
+    const { trip: data } = this.state;
+    const { airportService, contentService } = this.props;
 
     return (
       <div className={css.HomeView}>
@@ -49,8 +53,8 @@ class HomeView extends React.Component<HomeViewProps, HomeViewState> {
         <div className={`${css.ContentWrapper} ${commonCss.ContentWrapper}`}>
           <TripSearch
             className={css.TripSearch}
-            locale={locale}
-            data={data}
+            contentService={contentService}
+            trip={data}
             onChange={this.onTripSearchChange}
             airportService={airportService}
             onSearch={this.onTripSearch}

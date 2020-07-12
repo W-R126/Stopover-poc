@@ -5,146 +5,132 @@ import { TripTypeEnum } from '../../Enums/TripTypeEnum';
 import { CabinClassEnum } from '../../Enums/CabinClassEnum';
 import AirportService from '../../Services/AirportService';
 import PassengerPicker from './Components/PassengerPicker';
-import { PassengerPickerData } from './Components/PassengerPicker/PassengerPickerData';
 import OriginDestinationPicker from './Components/OriginDestinationPicker';
-import { OriginDestinationPickerData } from './Components/OriginDestinationPicker/OriginDestinationPickerData';
 import DatePicker from './Components/DatePicker';
 import TripTypePicker from './Components/TripTypePicker';
 import Select from '../UI/Select';
 import Option from '../UI/Select/Option';
-import { CalendarData } from './Components/DatePicker/Components/Calendar/CalendarData';
 import Checkbox from '../UI/Checkbox';
-import {
-  TripSearchData,
-  copyTripSearchData,
-  compareTripSearchData,
-  validateTripSearchData,
-} from './TripSearchData';
 import Button from '../UI/Button';
+import {
+  TripModel,
+  copyTrip,
+  isEqualTrips,
+  isTripValid,
+} from '../../Models/TripModel';
+import { AirportModel } from '../../Models/AirportModel';
+import ContentService from '../../Services/ContentService';
 
 interface TripSearchProps {
-  data?: TripSearchData;
-  locale?: string;
-  onChange?: (data: TripSearchData) => void;
+  trip?: TripModel;
+  contentService: ContentService;
+  onChange?: (data: TripModel) => void;
   airportService: AirportService;
-  onSearch?: (data: TripSearchData) => void;
+  onSearch?: (data: TripModel) => void;
   className?: string;
 }
 
 interface TripSearchState {
-  data: TripSearchData;
+  trip: TripModel;
 }
 
 class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
-  static readonly defaultProps: Pick<TripSearchProps, 'locale'> = {
-    locale: 'en-US',
-  };
-
   constructor(props: TripSearchProps) {
     super(props);
 
-    const { data } = props;
+    const { trip } = props;
 
     this.state = {
-      data: copyTripSearchData(data),
+      trip: copyTrip(trip),
     };
 
-    this.onChange = this.onChange.bind(this);
-    this.onTripTypeChange = this.onTripTypeChange.bind(this);
-    this.onPassengersChange = this.onPassengersChange.bind(this);
-    this.onCabinClassChange = this.onCabinClassChange.bind(this);
     this.onOriginDestinationChange = this.onOriginDestinationChange.bind(this);
+    this.onTripTypeChange = this.onTripTypeChange.bind(this);
     this.onDatesChange = this.onDatesChange.bind(this);
-    this.onBookWithMilesChange = this.onBookWithMilesChange.bind(this);
     this.onSearch = this.onSearch.bind(this);
   }
 
   componentDidUpdate(prevProps: TripSearchProps): void {
-    const { data } = this.props;
+    const { trip } = this.props;
 
-    if (!compareTripSearchData(prevProps.data, data)) {
-      this.setState({ data: copyTripSearchData(data) });
+    if (!isEqualTrips(prevProps.trip, trip)) {
+      this.setState({ trip: copyTrip(trip) });
     }
   }
 
-  private onChange(data: TripSearchData): void {
+  private async onChange(nextTrip: Partial<TripModel>): Promise<void> {
     const { onChange } = this.props;
+    const { trip } = this.state;
 
-    this.setState({ data });
+    Object.assign(trip, nextTrip);
+
+    this.setState({ trip });
 
     if (onChange) {
-      onChange(data);
+      onChange(trip);
     }
   }
 
-  private onTripTypeChange(tripType: TripTypeEnum): void {
-    const { data } = this.state;
-    data.tripType = tripType;
+  private onOriginDestinationChange(origin?: AirportModel, destination?: AirportModel): void {
+    const { trip } = this.state;
 
-    this.onChange(data);
+    trip.legs[0].origin = origin;
+    trip.legs[0].destination = destination;
+
+    if (trip.type === TripTypeEnum.roundTrip) {
+      trip.legs[1].origin = destination;
+      trip.legs[1].destination = origin;
+    }
+
+    this.onChange(trip);
   }
 
-  private onPassengersChange(passengers: PassengerPickerData): void {
-    const { data } = this.state;
-    data.passengers = passengers;
+  private onDatesChange(start?: Date, end?: Date): void {
+    const { trip } = this.state;
 
-    this.onChange(data);
+    trip.legs[0].outbound = start;
+
+    if (trip.type === TripTypeEnum.roundTrip) {
+      trip.legs[1].outbound = end;
+    }
+
+    this.onChange(trip);
   }
 
-  private onCabinClassChange(cabinClass: CabinClassEnum): void {
-    const { data } = this.state;
-    data.cabinClass = cabinClass;
+  private onTripTypeChange(type: TripTypeEnum): void {
+    const { trip } = this.state;
 
-    this.onChange(data);
-  }
+    if (trip.type === TripTypeEnum.oneWay && type === TripTypeEnum.roundTrip) {
+      trip.legs[0].outbound = undefined;
+    }
 
-  private onOriginDestinationChange(originDestination: OriginDestinationPickerData): void {
-    const { data } = this.state;
-    data.origin = originDestination.origin;
-    data.destination = originDestination.destination;
+    trip.type = type;
 
-    this.onChange(data);
-  }
-
-  private onDatesChange(dates: CalendarData): void {
-    const { data } = this.state;
-    data.outbound = dates.start;
-    data.inbound = dates.end;
-
-    this.onChange(data);
-  }
-
-  private onBookWithMilesChange(e: React.ChangeEvent<HTMLInputElement>): void {
-    const { data } = this.state;
-    const bookWithMiles = e.target.checked;
-    data.bookWithMiles = bookWithMiles;
-
-    this.onChange(data);
+    this.onChange(copyTrip(trip));
   }
 
   private onSearch(): void {
     const { onSearch } = this.props;
-    const { data } = this.state;
+    const { trip } = this.state;
 
     // TODO: Validation.
-    if (!validateTripSearchData(data)) {
-      // TODO: Invalid data, display messages.
+    if (!isTripValid(trip)) {
       return;
     }
 
     if (onSearch) {
-      onSearch(data);
+      onSearch(trip);
     }
   }
 
   render(): JSX.Element {
     const {
       airportService,
-      locale,
+      contentService,
       className,
     } = this.props;
 
-    const { data } = this.state;
+    const { trip } = this.state;
 
     const cabinClassLocale: { [key: string]: string } = {
       economy: 'Economy',
@@ -163,23 +149,25 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
       <div className={classList.join(' ')}>
         <TripTypePicker
           className={css.TripTypePicker}
-          value={data.tripType}
+          value={trip.type}
           onChange={this.onTripTypeChange}
         />
 
         <OriginDestinationPicker
           className={css.OriginDestinationPicker}
-          data={{ origin: data.origin, destination: data.destination }}
+          origin={trip.legs[0].origin}
+          destination={trip.legs[0].destination}
           onChange={this.onOriginDestinationChange}
           airportService={airportService}
         />
 
         <DatePicker
           className={css.DatePicker}
-          locale={locale}
-          data={{ start: data.outbound, end: data.inbound }}
+          contentService={contentService}
+          start={trip.legs[0].outbound}
+          end={trip.legs[1] && trip.legs[1].outbound}
           onChange={this.onDatesChange}
-          span={data.tripType === TripTypeEnum.return}
+          span={trip.type === TripTypeEnum.roundTrip}
         />
 
         <div className={css.CabinClass}>
@@ -188,8 +176,8 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
             className={css.CabinClassSelect}
             wrapperClassName={css.CabinClassSelectWrapper}
             id="cabin-type"
-            value={data.cabinClass}
-            onChange={this.onCabinClassChange}
+            value={trip.cabinClass}
+            onChange={(cabinClass): Promise<void> => this.onChange({ cabinClass })}
           >
             {Object.keys(CabinClassEnum).map((cc, idx) => (
               <Option value={cc as CabinClassEnum} key={`cabin-type-option-${idx}`}>
@@ -205,17 +193,17 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
             className={css.PassengerPicker}
             wrapperClassName={css.PassengerPickerWrapper}
             id="passengers"
-            data={data.passengers}
-            onChange={this.onPassengersChange}
+            data={trip.passengers}
+            onChange={(passengers): Promise<void> => this.onChange({ passengers })}
           />
         </div>
 
         <div className={css.SearchFlight}>
           <div className={css.BookWithMiles}>
             <Checkbox
-              checked={data.bookWithMiles}
+              checked={trip.bookWithMiles}
               id="book-with-miles"
-              onChange={this.onBookWithMilesChange}
+              onChange={(e): Promise<void> => this.onChange({ bookWithMiles: e.target.checked })}
             >
               Book with miles
             </Checkbox>

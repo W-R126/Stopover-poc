@@ -7,6 +7,7 @@ import { GroupedOfferModel, OfferModel } from '../../../../../../Models/OfferMod
 import Utils from '../../../../../../Utils';
 import PriceDetails from './Components/PriceDetails';
 import { CabinClassEnum } from '../../../../../../Enums/CabinClassEnum';
+import DateUtils from '../../../../../../DateUtils';
 
 interface FlightEntryProps {
   data: GroupedOfferModel;
@@ -98,7 +99,10 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
     } = this.props;
 
     const { collapsed, selectedCabinClass } = this.state;
-    const timeZoneDelta = Utils.getTimeZoneDelta(data.origin.timeZone, data.destination.timeZone);
+    const timeZoneDelta = DateUtils.getTimeZoneDelta(
+      data.origin.timeZone,
+      data.destination.timeZone,
+    );
     const cabinClasses = Utils.getCabinClasses(cabinClass);
 
     return (
@@ -106,7 +110,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
         <div className={css.OriginDestination}>
           <div className={css.Origin}>
             <strong>
-              {Utils.getHourMinuteString(data.departure, data.origin.timeZone)}
+              {DateUtils.getHourMinuteString(data.departure)}
             </strong>
             <span>{`${data.origin?.cityName} ${data.origin?.code}`}</span>
           </div>
@@ -115,7 +119,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
 
           <div className={css.Destination}>
             <strong>
-              {Utils.getHourMinuteString(data.arrival, data.destination.timeZone)}
+              {DateUtils.getHourMinuteString(data.arrival)}
               {timeZoneDelta && (<span className={css.TimeZoneDelta}>{timeZoneDelta}</span>)}
             </strong>
             <span>{`${data.destination.cityName} ${data.destination.code}`}</span>
@@ -123,7 +127,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
         </div>
 
         <div className={css.TravelTime}>
-          <strong>{Utils.getTimeDelta(data.departure, data.arrival)}</strong>
+          <strong>{DateUtils.getTimeDelta(data.departure, data.arrival)}</strong>
           <span>Travel time</span>
         </div>
 

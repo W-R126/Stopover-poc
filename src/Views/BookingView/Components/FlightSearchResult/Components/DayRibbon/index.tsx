@@ -3,6 +3,7 @@ import React from 'react';
 import css from './DayRibbon.module.css';
 import { AltOfferModel } from '../../../../../../Models/OfferModel';
 import Utils from '../../../../../../Utils';
+import DateUtils from '../../../../../../DateUtils';
 
 interface DayRibbonProps {
   className?: string;
@@ -26,7 +27,7 @@ export default function DayRibbon({
   return (
     <div className={classList.join(' ')}>
       {altOffers.map((altOffer, idx) => {
-        const selected = Utils.compareDatesSimple(selectedDate, altOffer.departure);
+        const selected = DateUtils.compareDatesSimple(selectedDate, altOffer.departure);
 
         return (
           <div

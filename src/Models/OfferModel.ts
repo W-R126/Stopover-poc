@@ -1,4 +1,5 @@
 import { AirportModel } from './AirportModel';
+import { CabinClassEnum } from '../Enums/CabinClassEnum';
 
 export interface SegmentModel {
   arrival: Date;
@@ -14,6 +15,24 @@ export interface SegmentModel {
     flightNumber: number;
     operatingAirlineCode: string;
   };
+}
+
+export function parseSegment(segment: { [key: string]: any }): SegmentModel | undefined {
+  try {
+    return {
+      arrival: new Date(segment.arrival),
+      departure: new Date(segment.departure),
+      bookingClass: segment.bookingClass,
+      cabinClass: segment.cabinClass,
+      destination: segment.destination,
+      origin: segment.origin,
+      equipment: segment.equipment,
+      flight: segment.flight,
+      milesEarned: segment.milesEarned,
+    };
+  } catch (err) {
+    return undefined;
+  }
 }
 
 export interface AltOfferModel {
@@ -34,12 +53,51 @@ export interface OfferModel {
     milesEarned: number;
     segments: SegmentModel[];
   };
+  departure: Date;
+  arrival: Date;
+  origin: AirportModel;
+  destination: AirportModel;
   soldout: boolean;
   total: {
     amount: number;
     tax: number;
     currency: string;
   };
+}
+
+export function parseOffer(offer?: { [key: string]: any }): OfferModel | undefined {
+  if (!offer) {
+    return undefined;
+  }
+
+  try {
+    const segments: (SegmentModel | undefined)[] = offer.itineraryPart.segments.map(
+      (segment: { [key: string]: any }) => parseSegment(segment),
+    );
+
+    if (segments.indexOf(undefined) !== -1) {
+      throw new Error();
+    }
+
+    return {
+      basketHash: offer.basketHash,
+      brandLabel: offer.brandLabel,
+      cabinClass: offer.cabinClass as CabinClassEnum,
+      destination: offer.destination,
+      origin: offer.origin,
+      departure: new Date(offer.departure),
+      arrival: new Date(offer.arrival),
+      soldout: offer.soldout,
+      total: offer.total,
+      itineraryPart: {
+        bookingClass: offer.itineraryPart.bookingClass,
+        milesEarned: offer.itineraryPart.milesEarned,
+        segments: segments as SegmentModel[],
+      },
+    };
+  } catch (err) {
+    return undefined;
+  }
 }
 
 export interface GroupedOfferModel {

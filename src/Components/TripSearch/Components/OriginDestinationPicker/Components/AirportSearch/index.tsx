@@ -14,7 +14,6 @@ interface AirportSearchProps {
   tabIndex: number;
   value?: AirportModel;
   airports: AirportModel[];
-  exclude: AirportModel[];
   onChange: (value?: AirportModel) => void;
 }
 
@@ -30,9 +29,8 @@ export default class AirportSearch extends React.Component<
   AirportSearchProps,
   AirportSearchState
 > {
-  static readonly defaultProps: Pick<AirportSearchProps, 'tabIndex' | 'exclude'> = {
+  static readonly defaultProps: Pick<AirportSearchProps, 'tabIndex'> = {
     tabIndex: 0,
-    exclude: [],
   };
 
   private readonly showCount = 50;
@@ -195,7 +193,7 @@ export default class AirportSearch extends React.Component<
   }
 
   private get filteredAirports(): AirportModel[] {
-    const { airports, exclude } = this.props;
+    const { airports } = this.props;
     const { query } = this.state;
 
     const queryLower = query.toLowerCase();
@@ -221,7 +219,7 @@ export default class AirportSearch extends React.Component<
       }
     });
 
-    return startsWithMatch.concat(others).filter((airport) => exclude.indexOf(airport) === -1);
+    return startsWithMatch.concat(others);
   }
 
   private select(value?: AirportModel): void {

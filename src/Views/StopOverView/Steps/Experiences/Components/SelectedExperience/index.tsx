@@ -3,6 +3,7 @@ import React from 'react';
 import css from './SelectedExperience.module.css';
 import { ExperienceModel, TimeSlotModel } from '../../../../../../Models/ExperienceModel';
 import Utils from '../../../../../../Utils';
+import DateUtils from '../../../../../../DateUtils';
 
 interface SelectedExperienceProps {
   className?: string;
@@ -92,7 +93,7 @@ export default class SelectedExperience extends React.Component<
     document.body.appendChild(this.clone);
   }
 
-  private onDragEnd(e: React.DragEvent<HTMLDivElement>): void {
+  private onDragEnd(): void {
     const selfRef = this.selfRef.current;
 
     if (!(this.clone && selfRef)) {
@@ -193,9 +194,9 @@ export default class SelectedExperience extends React.Component<
                       ) === -1}
                     />
                     <label htmlFor={id}>
-                      {`${Utils.getHourMinuteString(start)}${
+                      {`${DateUtils.getHourMinuteString(start)}${
                         end
-                          ? ` - ${Utils.getHourMinuteString(end)}`
+                          ? ` - ${DateUtils.getHourMinuteString(end)}`
                           : ''
                       }`}
                     </label>

@@ -9,6 +9,17 @@ import MainMenu from './Content/MainMenu';
 import Common from './Content/Common';
 
 export default class ContentService extends BaseService {
+  locale = 'en-GB';
+
+  currency = 'AED';
+
+  constructor(locale = 'en-GB', currency = 'AED', baseURL?: string) {
+    super(baseURL);
+
+    this.locale = locale;
+    this.currency = currency;
+  }
+
   async get(resource: string): Promise<any> {
     return this.createRequest(resource, async () => {
       let data;

@@ -32,8 +32,17 @@
   align-items: center;
 }
 
-.Items > *:not(:first-child) {
+.Items > *.Item:not(:first-child) {
   margin-left: 16px;
+}
+
+.Details {
+  display: grid;
+  grid-template-columns:
+    max-content
+    max-content;
+  gap: 0 8px;
+  align-self: center;
 }
 
 .Total {

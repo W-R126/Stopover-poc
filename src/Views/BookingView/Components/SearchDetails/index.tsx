@@ -3,25 +3,31 @@ import React from 'react';
 import css from './SearchDetails.module.css';
 import switchDirection from '../../../../Assets/Images/switch.svg';
 import arrowRight from '../../../../Assets/Images/arrow-right.svg';
-import { TripSearchData } from '../../../../Components/TripSearch/TripSearchData';
 import { TripTypeEnum } from '../../../../Enums/TripTypeEnum';
+import { TripModel } from '../../../../Models/TripModel';
+import ContentService from '../../../../Services/ContentService';
 
 interface SearchDetailsProps {
-  locale: string;
-  data: TripSearchData;
+  contentService: ContentService;
+  trip: TripModel;
   toggleEdit: () => void;
   className?: string;
 }
 
 export default function SearchDetails({
-  data,
-  locale,
+  trip,
+  contentService,
   toggleEdit,
   className,
 }: SearchDetailsProps): JSX.Element {
-  const { origin, destination } = data;
-  const { outbound, inbound } = data;
-  const { passengers } = data;
+  const { passengers } = trip;
+  const { origin, destination, outbound } = trip.legs[0];
+
+  let inbound;
+
+  if (trip.type === TripTypeEnum.roundTrip) {
+    inbound = trip.legs[1].outbound;
+  }
 
   const passengerCount = passengers.adults + passengers.children + passengers.infants;
   const classList = [css.SearchDetails];
@@ -40,8 +46,8 @@ export default function SearchDetails({
           </span>
         )}
         <img
-          src={data.tripType === TripTypeEnum.return ? switchDirection : arrowRight}
-          alt={data.tripType === TripTypeEnum.return ? 'Round trip' : 'One way'}
+          src={trip.type === TripTypeEnum.roundTrip ? switchDirection : arrowRight}
+          alt={trip.type === TripTypeEnum.roundTrip ? 'Round trip' : 'One way'}
         />
         {destination && (
           <span className="destination">
@@ -52,11 +58,17 @@ export default function SearchDetails({
       </span>
       <span className="dates">
         {`${
-          outbound && outbound.toLocaleDateString(locale, { month: 'long', day: 'numeric' })
+          outbound && outbound.toLocaleDateString(
+            contentService.locale,
+            { month: 'long', day: 'numeric' },
+          )
         }${
-          (data.tripType === TripTypeEnum.return && inbound) ? ` to ${
-            inbound.toLocaleDateString(locale, { month: 'long', day: 'numeric' })
-          }` : ''
+          inbound
+            ? ` to ${inbound.toLocaleDateString(
+              contentService.locale,
+              { month: 'long', day: 'numeric' },
+            )}`
+            : ''
         }`}
       </span>
       <span className="passengers">

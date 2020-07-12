@@ -133,6 +133,10 @@
   border-color: transparent;
 }
 
+.SelectedExperiences.ShowDropHint > * {
+  pointer-events: none;
+}
+
 .SelectedExperiences.ShowDropHint > *:not(.DropHint) {
   visibility: hidden;
 }
@@ -143,10 +147,6 @@
 
 .SelectedExperiences.ShowDropHint.Hover > .DropHint {
   color: #fff;
-}
-
-.SelectedExperiences.ShowDropHint > * {
-  pointer-events: none;
 }
 
 .SelectedExperience:not(:first-child) {

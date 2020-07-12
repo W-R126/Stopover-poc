@@ -7,8 +7,8 @@ import { ExperienceModel } from '../../../../Models/ExperienceModel';
 import Experience from './Components/Experience';
 import MockExperiences from './MockExperiences';
 import { ExperienceCategoryEnum } from '../../../../Enums/ExperienceCategoryEnum';
-import Utils from '../../../../Utils';
 import SelectedExperience from './Components/SelectedExperience';
+import DateUtils from '../../../../DateUtils';
 
 type ExperienceDate = {
   date: Date;
@@ -45,7 +45,7 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
     const { startDate, endDate } = this.props;
 
     const experienceDates: ExperienceDate[] = [];
-    const daysDelta = Utils.getDaysDelta(startDate, endDate);
+    const daysDelta = DateUtils.getDaysDelta(startDate, endDate);
 
     for (let i = 0; i <= daysDelta; i += 1) {
       const date = new Date(startDate);

@@ -5,17 +5,17 @@ import adultsIcon from '../../../../Assets/Images/passenger-type-adult.svg';
 import childrenIcon from '../../../../Assets/Images/passenger-type-child.svg';
 import infantsIcon from '../../../../Assets/Images/passenger-type-infant.svg';
 import AmountPicker from './Components/AmountPicker';
-import { PassengerPickerData } from './PassengerPickerData';
 import Button from '../../../UI/Button';
+import { GuestsModel } from '../../../../Models/GuestsModel';
 
 interface PassengerPickerProps {
   id?: string;
   className?: string;
   wrapperClassName?: string;
   style?: React.CSSProperties;
-  data: PassengerPickerData;
+  data: GuestsModel;
   tabIndex: number;
-  onChange: (data: PassengerPickerData) => void;
+  onChange: (data: GuestsModel) => void;
 }
 
 interface PassengerPickerState {

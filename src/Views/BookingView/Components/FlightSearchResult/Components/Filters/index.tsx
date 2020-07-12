@@ -7,6 +7,7 @@ import Select from '../../../../../../Components/UI/Select';
 import Option from '../../../../../../Components/UI/Select/Option';
 import { GroupedOfferModel, OfferModel } from '../../../../../../Models/OfferModel';
 import Utils from '../../../../../../Utils';
+import DateUtils from '../../../../../../DateUtils';
 
 export interface PriceOptionItem {
   value: any;
@@ -320,8 +321,8 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
 
   private departureRangeFormat(date: Date): string {
     const { offers } = this.props;
-    if (!offers) { return Utils.getFullDateString(date); }
-    return Utils.getFullDateString(date, offers[0].origin.timeZone);
+    if (!offers) { return DateUtils.getFullDateString(date); }
+    return DateUtils.getFullDateString(date);
   }
 
   private handleChangePriceOption(value: string): void {
@@ -441,7 +442,7 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
                 ? (<span>Any</span>)
                 : (
                   <span className={css.ColorLabel}>
-                    {`Under ${Utils.getTimeDeltaFromMs(duration)}`}
+                    {`Under ${DateUtils.getTimeDeltaFromMs(duration)}`}
                   </span>
                 )}
             </label>
@@ -452,7 +453,7 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
                 : durationSpan.max + this.durationStep}
               value={duration}
               step={this.durationStep}
-              valueFormatter={(value): string => Utils.getTimeDeltaFromMs(value)}
+              valueFormatter={(value): string => DateUtils.getTimeDeltaFromMs(value)}
               onChange={(nextDuration): void => {
                 this.setState({
                   duration: nextDuration,

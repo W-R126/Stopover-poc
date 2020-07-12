@@ -40,8 +40,8 @@ export default class TripTypePicker extends React.Component<TripTypePickerProps,
           <Radio
             id="trip-type-return"
             name="trip-type"
-            checked={value === TripTypeEnum.return}
-            value={TripTypeEnum.return}
+            checked={value === TripTypeEnum.roundTrip}
+            value={TripTypeEnum.roundTrip}
             onChange={this.onChange}
           >
             Return
@@ -51,22 +51,11 @@ export default class TripTypePicker extends React.Component<TripTypePickerProps,
           <Radio
             id="trip-type-one-way"
             name="trip-type"
-            checked={value === TripTypeEnum.oneway}
-            value={TripTypeEnum.oneway}
+            checked={value === TripTypeEnum.oneWay}
+            value={TripTypeEnum.oneWay}
             onChange={this.onChange}
           >
             One way
-          </Radio>
-        </li>
-        <li>
-          <Radio
-            id="trip-type-multi-city"
-            name="trip-type"
-            checked={value === TripTypeEnum.multicity}
-            value={TripTypeEnum.multicity}
-            onChange={this.onChange}
-          >
-            Multi city
           </Radio>
         </li>
       </ul>

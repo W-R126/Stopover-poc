@@ -3,7 +3,7 @@ import React from 'react';
 import css from './Segment.module.css';
 import tailIcon from '../../../../../../../../../../Assets/Images/tail.webp';
 import { SegmentModel } from '../../../../../../../../../../Models/OfferModel';
-import Utils from '../../../../../../../../../../Utils';
+import DateUtils from '../../../../../../../../../../DateUtils';
 
 interface SegmentProps {
   className?: string;
@@ -32,18 +32,18 @@ export default function Segment({
       </span>
       <span className={css.Location}>
         <span className={css.Time}>
-          {Utils.getHourMinuteString(segment.departure, segment.origin.timeZone)}
+          {DateUtils.getHourMinuteString(segment.departure)}
         </span>
         <span className={css.Airport}>
           {`${segment.origin.name} (${segment.origin.code})`}
         </span>
       </span>
       <span className={css.TravelTime}>
-        {`Travel time: ${Utils.getTimeDelta(segment.departure, segment.arrival)}`}
+        {`Travel time: ${DateUtils.getTimeDelta(segment.departure, segment.arrival)}`}
       </span>
       <span className={css.Location}>
         <span className={css.Time}>
-          {Utils.getHourMinuteString(segment.arrival, segment.destination.timeZone)}
+          {DateUtils.getHourMinuteString(segment.arrival)}
         </span>
         <span className={css.Airport}>
           {`${segment.destination.name} (${segment.destination.code})`}
@@ -59,7 +59,7 @@ export default function Segment({
       {layoverSegment && (
         <span className={css.Layover}>
           <span>
-            {`${Utils.getTimeDelta(segment.arrival, layoverSegment.departure)} layover`}
+            {`${DateUtils.getTimeDelta(segment.arrival, layoverSegment.departure)} layover`}
           </span>
           <span>
             {`${layoverSegment.origin.cityName} (${layoverSegment.origin.code})`}

@@ -249,7 +249,7 @@ export interface DOffer {
   shoppingBasketHashCode: number;
   brandId: string;
   soldout: boolean;
-  bundlePrice: BundlePrice;
+  bundlePrice: {};
   availableObFees: any[];
   seatsRemaining: SeatsRemaining;
   cabinClass: string;
@@ -260,9 +260,6 @@ export interface DOffer {
   totalMandatoryObFees: Fare;
   fare: Fare;
   itineraryPart?: ItineraryPart[];
-}
-
-export interface BundlePrice {
 }
 
 export interface Fare {

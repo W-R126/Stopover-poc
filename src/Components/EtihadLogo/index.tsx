@@ -46,7 +46,6 @@ export default function EtihadLogo({
     classList.push(css.BrandVisible);
   }
 
-
   return (
     <div className={classList.join(' ')}>
       <div className={css.Images}>

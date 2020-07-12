@@ -71,15 +71,18 @@ export default class StopOverService extends BaseService {
 
       SessionManager.setSessionHeaders(result.headers);
 
-      if (result.status === 200) {
-        return {
-          airSearchResults: result.data.airSearchResults,
-          hotelAvailabilityInfos: result.data.hotelAvailabilityInfos,
-        };
+      if (result.status !== 200) {
+        return undefined;
       }
-      return undefined;
-    } catch (err) {
 
+      const { airSearchResults, hotelAvailabilityInfos } = result.data;
+
+      return {
+        airSearchResults,
+        hotelAvailabilityInfos,
+      };
+    } catch (err) {
+      //
     }
 
     return undefined;

@@ -5,74 +5,65 @@ import commonCss from '../../common.module.css';
 import css from './BookingView.module.css';
 import TripSearch from '../../Components/TripSearch';
 import { TripTypeEnum } from '../../Enums/TripTypeEnum';
-import { CabinClassEnum } from '../../Enums/CabinClassEnum';
 import AirportService from '../../Services/AirportService';
-import {
-  TripSearchData,
-  validateTripSearchData,
-  getTripSearchDelta,
-  copyTripSearchData,
-} from '../../Components/TripSearch/TripSearchData';
 import Progress, { ProgressStep } from './Components/Progress';
 import SearchDetails from './Components/SearchDetails';
 import FlightSearchResult from './Components/FlightSearchResult';
 import FlightService from '../../Services/FlightService';
-import Utils from '../../Utils';
-import ShoppingCart from './Components/ShoppingCart';
 import {
   OfferModel,
   GroupedOfferModel,
   AltOfferModel,
-  findOfferFromHash,
 } from '../../Models/OfferModel';
-import { AirportModel } from '../../Models/AirportModel';
 import StopOverService from '../../Services/StopOverService';
 import StopOverPrompt from '../../Components/StopOverPrompt';
+import {
+  TripModel,
+  copyTrip,
+  isTripValid,
+  tripToUrl,
+  getTripFromQuery,
+} from '../../Models/TripModel';
+import ShoppingCart from '../../Components/ShoppingCart';
+import FlightItem from '../../Components/ShoppingCart/Items/FlightItem';
+import ContentService from '../../Services/ContentService';
+import AppState from '../../AppState';
 
-interface BookingViewProps extends RouteComponentProps<{
-  originCode: string;
-  destinationCode: string;
-  cabinClass: string;
-  adults: string;
-  children: string;
-  infants: string;
-  tripType: string;
-  outbound: string;
-  inbound?: string;
-}> {
+interface BookingViewProps extends RouteComponentProps {
   stopOverService: StopOverService;
   airportService: AirportService;
   flightService: FlightService;
-  locale: string;
+  contentService: ContentService;
 }
 
 interface BookingState {
-  tripSearchData: TripSearchData;
+  trip: TripModel;
   editing: boolean;
   outboundOffers?: {
     offers: GroupedOfferModel[];
     altOffers: AltOfferModel[];
   };
-  outboundOfferHash?: number;
+  outboundOffer?: OfferModel;
 }
 
 class BookingView extends React.Component<BookingViewProps, BookingState> {
-  private readonly outboundOfferKey = 'Booking.outboundOfferHash';
-
   private readonly flightSearchResultRef = React.createRef<FlightSearchResult>();
 
   private readonly stopOverPromptRef = React.createRef<StopOverPrompt>();
 
+  private offersReq?: Promise<{
+    altOffers: AltOfferModel[];
+    offers: GroupedOfferModel[];
+  }>;
+
   constructor(props: BookingViewProps) {
     super(props);
 
-    const tripSearchData = this.getDataFromParams(props);
-
     this.state = {
       outboundOffers: undefined,
-      tripSearchData,
+      trip: copyTrip(),
       editing: false,
-      outboundOfferHash: Utils.sessionStore.get<number>(this.outboundOfferKey),
+      outboundOffer: AppState.outboundOffer,
     };
 
     this.onOutboundDateChange = this.onOutboundDateChange.bind(this);
@@ -85,48 +76,29 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
   }
 
   async componentDidMount(): Promise<void> {
-    const { airportService, match } = this.props;
-    const { params } = match;
-    const { tripSearchData } = this.state;
+    const { location, airportService } = this.props;
 
-    const originReq = airportService.getAirport(params.originCode);
-    const destinationReq = airportService.getAirport(params.destinationCode);
+    const trip = await getTripFromQuery(location, airportService);
 
-    tripSearchData.origin = await originReq;
-    tripSearchData.destination = await destinationReq;
-
-    const newState: Partial<BookingState> = { tripSearchData };
-
-    if (!validateTripSearchData(tripSearchData)) {
-      newState.editing = true;
-    } else {
-      this.searchOffers(tripSearchData);
-    }
-
-    this.setState(newState as BookingState);
+    this.setState({ trip });
+    this.searchOffers(trip);
   }
 
-  private onTripSearch(data: TripSearchData): void {
+  componentWillUnmount(): void {
+    this.offersReq = undefined;
+  }
+
+  private onTripSearch(nextTrip: TripModel): void {
     const { history } = this.props;
-    const { tripSearchData } = this.state;
 
-    Utils.sessionStore.remove(this.outboundOfferKey);
-
-    const delta = getTripSearchDelta(tripSearchData, data);
+    this.onOutboundOfferChange(undefined);
 
     this.setState({
-      tripSearchData: data,
+      trip: nextTrip,
       editing: false,
-      outboundOfferHash: undefined,
     });
 
-    if (
-      Object.keys(delta).length > 0
-      && !(Object.keys(delta).length === 1 && delta.cabinClass !== undefined)
-    ) {
-      // Only search if cabin class was not the only thing that changed.
-      this.searchOffers(data);
-    } else if (this.flightSearchResultRef.current) {
+    if (this.flightSearchResultRef.current) {
       // Collapse all flight result details.
       this.flightSearchResultRef.current.collapseAll();
     }
@@ -137,39 +109,38 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       this.flightSearchResultRef.current.clearFilterState();
     }
 
-    history.replace(Utils.getBookingUrl(data));
+    history.replace(`/booking?${tripToUrl(nextTrip)}`);
+    this.searchOffers(nextTrip);
   }
 
-  private onOutboundDateChange(outbound: Date): void {
-    const { tripSearchData } = this.state;
-    const { inbound } = tripSearchData;
-    const data = copyTripSearchData(tripSearchData);
+  private onOutboundDateChange(nextOutbound: Date): void {
+    const { trip } = this.state;
+    const nextTrip = copyTrip(trip);
 
-    if (inbound && Utils.compareDates(inbound, outbound) === -1) {
-      // Span is negative, update end to match start
-      data.inbound = new Date(outbound);
+    nextTrip.legs[0].outbound = nextOutbound;
+
+    if (!isTripValid(nextTrip)) {
+      return;
     }
 
-    data.outbound = outbound;
-
-    this.onTripSearch(data);
+    this.onTripSearch(nextTrip);
   }
 
   private onOutboundOfferChange(outboundOffer?: OfferModel): void {
-    Utils.sessionStore.set(this.outboundOfferKey, outboundOffer?.basketHash);
+    AppState.outboundOffer = outboundOffer;
 
-    this.setState({ outboundOfferHash: outboundOffer?.basketHash });
+    this.setState({ outboundOffer });
   }
 
   private async onSelectInbound(): Promise<void> {
     const { stopOverService, history } = this.props;
-    const { outboundOfferHash, tripSearchData } = this.state;
+    const { outboundOffer, trip } = this.state;
 
-    if (outboundOfferHash === undefined) {
+    if (outboundOffer === undefined) {
       return;
     }
 
-    const result = await stopOverService.getStopOver(outboundOfferHash);
+    const result = await stopOverService.getStopOver(outboundOffer.basketHash);
 
     if (!(result && this.stopOverPromptRef.current)) {
       history.push('/select-inbound');
@@ -181,8 +152,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       result.customerSegment,
       result.days,
       result.airportCode,
-      tripSearchData.outbound as Date,
-      tripSearchData.tripType === TripTypeEnum.return ? tripSearchData.inbound : undefined,
+      trip,
     );
   }
 
@@ -193,7 +163,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     days?: number,
   ): Promise<void> {
     const { history, stopOverService } = this.props;
-    const { outboundOfferHash } = this.state;
+    const { outboundOffer } = this.state;
 
     if (!this.stopOverPromptRef.current) {
       return;
@@ -201,20 +171,23 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
 
     await this.stopOverPromptRef.current.hide();
 
-    await stopOverService.acceptStopOver(
-      outboundOfferHash as number,
-      airportCode as string,
-      days as number,
-      outbound as Date,
-      inbound,
-    );
+    if (outboundOffer) {
+      // TODO: Save result in state.
+      await stopOverService.acceptStopOver(
+        outboundOffer.basketHash,
+        airportCode as string,
+        days as number,
+        outbound as Date,
+        inbound,
+      );
+    }
 
     history.push('/stopover/hotels');
   }
 
   private async onRejectStopOver(airportCode?: string): Promise<void> {
     const { history, stopOverService } = this.props;
-    const { tripSearchData } = this.state;
+    const { trip } = this.state;
 
     if (!this.stopOverPromptRef.current) {
       return;
@@ -226,68 +199,39 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       await stopOverService.rejectStopOver(airportCode);
     }
 
-    if (tripSearchData.tripType === TripTypeEnum.return) {
+    if (trip.type === TripTypeEnum.roundTrip) {
       history.push('/select-inbound');
     } else {
       history.push('/passenger-details');
     }
   }
 
-  private getDataFromParams(props: BookingViewProps): TripSearchData {
-    const { match } = props;
-    const { params } = match;
-
-    const outbound = params.outbound ? new Date(params.outbound) : undefined;
-    let inbound = params.inbound ? new Date(params.inbound) : undefined;
-
-    if (!inbound && outbound) {
-      inbound = new Date(outbound);
-    } else if (inbound && outbound && Utils.compareDates(inbound, outbound) === -1) {
-      inbound = new Date(outbound);
-    }
-
-    return {
-      tripType: params.tripType as TripTypeEnum,
-      passengers: {
-        adults: Number.parseInt(params.adults, 10),
-        children: Number.parseInt(params.children, 10),
-        infants: Number.parseInt(params.infants, 10),
-      },
-      cabinClass: params.cabinClass as CabinClassEnum,
-      origin: undefined,
-      destination: undefined,
-      outbound,
-      inbound,
-      bookWithMiles: false,
-    };
-  }
-
-  private async searchOffers(data: TripSearchData): Promise<void> {
+  private async searchOffers(trip: TripModel): Promise<void> {
     const { flightService } = this.props;
 
-    // Reset in- and outbound offers.
-    await new Promise(
-      (resolve) => this.setState({ outboundOffers: undefined }, resolve),
+    if (!isTripValid(trip)) {
+      this.setState({ editing: true });
+
+      return;
+    }
+
+    AppState.tripSearch = trip;
+
+    // Reset offers.
+    await new Promise((resolve) => this.setState({ outboundOffers: undefined }, resolve));
+
+    // Ensure that older requests don't trigger a rerender when done.
+    const offersReq = flightService.getOffers(
+      trip.passengers,
+      trip.legs,
     );
 
-    const outboundOffersReq = flightService.getOffers(
-      data.passengers,
-      {
-        departure: data.outbound as Date,
-        destination: data.destination as AirportModel,
-        origin: data.origin as AirportModel,
-      },
-      data.tripType !== TripTypeEnum.return
-        ? undefined
-        : {
-          departure: data.inbound as Date,
-          destination: data.origin as AirportModel,
-          origin: data.destination as AirportModel,
-        },
-    );
-
-    const outboundOffers = await outboundOffersReq;
-    this.setState({ outboundOffers });
+    this.offersReq = offersReq;
+    this.offersReq.then((outboundOffers) => {
+      if (this.offersReq === offersReq) {
+        this.setState({ outboundOffers });
+      }
+    });
   }
 
   private toggleEdit(): void {
@@ -297,21 +241,15 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
   }
 
   render(): JSX.Element {
-    const { locale, airportService } = this.props;
+    const { contentService, airportService } = this.props;
     const {
       outboundOffers,
-      tripSearchData,
+      trip,
       editing,
-      outboundOfferHash,
+      outboundOffer,
     } = this.state;
 
-    const {
-      cabinClass,
-      outbound,
-      origin,
-      destination,
-    } = tripSearchData;
-    const outboundOffer = findOfferFromHash(outboundOffers?.offers, outboundOfferHash);
+    const { outbound, origin, destination } = trip.legs[0];
 
     return (
       <div className={css.BookingView}>
@@ -337,9 +275,9 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
 
                 <TripSearch
                   className={css.TripSearch}
-                  locale={locale}
+                  contentService={contentService}
                   airportService={airportService}
-                  data={tripSearchData}
+                  trip={trip}
                   onSearch={this.onTripSearch}
                 />
               </>
@@ -347,8 +285,8 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
             : (
               <SearchDetails
                 className={css.SearchDetails}
-                data={tripSearchData}
-                locale={locale}
+                trip={trip}
+                contentService={contentService}
                 toggleEdit={this.toggleEdit}
               />
             )}
@@ -357,7 +295,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
             <>
               <h1 className={css.SelectFlightHeader}>Select outbound flight</h1>
               <FlightSearchResult
-                cabinClass={cabinClass}
+                cabinClass={trip.cabinClass}
                 ref={this.flightSearchResultRef}
                 origin={origin}
                 destination={destination}
@@ -373,10 +311,15 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
           )}
         </div>
 
-        <ShoppingCart
-          outboundOffer={outboundOffer}
-          onSelectInbound={this.onSelectInbound}
-        />
+        <ShoppingCart proceedLabel="Select inbound flight" proceedAction={this.onSelectInbound}>
+          {outboundOffer && (
+            <FlightItem
+              price={outboundOffer.total.amount}
+              item={outboundOffer}
+              contentService={contentService}
+            />
+          )}
+        </ShoppingCart>
       </div>
     );
   }

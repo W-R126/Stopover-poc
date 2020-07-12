@@ -4,15 +4,16 @@ import Month from './Components/Month';
 
 import css from './Calendar.module.css';
 import navigationArrow from '../../../../../../Assets/Images/navigation-arrow.svg';
-import { CalendarData } from './CalendarData';
+import ContentService from '../../../../../../Services/ContentService';
 
 interface CalendarProps {
-  data: CalendarData;
+  start?: Date;
+  end?: Date;
   span: boolean;
   maxDate: Date;
   minDate: Date;
-  locale: string;
-  onChange: (data: CalendarData) => void;
+  contentService: ContentService;
+  onChange: (start?: Date, end?: Date) => void;
   className?: string;
 }
 
@@ -26,9 +27,8 @@ const today = new Date();
 today.setHours(0, 0, 0, 0);
 
 export default class Calendar extends React.Component<CalendarProps, CalendarState> {
-  static readonly defaultProps: Pick<CalendarProps, 'span' | 'maxDate' | 'minDate' | 'locale'> = {
+  static readonly defaultProps: Pick<CalendarProps, 'span' | 'maxDate' | 'minDate'> = {
     span: true,
-    locale: 'en-US',
     minDate: new Date(today),
     maxDate: new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()),
   };
@@ -37,7 +37,7 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
     super(props);
 
     this.state = {
-      startMonth: this.getStartMonth(props.data.start),
+      startMonth: this.getStartMonth(props.start),
       displayTwoMonths: true,
       selecting: false,
     };
@@ -55,13 +55,21 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
     this.onResize();
   }
 
+  componentDidUpdate(prevProps: CalendarProps): void {
+    const { span, onChange, start } = this.props;
+
+    if (span !== prevProps.span && !span) {
+      onChange(start, undefined);
+    }
+  }
+
   componentWillUnmount(): void {
     window.removeEventListener('resize', this.onResize);
   }
 
   private onResize(): void {
     const { displayTwoMonths } = this.state;
-    const { data } = this.props;
+    const { start } = this.props;
 
     if (displayTwoMonths && window.innerWidth <= 630) {
       this.setState({ displayTwoMonths: false });
@@ -71,34 +79,32 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
       return;
     }
 
-    if (data.start) {
-      this.goToMonth(data.start);
+    if (start) {
+      this.goToMonth(start);
     }
   }
 
-  private onSelectionStart(start: Date): void {
-    const { onChange, data } = this.props;
-
-    data.end = undefined;
-    data.start = start;
-
-    onChange(data);
-    this.setState({ selecting: true });
-  }
-
-  private onSelectionEnd(end: Date): void {
+  private onSelectionStart(nextStart: Date): void {
     const { onChange } = this.props;
-    let { data } = this.props;
 
-    data.end = end;
+    this.setState({ selecting: true });
 
-    if ((data.start && data.end) && data.end < data.start) {
-      // Swap start and end if span is negative.
-      data = { start: data.end, end: data.start };
-    }
+    onChange(nextStart, undefined);
+  }
 
-    onChange(data);
+  private onSelectionEnd(nextEnd: Date): void {
+    const { onChange, start, span } = this.props;
+
     this.setState({ selecting: false });
+
+    if (!span) {
+      onChange(nextEnd, undefined);
+    } else if (start && nextEnd < start) {
+      // Swap start and end if span is negative.
+      onChange(nextEnd, start);
+    } else {
+      onChange(start, nextEnd);
+    }
   }
 
   private getStartMonth(start?: Date): Date {
@@ -132,7 +138,7 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
 
     this.setState({ selecting: false });
 
-    onChange({ start: undefined, end: undefined });
+    onChange(undefined, undefined);
   }
 
   goToMonth(newStartMonth: Date): void {
@@ -151,9 +157,10 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
 
   render(): JSX.Element {
     const {
-      data,
+      start,
+      end,
       span,
-      locale,
+      contentService,
       minDate,
       maxDate,
       className,
@@ -190,9 +197,9 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
           selecting={selecting}
           month={month1}
           span={span}
-          locale={locale}
-          start={data.start}
-          end={data.end}
+          contentService={contentService}
+          start={start}
+          end={end}
           onSelectionStart={this.onSelectionStart}
           onSelectionEnd={this.onSelectionEnd}
         />
@@ -202,9 +209,9 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
             selecting={selecting}
             month={month2}
             span={span}
-            locale={locale}
-            start={data.start}
-            end={data.end}
+            contentService={contentService}
+            start={start}
+            end={end}
             onSelectionStart={this.onSelectionStart}
             onSelectionEnd={this.onSelectionEnd}
           />

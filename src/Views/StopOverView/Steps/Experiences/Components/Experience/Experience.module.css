@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns:
     [recommended] max-content
-    [dragHint] max-content
+    [draghint] max-content
     [info] 1fr;
   border-radius: 8px;
   overflow: hidden;

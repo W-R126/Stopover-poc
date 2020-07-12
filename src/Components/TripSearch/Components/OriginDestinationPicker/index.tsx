@@ -6,12 +6,12 @@ import { AirportModel } from '../../../../Models/AirportModel';
 import AirportSearch from './Components/AirportSearch';
 import AirportService from '../../../../Services/AirportService';
 import Utils from '../../../../Utils';
-import { OriginDestinationPickerData } from './OriginDestinationPickerData';
 
 interface OriginDestinationPickerProps {
-  data: OriginDestinationPickerData;
+  origin?: AirportModel;
+  destination?: AirportModel;
   airportService: AirportService;
-  onChange: (data: OriginDestinationPickerData) => void;
+  onChange: (origin?: AirportModel, destination?: AirportModel) => void;
   className?: string;
 }
 
@@ -49,53 +49,51 @@ export default class OriginDestinationPicker extends React.Component<
   }
 
   private onOriginChange(origin?: AirportModel): void {
-    const { data, onChange } = this.props;
-    data.origin = origin;
+    const { destination, onChange } = this.props;
 
-    onChange(data);
+    onChange(origin, destination);
   }
 
   private onDestinationChange(destination?: AirportModel): void {
-    const { data, onChange } = this.props;
-    data.destination = destination;
+    const { origin, onChange } = this.props;
 
-    onChange(data);
+    onChange(origin, destination);
   }
 
   private setOriginAirportFromPosition(position: Position): void {
+    const { origin } = this.props;
+
+    if (origin) {
+      return;
+    }
+
     const { longitude: long, latitude: lat } = position.coords;
-    const { data } = this.props;
     const { airports } = this.state;
 
-    let origin = airports[0];
-    let distance = Utils.getDistance(origin.coordinates, { long, lat });
+    let nextOrigin = airports[0];
+    let distance = Utils.getDistance(nextOrigin.coordinates, { long, lat });
 
     airports.forEach((airport) => {
       const nextDistance = Utils.getDistance(airport.coordinates, { long, lat });
 
       if (nextDistance < distance) {
         distance = nextDistance;
-        origin = airport;
+        nextOrigin = airport;
       }
     });
 
-    if (!data.origin) {
-      this.onOriginChange(origin);
-    }
+    this.onOriginChange(nextOrigin);
   }
 
   private swapDirections(): void {
-    const { data, onChange } = this.props;
-    const { origin, destination } = data;
-    data.origin = destination;
-    data.destination = origin;
+    const { origin, destination, onChange } = this.props;
 
-    onChange(data);
+    onChange(destination, origin);
   }
 
   render(): JSX.Element {
     const { airports } = this.state;
-    const { data, className } = this.props;
+    const { origin, destination, className } = this.props;
 
     const classList = [css.OriginDestinationPicker];
 
@@ -111,12 +109,11 @@ export default class OriginDestinationPicker extends React.Component<
             className={css.AirportSearch}
             wrapperClassName={css.AirportSearchWrapper}
             focusedClassName={css.AirportSearchFocused}
-            airports={airports}
-            exclude={data.destination ? [data.destination] : []}
+            airports={airports.filter((airport) => airport !== destination)}
             onChange={this.onOriginChange}
             id="trip-origin"
             placeholder="Where are you flying from?"
-            value={data.origin}
+            value={origin}
           />
         </div>
 
@@ -134,12 +131,11 @@ export default class OriginDestinationPicker extends React.Component<
             className={css.AirportSearch}
             wrapperClassName={css.AirportSearchWrapper}
             focusedClassName={css.AirportSearchFocused}
-            airports={airports}
-            exclude={data.origin ? [data.origin] : []}
+            airports={airports.filter((airport) => airport !== origin)}
             onChange={this.onDestinationChange}
             id="trip-destination"
             placeholder="Where are you headed?"
-            value={data.destination}
+            value={destination}
           />
         </div>
       </div>

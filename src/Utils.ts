@@ -1,5 +1,3 @@
-import { TripSearchData } from './Components/TripSearch/TripSearchData';
-import { TripTypeEnum } from './Enums/TripTypeEnum';
 import { CabinClassEnum } from './Enums/CabinClassEnum';
 import { CoordinateModel } from './Models/CoordinateModel';
 
@@ -98,7 +96,7 @@ export default class Utils {
   }
 
   static getDistance(a: CoordinateModel, b: CoordinateModel): number {
-    return Math.sqrt((a.lat - b.lat) ** 2 + (a.long - b.long) ** 2);
+    return Math.hypot(a.lat - b.lat, a.long - b.long);
   }
 
   static formatCurrency(amount: number): string {
@@ -127,132 +125,6 @@ export default class Utils {
     return result.join('');
   }
 
-  static getDaysDelta(date1: Date, date2: Date): number {
-    return Math.floor(Math.abs(date1.valueOf() - date2.valueOf()) / (1000 * 60 * 60 * 24));
-  }
-
-  static getWeekdays(locale: string): string[] {
-    const date = new Date(2020, 4, 24);
-
-    const result: string[] = [];
-
-    for (let i = 0; i < 7; i += 1) {
-      result.push(date.toLocaleDateString(locale, { weekday: 'long' }));
-      date.setDate(date.getDate() + 1);
-    }
-
-    return result;
-  }
-
-  static getTimeDeltaFromMs(timeMs: number): string {
-    const days = Math.floor(timeMs / 86400000);
-    const hours = Math.floor((timeMs - days * 86400000) / 3600000);
-    const minutes = Math.floor((timeMs - (days * 86400000 + hours * 3600000)) / 60000);
-
-    let result = '';
-
-    if (minutes > 0) {
-      result = `${minutes}m`;
-    }
-
-    if (hours > 0) {
-      result = `${hours}h ${result}`;
-    }
-
-    if (days > 0) {
-      result = `${days}d ${result}`;
-    }
-
-    return result;
-  }
-
-  static getTimeDelta(a: Date, b: Date): string {
-    const delta = Math.abs(a.valueOf() - b.valueOf());
-
-    return Utils.getTimeDeltaFromMs(delta);
-  }
-
-  static getTimeZoneDelta(tz1?: string, tz2?: string): string | undefined {
-    if (!(tz1 && tz2)) {
-      return undefined;
-    }
-
-    const date = new Date();
-    const date1 = new Date(date.toLocaleString('sv-SE', { timeZone: tz1 }));
-    const date2 = new Date(date.toLocaleString('sv-SE', { timeZone: tz2 }));
-
-    const timeDeltaMs = date2.valueOf() - date1.valueOf();
-
-    if (timeDeltaMs < 0) {
-      return `-${Utils.getTimeDeltaFromMs(Math.abs(timeDeltaMs))}`;
-    }
-
-    return `+${Utils.getTimeDeltaFromMs(Math.abs(timeDeltaMs))}`;
-  }
-
-  static getHourMinuteString(date: Date, timeZone?: string): string {
-    let [hour, minute] = date.toLocaleTimeString('sv-SE').split(':');
-
-    if (timeZone) {
-      [hour, minute] = date.toLocaleTimeString('sv-SE', { timeZone }).split(':');
-    }
-
-    return `${hour}:${minute}`;
-  }
-
-  static getDateString(date: Date): string {
-    return date.toLocaleDateString('sv-SE');
-  }
-
-  static getFullDateString(date: Date, timeZone?: string): string {
-    let strDate;
-    let strHours;
-    if (timeZone) {
-      strDate = date.toLocaleDateString('sv-SE', { timeZone });
-      strHours = this.getHourMinuteString(date, timeZone);
-    } else {
-      strDate = date.toLocaleDateString('sv-SE');
-      strHours = this.getHourMinuteString(date);
-    }
-    return `${strDate} ${strHours}`;
-  }
-
-  static compareDatesSimple(a: Date, b: Date): boolean {
-    return Utils.compareDates(a, b) === 0;
-  }
-
-  static compareDatesExact(a: Date, b: Date): number {
-    const aVal = a.valueOf();
-    const bVal = b.valueOf();
-
-    if (aVal < bVal) {
-      return -1;
-    }
-
-    if (aVal > bVal) {
-      return 1;
-    }
-
-    return 0;
-  }
-
-  static compareDates(a: Date, b: Date): number {
-    const d1 = new Date(a);
-    const d2 = new Date(b);
-    d1.setHours(0, 0, 0, 0);
-    d2.setHours(0, 0, 0, 0);
-
-    if (d1.valueOf() < d2.valueOf()) {
-      return -1;
-    }
-
-    if (d1.valueOf() > d2.valueOf()) {
-      return 1;
-    }
-
-    return 0;
-  }
-
   static compareCheckIn(a = '00:00:00', b = '00:00:00'): number {
     const aSplit = a.split(':');
     const bSplit = b.split(':');
@@ -265,32 +137,45 @@ export default class Utils {
     return 0;
   }
 
-  static getBookingUrl(data: TripSearchData): string {
-    let result = '/booking';
+  static getMinMax(num: number, min: number, max: number): number {
+    return Math.max(Math.min(num, max), min);
+  }
 
-    result += `/${data.origin?.code ?? ''}`;
-    result += `/${data.destination?.code ?? ''}`;
-    result += `/${CabinClassEnum[data.cabinClass]}`;
-    result += `/${data.passengers.adults}`;
-    result += `/${data.passengers.children}`;
-    result += `/${data.passengers.infants}`;
-    result += `/${TripTypeEnum[data.tripType]}`;
+  static getQueryParams(
+    paramsDef: {
+      [key: string]: {
+        formatter?: (value: string) => any;
+        default?: any;
+      };
+    },
+    searchString: string,
+  ): { [key: string]: any } {
+    const params: { [key: string]: string } = {};
 
-    if (data.outbound) {
-      result += `/${Utils.getDateString(data.outbound)}`;
-    } else {
-      result += '/';
-    }
+    searchString.substr(1).split('&').forEach((kvp) => {
+      const [key, ...value] = kvp.split('=');
 
-    if (data.tripType === TripTypeEnum.return) {
-      if (data.inbound) {
-        result += `/${Utils.getDateString(data.inbound)}`;
-      } else if (data.outbound) {
-        // Inbound is missing, set it to outbound.
-        result += `/${Utils.getDateString(data.outbound)}`;
+      params[key] = value.join('=');
+    });
+
+    const result: { [key: string]: any } = {};
+
+    Object.keys(paramsDef).forEach((key) => {
+      if (Object.keys(params).indexOf(key) === -1) {
+        result[key] = paramsDef[key].default;
+      } else {
+        const { formatter } = paramsDef[key];
+
+        result[key] = formatter ? formatter(params[key]) : params[key];
       }
-    }
+    });
 
     return result;
+  }
+
+  static stringToNumber(value: string, def = 0): number {
+    const result = Number.parseInt(value, 10);
+
+    return Number.isNaN(result) ? def : result;
   }
 }

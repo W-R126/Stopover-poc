@@ -1,0 +1,67 @@
+
+.LeftWrap {
+  background: #f2f2f2;
+  border-radius: 0 0 0 8px;
+  width: 50%;
+  padding: 24px 21px;
+}
+
+.HotelTop {
+  min-height: 95px;
+}
+
+.HotelTop img {
+  display: block;
+  margin: 0 auto 4px;
+}
+
+.HotelTop p {
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 23px;
+  text-align: center;
+  color: #4e4c4a;
+  margin: 0;
+  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+}
+
+.HotelTop .DayDuaration {
+  font-size: 14px;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+  color: #bd8b13;
+}
+
+.HotelTop h4 {
+  text-align: center;
+  color: #bd8b13;
+  font-size: 16px;
+  font-weight: normal;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+}
+
+.FilterWrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.InnerScrollWrap {
+  height: 500px;
+  overflow: auto;
+  margin: 0 -20px;
+  padding: 0 20px;
+}
+
+.InnerScrollWrap::-webkit-scrollbar {
+  width: 10px;
+}
+
+.InnerScrollWrap::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: transparent;
+}
+
+.InnerScrollWrap::-webkit-scrollbar-thumb {
+  background-color: #b8b7b7;
+  border-radius: 10px;
+}

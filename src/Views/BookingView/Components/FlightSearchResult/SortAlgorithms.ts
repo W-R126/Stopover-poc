@@ -1,6 +1,6 @@
 import { GroupedOfferModel } from '../../../../Models/OfferModel';
-import Utils from '../../../../Utils';
 import { CabinClassEnum } from '../../../../Enums/CabinClassEnum';
+import DateUtils from '../../../../DateUtils';
 
 export type SortAlgorithm = (a: GroupedOfferModel, b: GroupedOfferModel) => number;
 
@@ -57,11 +57,11 @@ const SortAlgorithms: {
   firstPrice: SortAlgorithm;
   residencePrice: SortAlgorithm;
 } = {
-  departure: (a: GroupedOfferModel, b: GroupedOfferModel) => Utils.compareDatesExact(
+  departure: (a: GroupedOfferModel, b: GroupedOfferModel) => DateUtils.compareDatesExact(
     a.departure,
     b.departure,
   ),
-  arrival: (a: GroupedOfferModel, b: GroupedOfferModel) => Utils.compareDatesExact(
+  arrival: (a: GroupedOfferModel, b: GroupedOfferModel) => DateUtils.compareDatesExact(
     a.arrival,
     b.arrival,
   ),

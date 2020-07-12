@@ -1,5 +1,4 @@
 export enum TripTypeEnum {
-  return = 'return',
-  oneway = 'oneway',
-  multicity = 'multicity',
+  roundTrip = 'roundTrip',
+  oneWay = 'oneWay',
 }

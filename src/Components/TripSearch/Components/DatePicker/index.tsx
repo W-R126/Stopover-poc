@@ -2,15 +2,16 @@ import React from 'react';
 
 import css from './DatePicker.module.css';
 import Calendar from './Components/Calendar';
-import { CalendarData } from './Components/Calendar/CalendarData';
 import Input from '../../../UI/Input';
 import Button from '../../../UI/Button';
+import ContentService from '../../../../Services/ContentService';
 
 interface DatePickerProps {
-  data: CalendarData;
+  start?: Date;
+  end?: Date;
   span: boolean;
-  locale: string;
-  onChange: (data: CalendarData) => void;
+  contentService: ContentService;
+  onChange: (start?: Date, end?: Date) => void;
   className?: string;
 }
 
@@ -19,8 +20,7 @@ interface DatePickerState {
 }
 
 export default class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
-  static readonly defaultProps: Pick<DatePickerProps, 'span' | 'locale'> = {
-    locale: 'en-US',
+  static readonly defaultProps: Pick<DatePickerProps, 'span'> = {
     span: true,
   };
 
@@ -68,10 +68,10 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
       return '';
     }
 
-    const { locale } = this.props;
+    const { contentService } = this.props;
 
     const day = date.getDate();
-    const month = date.toLocaleDateString(locale, { month: 'short' }).substr(0, 3);
+    const month = date.toLocaleDateString(contentService.locale, { month: 'short' }).substr(0, 3);
     const year = date.getFullYear();
 
     return `${day < 10 ? `0${day}` : day}/${month}/${year}`;
@@ -81,11 +81,11 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
     const { collapsed } = this.state;
 
     if (collapsed) {
-      const { data } = this.props;
+      const { start } = this.props;
 
-      if (this.calendarRef.current && data.start) {
+      if (this.calendarRef.current && start) {
         this.calendarRef.current.goToMonth(
-          new Date(data.start.getFullYear(), data.start.getMonth(), 1),
+          new Date(start.getFullYear(), start.getMonth(), 1),
         );
       }
 
@@ -108,8 +108,9 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
   render(): JSX.Element {
     const {
       span,
-      data,
-      locale,
+      start,
+      end,
+      contentService,
       onChange,
       className,
     } = this.props;
@@ -140,7 +141,7 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
             type="text"
             id="outbound"
             placeholder="DD/MMM/YYYY"
-            value={this.getDateString(data.start)}
+            value={this.getDateString(start)}
             readOnly
           />
         </div>
@@ -152,7 +153,7 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
               type="text"
               id="inbound"
               placeholder="DD/MMM/YYYY"
-              value={this.getDateString(data.end)}
+              value={this.getDateString(end)}
               readOnly
             />
           </div>
@@ -174,12 +175,14 @@ export default class DatePicker extends React.Component<DatePickerProps, DatePic
           >
             <Calendar
               ref={this.calendarRef}
-              locale={locale}
+              contentService={contentService}
               span={span}
-              data={data}
+              start={start}
+              end={end}
               onChange={onChange}
             />
-            <Button onClick={this.collapse} disabled={!(data.end && data.start)}>
+
+            <Button onClick={this.collapse} disabled={!(end && start)}>
               Done
             </Button>
           </div>

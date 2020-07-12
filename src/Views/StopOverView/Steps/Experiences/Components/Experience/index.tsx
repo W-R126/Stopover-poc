@@ -3,6 +3,7 @@ import React from 'react';
 import css from './Experience.module.css';
 import { ExperienceModel } from '../../../../../../Models/ExperienceModel';
 import Utils from '../../../../../../Utils';
+import DateUtils from '../../../../../../DateUtils';
 
 interface ExperienceProps {
   className?: string;
@@ -144,8 +145,8 @@ export default class Experience extends React.Component<ExperienceProps> {
             <span className={css.OpeningHours}>
               {data.timeSlots
                 ? 'Limited time slots'
-                : `${Utils.getHourMinuteString(data.opens)} - ${
-                  Utils.getHourMinuteString(data.closes)
+                : `${DateUtils.getHourMinuteString(data.opens)} - ${
+                  DateUtils.getHourMinuteString(data.closes)
                 }`}
             </span>
           </div>

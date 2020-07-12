@@ -6,6 +6,8 @@ import Button from '../UI/Button';
 import Offer from './Components/Offer';
 import { CustomerSegment } from '../../Models/StopOverModel';
 import Data from './Data';
+import { TripModel } from '../../Models/TripModel';
+import { TripTypeEnum } from '../../Enums/TripTypeEnum';
 
 interface StopOverPromptProps {
   onAccept: (outbound?: Date, inbound?: Date, airportCode?: string, days?: number) => void;
@@ -70,9 +72,15 @@ export default class StopOverPrompt extends React.Component<
     customerSegment: CustomerSegment,
     days: number[],
     airportCode: string,
-    outbound: Date,
-    inbound?: Date,
+    trip: TripModel,
   ): void {
+    const { outbound } = trip.legs[0];
+    let inbound;
+
+    if (trip.type === TripTypeEnum.roundTrip) {
+      inbound = trip.legs[1].outbound;
+    }
+
     this.setState({
       show: true,
       customerSegment,

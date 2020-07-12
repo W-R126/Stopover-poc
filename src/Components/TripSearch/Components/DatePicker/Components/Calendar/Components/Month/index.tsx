@@ -1,11 +1,12 @@
 import React from 'react';
-import Utils from '../../../../../../../../Utils';
 
 import css from './Month.module.css';
+import ContentService from '../../../../../../../../Services/ContentService';
+import DateUtils from '../../../../../../../../DateUtils';
 
 interface MonthProps {
   month: Date;
-  locale: string;
+  contentService: ContentService;
   span: boolean;
   selecting: boolean;
   onSelectionStart: (start: Date) => void;
@@ -23,8 +24,7 @@ interface MonthState {
 const hoverListeners: ((hoveredDay?: Date) => void)[] = [];
 
 export default class Month extends React.Component<MonthProps, MonthState> {
-  static readonly defaultProps: Pick<MonthProps, 'locale' | 'span'> = {
-    locale: 'en-US',
+  static readonly defaultProps: Pick<MonthProps, 'span'> = {
     span: true,
   };
 
@@ -35,7 +35,7 @@ export default class Month extends React.Component<MonthProps, MonthState> {
   constructor(props: MonthProps) {
     super(props);
 
-    this.weekdays = Utils.getWeekdays(props.locale);
+    this.weekdays = DateUtils.getWeekdays(props.contentService.locale);
     this.today = new Date();
     this.today.setHours(0, 0, 0, 0);
 
@@ -54,7 +54,7 @@ export default class Month extends React.Component<MonthProps, MonthState> {
   componentDidUpdate(prevProps: MonthProps): void {
     const { month } = this.props;
 
-    if (prevProps.month !== month) {
+    if (prevProps.month.valueOf() !== month.valueOf()) {
       this.setState({ days: this.getDays(month) });
     }
   }
@@ -135,7 +135,7 @@ export default class Month extends React.Component<MonthProps, MonthState> {
   render(): JSX.Element {
     const {
       month,
-      locale,
+      contentService,
       start,
       span,
       selecting,
@@ -149,7 +149,7 @@ export default class Month extends React.Component<MonthProps, MonthState> {
     }
 
     const { days, hoveredDay } = this.state;
-    const negative = (hoveredDay && start && Utils.compareDates(start, hoveredDay) === 1);
+    const negative = (hoveredDay && start && DateUtils.compareDates(start, hoveredDay) === 1);
 
     const classList = [css.Month];
 
@@ -168,7 +168,10 @@ export default class Month extends React.Component<MonthProps, MonthState> {
     return (
       <div className={classList.join(' ')}>
         <span className={css.Title}>
-          {`${month.toLocaleDateString(locale, { month: 'long' })} ${month.getFullYear()}`}
+          {`${month.toLocaleDateString(
+            contentService.locale,
+            { month: 'long' },
+          )} ${month.getFullYear()}`}
         </span>
         <div className={css.Weekdays}>
           {this.weekdays.map((weekday, idx) => (
@@ -186,14 +189,14 @@ export default class Month extends React.Component<MonthProps, MonthState> {
             } else if (selecting && day && hoveredDay && start) {
               if (
                 (
-                  Utils.compareDates(hoveredDay, start) === -1
-                  && Utils.compareDates(hoveredDay, day) === -1
-                  && Utils.compareDates(day, start) === -1
+                  DateUtils.compareDates(hoveredDay, start) === -1
+                  && DateUtils.compareDates(hoveredDay, day) === -1
+                  && DateUtils.compareDates(day, start) === -1
                 )
                 || (
-                  Utils.compareDates(hoveredDay, start) === 1
-                  && Utils.compareDates(hoveredDay, day) === 1
-                  && Utils.compareDates(day, start) === 1
+                  DateUtils.compareDates(hoveredDay, start) === 1
+                  && DateUtils.compareDates(hoveredDay, day) === 1
+                  && DateUtils.compareDates(day, start) === 1
                 )
               ) {
                 dayClassList.push(css.InSpan);
@@ -204,25 +207,25 @@ export default class Month extends React.Component<MonthProps, MonthState> {
               day
               && start
               && end
-              && Utils.compareDates(day, start) === 1
-              && Utils.compareDates(day, end) === -1
+              && DateUtils.compareDates(day, start) === 1
+              && DateUtils.compareDates(day, end) === -1
             ) {
               dayClassList.push(css.InSpan);
             }
 
-            if (day && start && Utils.compareDates(day, start) === 0) {
+            if (day && start && DateUtils.compareDates(day, start) === 0) {
               dayClassList.push(css.SelectionStart);
             }
 
-            if (day && end && Utils.compareDates(day, end) === 0) {
+            if (day && end && DateUtils.compareDates(day, end) === 0) {
               dayClassList.push(css.SelectionEnd);
             }
 
             const selected = (
               day
               && (
-                (start && Utils.compareDates(day, start) === 0)
-                || (end && Utils.compareDates(day, end) === 0)
+                (start && DateUtils.compareDates(day, start) === 0)
+                || (end && DateUtils.compareDates(day, end) === 0)
               )
             ) || false;
 
