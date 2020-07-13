@@ -40,7 +40,7 @@ export default function App({ config }: { config: Config }): JSX.Element {
             Object.keys(StopOverProgressStepEnum).map((step) => step).join('|')
           })`}
         >
-          <StopOverView contentService={contentService} />
+          <StopOverView contentService={contentService} stopOverService={stopOverService} />
         </Route>
 
         <Route path="/select-inbound">

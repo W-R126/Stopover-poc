@@ -134,7 +134,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
 
   private async onSelectInbound(): Promise<void> {
     const { stopOverService, history } = this.props;
-    const { outboundOffer, trip } = this.state;
+    const { outboundOffer } = this.state;
 
     if (outboundOffer === undefined) {
       return;
@@ -148,39 +148,19 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       return;
     }
 
-    this.stopOverPromptRef.current.show(
-      result.customerSegment,
-      result.days,
-      result.airportCode,
-      trip,
-    );
+    AppState.stopOverInfo = result;
+
+    this.stopOverPromptRef.current.show(result.customerSegment, result.airportCode);
   }
 
-  private async onAcceptStopOver(
-    outbound?: Date,
-    inbound?: Date,
-    airportCode?: string,
-    days?: number,
-  ): Promise<void> {
-    const { history, stopOverService } = this.props;
-    const { outboundOffer } = this.state;
+  private async onAcceptStopOver(): Promise<void> {
+    const { history } = this.props;
 
     if (!this.stopOverPromptRef.current) {
       return;
     }
 
     await this.stopOverPromptRef.current.hide();
-
-    if (outboundOffer) {
-      // TODO: Save result in state.
-      await stopOverService.acceptStopOver(
-        outboundOffer.basketHash,
-        airportCode as string,
-        days as number,
-        outbound as Date,
-        inbound,
-      );
-    }
 
     history.push('/stopover/hotels');
   }
@@ -311,9 +291,14 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
           )}
         </div>
 
-        <ShoppingCart proceedLabel="Select inbound flight" proceedAction={this.onSelectInbound}>
+        <ShoppingCart
+          proceedLabel="Select inbound flight"
+          proceedAction={this.onSelectInbound}
+          currency={contentService.currency}
+        >
           {outboundOffer && (
             <FlightItem
+              currency={outboundOffer.total.currency}
               price={outboundOffer.total.amount}
               item={outboundOffer}
               contentService={contentService}

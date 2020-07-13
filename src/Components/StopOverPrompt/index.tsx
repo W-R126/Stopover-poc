@@ -6,11 +6,9 @@ import Button from '../UI/Button';
 import Offer from './Components/Offer';
 import { CustomerSegment } from '../../Models/StopOverModel';
 import Data from './Data';
-import { TripModel } from '../../Models/TripModel';
-import { TripTypeEnum } from '../../Enums/TripTypeEnum';
 
 interface StopOverPromptProps {
-  onAccept: (outbound?: Date, inbound?: Date, airportCode?: string, days?: number) => void;
+  onAccept: () => void;
   onReject: (airportCode?: string) => void;
 }
 
@@ -33,9 +31,6 @@ export default class StopOverPrompt extends React.Component<
     this.state = {
       show: false,
       customerSegment: undefined,
-      outbound: undefined,
-      inbound: undefined,
-      days: undefined,
       airportCode: undefined,
     };
 
@@ -56,38 +51,15 @@ export default class StopOverPrompt extends React.Component<
 
   private onAccept(): void {
     const { onAccept } = this.props;
-    const {
-      outbound,
-      inbound,
-      airportCode,
-      days,
-    } = this.state;
 
-    const nextDays = days ? days[0] : undefined;
-
-    onAccept(outbound, inbound, airportCode, nextDays);
+    onAccept();
   }
 
-  show(
-    customerSegment: CustomerSegment,
-    days: number[],
-    airportCode: string,
-    trip: TripModel,
-  ): void {
-    const { outbound } = trip.legs[0];
-    let inbound;
-
-    if (trip.type === TripTypeEnum.roundTrip) {
-      inbound = trip.legs[1].outbound;
-    }
-
+  show(customerSegment: CustomerSegment, airportCode: string): void {
     this.setState({
       show: true,
       customerSegment,
-      days,
       airportCode,
-      outbound,
-      inbound,
     });
 
     document.body.style.overflow = 'hidden';

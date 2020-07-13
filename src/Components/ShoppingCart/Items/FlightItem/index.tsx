@@ -13,6 +13,7 @@ interface FlightItemProps extends ShoppingCartItemProps<OfferModel> {
 
 export default function FlightItem({
   price,
+  currency,
   item: offer,
   className,
   contentService,
@@ -25,7 +26,8 @@ export default function FlightItem({
 
   return (
     <div className={classList.join(' ')}>
-      <img src={flightIcon} alt="Flight" />
+      <img src={flightIcon} alt="Flight" className={css.Icon} />
+
       <div className={css.Info}>
         <strong>
           {offer.departure.toLocaleDateString(
@@ -33,9 +35,11 @@ export default function FlightItem({
             { month: 'long', year: 'numeric', day: 'numeric' },
           )}
         </strong>
+
+        <span>{`${offer.origin.cityName} - ${offer.destination.cityName}`}</span>
+
+        <button type="button">View details</button>
       </div>
-      <div>{offer.origin.name}</div>
-      <div>{price}</div>
     </div>
   );
 }

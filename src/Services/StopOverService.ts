@@ -34,7 +34,10 @@ export default class StopOverService extends BaseService {
     days: number,
     outbound: Date,
     inbound?: Date,
-  ): Promise<any> {
+  ): Promise<{
+    airSearchResults: any;
+    hotelAvailabilityInfos: any;
+  } | undefined> {
     try {
       let nextInbound;
 

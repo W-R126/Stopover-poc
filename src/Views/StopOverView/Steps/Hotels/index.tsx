@@ -6,8 +6,12 @@ import { Flights } from './Components/Flights';
 import LoadingSpinner from './Components/LoadingSpinner';
 
 import { ConfirmStopOverResponse } from '../../../../Services/Responses/ConfirmStopOverResponse';
-import { callTestApis } from './test';
 import ContentService from '../../../../Services/ContentService';
+import { OfferModel } from '../../../../Models/OfferModel';
+import AppState from '../../../../AppState';
+import StopOverService from '../../../../Services/StopOverService';
+import { TripModel } from '../../../../Models/TripModel';
+import { StopOverModel } from '../../../../Models/StopOverModel';
 
 interface PackageType {
   hotelCode: string;
@@ -20,10 +24,15 @@ interface HotelsState {
   confirmStopOverResponse?: ConfirmStopOverResponse;
   stopoverDays: number[];
   packageInfo: PackageType;
+  outboundOffer?: OfferModel;
+  trip?: TripModel;
+  stopOverOffers?: any;
+  stopOverInfo?: StopOverModel;
 }
 
 interface HotelsProps {
   contentService: ContentService;
+  stopOverService: StopOverService;
 }
 
 export default class Hotels extends React.Component<HotelsProps, HotelsState> {
@@ -35,32 +44,50 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
       confirmStopOverResponse: undefined,
       stopoverDays: [],
       packageInfo: { hotelCode: '', flightId: '', night: -1 },
+      outboundOffer: AppState.outboundOffer,
+      trip: AppState.tripSearch,
+      stopOverInfo: AppState.stopOverInfo,
     };
   }
 
   componentDidMount(): void {
-    this.callTestApis(-1);
+    this.getStopOverOffers();
   }
 
-  private callTestApis(nightValue: number): void {
-    const updateApiData = (updatedOne: any): void => {
-      let nightValueTemp = -1;
-      if (nightValue > 0) nightValueTemp = nightValue;
-      else nightValueTemp = updatedOne.stopoverDays.length > 0 ? updatedOne.stopoverDays[0] : -1;
+  private async getStopOverOffers(nightValue?: number): Promise<void> {
+    const { stopOverService } = this.props;
+    const { outboundOffer, trip, stopOverInfo } = this.state;
 
-      this.setState({
-        stopoverDays: updatedOne.stopoverDays,
-        confirmStopOverResponse: updatedOne.confirmStopOverResponse,
-        loading: false,
-        packageInfo: { hotelCode: '', flightId: '', night: nightValueTemp },
-      });
-    };
-    this.setState({ loading: true });
-    callTestApis(updateApiData, nightValue);
+    await new Promise((resolve) => this.setState({ loading: true }, resolve));
+
+    if (!(outboundOffer && trip)) {
+      return;
+    }
+
+    if (!stopOverInfo) {
+      return;
+    }
+
+    const nextNightValue = nightValue === undefined ? stopOverInfo.days[0] : nightValue;
+
+    const stopOverAccept = await stopOverService.acceptStopOver(
+      outboundOffer.basketHash,
+      stopOverInfo.airportCode,
+      nextNightValue,
+      trip.legs[0].outbound as Date,
+      trip.legs[trip.legs.length - 1].outbound,
+    );
+
+    this.setState({
+      loading: false,
+      stopoverDays: stopOverInfo.days,
+      confirmStopOverResponse: stopOverAccept,
+      packageInfo: { hotelCode: '', flightId: '', night: nextNightValue },
+    });
   }
 
   private async changeNight(selectedOne: number): Promise<void> {
-    this.callTestApis(selectedOne);
+    this.getStopOverOffers(selectedOne);
   }
 
   render(): JSX.Element {
@@ -83,6 +110,7 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
             }}
             stopoverDays={stopoverDays === undefined ? [] : stopoverDays}
           />
+
           <div className={css.InnerWrap}>
             <HotelSelection
               contentService={contentService}
@@ -99,7 +127,9 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
               }}
               selectedHotelCode={packageInfo.hotelCode}
             />
+
             <Flights
+              contentService={contentService}
               airSearchResults={confirmStopOverResponse?.airSearchResults}
               selectFlight={(flightId: string): void => {
                 this.setState((previousState: HotelsState) => ({
@@ -114,6 +144,7 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
             />
           </div>
         </div>
+
         <LoadingSpinner loading={loading} />
       </div>
     );

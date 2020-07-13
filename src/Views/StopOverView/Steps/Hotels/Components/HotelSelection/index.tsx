@@ -56,24 +56,26 @@ export class HotelSelection extends React.Component<HotelSelectionProps, HotelSe
   }
 
   private getNightDuaration(): string {
-    const { selectedNight, contentService } = this.props;
+    const { contentService, hotelAvailabilityInfos } = this.props;
 
-    if (selectedNight >= 1) {
-      const startStr = new Date().toLocaleDateString(
-        contentService.locale,
-        { day: 'numeric', month: 'long' },
-      );
+    const checkInStr = hotelAvailabilityInfos?.checkIn;
+    const checkOutStr = hotelAvailabilityInfos?.checkOut;
 
-      const end = new Date();
-      end.setDate(end.getDate() + selectedNight);
-      const endStr = end.toLocaleDateString(
-        contentService.locale,
-        { day: 'numeric', month: 'long' },
-      );
-
-      return `${startStr} - ${endStr}`;
+    if (!(checkInStr && checkOutStr)) {
+      return '';
     }
-    return '';
+
+    const startStr = new Date(checkInStr).toLocaleDateString(
+      contentService.locale,
+      { day: 'numeric', month: 'long' },
+    );
+
+    const endStr = new Date(checkOutStr).toLocaleDateString(
+      contentService.locale,
+      { day: 'numeric', month: 'long' },
+    );
+
+    return `${startStr} - ${endStr}`;
   }
 
   private filterAmentity(amentitiyCodes: number[], amentityArr: Amenity[]): boolean {

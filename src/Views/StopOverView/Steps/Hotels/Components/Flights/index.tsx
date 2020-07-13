@@ -5,15 +5,20 @@ import FlightCard from './Components/FlightCard';
 import {
   AirSearchResults,
 } from '../../../../../../Services/Responses/ConfirmStopOverResponse';
-
-interface FlightState {
-  showFlightsCount: number;
-}
+import ContentService from '../../../../../../Services/ContentService';
+import { TripModel } from '../../../../../../Models/TripModel';
+import AppState from '../../../../../../AppState';
 
 interface FlightProps {
   airSearchResults?: AirSearchResults;
   selectFlight: Function;
   selectedFlightId: string;
+  contentService: ContentService;
+}
+
+interface FlightState {
+  showFlightsCount: number;
+  tripSearch?: TripModel;
 }
 
 export class Flights extends React.Component<FlightProps, FlightState> {
@@ -21,6 +26,7 @@ export class Flights extends React.Component<FlightProps, FlightState> {
     super(props);
     this.state = {
       showFlightsCount: 3,
+      tripSearch: AppState.tripSearch,
     };
   }
 
@@ -132,12 +138,34 @@ export class Flights extends React.Component<FlightProps, FlightState> {
   }
 
   render(): JSX.Element {
+    const { airSearchResults, contentService } = this.props;
+    const { tripSearch } = this.state;
+
+    const dateStr = airSearchResults?.segmentContextShoppingResults
+      .onwardsSegmentOffers[0].onwardsSegments[0].departure;
+
+    let date;
+
+    if (dateStr) {
+      date = new Date(dateStr);
+    }
+
+    let destination;
+    if (tripSearch) {
+      destination = tripSearch.legs[0].destination?.cityName;
+    }
+
     return (
       <div className={css.RightWrap}>
         <div className={css.HotelTop}>
           <img src={Plane} alt="" />
           <p style={{ marginBottom: '0px' }}>Select your onward flight:</p>
-          <p className={css.DayDuaration}>Adu Dhabi to Melbourne, 05 June 2020</p>
+          <p className={css.DayDuaration}>
+            {`Abu Dhabi to ${destination}, ${date?.toLocaleDateString(
+              contentService.locale,
+              { month: 'long', year: 'numeric', day: 'numeric' },
+            )}`}
+          </p>
         </div>
         <div className={css.RightCard}>
           {this.renderSelectedSegment()}

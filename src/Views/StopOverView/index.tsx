@@ -13,9 +13,11 @@ import ContentService from '../../Services/ContentService';
 import { OfferModel } from '../../Models/OfferModel';
 import FlightItem from '../../Components/ShoppingCart/Items/FlightItem';
 import AppState from '../../AppState';
+import StopOverService from '../../Services/StopOverService';
 
 interface StopOverProps extends RouteComponentProps<{ progressStep: StopOverProgressStepEnum }> {
   contentService: ContentService;
+  stopOverService: StopOverService;
 }
 
 interface StopOverState {
@@ -36,7 +38,12 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
   }
 
   render(): JSX.Element {
-    const { contentService, history, match: { params: { progressStep } } } = this.props;
+    const {
+      contentService,
+      history,
+      match: { params: { progressStep } },
+      stopOverService,
+    } = this.props;
     const { outboundOffer, startDate, endDate } = this.state;
 
     const hotelsClassList = [css.Step];
@@ -119,7 +126,12 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
         </div>
 
         <div className={`${css.ContentWrapper} ${commonCss.ContentWrapper}`}>
-          {progressStep === 'hotels' && (<Hotels contentService={contentService} />)}
+          {progressStep === 'hotels' && (
+            <Hotels
+              contentService={contentService}
+              stopOverService={stopOverService}
+            />
+          )}
           {progressStep === 'experiences' && (
             <Experiences
               startDate={startDate}
@@ -129,9 +141,10 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
           {progressStep === 'inbound' && (<Inbound />)}
         </div>
 
-        <ShoppingCart>
+        <ShoppingCart currency={contentService.currency}>
           {outboundOffer && (
             <FlightItem
+              currency={outboundOffer.total.currency}
               item={outboundOffer}
               price={outboundOffer.total.amount}
               contentService={contentService}

@@ -7,13 +7,14 @@ import Button from '../UI/Button';
 
 export interface ShoppingCartItemProps<T> {
   className?: string;
+  currency: string;
   price: number;
   item: T;
 }
 
 interface ShoppingCartProps {
   className?: string;
-  currency?: string;
+  currency: string;
   children: React.ReactNode;
   proceedLabel?: string;
   proceedAction?: () => void;
@@ -21,8 +22,8 @@ interface ShoppingCartProps {
 
 export default function ShoppingCart({
   className,
+  currency,
   children,
-  currency = 'AED',
   proceedLabel,
   proceedAction,
 }: ShoppingCartProps): JSX.Element {
