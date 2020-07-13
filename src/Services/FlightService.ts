@@ -32,7 +32,6 @@ export default class FlightService extends BaseService {
   async getOffers(
     passengers: GuestsModel,
     legs: LegModel[],
-    currency = 'AED',
   ): Promise<{
     altOffers: AltOfferModel[];
     offers: GroupedOfferModel[];
@@ -66,7 +65,7 @@ export default class FlightService extends BaseService {
         {
           passengers: passengerData,
           searchType: 'BRANDED',
-          currency,
+          currency: this.contentService.currency,
           itineraryParts,
         },
         { headers: SessionManager.getSessionHeaders() },

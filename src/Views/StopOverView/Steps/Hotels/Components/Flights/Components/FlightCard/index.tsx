@@ -8,7 +8,7 @@ import DateUtils from '../../../../../../../../DateUtils';
 type FlightCardProps = {
   segment: Segment;
   selectFlight: Function;
-  selectedFlightId: string;
+  selectedFlightId?: string;
   differenceFromLowestPrice?: DifferenceFromLowestPrice;
 }
 

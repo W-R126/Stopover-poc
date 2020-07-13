@@ -30,21 +30,21 @@ const Data: {
     offers: [
       {
         imageUrl: stRegis,
-        currency: 'AED',
+        currency: 'EUR',
         price: 440,
         title: 'The St. Regis Saadiyat Island',
         description: '2 nights from',
       },
       {
         imageUrl: yasWaterworld,
-        currency: 'AED',
+        currency: 'EUR',
         price: 150,
         title: 'Yas Waterworld',
         description: 'Family entrance from',
       },
       {
         imageUrl: warnerBros,
-        currency: 'AED',
+        currency: 'EUR',
         price: 170,
         title: 'Warner Bros World',
         description: 'Family entrance from',
@@ -56,21 +56,21 @@ const Data: {
     offers: [
       {
         imageUrl: wAbuDhabi,
-        currency: 'AED',
+        currency: 'EUR',
         price: 520,
         title: 'W Abu Dhabi',
         description: '2 nights from',
       },
       {
         imageUrl: kayakTour,
-        currency: 'AED',
+        currency: 'EUR',
         price: 80,
         title: 'Mangroves Kayak Tour',
         description: '2 hour tour/couple',
       },
       {
         imageUrl: beachClub,
-        currency: 'AED',
+        currency: 'EUR',
         price: 160,
         title: 'Saadiyat Beach Club',
         description: 'Daily entrance/couple',
@@ -82,21 +82,21 @@ const Data: {
     offers: [
       {
         imageUrl: palaceHotel,
-        currency: 'AED',
+        currency: 'EUR',
         price: 740,
         title: 'Emirates Palace Hotel',
         description: '2 nights from',
       },
       {
         imageUrl: beachGolf,
-        currency: 'AED',
+        currency: 'EUR',
         price: 150,
         title: 'Saadiyat Beach Golf Club',
         description: '1 day entrance from',
       },
       {
         imageUrl: anantaraSpa,
-        currency: 'AED',
+        currency: 'EUR',
         price: 160,
         title: 'Anantara Spa',
         description: 'Muscle reviver massage from',

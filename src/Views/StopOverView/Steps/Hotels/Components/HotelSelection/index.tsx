@@ -16,10 +16,10 @@ import {
 import ContentService from '../../../../../../Services/ContentService';
 
 interface HotelSelectionProps {
-  selectedNight: number;
+  selectedNight?: number;
   hotelAvailabilityInfos?: HotelAvailabilityInfos;
   selectHotel: Function;
-  selectedHotelCode: string;
+  selectedHotelCode?: string;
   contentService: ContentService;
 }
 
@@ -164,8 +164,11 @@ export class HotelSelection extends React.Component<HotelSelectionProps, HotelSe
   render(): JSX.Element {
     const { sortValue, filterValue } = this.state;
     const {
-      selectedNight, selectHotel, selectedHotelCode,
+      selectedNight,
+      selectHotel,
+      selectedHotelCode,
     } = this.props;
+
     return (
       <div className={css.LeftWrap}>
         <div className={css.HotelTop}>

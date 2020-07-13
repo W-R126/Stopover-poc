@@ -12,7 +12,7 @@ import AppState from '../../../../../../AppState';
 interface FlightProps {
   airSearchResults?: AirSearchResults;
   selectFlight: Function;
-  selectedFlightId: string;
+  selectedFlightId?: string;
   contentService: ContentService;
 }
 

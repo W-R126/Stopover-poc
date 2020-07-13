@@ -14,6 +14,8 @@ import { OfferModel } from '../../Models/OfferModel';
 import FlightItem from '../../Components/ShoppingCart/Items/FlightItem';
 import AppState from '../../AppState';
 import StopOverService from '../../Services/StopOverService';
+import HotelItem from '../../Components/ShoppingCart/Items/HotelItem';
+import { HotelModel } from '../../Models/HotelModel';
 
 interface StopOverProps extends RouteComponentProps<{ progressStep: StopOverProgressStepEnum }> {
   contentService: ContentService;
@@ -24,6 +26,7 @@ interface StopOverState {
   outboundOffer?: OfferModel;
   startDate: Date;
   endDate: Date;
+  selectedHotel?: HotelModel;
 }
 
 class StopOverView extends React.Component<StopOverProps, StopOverState> {
@@ -34,7 +37,16 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
       outboundOffer: AppState.outboundOffer,
       startDate: new Date(2020, 7, 5),
       endDate: new Date(2020, 7, 7),
+      selectedHotel: AppState.selectedHotel,
     };
+
+    this.onSelectHotel = this.onSelectHotel.bind(this);
+  }
+
+  private onSelectHotel(selectedHotel?: HotelModel): void {
+    AppState.selectedHotel = selectedHotel;
+
+    this.setState({ selectedHotel });
   }
 
   render(): JSX.Element {
@@ -44,7 +56,12 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
       match: { params: { progressStep } },
       stopOverService,
     } = this.props;
-    const { outboundOffer, startDate, endDate } = this.state;
+    const {
+      outboundOffer,
+      startDate,
+      endDate,
+      selectedHotel,
+    } = this.state;
 
     const hotelsClassList = [css.Step];
     const experiencesClassList = [css.Step];
@@ -130,6 +147,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
             <Hotels
               contentService={contentService}
               stopOverService={stopOverService}
+              onSelectHotel={this.onSelectHotel}
             />
           )}
           {progressStep === 'experiences' && (
@@ -148,6 +166,16 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
               item={outboundOffer}
               price={outboundOffer.total.amount}
               contentService={contentService}
+            />
+          )}
+          {selectedHotel && (
+            <HotelItem
+              item={selectedHotel}
+              contentService={contentService}
+              currency={selectedHotel.hotelInfo.currencyCode ?? contentService.currency}
+              price={
+                selectedHotel.hotelRateInfo.rooms.room[0].ratePlans.ratePlan[0].rateInfo.netRate
+              }
             />
           )}
         </ShoppingCart>

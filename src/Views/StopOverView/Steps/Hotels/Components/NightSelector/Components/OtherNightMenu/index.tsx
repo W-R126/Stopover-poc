@@ -7,7 +7,7 @@ interface OtherNightMenuState {
 }
 
 interface OtherNightMenuProps {
-  selectedNight: number;
+  selectedNight?: number;
   changeNight: Function;
   stopoverDays: number[];
 }
@@ -49,7 +49,7 @@ export default class OtherNightMenu extends React.Component<
 
   private setHeaderTitle(): string {
     const { selectedNight, stopoverDays } = this.props;
-    if (stopoverDays.indexOf(selectedNight) >= 3) return `${selectedNight} Nights`;
+    if (stopoverDays.indexOf(selectedNight ?? 0) >= 3) return `${selectedNight} Nights`;
     return 'Other Options';
   }
 
@@ -91,7 +91,7 @@ export default class OtherNightMenu extends React.Component<
 
   private checkActive(): boolean {
     const { selectedNight, stopoverDays } = this.props;
-    if (stopoverDays.indexOf(selectedNight) >= 3) return true;
+    if (stopoverDays.indexOf(selectedNight ?? 0) >= 3) return true;
     return false;
   }
 

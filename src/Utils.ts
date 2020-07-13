@@ -119,7 +119,9 @@ export default class Utils {
 
     if (b !== undefined) {
       const fraction = Number.parseInt(b, 10);
-      return `${result.join('')}.${fraction < 10 ? `${fraction}0` : fraction}`;
+      return `${result.join('')}.${fraction < 10 ? `${
+        fraction}0` : fraction.toString().substr(0, 2)
+      }`;
     }
 
     return result.join('');

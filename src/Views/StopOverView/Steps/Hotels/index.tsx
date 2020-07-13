@@ -12,27 +12,24 @@ import AppState from '../../../../AppState';
 import StopOverService from '../../../../Services/StopOverService';
 import { TripModel } from '../../../../Models/TripModel';
 import { StopOverModel } from '../../../../Models/StopOverModel';
+import { PackageTypeModel } from '../../../../Models/PackageTypeModel';
+import { HotelModel } from '../../../../Models/HotelModel';
 
-interface PackageType {
-  hotelCode: string;
-  flightId: string;
-  night: number;
+interface HotelsProps {
+  contentService: ContentService;
+  stopOverService: StopOverService;
+  onSelectHotel: (selectedHotel?: HotelModel) => void;
 }
 
 interface HotelsState {
   loading: boolean;
   confirmStopOverResponse?: ConfirmStopOverResponse;
   stopoverDays: number[];
-  packageInfo: PackageType;
+  packageInfo: PackageTypeModel;
   outboundOffer?: OfferModel;
   trip?: TripModel;
   stopOverOffers?: any;
   stopOverInfo?: StopOverModel;
-}
-
-interface HotelsProps {
-  contentService: ContentService;
-  stopOverService: StopOverService;
 }
 
 export default class Hotels extends React.Component<HotelsProps, HotelsState> {
@@ -43,15 +40,57 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
       loading: false,
       confirmStopOverResponse: undefined,
       stopoverDays: [],
-      packageInfo: { hotelCode: '', flightId: '', night: -1 },
+      packageInfo: AppState.packageInfo ?? { hotelCode: '', flightId: '', night: -1 },
       outboundOffer: AppState.outboundOffer,
       trip: AppState.tripSearch,
       stopOverInfo: AppState.stopOverInfo,
     };
+
+    this.onSelectHotel = this.onSelectHotel.bind(this);
+    this.onSelectFlight = this.onSelectFlight.bind(this);
   }
 
   componentDidMount(): void {
     this.getStopOverOffers();
+  }
+
+  private onSelectHotel(hotelCode: string): void {
+    const { onSelectHotel } = this.props;
+    const { packageInfo, confirmStopOverResponse } = this.state;
+
+    const checkIn = confirmStopOverResponse?.hotelAvailabilityInfos.checkIn ?? '';
+    const checkOut = confirmStopOverResponse?.hotelAvailabilityInfos.checkOut ?? '';
+    const hotel = confirmStopOverResponse?.hotelAvailabilityInfos.hotelAvailInfo.find(
+      (nextHotel) => nextHotel.hotelInfo.hotelCode === hotelCode,
+    );
+
+    let selectedHotel: HotelModel | undefined;
+
+    if (hotel) {
+      selectedHotel = {
+        checkIn: new Date(checkIn),
+        checkOut: new Date(checkOut),
+        ...hotel,
+      };
+    }
+
+    onSelectHotel(selectedHotel);
+
+    this.setPackageInfo({
+      flightId: packageInfo.flightId,
+      night: packageInfo.night,
+      hotelCode,
+    });
+  }
+
+  private onSelectFlight(flightId: string): void {
+    const { packageInfo } = this.state;
+
+    this.setPackageInfo({
+      flightId,
+      night: packageInfo.night,
+      hotelCode: packageInfo.hotelCode,
+    });
   }
 
   private async getStopOverOffers(nightValue?: number): Promise<void> {
@@ -78,12 +117,19 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
       trip.legs[trip.legs.length - 1].outbound,
     );
 
+    this.setPackageInfo({ hotelCode: '', flightId: '', night: nextNightValue });
+
     this.setState({
       loading: false,
       stopoverDays: stopOverInfo.days,
       confirmStopOverResponse: stopOverAccept,
-      packageInfo: { hotelCode: '', flightId: '', night: nextNightValue },
     });
+  }
+
+  private setPackageInfo(packageInfo: PackageTypeModel): void {
+    AppState.packageInfo = packageInfo;
+
+    this.setState({ packageInfo });
   }
 
   private async changeNight(selectedOne: number): Promise<void> {
@@ -116,30 +162,14 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
               contentService={contentService}
               selectedNight={packageInfo.night}
               hotelAvailabilityInfos={confirmStopOverResponse?.hotelAvailabilityInfos}
-              selectHotel={(hotelCode: string): void => {
-                this.setState((previousState: HotelsState) => ({
-                  packageInfo: {
-                    hotelCode,
-                    flightId: previousState.packageInfo.flightId,
-                    night: previousState.packageInfo.night,
-                  },
-                }));
-              }}
+              selectHotel={this.onSelectHotel}
               selectedHotelCode={packageInfo.hotelCode}
             />
 
             <Flights
               contentService={contentService}
               airSearchResults={confirmStopOverResponse?.airSearchResults}
-              selectFlight={(flightId: string): void => {
-                this.setState((previousState: HotelsState) => ({
-                  packageInfo: {
-                    hotelCode: previousState.packageInfo.hotelCode,
-                    night: previousState.packageInfo.night,
-                    flightId,
-                  },
-                }));
-              }}
+              selectFlight={this.onSelectFlight}
               selectedFlightId={packageInfo.flightId}
             />
           </div>

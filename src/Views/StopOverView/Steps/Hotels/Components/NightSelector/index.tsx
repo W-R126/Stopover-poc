@@ -3,7 +3,7 @@ import css from './NightSelector.module.css';
 import OtherNightMenu from './Components/OtherNightMenu';
 
 interface NightMenuProps {
-  selectedNight: number;
+  selectedNight?: number;
   changeNight: Function;
   stopoverDays: number[];
 }

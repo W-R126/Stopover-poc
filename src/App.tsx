@@ -13,7 +13,7 @@ import StopOverView from './Views/StopOverView';
 import { StopOverProgressStepEnum } from './Enums/StopOverProgressStepEnum';
 
 export default function App({ config }: { config: Config }): JSX.Element {
-  const contentService = new ContentService('en-GB', 'AED', config.apiBaseURL);
+  const contentService = new ContentService('en-GB', 'EUR', config.apiBaseURL);
   const airportService = new AirportService(contentService, config.apiBaseURL);
   const flightService = new FlightService(airportService, contentService, config.apiBaseURL);
   const stopOverService = new StopOverService(config.apiBaseURL);

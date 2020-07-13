@@ -6,11 +6,12 @@ import {
 import { getNetRateOfHotelAvailInfo } from '../../../../Utils';
 import ReviewStar from '../ReviewStar';
 import RoomSelect from '../RoomSelect';
+import Utils from '../../../../../../../../Utils';
 
 interface HotelCardProps extends HotelAvailInfo {
   selectHotel: Function;
-  selectedNight: number;
-  selectedHotelCode: string;
+  selectedNight?: number;
+  selectedHotelCode?: string;
 }
 
 interface HotelCardStat {
@@ -91,11 +92,13 @@ export class HotelCard extends React.Component<HotelCardProps, HotelCardStat> {
                     {`${selectedNight} Nights 1 Adult`}
                   </p>
                   <h4 className={css.Price}>
-                    {`${hotelInfo?.currencyCode} ${getNetRateOfHotelAvailInfo({
-                      hotelImageInfo,
-                      hotelInfo,
-                      hotelRateInfo,
-                    })}`}
+                    {`${hotelInfo?.currencyCode} ${Utils.formatCurrency(
+                      getNetRateOfHotelAvailInfo({
+                        hotelImageInfo,
+                        hotelInfo,
+                        hotelRateInfo,
+                      }),
+                    )}`}
                   </h4>
                 </div>
               </div>
