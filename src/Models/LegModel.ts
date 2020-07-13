@@ -1,4 +1,9 @@
-import { AirportModel, copyAirport, isEqualAirports, parseAirport } from './AirportModel';
+import {
+  AirportModel,
+  copyAirport,
+  isEqualAirports,
+  parseAirport,
+} from './AirportModel';
 
 export interface LegModel {
   origin?: AirportModel;

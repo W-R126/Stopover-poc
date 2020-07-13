@@ -12,8 +12,6 @@ interface FlightItemProps extends ShoppingCartItemProps<OfferModel> {
 }
 
 export default function FlightItem({
-  price,
-  currency,
   item: offer,
   className,
   contentService,
