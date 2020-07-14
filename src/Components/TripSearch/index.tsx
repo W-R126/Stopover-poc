@@ -32,6 +32,11 @@ interface TripSearchProps {
 
 interface TripSearchState {
   trip: TripModel;
+  content: {
+    common: {
+      cabinClasses: { [key: string]: string };
+    };
+  };
 }
 
 class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
@@ -42,12 +47,23 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
 
     this.state = {
       trip: copyTrip(trip),
+      content: {
+        common: {
+          cabinClasses: {},
+        },
+      },
     };
 
     this.onOriginDestinationChange = this.onOriginDestinationChange.bind(this);
     this.onTripTypeChange = this.onTripTypeChange.bind(this);
     this.onDatesChange = this.onDatesChange.bind(this);
     this.onSearch = this.onSearch.bind(this);
+  }
+
+  async componentDidMount(): Promise<void> {
+    const { contentService } = this.props;
+
+    this.setState({ content: { common: await contentService.get('common') } });
   }
 
   componentDidUpdate(prevProps: TripSearchProps): void {
@@ -88,10 +104,10 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
   private onDatesChange(start?: Date, end?: Date): void {
     const { trip } = this.state;
 
-    trip.legs[0].outbound = start;
+    trip.legs[0].departure = start;
 
     if (trip.type === TripTypeEnum.roundTrip) {
-      trip.legs[1].outbound = end;
+      trip.legs[1].departure = end;
     }
 
     this.onChange(trip);
@@ -101,7 +117,7 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
     const { trip } = this.state;
 
     if (trip.type === TripTypeEnum.oneWay && type === TripTypeEnum.roundTrip) {
-      trip.legs[0].outbound = undefined;
+      trip.legs[0].departure = undefined;
     }
 
     trip.type = type;
@@ -130,14 +146,7 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
       className,
     } = this.props;
 
-    const { trip } = this.state;
-
-    const cabinClassLocale: { [key: string]: string } = {
-      economy: 'Economy',
-      business: 'Business',
-      first: 'First Class',
-      residence: 'Residence',
-    };
+    const { trip, content: { common: { cabinClasses } } } = this.state;
 
     const classList = [css.TripSearch];
 
@@ -164,8 +173,8 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
         <DatePicker
           className={css.DatePicker}
           contentService={contentService}
-          start={trip.legs[0].outbound}
-          end={trip.legs[1] && trip.legs[1].outbound}
+          start={trip.legs[0].departure}
+          end={trip.legs[1] && trip.legs[1].departure}
           onChange={this.onDatesChange}
           span={trip.type === TripTypeEnum.roundTrip}
         />
@@ -181,7 +190,7 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
           >
             {Object.keys(CabinClassEnum).map((cc, idx) => (
               <Option value={cc as CabinClassEnum} key={`cabin-type-option-${idx}`}>
-                {cabinClassLocale[cc]}
+                {cabinClasses[cc] ?? ''}
               </Option>
             ))}
           </Select>

@@ -38,7 +38,7 @@ class HomeView extends React.Component<HomeViewProps, HomeViewState> {
     const { history } = this.props;
 
     AppState.tripSearch = trip;
-    AppState.outboundOffer = undefined;
+    AppState.outboundFare = undefined;
 
     history.push(`/booking?${tripToUrl(trip)}`);
   }

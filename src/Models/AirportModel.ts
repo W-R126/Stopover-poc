@@ -26,25 +26,36 @@ export function copyAirport(airport: AirportModel): AirportModel {
   };
 }
 
-export function isEqualAirports(airport1?: AirportModel, airport2?: AirportModel): boolean {
-  return airport1?.code === airport2?.code;
-}
-
-export function parseAirport(airport?: { [key: string]: any }): AirportModel | undefined {
+export function parseAirport(airport?: Partial<AirportModel>): AirportModel | undefined {
   if (!airport) {
     return undefined;
   }
 
   try {
+    const {
+      cityCode,
+      code,
+      countryCode,
+      searchString,
+    } = airport;
+    const coordinates = {
+      lat: airport.coordinates?.lat,
+      long: airport.coordinates?.long,
+    };
+
+    if (
+      !(cityCode && code && coordinates.long !== undefined && coordinates.lat !== undefined)
+      || !(countryCode && searchString)
+    ) {
+      return undefined;
+    }
+
     return {
-      cityCode: airport.cityCode,
-      code: airport.code,
-      coordinates: {
-        lat: airport.coordinates.lat,
-        long: airport.coordinates.long,
-      },
-      countryCode: airport.countryCode,
-      searchString: airport.searchString,
+      cityCode,
+      code,
+      coordinates: coordinates as CoordinateModel,
+      countryCode,
+      searchString,
       cityName: airport.cityName,
       countryName: airport.countryName,
       name: airport.name,

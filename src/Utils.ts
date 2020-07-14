@@ -38,22 +38,20 @@ function createStore(store: Storage): {
 }
 
 export default class Utils {
-  static getCabinClasses(cabinClass: CabinClassEnum): string[] {
-    let result: string[] = [];
+  static getCabinClasses(cabinClass: CabinClassEnum): CabinClassEnum[] {
+    const result: CabinClassEnum[] = [cabinClass];
 
     switch (cabinClass) {
       case CabinClassEnum.economy:
-        result = ['Economy', 'Business'];
+        result.push(CabinClassEnum.business);
         break;
       case CabinClassEnum.business:
-        result = ['Business', 'First'];
+        result.push(CabinClassEnum.first);
         break;
       case CabinClassEnum.first:
-        result = ['First', 'Residence'];
+        result.push(CabinClassEnum.residence);
         break;
       case CabinClassEnum.residence:
-        result = ['Residence'];
-        break;
       default:
         break;
     }

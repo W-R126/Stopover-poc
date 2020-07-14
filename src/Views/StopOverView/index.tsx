@@ -10,12 +10,12 @@ import Inbound from './Steps/Inbound';
 import ShoppingCart from '../../Components/ShoppingCart';
 import { StopOverProgressStepEnum } from '../../Enums/StopOverProgressStepEnum';
 import ContentService from '../../Services/ContentService';
-import { OfferModel } from '../../Models/OfferModel';
 import FlightItem from '../../Components/ShoppingCart/Items/FlightItem';
 import AppState from '../../AppState';
 import StopOverService from '../../Services/StopOverService';
 import HotelItem from '../../Components/ShoppingCart/Items/HotelItem';
 import { HotelModel } from '../../Models/HotelModel';
+import { FareModel } from '../../Models/FlightOfferModel';
 
 interface StopOverProps extends RouteComponentProps<{ progressStep: StopOverProgressStepEnum }> {
   contentService: ContentService;
@@ -23,7 +23,7 @@ interface StopOverProps extends RouteComponentProps<{ progressStep: StopOverProg
 }
 
 interface StopOverState {
-  outboundOffer?: OfferModel;
+  outboundFare?: FareModel;
   startDate: Date;
   endDate: Date;
   selectedHotel?: HotelModel;
@@ -34,7 +34,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
     super(props);
 
     this.state = {
-      outboundOffer: AppState.outboundOffer,
+      outboundFare: AppState.outboundFare,
       startDate: new Date(2020, 7, 5),
       endDate: new Date(2020, 7, 7),
       selectedHotel: AppState.selectedHotel,
@@ -57,7 +57,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
       stopOverService,
     } = this.props;
     const {
-      outboundOffer,
+      outboundFare,
       startDate,
       endDate,
       selectedHotel,
@@ -160,11 +160,11 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
         </div>
 
         <ShoppingCart currency={contentService.currency}>
-          {outboundOffer && (
+          {outboundFare && (
             <FlightItem
-              currency={outboundOffer.total.currency}
-              item={outboundOffer}
-              price={outboundOffer.total.amount}
+              currency={outboundFare.price.currency}
+              item={outboundFare}
+              price={outboundFare.price.total}
               contentService={contentService}
             />
           )}

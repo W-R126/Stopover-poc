@@ -1,50 +1,39 @@
-import { GroupedOfferModel } from '../../../../Models/OfferModel';
 import { CabinClassEnum } from '../../../../Enums/CabinClassEnum';
-import DateUtils from '../../../../DateUtils';
+import { FlightOfferModel } from '../../../../Models/FlightOfferModel';
 
-export type SortAlgorithm = (a: GroupedOfferModel, b: GroupedOfferModel) => number;
+export type SortAlgorithm = (a: FlightOfferModel, b: FlightOfferModel) => number;
 
 function getCabinClassSort(cabinClass: CabinClassEnum): any {
-  let cabinClassName = 'Economy';
+  return (a: FlightOfferModel, b: FlightOfferModel): number => {
+    const aVal = a.cheapestFares.find((cf) => cf.cabinClass === cabinClass)?.price.total ?? -1;
+    const bVal = b.cheapestFares.find((cf) => cf.cabinClass === cabinClass)?.price.total ?? -1;
 
-  switch (cabinClass) {
-    case CabinClassEnum.economy:
-      break;
-    case CabinClassEnum.business:
-      cabinClassName = 'Business';
-      break;
-    case CabinClassEnum.first:
-      cabinClassName = 'First';
-      break;
-    case CabinClassEnum.residence:
-      cabinClassName = 'Residence';
-      break;
-    default:
-      break;
-  }
+    if (aVal === -1 && bVal === -1) {
+      return 0;
+    }
 
-  return (a: GroupedOfferModel, b: GroupedOfferModel): number => {
-    if (!(a.cabinClasses as any)[cabinClassName]) {
+    if (aVal === -1 || aVal > bVal) {
       return 1;
     }
 
-    if (!(b.cabinClasses as any)[cabinClassName]) {
+    if (bVal === -1 || aVal < bVal) {
       return -1;
-    }
-
-    const aVal = (a.cabinClasses as any)[cabinClassName]?.startingFrom.amount ?? 0;
-    const bVal = (b.cabinClasses as any)[cabinClassName]?.startingFrom.amount ?? 0;
-
-    if (aVal < bVal) {
-      return -1;
-    }
-
-    if (aVal > bVal) {
-      return 1;
     }
 
     return 0;
   };
+}
+
+function compareDates(a: Date, b: Date): number {
+  if (a < b) {
+    return -1;
+  }
+
+  if (a > b) {
+    return 1;
+  }
+
+  return 0;
 }
 
 const SortAlgorithms: {
@@ -57,15 +46,9 @@ const SortAlgorithms: {
   firstPrice: SortAlgorithm;
   residencePrice: SortAlgorithm;
 } = {
-  departure: (a: GroupedOfferModel, b: GroupedOfferModel) => DateUtils.compareDatesExact(
-    a.departure,
-    b.departure,
-  ),
-  arrival: (a: GroupedOfferModel, b: GroupedOfferModel) => DateUtils.compareDatesExact(
-    a.arrival,
-    b.arrival,
-  ),
-  stopCount: (a: GroupedOfferModel, b: GroupedOfferModel) => {
+  departure: (a: FlightOfferModel, b: FlightOfferModel) => compareDates(a.departure, b.departure),
+  arrival: (a: FlightOfferModel, b: FlightOfferModel) => compareDates(a.arrival, b.arrival),
+  stopCount: (a: FlightOfferModel, b: FlightOfferModel) => {
     if (a.stops.length < b.stops.length) {
       return -1;
     }
@@ -76,15 +59,12 @@ const SortAlgorithms: {
 
     return 0;
   },
-  travelTime: (a: GroupedOfferModel, b: GroupedOfferModel) => {
-    const aVal = a.arrival.valueOf() - a.departure.valueOf();
-    const bVal = b.arrival.valueOf() - b.departure.valueOf();
-
-    if (aVal < bVal) {
+  travelTime: (a: FlightOfferModel, b: FlightOfferModel) => {
+    if (a.duration < b.duration) {
       return -1;
     }
 
-    if (aVal > bVal) {
+    if (a.duration > b.duration) {
       return 1;
     }
 

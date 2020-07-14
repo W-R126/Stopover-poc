@@ -109,7 +109,7 @@ export default class OriginDestinationPicker extends React.Component<
             className={css.AirportSearch}
             wrapperClassName={css.AirportSearchWrapper}
             focusedClassName={css.AirportSearchFocused}
-            airports={airports.filter((airport) => airport !== destination)}
+            airports={airports.filter((airport) => airport.code !== destination?.code)}
             onChange={this.onOriginChange}
             id="trip-origin"
             placeholder="Where are you flying from?"
@@ -131,7 +131,7 @@ export default class OriginDestinationPicker extends React.Component<
             className={css.AirportSearch}
             wrapperClassName={css.AirportSearchWrapper}
             focusedClassName={css.AirportSearchFocused}
-            airports={airports.filter((airport) => airport !== origin)}
+            airports={airports.filter((airport) => airport.code !== origin?.code)}
             onChange={this.onDestinationChange}
             id="trip-destination"
             placeholder="Where are you headed?"

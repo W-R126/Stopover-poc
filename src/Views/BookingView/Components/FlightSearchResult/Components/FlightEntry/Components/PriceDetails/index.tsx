@@ -7,21 +7,15 @@ import refundIcon from '../../../../../../../../Assets/Images/free-refund.svg';
 import checkinIcon from '../../../../../../../../Assets/Images/check-in area.svg';
 import upgradeIcon from '../../../../../../../../Assets/Images/upgrade-seat.svg';
 import calendarIcon from '../../../../../../../../Assets/Images/calendar.svg';
-import { OfferModel } from '../../../../../../../../Models/OfferModel';
 import Utils from '../../../../../../../../Utils';
 import Button from '../../../../../../../../Components/UI/Button';
+import { FareModel } from '../../../../../../../../Models/FlightOfferModel';
 
 interface PriceDetailsProps {
-  cabinClass: {
-    offers: OfferModel[];
-    startingFrom: {
-      amount: number;
-      currency: string;
-    };
-  };
+  fares: FareModel[];
   className?: string;
-  selectedOffer?: OfferModel;
-  onOfferChange: (offer?: OfferModel) => void;
+  selectedFare?: FareModel;
+  onFareChange: (fare?: FareModel) => void;
 }
 
 function TableCell({ children, selected }: {
@@ -48,14 +42,14 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
     this.state = {};
   }
 
-  private selectOffer(selectedOffer?: OfferModel): void {
-    const { onOfferChange } = this.props;
+  private selectOffer(fare: FareModel): void {
+    const { onFareChange, selectedFare } = this.props;
 
-    onOfferChange(selectedOffer);
+    onFareChange(selectedFare?.hashCode === fare.hashCode ? undefined : fare);
   }
 
   render(): JSX.Element {
-    const { cabinClass: { offers }, className, selectedOffer } = this.props;
+    const { fares, className, selectedFare } = this.props;
 
     const classList = [css.PriceDetails];
 
@@ -69,28 +63,25 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
           <thead>
             <tr>
               <td />
-              {offers.map((offer, idx) => (
-                <TableCell
-                  selected={selectedOffer?.basketHash === offer.basketHash}
-                  key={`item-${idx}`}
-                >
-                  {offer.brandLabel}
+
+              {fares.map((fare, idx) => (
+                <TableCell selected={selectedFare?.hashCode === fare.hashCode} key={`item-${idx}`}>
+                  {fare.brandLabel}
                 </TableCell>
               ))}
             </tr>
           </thead>
+
           <tbody>
             <tr>
               <td>
                 <img src={earnMilesIcon} alt="Earn miles" />
                 Miles earned
               </td>
-              {offers.map((offer, idx) => (
-                <TableCell
-                  selected={selectedOffer?.basketHash === offer.basketHash}
-                  key={`item-${idx}`}
-                >
-                  {`${Utils.formatCurrency(offer.itineraryPart.milesEarned)} miles`}
+
+              {fares.map((fare, idx) => (
+                <TableCell selected={selectedFare?.hashCode === fare.hashCode} key={`item-${idx}`}>
+                  {`${Utils.formatCurrency(fare.milesEarned)} miles`}
                 </TableCell>
               ))}
             </tr>
@@ -100,11 +91,9 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
                 <img src={checkedBaggageIcon} alt="Baggage allowance" />
                 Baggage allowance
               </td>
-              {offers.map((offer, idx) => (
-                <TableCell
-                  selected={selectedOffer?.basketHash === offer.basketHash}
-                  key={`item-${idx}`}
-                >
+
+              {fares.map((fare, idx) => (
+                <TableCell selected={selectedFare?.hashCode === fare.hashCode} key={`item-${idx}`}>
                   30kg
                 </TableCell>
               ))}
@@ -115,12 +104,10 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
                 <img src={refundIcon} alt="Refund fee" />
                 Refund fee
               </td>
-              {offers.map((offer, idx) => (
-                <TableCell
-                  selected={selectedOffer?.basketHash === offer.basketHash}
-                  key={`item-${idx}`}
-                >
-                  {`${offer.total.currency} ${Utils.formatCurrency(100)}`}
+
+              {fares.map((fare, idx) => (
+                <TableCell selected={selectedFare?.hashCode === fare.hashCode} key={`item-${idx}`}>
+                  {`${fare.price.currency} ${Utils.formatCurrency(100)}`}
                 </TableCell>
               ))}
             </tr>
@@ -130,11 +117,9 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
                 <img src={checkinIcon} alt="Priority check-in" />
                 Priority check-in
               </td>
-              {offers.map((offer, idx) => (
-                <TableCell
-                  selected={selectedOffer?.basketHash === offer.basketHash}
-                  key={`item-${idx}`}
-                >
+
+              {fares.map((fare, idx) => (
+                <TableCell selected={selectedFare?.hashCode === fare.hashCode} key={`item-${idx}`}>
                   No
                 </TableCell>
               ))}
@@ -145,11 +130,9 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
                 <img src={upgradeIcon} alt="Eligible for upgrade" />
                 Eligible for upgrade
               </td>
-              {offers.map((offer, idx) => (
-                <TableCell
-                  selected={selectedOffer?.basketHash === offer.basketHash}
-                  key={`item-${idx}`}
-                >
+
+              {fares.map((fare, idx) => (
+                <TableCell selected={selectedFare?.hashCode === fare.hashCode} key={`item-${idx}`}>
                   No
                 </TableCell>
               ))}
@@ -160,33 +143,23 @@ export default class PriceDetails extends React.Component<PriceDetailsProps, {}>
                 <img src={calendarIcon} alt="Date change free" />
                 Date change fee
               </td>
-              {offers.map((offer, idx) => (
-                <TableCell
-                  selected={selectedOffer?.basketHash === offer.basketHash}
-                  key={`item-${idx}`}
-                >
-                  {`${offer.total.currency} ${Utils.formatCurrency(100)}`}
+
+              {fares.map((fare, idx) => (
+                <TableCell selected={selectedFare?.hashCode === fare.hashCode} key={`item-${idx}`}>
+                  {`${fare.price.currency} ${Utils.formatCurrency(100)}`}
                 </TableCell>
               ))}
             </tr>
 
             <tr>
               <td />
-              {offers.map((offer, idx) => (
-                <TableCell
-                  selected={selectedOffer?.basketHash === offer.basketHash}
-                  key={`item-${idx}`}
-                >
+
+              {fares.map((fare, idx) => (
+                <TableCell selected={selectedFare?.hashCode === fare.hashCode} key={`item-${idx}`}>
                   <Button
-                    onClick={(): void => {
-                      if (offer === selectedOffer) {
-                        this.selectOffer(undefined);
-                      } else {
-                        this.selectOffer(offer);
-                      }
-                    }}
+                    onClick={(): void => this.selectOffer(fare)}
                   >
-                    {`${offer.total.currency} ${Utils.formatCurrency(offer.total.amount)}`}
+                    {`${fare.price.currency} ${Utils.formatCurrency(fare.price.total)}`}
                   </Button>
                 </TableCell>
               ))}

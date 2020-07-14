@@ -3,23 +3,23 @@ import React from 'react';
 import css from './FlightEntry.module.css';
 import Collapsable from '../../../../../../Components/UI/Collapsable';
 import FlightDetails from './Components/FlightDetails';
-import { GroupedOfferModel, OfferModel } from '../../../../../../Models/OfferModel';
 import Utils from '../../../../../../Utils';
 import PriceDetails from './Components/PriceDetails';
 import { CabinClassEnum } from '../../../../../../Enums/CabinClassEnum';
 import DateUtils from '../../../../../../DateUtils';
+import { FareModel, FlightOfferModel } from '../../../../../../Models/FlightOfferModel';
 
 interface FlightEntryProps {
-  data: GroupedOfferModel;
+  offer: FlightOfferModel;
   cabinClass: CabinClassEnum;
   onExpandDetails: () => void;
-  onOfferChange: (offer?: OfferModel) => void;
-  selectedOffer?: OfferModel;
+  onFareChange: (offer?: FareModel) => void;
+  selectedFare?: FareModel;
 }
 
 interface FlightEntryState {
   collapsed: boolean;
-  selectedCabinClass?: string;
+  selectedCabinClass?: CabinClassEnum;
 }
 
 export default class FlightEntry extends React.Component<FlightEntryProps, FlightEntryState> {
@@ -32,21 +32,17 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
     };
 
     this.toggleDetails = this.toggleDetails.bind(this);
-    this.showOffers = this.showOffers.bind(this);
+    this.showFares = this.showFares.bind(this);
     this.collapseDetails = this.collapseDetails.bind(this);
   }
 
   componentDidMount(): void {
-    const { selectedOffer, data } = this.props;
+    const { selectedFare } = this.props;
 
-    // Expand offers upon mount.
-    Object.keys(data.cabinClasses).forEach((cc) => {
-      if ((data.cabinClasses as any)[cc].offers.findIndex(
-        (ccOffer: OfferModel) => ccOffer.basketHash === selectedOffer?.basketHash,
-      ) !== -1) {
-        this.showOffers(cc);
-      }
-    });
+    // Expand fares upon mount.
+    if (selectedFare) {
+      this.showFares(selectedFare.cabinClass);
+    }
   }
 
   private toggleDetails(): void {
@@ -59,7 +55,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
     }
   }
 
-  showOffers(cabinClass: string): void {
+  showFares(cabinClass: CabinClassEnum): void {
     const { collapsed, selectedCabinClass } = this.state;
 
     if (collapsed) {
@@ -92,16 +88,16 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
 
   render(): JSX.Element | null {
     const {
-      data,
+      offer,
       cabinClass,
-      onOfferChange,
-      selectedOffer,
+      onFareChange,
+      selectedFare,
     } = this.props;
 
     const { collapsed, selectedCabinClass } = this.state;
     const timeZoneDelta = DateUtils.getTimeZoneDelta(
-      data.origin.timeZone,
-      data.destination.timeZone,
+      offer.origin.timeZone,
+      offer.destination.timeZone,
     );
     const cabinClasses = Utils.getCabinClasses(cabinClass);
 
@@ -110,62 +106,66 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
         <div className={css.OriginDestination}>
           <div className={css.Origin}>
             <strong>
-              {DateUtils.getHourMinuteString(data.departure)}
+              {DateUtils.getHourMinuteString(offer.departure)}
             </strong>
-            <span>{`${data.origin?.cityName} ${data.origin?.code}`}</span>
+            <span>{`${offer.origin?.cityName} ${offer.origin?.code}`}</span>
           </div>
 
           <span className={css.Arrow} />
 
           <div className={css.Destination}>
             <strong>
-              {DateUtils.getHourMinuteString(data.arrival)}
+              {DateUtils.getHourMinuteString(offer.arrival)}
               {timeZoneDelta && (<span className={css.TimeZoneDelta}>{timeZoneDelta}</span>)}
             </strong>
-            <span>{`${data.destination.cityName} ${data.destination.code}`}</span>
+            <span>{`${offer.destination.cityName} ${offer.destination.code}`}</span>
           </div>
         </div>
 
         <div className={css.TravelTime}>
-          <strong>{DateUtils.getTimeDelta(data.departure, data.arrival)}</strong>
+          <strong>{DateUtils.getDDHHMMFromMinutes(offer.duration)}</strong>
           <span>Travel time</span>
         </div>
 
         <div className={css.Stops}>
           <strong>
-            {data.stops.length === 0
+            {offer.stops.length === 0
               ? 'Direct'
-              : `${data.stops.length} Stop${data.stops.length > 1 ? 's' : ''}`}
+              : `${offer.stops.length} Stop${offer.stops.length > 1 ? 's' : ''}`}
           </strong>
 
           <span>
-            {data.stops.join(', ')}
+            {offer.stops.join(', ')}
           </span>
         </div>
 
         <div className={css.Price}>
           {cabinClasses.map((cc, idx) => {
-            if ((data.cabinClasses as any)[cc] === undefined) {
+            if (offer.fares.findIndex((fare) => fare.cabinClass === cc) === -1) {
               return null;
             }
+
+            const cheapestFare = offer.cheapestFares.find((cf) => cf.cabinClass === cc);
 
             return (
               <button
                 type="button"
                 key={`cabin-class-${idx}`}
-                onClick={(): void => this.showOffers(cc)}
+                onClick={(): void => this.showFares(cc)}
                 role="option"
                 aria-selected={cc === selectedCabinClass}
-                className={(data.cabinClasses as any)[cc].offers.findIndex(
-                  (offer: OfferModel) => offer.basketHash === selectedOffer?.basketHash,
-                ) === -1 ? undefined : css.Selected}
+                className={
+                  offer.fares.findIndex(
+                    (fare) => fare.hashCode === selectedFare?.hashCode && fare.cabinClass === cc,
+                  ) === -1
+                    ? undefined
+                    : css.Selected
+                }
               >
                 <strong>
                   {`From ${
-                    (data.cabinClasses as any)[cc].startingFrom.currency
-                  } ${Utils.formatCurrency(
-                    (data.cabinClasses as any)[cc].startingFrom.amount,
-                  )}`}
+                    cheapestFare?.price.currency
+                  } ${Utils.formatCurrency(cheapestFare?.price.total ?? 0)}`}
                 </strong>
 
                 <span>{cc}</span>
@@ -190,13 +190,13 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
             ? (
               <PriceDetails
                 className={css.PriceDetails}
-                cabinClass={(data.cabinClasses as any)[selectedCabinClass]}
-                onOfferChange={onOfferChange}
-                selectedOffer={selectedOffer}
+                fares={offer.fares.filter((fare) => fare.cabinClass === selectedCabinClass)}
+                onFareChange={onFareChange}
+                selectedFare={selectedFare}
               />
             )
             : (
-              <FlightDetails segments={data.segments} />
+              <FlightDetails legs={offer.legs} />
             )}
         </Collapsable>
       </>

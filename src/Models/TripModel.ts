@@ -14,7 +14,6 @@ import {
   isEqualLegs,
   parseLeg,
 } from './LegModel';
-import { isEqualAirports } from './AirportModel';
 import AirportService from '../Services/AirportService';
 import Utils from '../Utils';
 
@@ -35,7 +34,7 @@ export function copyTrip(trip?: Partial<TripModel>): TripModel {
     defaultLegs.push({
       origin: defaultLegs[0]?.destination,
       destination: defaultLegs[0]?.origin,
-      outbound: undefined,
+      departure: undefined,
     });
   } else if (type === TripTypeEnum.oneWay) {
     defaultLegs = defaultLegs.slice(0, 1);
@@ -91,8 +90,8 @@ export function isTripValid(trip: TripModel): boolean {
     const [outbound, inbound] = trip.legs;
 
     if (
-      !isEqualAirports(outbound.destination, inbound.origin)
-      || !isEqualAirports(outbound.origin, inbound.destination)
+      outbound.destination?.code !== inbound.origin?.code
+      || outbound.origin?.code !== inbound.destination?.code
     ) {
       // Origin of inbound leg does not match destination of outbound leg
       // or Origin of outbound leg does not match destination of inbound leg.
@@ -113,11 +112,11 @@ export function tripToUrl(trip: TripModel): string {
     `cabinClass=${trip.cabinClass}`,
     `origin=${trip.legs[0]?.origin?.code}`,
     `destination=${trip.legs[0]?.destination?.code}`,
-    `outbound=${trip.legs[0]?.outbound?.toLocaleDateString('sv-SE')}`,
+    `outbound=${trip.legs[0]?.departure?.toLocaleDateString('sv-SE')}`,
   ];
 
-  if (trip.type === TripTypeEnum.roundTrip && trip.legs[1]?.outbound) {
-    params.push(`inbound=${trip.legs[1].outbound.toLocaleDateString('sv-SE')}`);
+  if (trip.type === TripTypeEnum.roundTrip && trip.legs[1]?.departure) {
+    params.push(`inbound=${trip.legs[1].departure.toLocaleDateString('sv-SE')}`);
   }
 
   Object.keys(trip.passengers).forEach((key) => {
@@ -177,7 +176,7 @@ export async function getTripFromQuery(
     {
       destination: await destinationReq,
       origin: await originReq,
-      outbound: params.outbound,
+      departure: params.outbound,
     },
   ];
 
@@ -185,18 +184,18 @@ export async function getTripFromQuery(
     nextTrip.legs.push({
       destination: await originReq,
       origin: await destinationReq,
-      outbound: params.inbound,
+      departure: params.inbound,
     });
 
     if (!params.inbound) {
-      nextTrip.legs[0].outbound = undefined;
+      nextTrip.legs[0].departure = undefined;
     }
   }
 
   return copyTrip(nextTrip);
 }
 
-export function parseTrip(trip?: { [key: string]: any }): TripModel | undefined {
+export function parseTrip(trip?: Partial<TripModel>): TripModel | undefined {
   if (!trip) {
     return undefined;
   }
@@ -204,22 +203,28 @@ export function parseTrip(trip?: { [key: string]: any }): TripModel | undefined 
   try {
     const passengers = parseGuests(trip.passengers);
 
-    if (!passengers) {
-      throw new Error();
-    }
-
-    const legs: (LegModel | undefined)[] = trip.legs.map(
-      (leg: { [key: string]: string }) => parseLeg(leg),
+    const legs: (LegModel | undefined)[] | undefined = trip.legs?.map(
+      (leg: Partial<LegModel>) => parseLeg(leg),
     );
 
-    if (legs.indexOf(undefined) !== -1) {
-      throw new Error();
+    const { bookWithMiles, cabinClass, type } = trip;
+
+    if (
+      !legs
+      || legs.length === 0
+      || legs.indexOf(undefined) !== -1
+      || bookWithMiles === undefined
+      || (!cabinClass || Object.keys(CabinClassEnum).indexOf(cabinClass) === -1)
+      || (!type || Object.keys(TripTypeEnum).indexOf(type) === -1)
+      || !passengers
+    ) {
+      return undefined;
     }
 
     return {
-      bookWithMiles: trip.bookWithMiles,
-      cabinClass: trip.cabinClass as CabinClassEnum,
-      type: trip.type as TripTypeEnum,
+      bookWithMiles,
+      cabinClass: cabinClass as CabinClassEnum,
+      type: trip as TripTypeEnum,
       passengers,
       legs: legs as LegModel[],
     };

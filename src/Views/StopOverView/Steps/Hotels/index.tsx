@@ -7,13 +7,13 @@ import LoadingSpinner from './Components/LoadingSpinner';
 
 import { ConfirmStopOverResponse } from '../../../../Services/Responses/ConfirmStopOverResponse';
 import ContentService from '../../../../Services/ContentService';
-import { OfferModel } from '../../../../Models/OfferModel';
 import AppState from '../../../../AppState';
 import StopOverService from '../../../../Services/StopOverService';
 import { TripModel } from '../../../../Models/TripModel';
 import { StopOverModel } from '../../../../Models/StopOverModel';
 import { PackageTypeModel } from '../../../../Models/PackageTypeModel';
 import { HotelModel } from '../../../../Models/HotelModel';
+import { FareModel } from '../../../../Models/FlightOfferModel';
 
 interface HotelsProps {
   contentService: ContentService;
@@ -26,7 +26,7 @@ interface HotelsState {
   confirmStopOverResponse?: ConfirmStopOverResponse;
   stopoverDays: number[];
   packageInfo: PackageTypeModel;
-  outboundOffer?: OfferModel;
+  outboundFare?: FareModel;
   trip?: TripModel;
   stopOverOffers?: any;
   stopOverInfo?: StopOverModel;
@@ -41,7 +41,7 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
       confirmStopOverResponse: undefined,
       stopoverDays: [],
       packageInfo: AppState.packageInfo ?? { hotelCode: '', flightId: '', night: -1 },
-      outboundOffer: AppState.outboundOffer,
+      outboundFare: AppState.outboundFare,
       trip: AppState.tripSearch,
       stopOverInfo: AppState.stopOverInfo,
     };
@@ -95,11 +95,11 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
 
   private async getStopOverOffers(nightValue?: number): Promise<void> {
     const { stopOverService } = this.props;
-    const { outboundOffer, trip, stopOverInfo } = this.state;
+    const { outboundFare, trip, stopOverInfo } = this.state;
 
     await new Promise((resolve) => this.setState({ loading: true }, resolve));
 
-    if (!(outboundOffer && trip)) {
+    if (!(outboundFare && trip)) {
       return;
     }
 
@@ -110,11 +110,11 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
     const nextNightValue = nightValue === undefined ? stopOverInfo.days[0] : nightValue;
 
     const stopOverAccept = await stopOverService.acceptStopOver(
-      outboundOffer.basketHash,
+      outboundFare.hashCode,
       stopOverInfo.airportCode,
       nextNightValue,
-      trip.legs[0].outbound as Date,
-      trip.legs[trip.legs.length - 1].outbound,
+      outboundFare.departure,
+      trip.legs[trip.legs.length - 1].departure,
     );
 
     this.setPackageInfo({ hotelCode: '', flightId: '', night: nextNightValue });

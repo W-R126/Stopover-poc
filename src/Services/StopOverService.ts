@@ -42,7 +42,7 @@ export default class StopOverService extends BaseService {
       let nextInbound;
 
       const minInbound = new Date(outbound);
-      minInbound.setDate(minInbound.getDate() + days + 1);
+      minInbound.setDate(minInbound.getDate() + days + 2);
 
       if (inbound) {
         nextInbound = inbound;

@@ -21,12 +21,12 @@ export default function SearchDetails({
   className,
 }: SearchDetailsProps): JSX.Element {
   const { passengers } = trip;
-  const { origin, destination, outbound } = trip.legs[0];
+  const { origin, destination, departure } = trip.legs[0];
 
   let inbound;
 
   if (trip.type === TripTypeEnum.roundTrip) {
-    inbound = trip.legs[1].outbound;
+    inbound = trip.legs[1].departure;
   }
 
   const passengerCount = passengers.adults + passengers.children + passengers.infants;
@@ -58,7 +58,7 @@ export default function SearchDetails({
       </span>
       <span className="dates">
         {`${
-          outbound && outbound.toLocaleDateString(
+          departure && departure.toLocaleDateString(
             contentService.locale,
             { month: 'long', day: 'numeric' },
           )

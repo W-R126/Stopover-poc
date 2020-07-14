@@ -1,4 +1,26 @@
 export default class DateUtils {
+  static getDDHHMMFromMinutes(timeMinutes: number): string {
+    const days = Math.floor(timeMinutes / (60 * 24));
+    const hours = Math.floor((timeMinutes % (60 * 24)) / 60);
+    const minutes = timeMinutes % 60;
+
+    const result: string[] = [];
+
+    if (days > 0) {
+      result.push(`${days}d`);
+    }
+
+    if (hours) {
+      result.push(`${hours}h`);
+    }
+
+    if (minutes) {
+      result.push(`${minutes}m`);
+    }
+
+    return result.join(' ');
+  }
+
   static compareDates(a: Date, b: Date): number {
     const d1 = new Date(a);
     const d2 = new Date(b);
@@ -34,25 +56,7 @@ export default class DateUtils {
   }
 
   static getTimeDeltaFromMs(timeMs: number): string {
-    const days = Math.floor(timeMs / 86400000);
-    const hours = Math.floor((timeMs - days * 86400000) / 3600000);
-    const minutes = Math.floor((timeMs - (days * 86400000 + hours * 3600000)) / 60000);
-
-    let result = '';
-
-    if (minutes > 0) {
-      result = `${minutes}m`;
-    }
-
-    if (hours > 0) {
-      result = `${hours}h ${result}`;
-    }
-
-    if (days > 0) {
-      result = `${days}d ${result}`;
-    }
-
-    return result;
+    return DateUtils.getDDHHMMFromMinutes(Math.floor(timeMs / (1000 * 60)));
   }
 
   static getTimeDelta(a: Date, b: Date): string {

@@ -38,16 +38,22 @@ export function isGuestsValid(guests: GuestsModel): boolean {
   );
 }
 
-export function parseGuests(guests?: { [key: string]: any }): GuestsModel | undefined {
+export function parseGuests(guests?: Partial<GuestsModel>): GuestsModel | undefined {
   if (!guests) {
     return undefined;
   }
 
   try {
+    const { adults, children, infants } = guests;
+
+    if (adults === undefined || children === undefined || infants === undefined) {
+      return undefined;
+    }
+
     return {
-      adults: guests.adults,
-      children: guests.children,
-      infants: guests.infants,
+      adults,
+      children,
+      infants,
     };
   } catch (err) {
     return undefined;

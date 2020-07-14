@@ -3,23 +3,15 @@ import closeIcon from '../../../../../../Assets/Images/close-btn.svg';
 import css from './Filters.module.css';
 import RangeSlider from '../../../../../../Components/UI/RangeSlider';
 import Radio from '../../../../../../Components/UI/Radio';
-import Select from '../../../../../../Components/UI/Select';
-import Option from '../../../../../../Components/UI/Select/Option';
-import { GroupedOfferModel, OfferModel } from '../../../../../../Models/OfferModel';
 import Utils from '../../../../../../Utils';
 import DateUtils from '../../../../../../DateUtils';
-
-export interface PriceOptionItem {
-  value: any;
-  label: string;
-}
+import { FlightOfferModel } from '../../../../../../Models/FlightOfferModel';
 
 interface FiltersProps {
   headerClassName?: string;
   className?: string;
-  offers?: GroupedOfferModel[];
-  onChange: (filters?: (groupedOffer: GroupedOfferModel) => boolean) => void;
-  priceOptions: PriceOptionItem[];
+  offers?: FlightOfferModel[];
+  onChange: (filter?: (offer: FlightOfferModel) => boolean) => void;
 }
 
 interface FiltersState {
@@ -28,7 +20,6 @@ interface FiltersState {
   departureTime: number;
   stops: number;
   price: number;
-  priceType: string;
   durationSpan: {
     min: number;
     max: number;
@@ -47,10 +38,6 @@ interface FiltersState {
 export default class Filters extends React.Component<FiltersProps, FiltersState> {
   private readonly selfRef = React.createRef<HTMLDivElement>();
 
-  private readonly durationStep = 900000;
-
-  private readonly departureStep = 900000;
-
   constructor(props: FiltersProps) {
     super(props);
 
@@ -60,7 +47,6 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
       departureTime: 0,
       stops: -1,
       price: 0,
-      priceType: '',
       durationSpan: {
         min: 0,
         max: 0,
@@ -78,9 +64,7 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
 
     this.onClickOutside = this.onClickOutside.bind(this);
     this.toggle = this.toggle.bind(this);
-
     this.clearFilters = this.clearFilters.bind(this);
-    this.handleChangePriceOption = this.handleChangePriceOption.bind(this);
   }
 
   componentDidMount(): void {
@@ -117,7 +101,6 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
     const { onChange } = this.props;
     const {
       duration,
-      durationSpan,
       departureTime,
       departureTimeSpan,
       stops,
@@ -125,142 +108,71 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
       priceSpan,
     } = this.state;
 
-    onChange((groupedOffer: GroupedOfferModel): boolean => {
-      if (stops !== -1 && groupedOffer.stops.length > stops) {
+    onChange((offer: FlightOfferModel): boolean => {
+      if (stops !== -1 && offer.stops.length > stops) {
         return false;
       }
 
       let priceOk = false;
-      ['Economy', 'Business'].forEach((cc) => {
-        if (!(groupedOffer.cabinClasses as any)[cc]) {
-          return;
-        }
 
-        (groupedOffer.cabinClasses as any)[cc].offers.forEach((ccOffer: OfferModel) => {
-          if (price >= priceSpan.max || ccOffer.total.amount <= price) {
-            priceOk = true;
-          }
-        });
+      offer.fares.forEach((fare) => {
+        if (fare.price.total >= priceSpan.max || fare.price.total <= price) {
+          priceOk = true;
+        }
       });
 
       if (!priceOk) {
         return false;
       }
 
-      const departureTemp = groupedOffer.departure.valueOf();
-      const durationDelta = groupedOffer.arrival.valueOf() - departureTemp;
+      if (offer.duration > duration) {
+        return false;
+      }
 
-      if (duration < durationSpan.max
-        && duration < durationDelta) {
+      if (departureTime < departureTimeSpan.max && departureTime < offer.departure.valueOf()) {
         return false;
       }
-      if (departureTime < departureTimeSpan.max
-        && departureTime < groupedOffer.departure.valueOf()) {
-        return false;
-      }
+
       return true;
     });
   }
 
   setFilterSpans(): void {
-    const { offers, priceOptions } = this.props;
+    const { offers } = this.props;
 
     if (!offers) {
       return;
     }
 
+    const durations = offers.map((offer) => offer.duration);
     const durationSpan = {
-      min: -1,
-      max: -1,
+      min: Math.min(...durations),
+      max: Math.max(...durations),
     };
 
+    const departureTimes = offers.map((offer) => offer.departure.valueOf());
     const departureTimeSpan = {
-      min: -1,
-      max: -1,
+      min: Math.min(...departureTimes),
+      max: Math.max(...departureTimes),
     };
+
+    let prices: number[] = [];
+    offers.forEach((offer) => {
+      prices = prices.concat(offer.fares.map((fare) => fare.price.total));
+    });
 
     const priceSpan = {
-      min: -1,
-      max: -1,
+      min: Math.min(...prices),
+      max: Math.max(...prices),
     };
-
-    const priceType = priceOptions.length > 0 ? priceOptions[0].value : '';
-
-    offers.forEach((offer) => {
-      [priceType].forEach((cabinClass) => {
-        if (!(offer.cabinClasses as any)[cabinClass]) {
-          return;
-        }
-
-        (offer.cabinClasses as any)[cabinClass].offers.forEach((ccOffer: OfferModel) => {
-          // Get price span.
-          const { amount } = ccOffer.total;
-
-          if (priceSpan.min === -1) {
-            priceSpan.min = amount;
-          }
-
-          if (priceSpan.max === -1) {
-            priceSpan.max = amount;
-          }
-
-          if (priceSpan.min > amount) {
-            priceSpan.min = amount;
-          }
-
-          if (priceSpan.max < amount) {
-            priceSpan.max = amount;
-          }
-        });
-      });
-
-      // Get departure time span.
-      const departure = offer.departure.valueOf();
-
-      if (departureTimeSpan.min === -1) {
-        departureTimeSpan.min = departure;
-      }
-
-      if (departureTimeSpan.max === -1) {
-        departureTimeSpan.max = departure;
-      }
-
-      if (departureTimeSpan.min > departure) {
-        departureTimeSpan.min = departure;
-      }
-
-      if (departureTimeSpan.max < departure) {
-        departureTimeSpan.max = departure;
-      }
-
-      // Get duration span.
-      const durationDelta = offer.arrival.valueOf() - departure;
-
-      if (durationSpan.min === -1) {
-        durationSpan.min = durationDelta;
-      }
-
-      if (durationSpan.max === -1) {
-        durationSpan.max = durationDelta;
-      }
-
-      if (durationSpan.min > durationDelta) {
-        durationSpan.min = durationDelta;
-      }
-
-      if (durationSpan.max < durationDelta) {
-        durationSpan.max = durationDelta;
-      }
-    });
 
     this.setState({
       priceSpan,
       departureTimeSpan,
       durationSpan,
-      price: priceSpan.max + 1,
-      priceType,
-      departureTime: departureTimeSpan.max + this.departureStep,
-      duration: durationSpan.max + this.durationStep,
+      price: priceSpan.max,
+      departureTime: departureTimeSpan.max,
+      duration: durationSpan.max,
       stops: -1,
     });
   }
@@ -325,61 +237,8 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
     return DateUtils.getFullDateString(date);
   }
 
-  private handleChangePriceOption(value: string): void {
-    const { price } = this.state;
-    const { offers } = this.props;
-
-    if (!offers) {
-      return;
-    }
-
-    const priceSpan = {
-      min: -1,
-      max: -1,
-    };
-
-    offers.forEach((offer) => {
-      [value].forEach((cabinClass) => {
-        if (!(offer.cabinClasses as any)[cabinClass]) {
-          return;
-        }
-
-        (offer.cabinClasses as any)[cabinClass].offers.forEach((ccOffer: OfferModel) => {
-          // Get price span.
-          const { amount } = ccOffer.total;
-
-          if (priceSpan.min === -1) {
-            priceSpan.min = amount;
-          }
-
-          if (priceSpan.max === -1) {
-            priceSpan.max = amount;
-          }
-
-          if (priceSpan.min > amount) {
-            priceSpan.min = amount;
-          }
-
-          if (priceSpan.max < amount) {
-            priceSpan.max = amount;
-          }
-        });
-      });
-    });
-    let priceTemp = price;
-    if (price <= priceSpan.min || price >= priceSpan.max) { priceTemp = priceSpan.max + 1; }
-
-    this.setState({
-      priceType: value,
-      priceSpan,
-      price: priceTemp,
-    });
-
-    this.onFiltersChange({ price: priceTemp });
-  }
-
   render(): JSX.Element {
-    const { headerClassName, offers, priceOptions } = this.props;
+    const { headerClassName, offers } = this.props;
 
     const headerClassList = [css.Header];
 
@@ -387,19 +246,10 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
       headerClassList.push(headerClassName);
     }
 
-    let currency = '';
-
-    if (offers) {
-      currency = (offers[0].cabinClasses as any)[
-        Object.keys(offers[0].cabinClasses)[0]
-      ].startingFrom.currency;
-    }
-
     const {
       collapsed,
       duration,
       price,
-      priceType,
       stops,
       departureTime,
       departureTimeSpan,
@@ -407,6 +257,8 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
       durationSpan,
       filtersActive,
     } = this.state;
+
+    const currency = offers ? offers[0].cheapestFares[0].price.currency : '';
 
     return (
       <div
@@ -423,36 +275,37 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
           Filter
           <span className={css.AngleDown} />
         </div>
+
         {!collapsed && (
         <div className={css.Dropdown}>
           <div className={css.ContentHeader}>
             <p className={css.Title}>Filters</p>
+
             {filtersActive
-            && (
-            <div className={css.CloseBtn} role="button" onClick={this.toggle}>
-              <img src={closeIcon} alt="Close Icon" />
-            </div>
-            )}
+              && (
+                <div className={css.CloseBtn} role="button" onClick={this.toggle}>
+                  <img src={closeIcon} alt="Close Icon" />
+                </div>
+              )}
           </div>
 
           <div className={css.RangeDiv}>
             <label className={css.FilterLabel}>
-              Flight Duaration&nbsp;&nbsp;&nbsp;&nbsp;᛫
-              {duration > durationSpan.max
+              Flight Daration&nbsp;&nbsp;&nbsp;&nbsp;᛫
+
+              {duration === durationSpan.max
                 ? (<span>Any</span>)
                 : (
                   <span className={css.ColorLabel}>
-                    {`Under ${DateUtils.getTimeDeltaFromMs(duration)}`}
+                    {`Under ${DateUtils.getDDHHMMFromMinutes(duration)}`}
                   </span>
                 )}
             </label>
+
             <RangeSlider
               min={durationSpan.min}
-              max={durationSpan.max === -1
-                ? durationSpan.max
-                : durationSpan.max + this.durationStep}
+              max={durationSpan.max}
               value={duration}
-              step={this.durationStep}
               valueFormatter={(value): string => DateUtils.getTimeDeltaFromMs(value)}
               onChange={(nextDuration): void => {
                 this.setState({
@@ -477,13 +330,11 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
                   </span>
                 )}
             </label>
+
             <RangeSlider
               min={departureTimeSpan.min}
-              max={departureTimeSpan.max === -1
-                ? departureTimeSpan.max
-                : departureTimeSpan.max + this.departureStep}
+              max={departureTimeSpan.max}
               value={departureTime}
-              step={this.departureStep}
               valueFormatter={(value): string => this.departureRangeFormat(new Date(value))}
               onChange={(nextDepartureTime): void => {
                 this.setState({ departureTime: nextDepartureTime });
@@ -501,6 +352,7 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
               Stops&nbsp;&nbsp;&nbsp;&nbsp;᛫
               {this.getStopsLabel()}
             </label>
+
             <ul>
               <li>
                 <Radio
@@ -565,29 +417,16 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
               Price&nbsp;&nbsp;&nbsp;&nbsp;᛫
               {price > priceSpan.max
                 ? <span>Any price</span>
-                : <span className={css.ColorLabel}>{`AED ${Utils.formatCurrency(price)}`}</span>}
-              <Select
-                className={css.PriceSelect}
-                wrapperClassName={css.PriceSelectWrapper}
-                id="flight-filter-price"
-                value={priceType}
-                onChange={this.handleChangePriceOption}
-              >
-                {priceOptions.map(
-                  (item, idx) => (
-                    <Option
-                      value={item.value}
-                      key={`price-cabin-type-${idx}`}
-                    >
-                      {item.label}
-                    </Option>
-                  ),
+                : (
+                  <span className={css.ColorLabel}>
+                    {`${currency} ${Utils.formatCurrency(price)}`}
+                  </span>
                 )}
-              </Select>
             </label>
+
             <RangeSlider
               min={priceSpan.min}
-              max={priceSpan.max === -1 ? priceSpan.max : priceSpan.max + 1}
+              max={priceSpan.max}
               value={price}
               step={1}
               valueFormatter={(value): string => `${currency} ${Utils.formatCurrency(value)}`}
@@ -603,7 +442,6 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
           </div>
         </div>
         )}
-
       </div>
     );
   }

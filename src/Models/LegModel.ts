@@ -1,57 +1,50 @@
 import {
-  AirportModel,
   copyAirport,
-  isEqualAirports,
   parseAirport,
 } from './AirportModel';
+import { LegModel as OfferLegModel } from './FlightOfferModel';
 
-export interface LegModel {
-  origin?: AirportModel;
-  destination?: AirportModel;
-  outbound?: Date;
-}
+export type LegModel = Pick<Partial<OfferLegModel>, 'origin' | 'destination' | 'departure'>
 
 export function copyLeg(leg?: Partial<LegModel>): LegModel {
   return {
     origin: leg?.origin ? copyAirport(leg.origin) : undefined,
     destination: leg?.destination ? copyAirport(leg.destination) : undefined,
-    outbound: leg?.outbound,
+    departure: leg?.departure,
   };
 }
 
 export function isEqualLegs(leg1?: LegModel, leg2?: LegModel): boolean {
   return (
-    isEqualAirports(leg1?.origin, leg2?.origin)
-    && isEqualAirports(leg1?.destination, leg2?.destination)
-    && leg1?.outbound?.valueOf() === leg2?.outbound?.valueOf()
+    leg1?.origin?.code === leg2?.origin?.code
+    && leg1?.destination?.code === leg2?.destination?.code
+    && leg1?.departure?.valueOf() === leg2?.departure?.valueOf()
   );
 }
 
 export function isLegValid(leg: LegModel): boolean {
   return (
-    leg.origin !== undefined
-    && leg.destination !== undefined
-    && !isEqualAirports(leg.origin, leg.destination)
-    && leg.outbound !== undefined
+    (leg.origin !== undefined && leg.destination !== undefined && leg.departure !== undefined)
+    && leg.origin.code !== leg.destination.code
   );
 }
 
-export function parseLeg(leg?: { [key: string]: any }): LegModel | undefined {
+export function parseLeg(leg?: Partial<LegModel>): LegModel | undefined {
   if (!leg) {
     return undefined;
   }
 
   try {
-    const outbound = new Date(leg.outbound);
+    const departure = leg.departure ? new Date(leg.departure) : undefined;
 
-    if (!(outbound instanceof Date) && Number.isNaN(outbound)) {
-      throw new Error();
+    if (departure && !(departure instanceof Date) && Number.isNaN(departure)) {
+      return undefined;
     }
 
     return {
       destination: parseAirport(leg.destination),
       origin: parseAirport(leg.origin),
-      outbound,
+      departure,
     };
   } catch (err) {
     return undefined;

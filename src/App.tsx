@@ -6,17 +6,21 @@ import HomeView from './Views/HomeView';
 import ContentService from './Services/ContentService';
 import AirportService from './Services/AirportService';
 import BookingView from './Views/BookingView';
-import FlightService from './Services/FlightService';
 import Config from './Config';
 import StopOverService from './Services/StopOverService';
 import StopOverView from './Views/StopOverView';
 import { StopOverProgressStepEnum } from './Enums/StopOverProgressStepEnum';
+import FlightOfferService from './Services/FlightOfferService';
 
 export default function App({ config }: { config: Config }): JSX.Element {
   const contentService = new ContentService('en-GB', 'EUR', config.apiBaseURL);
   const airportService = new AirportService(contentService, config.apiBaseURL);
-  const flightService = new FlightService(airportService, contentService, config.apiBaseURL);
   const stopOverService = new StopOverService(config.apiBaseURL);
+  const flightOfferService = new FlightOfferService(
+    contentService,
+    airportService,
+    config.apiBaseURL,
+  );
 
   return (
     <div id="app">
@@ -30,7 +34,7 @@ export default function App({ config }: { config: Config }): JSX.Element {
           <BookingView
             stopOverService={stopOverService}
             airportService={airportService}
-            flightService={flightService}
+            flightOfferService={flightOfferService}
             contentService={contentService}
           />
         </Route>

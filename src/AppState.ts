@@ -1,25 +1,25 @@
-import { OfferModel, parseOffer } from './Models/OfferModel';
 import Utils from './Utils';
 import { TripModel, parseTrip } from './Models/TripModel';
 import { StopOverModel } from './Models/StopOverModel';
 import { PackageTypeModel } from './Models/PackageTypeModel';
 import { HotelModel } from './Models/HotelModel';
+import { FareModel, parseFare } from './Models/FlightOfferModel';
 
 export default class AppState {
   private static readonly keys = {
-    outboundOffer: 'Booking.outboundOffer',
+    outboundFare: 'Booking.outboundFare',
     tripSearch: 'TripSearch.tripSearch',
     stopOverInfo: 'StopOver.info',
     packageInfo: 'StopOver.packageInfo',
     selectedHotel: 'StopOver.selectedHotel',
   };
 
-  static get outboundOffer(): OfferModel | undefined {
-    return parseOffer(Utils.sessionStore.get(AppState.keys.outboundOffer));
+  static get outboundFare(): FareModel | undefined {
+    return parseFare(Utils.sessionStore.get(AppState.keys.outboundFare));
   }
 
-  static set outboundOffer(offer: OfferModel | undefined) {
-    Utils.sessionStore.set(AppState.keys.outboundOffer, offer);
+  static set outboundFare(offer: FareModel | undefined) {
+    Utils.sessionStore.set(AppState.keys.outboundFare, offer);
   }
 
   static get tripSearch(): TripModel | undefined {

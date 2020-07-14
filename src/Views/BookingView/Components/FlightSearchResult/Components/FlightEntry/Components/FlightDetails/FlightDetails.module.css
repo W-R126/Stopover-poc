@@ -2,6 +2,91 @@
   padding-bottom: 8px;
 }
 
-.Segment {
+.Leg {
+  display: grid;
+  grid-template-columns:
+    [tail] 80px
+    [dotted] 20px
+    [content] auto;
+  grid-template-rows: auto;
+  gap: 8px;
   margin: 8px 0;
+}
+
+.TailIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: tail;
+  grid-row: 1 / 4;
+}
+
+.TailIcon > img {
+  height: 40px;
+}
+
+.Dotted {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  grid-column: dotted;
+  grid-row: 1 / 4;
+  margin: 3px 0 1px;
+}
+
+.Dotted::before,
+.Dotted::after {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #c5c5c5;
+  content: '';
+}
+
+.Dotted > span {
+  display: block;
+  flex-grow: 1;
+  border-left: 2px dashed #c5c5c5;
+  margin: 6px 0;
+}
+
+.Location {
+  grid-column: content;
+  font-weight: 900;
+}
+
+.TravelTime {
+  grid-column: content;
+  color: #a6a6a6;
+  padding: 8px 0;
+}
+
+.Flight {
+  grid-column: content;
+  padding: 16px 0 8px;
+  font-size: 14px;
+  color: #a6a6a6;
+}
+
+.Flight > span:not(:first-child)::before,
+.Location > span:not(:first-child)::before,
+.Layover > span:not(:first-child)::before {
+  content: '·';
+  display: inline-block;
+  font-weight: 900;
+  margin: 0 12px;
+}
+
+.Location > span:not(:first-child)::before {
+  margin: 0 8px;
+}
+
+.Layover {
+  grid-column: content;
+  display: block;
+  border-top: 1px solid #b8b7b7;
+  border-bottom: 1px solid #b8b7b7;
+  padding: 12px 0;
+  margin: 8px 0 16px;
 }

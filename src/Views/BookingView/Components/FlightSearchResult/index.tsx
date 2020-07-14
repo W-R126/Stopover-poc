@@ -2,34 +2,40 @@ import React from 'react';
 import css from './FlightSearchResult.module.css';
 import spinner from '../../../../Assets/Images/spinner.svg';
 import flightIcon from '../../../../Assets/Images/flight.svg';
-import { GroupedOfferModel, AltOfferModel, OfferModel } from '../../../../Models/OfferModel';
 import DayRibbon from './Components/DayRibbon';
 import FlightEntry from './Components/FlightEntry';
 import SortAlgorithms, { SortAlgorithm } from './SortAlgorithms';
 import { AirportModel } from '../../../../Models/AirportModel';
 import { CabinClassEnum } from '../../../../Enums/CabinClassEnum';
-import Filters, { PriceOptionItem } from './Components/Filters';
+import Filters from './Components/Filters';
 import SortMenu, { SortMenuItem } from './Components/SortMenu';
 import Utils from '../../../../Utils';
-import Common from '../../../../Services/Content/Common';
+import {
+  FlightOfferModel,
+  FareModel,
+  AlternateFlightOfferModel,
+} from '../../../../Models/FlightOfferModel';
+import { TripModel } from '../../../../Models/TripModel';
+import DateUtils from '../../../../DateUtils';
 
 interface FlightSearchResultProps {
   cabinClass: CabinClassEnum;
   origin: AirportModel;
   destination: AirportModel;
-  offers?: GroupedOfferModel[];
-  altOffers?: AltOfferModel[];
+  offers?: FlightOfferModel[];
+  altOffers?: AlternateFlightOfferModel[];
   selectedDepartureDate: Date;
   className?: string;
   onDepartureChange?: (departure: Date) => void;
-  onOfferChange: (offer?: OfferModel) => void;
-  selectedOffer?: OfferModel;
+  onFareChange: (fare?: FareModel) => void;
+  selectedFare?: FareModel;
+  trip: TripModel;
 }
 
 interface FlightSearchResultState {
   showCountFactor: number;
   sortingAlgorithm: SortAlgorithm;
-  filters?: (groupedOffer: GroupedOfferModel) => boolean;
+  filters?: (groupedOffer: FlightOfferModel) => boolean;
 }
 
 export default class FlightSearchResult extends React.Component<
@@ -82,7 +88,7 @@ export default class FlightSearchResult extends React.Component<
   }
 
   private onDepartureChange(departure: Date): void {
-    const { onDepartureChange, onOfferChange } = this.props;
+    const { onDepartureChange, onFareChange: onOfferChange } = this.props;
 
     onOfferChange(undefined);
 
@@ -112,26 +118,18 @@ export default class FlightSearchResult extends React.Component<
     this.setState({ filters }, this.expandSelectedIntoView);
   }
 
-  private getFilteredAndSorted(offers: GroupedOfferModel[]): GroupedOfferModel[] {
+  private getFilteredAndSorted(offers: FlightOfferModel[]): FlightOfferModel[] {
     const { sortingAlgorithm, filters } = this.state;
     const { cabinClass } = this.props;
     const cabinClasses = Utils.getCabinClasses(cabinClass);
 
     let nextOffers = offers;
 
-    nextOffers = nextOffers.filter((offer) => {
-      // Filter on cabin classes.
-      let hasCabinClass = false;
-
-      for (let i = 0; i < cabinClasses.length; i += 1) {
-        if ((offer.cabinClasses as any)[cabinClasses[i]]) {
-          hasCabinClass = true;
-          break;
-        }
-      }
-
-      return hasCabinClass;
-    });
+    nextOffers = nextOffers.filter(
+      (offer) => offer.fares.findIndex(
+        (fare) => cabinClasses.indexOf(fare.cabinClass) !== -1,
+      ) !== -1,
+    );
 
     if (filters) {
       nextOffers = nextOffers.filter(filters);
@@ -160,47 +158,23 @@ export default class FlightSearchResult extends React.Component<
     return returnSortItem;
   }
 
-  private getFilterPriceOptions(): PriceOptionItem[] {
-    const returnSortItem = [];
-    const { cabinClass } = this.props;
-
-    if (cabinClass === CabinClassEnum.economy) {
-      returnSortItem.push({ value: Common.cabinClasses.economy, label: 'Economy price' });
-    }
-    if (cabinClass === CabinClassEnum.economy || cabinClass === CabinClassEnum.business) {
-      returnSortItem.push({ value: Common.cabinClasses.business, label: 'Business price' });
-    }
-
-    if (cabinClass === CabinClassEnum.business || cabinClass === CabinClassEnum.first) {
-      returnSortItem.push({ value: Common.cabinClasses.first, label: 'First class price' });
-    }
-    if (cabinClass === CabinClassEnum.first || cabinClass === CabinClassEnum.residence) {
-      returnSortItem.push({ value: Common.cabinClasses.residence, label: 'Residence price' });
-    }
-    return returnSortItem;
-  }
-
   private expandSelectedIntoView(): void {
     const { showCountFactor } = this.state;
-    const { offers, selectedOffer } = this.props;
+    const { offers, selectedFare } = this.props;
 
-    if (!(offers && selectedOffer)) {
+    if (!(offers && selectedFare)) {
       return;
     }
 
     // Expand search result to show selected offer.
     this.getFilteredAndSorted(offers).forEach((offer, idx) => {
-      Object.keys(offer.cabinClasses).forEach((cc) => {
-        if ((offer.cabinClasses as any)[cc].offers.findIndex(
-          (ccOffer: OfferModel) => ccOffer.basketHash === selectedOffer.basketHash,
-        ) !== -1) {
-          if (idx >= showCountFactor * this.showCount) {
-            this.setState({
-              showCountFactor: Math.ceil((idx + 1) / this.showCount),
-            });
-          }
+      if (offer.fares.findIndex((fare) => fare.hashCode === selectedFare.hashCode) !== -1) {
+        if (idx >= showCountFactor * this.showCount) {
+          this.setState({
+            showCountFactor: Math.ceil((idx + 1) / this.showCount),
+          });
         }
-      });
+      }
     });
   }
 
@@ -223,7 +197,10 @@ export default class FlightSearchResult extends React.Component<
     }
   }
 
-  private renderResult(offers: GroupedOfferModel[], altOffers: AltOfferModel[]): JSX.Element {
+  private renderResult(
+    offers: FlightOfferModel[],
+    altOffers: AlternateFlightOfferModel[],
+  ): JSX.Element {
     if (offers.length === 0) {
       return (
         <div className={css.NoResult}>
@@ -234,13 +211,25 @@ export default class FlightSearchResult extends React.Component<
 
     const { showCountFactor } = this.state;
     const {
-      onOfferChange,
+      onFareChange,
       selectedDepartureDate,
-      selectedOffer,
+      selectedFare,
       cabinClass,
+      trip,
     } = this.props;
 
     const showCount = showCountFactor * this.showCount;
+
+    const today = new Date();
+    let defaultMin = trip.legs[0].departure ? new Date(trip.legs[0].departure) : new Date();
+    defaultMin.setDate(defaultMin.getDate() - 3);
+
+    if (DateUtils.compareDates(defaultMin, today) === -1) {
+      defaultMin = today;
+    }
+
+    const defaultMax = new Date(today);
+    defaultMax.setFullYear(defaultMax.getFullYear() + 1);
 
     return (
       <>
@@ -249,20 +238,20 @@ export default class FlightSearchResult extends React.Component<
           className={css.DayRibbon}
           altOffers={altOffers}
           onChange={this.onDepartureChange}
+          min={defaultMin}
+          max={defaultMax}
         />
 
         <div className={css.FlightEntries}>
           {offers.slice(0, showCount).map((offer, idx) => (
             <FlightEntry
               cabinClass={cabinClass}
-              ref={(ref): void => {
-                this.flightEntryRefs[idx] = ref;
-              }}
-              data={offer}
+              ref={(ref): void => { this.flightEntryRefs[idx] = ref; }}
+              offer={offer}
               key={`flight-entry-${idx}`}
               onExpandDetails={this.onFlightEntryExpandDetails}
-              onOfferChange={onOfferChange}
-              selectedOffer={selectedOffer}
+              onFareChange={onFareChange}
+              selectedFare={offer.fares.find((fare) => fare.hashCode === selectedFare?.hashCode)}
             />
           ))}
 
@@ -297,7 +286,7 @@ export default class FlightSearchResult extends React.Component<
       classList.push(className);
     }
 
-    let filteredOffers: GroupedOfferModel[] = [];
+    let filteredOffers: FlightOfferModel[] = [];
 
     if (offers) {
       filteredOffers = this.getFilteredAndSorted(offers);
@@ -321,7 +310,6 @@ export default class FlightSearchResult extends React.Component<
                   <Filters
                     offers={offers}
                     onChange={this.onFiltersChange}
-                    priceOptions={this.getFilterPriceOptions()}
                     ref={this.flightFilterRefs}
                   />
                   <SortMenu
