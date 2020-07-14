@@ -308,6 +308,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
                 onDepartureChange={this.onOutboundDateChange}
                 onFareChange={this.onOutboundOfferChange}
                 selectedFare={outboundFare}
+                contentService={contentService}
               />
             </>
           )}

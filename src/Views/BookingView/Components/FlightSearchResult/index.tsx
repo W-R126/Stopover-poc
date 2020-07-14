@@ -17,6 +17,7 @@ import {
 } from '../../../../Models/FlightOfferModel';
 import { TripModel } from '../../../../Models/TripModel';
 import DateUtils from '../../../../DateUtils';
+import ContentService from '../../../../Services/ContentService';
 
 interface FlightSearchResultProps {
   cabinClass: CabinClassEnum;
@@ -30,6 +31,7 @@ interface FlightSearchResultProps {
   onFareChange: (fare?: FareModel) => void;
   selectedFare?: FareModel;
   trip: TripModel;
+  contentService: ContentService;
 }
 
 interface FlightSearchResultState {
@@ -216,6 +218,7 @@ export default class FlightSearchResult extends React.Component<
       selectedFare,
       cabinClass,
       trip,
+      contentService,
     } = this.props;
 
     const showCount = showCountFactor * this.showCount;
@@ -245,6 +248,7 @@ export default class FlightSearchResult extends React.Component<
         <div className={css.FlightEntries}>
           {offers.slice(0, showCount).map((offer, idx) => (
             <FlightEntry
+              contentService={contentService}
               cabinClass={cabinClass}
               ref={(ref): void => { this.flightEntryRefs[idx] = ref; }}
               offer={offer}

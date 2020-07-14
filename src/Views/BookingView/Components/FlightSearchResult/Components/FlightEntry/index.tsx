@@ -8,6 +8,7 @@ import PriceDetails from './Components/PriceDetails';
 import { CabinClassEnum } from '../../../../../../Enums/CabinClassEnum';
 import DateUtils from '../../../../../../DateUtils';
 import { FareModel, FlightOfferModel } from '../../../../../../Models/FlightOfferModel';
+import ContentService from '../../../../../../Services/ContentService';
 
 interface FlightEntryProps {
   offer: FlightOfferModel;
@@ -15,11 +16,17 @@ interface FlightEntryProps {
   onExpandDetails: () => void;
   onFareChange: (offer?: FareModel) => void;
   selectedFare?: FareModel;
+  contentService: ContentService;
 }
 
 interface FlightEntryState {
   collapsed: boolean;
   selectedCabinClass?: CabinClassEnum;
+  content: {
+    common: {
+      cabinClasses: { [key: string]: string };
+    };
+  };
 }
 
 export default class FlightEntry extends React.Component<FlightEntryProps, FlightEntryState> {
@@ -29,6 +36,11 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
     this.state = {
       collapsed: true,
       selectedCabinClass: undefined,
+      content: {
+        common: {
+          cabinClasses: {},
+        },
+      },
     };
 
     this.toggleDetails = this.toggleDetails.bind(this);
@@ -36,8 +48,12 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
     this.collapseDetails = this.collapseDetails.bind(this);
   }
 
-  componentDidMount(): void {
-    const { selectedFare } = this.props;
+  async componentDidMount(): Promise<void> {
+    const { selectedFare, contentService } = this.props;
+
+    this.setState({
+      content: { common: await contentService.get('common') },
+    });
 
     // Expand fares upon mount.
     if (selectedFare) {
@@ -94,7 +110,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
       selectedFare,
     } = this.props;
 
-    const { collapsed, selectedCabinClass } = this.state;
+    const { collapsed, selectedCabinClass, content: { common } } = this.state;
     const timeZoneDelta = DateUtils.getTimeZoneDelta(
       offer.origin.timeZone,
       offer.destination.timeZone,
@@ -168,7 +184,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
                   } ${Utils.formatCurrency(cheapestFare?.price.total ?? 0)}`}
                 </strong>
 
-                <span>{cc}</span>
+                <span>{common.cabinClasses[cc]}</span>
               </button>
             );
           })}
