@@ -189,7 +189,10 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
             onChange={(cabinClass): Promise<void> => this.onChange({ cabinClass })}
           >
             {Object.keys(CabinClassEnum).map((cc, idx) => (
-              <Option value={cc as CabinClassEnum} key={`cabin-type-option-${idx}`}>
+              <Option
+                value={CabinClassEnum[cc as keyof typeof CabinClassEnum]}
+                key={`cabin-type-option-${idx}`}
+              >
                 {cabinClasses[cc] ?? ''}
               </Option>
             ))}

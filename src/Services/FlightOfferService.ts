@@ -150,7 +150,9 @@ export default class FlightOfferService extends BaseService {
     const result: { [key: string]: ItineraryPart } = {};
 
     unbundledOffers.forEach((uos) => uos.forEach((uo) => {
-      [result[uo.itineraryPart[0]['@id']]] = uo.itineraryPart;
+      if (uo.itineraryPart[0]['@id']) {
+        [result[uo.itineraryPart[0]['@id']]] = uo.itineraryPart;
+      }
     }));
 
     return result;
@@ -278,7 +280,7 @@ export default class FlightOfferService extends BaseService {
     return offers.map((bo): FareModel => ({
       brandId: bo.brandId,
       brandLabel: fareFamilies[bo.brandId],
-      cabinClass: bo.cabinClass.toLowerCase() as CabinClassEnum,
+      cabinClass: CabinClassEnum[bo.cabinClass.toLowerCase() as keyof typeof CabinClassEnum],
       hashCode: bo.shoppingBasketHashCode,
       milesEarned,
       departure,

@@ -21,7 +21,7 @@ export default class TripTypePicker extends React.Component<TripTypePickerProps,
     const { onChange } = this.props;
 
     if (e.target.checked) {
-      onChange(e.target.value as TripTypeEnum);
+      onChange(TripTypeEnum[e.target.value as keyof typeof TripTypeEnum]);
     }
   }
 

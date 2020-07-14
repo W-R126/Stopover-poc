@@ -378,7 +378,7 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
                     this.onFiltersChange({ stops: 0 });
                   }}
                 >
-                  No stops only
+                  Direct only
                 </Radio>
               </li>
 

@@ -144,14 +144,14 @@ export async function getTripFromQuery(
       origin: { default: '' },
       destination: { default: '' },
       cabinClass: {
-        formatter: (value): CabinClassEnum => value as CabinClassEnum,
+        formatter: (value): CabinClassEnum => CabinClassEnum[value as keyof typeof CabinClassEnum],
         default: CabinClassEnum.economy,
       },
       adults: { formatter: Utils.stringToNumber, default: 1 },
       children: { formatter: Utils.stringToNumber, default: 0 },
       infants: { formatter: Utils.stringToNumber, default: 0 },
       type: {
-        formatter: (value): TripTypeEnum => value as TripTypeEnum,
+        formatter: (value): TripTypeEnum => TripTypeEnum[value as keyof typeof TripTypeEnum],
         default: TripTypeEnum.roundTrip,
       },
       outbound: { formatter: (value): Date => new Date(value) },
@@ -207,15 +207,17 @@ export function parseTrip(trip?: Partial<TripModel>): TripModel | undefined {
       (leg: Partial<LegModel>) => parseLeg(leg),
     );
 
-    const { bookWithMiles, cabinClass, type } = trip;
+    const { bookWithMiles } = trip;
+    const type = TripTypeEnum[trip.type as keyof typeof TripTypeEnum];
+    const cabinClass = CabinClassEnum[trip.cabinClass as keyof typeof CabinClassEnum];
 
     if (
       !legs
       || legs.length === 0
       || legs.indexOf(undefined) !== -1
       || bookWithMiles === undefined
-      || (!cabinClass || Object.keys(CabinClassEnum).indexOf(cabinClass) === -1)
-      || (!type || Object.keys(TripTypeEnum).indexOf(type) === -1)
+      || !cabinClass
+      || !type
       || !passengers
     ) {
       return undefined;
@@ -223,8 +225,8 @@ export function parseTrip(trip?: Partial<TripModel>): TripModel | undefined {
 
     return {
       bookWithMiles,
-      cabinClass: cabinClass as CabinClassEnum,
-      type: trip as TripTypeEnum,
+      cabinClass,
+      type,
       passengers,
       legs: legs as LegModel[],
     };

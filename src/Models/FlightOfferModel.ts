@@ -103,7 +103,7 @@ export function parseFare(fare?: Partial<FareModel>): FareModel | undefined {
       milesEarned,
     } = fare;
 
-    const cabinClass = fare.cabinClass as (string | undefined);
+    const cabinClass = CabinClassEnum[fare.cabinClass as keyof typeof CabinClassEnum];
     const price = parsePrice(fare.price);
     const origin = parseAirport(fare.origin);
     const destination = parseAirport(fare.destination);
@@ -112,7 +112,7 @@ export function parseFare(fare?: Partial<FareModel>): FareModel | undefined {
 
     if (
       !(brandId && brandLabel && price && !Number.isNaN(hashCode) && !Number.isNaN(milesEarned))
-      || (!cabinClass || Object.keys(CabinClassEnum).indexOf(cabinClass) === -1)
+      || !cabinClass
       || !(origin && destination)
       || !(arrival instanceof Date)
       || Number.isNaN(arrival)
@@ -125,7 +125,7 @@ export function parseFare(fare?: Partial<FareModel>): FareModel | undefined {
     return {
       brandId,
       brandLabel,
-      cabinClass: cabinClass as CabinClassEnum,
+      cabinClass,
       hashCode: hashCode as number,
       price,
       milesEarned: milesEarned as number,
@@ -147,18 +147,15 @@ export function parseCheapestFare(
   }
 
   try {
-    const cabinClass = cheapestFare.cabinClass as (string | undefined);
+    const cabinClass = CabinClassEnum[cheapestFare.cabinClass as keyof typeof CabinClassEnum];
     const price = parsePrice(cheapestFare.price);
 
-    if (
-      (!cabinClass || Object.keys(CabinClassEnum).indexOf(cabinClass) === -1)
-      || !price
-    ) {
+    if (!cabinClass || !price) {
       return undefined;
     }
 
     return {
-      cabinClass: cabinClass as CabinClassEnum,
+      cabinClass,
       price,
     };
   } catch (err) {

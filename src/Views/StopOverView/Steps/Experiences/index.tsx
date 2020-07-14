@@ -238,7 +238,7 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
                       key={`category-${idx}`}
                       type="button"
                       onClick={(): void => this.onSelectCategory(
-                        category as ExperienceCategoryEnum,
+                        ExperienceCategoryEnum[category as keyof typeof ExperienceCategoryEnum],
                       )}
                       className={selectedCategory === category ? css.Selected : undefined}
                     >
