@@ -6,6 +6,7 @@ import {
 import { getNetRateOfHotelAvailInfo } from '../../../../Utils';
 import ReviewStar from '../ReviewStar';
 import RoomSelect from '../RoomSelect';
+import HotelDetailModal from '../HotelDetailModal';
 import Utils from '../../../../../../../../Utils';
 
 interface HotelCardProps extends HotelAvailInfo {
@@ -16,6 +17,7 @@ interface HotelCardProps extends HotelAvailInfo {
 
 interface HotelCardStat {
   showRoomList: boolean;
+  showDetailModal: boolean;
 }
 
 export class HotelCard extends React.Component<HotelCardProps, HotelCardStat> {
@@ -23,6 +25,7 @@ export class HotelCard extends React.Component<HotelCardProps, HotelCardStat> {
     super(props);
     this.state = {
       showRoomList: false,
+      showDetailModal: false,
     };
   }
 
@@ -49,7 +52,7 @@ export class HotelCard extends React.Component<HotelCardProps, HotelCardStat> {
       selectedHotelCode,
     } = this.props;
 
-    const { showRoomList } = this.state;
+    const { showRoomList, showDetailModal } = this.state;
 
     return (
       <div
@@ -123,7 +126,25 @@ export class HotelCard extends React.Component<HotelCardProps, HotelCardStat> {
             </div>
           </div>
         </div>
-        <RoomSelect hotelRateInfo={hotelRateInfo} />
+        <RoomSelect
+          hotelRateInfo={hotelRateInfo}
+          showDetailModal={() => {
+            this.setState({ showDetailModal: true });
+          }}
+        />
+        {showDetailModal
+        && (
+        <HotelDetailModal
+          hotelAvailInfo={{
+            hotelImageInfo,
+            hotelInfo,
+            hotelRateInfo,
+          }}
+          hideModal={() => this.setState({
+            showDetailModal: false,
+          })}
+        />
+        )}
       </div>
     );
   }

@@ -1,0 +1,297 @@
+.ModalContainer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 99999;
+}
+
+.Modal {
+  position: relative;
+  width: 900px;
+  height: 900px;
+  background: #fff;
+  box-shadow: 0 0 5px #b8b7b7;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ModalContent {
+  position: relative;
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: column;
+  width: 100%;
+}
+
+.ModalHeader {
+  flex: 1 1 85px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 31px 30px;
+  background: linear-gradient(180deg, #bd8b13 0%, rgba(189, 139, 19, 0.6) 100%);
+}
+
+.ModalTitle {
+  font-family: "EtihadAltis-Bold", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-size: 30px;
+  line-height: 22px;
+  color: #fff;
+  margin: 0;
+}
+
+.CloseButton {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  box-shadow: none;
+  outline: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.CloseButton img {
+  width: 100%;
+  height: 100%;
+}
+
+.ModalBody {
+  flex: 1 1 815px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.HotelImageContainer {
+  flex: 1 1 398px;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  height: 398px;
+}
+
+.HotelImageContainer .carousel-root {
+  height: 100%;
+}
+
+.HotelImageContainer .carousel.carousel-slider {
+  height: 100%;
+}
+
+.SliderItemDiv {
+  width: 100%;
+  height: 398px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.HotelContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 417px;
+  overflow: hidden;
+}
+
+.TabContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 100%;
+  overflow: hidden;
+}
+
+.TabHeader {
+  flex: 0 0 45px;
+  border-bottom: 0.5px solid #f68d2e;
+}
+
+.TabHeader ul {
+  display: flex;
+  padding: 15px 0 0 0;
+}
+
+.TabHeader li {
+  padding: 0 15px 7px;
+  margin: 0 15px 0 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.TabHeader li .Tab {
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 23px;
+  color: #959492;
+}
+
+.TabHeader li .Tab::after {
+  content: ' ';
+  width: 0;
+  height: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  background: #f68d2e;
+  transition: opacity 200ms, width 200ms, left 200ms;
+}
+
+.TabHeader li:hover .Tab {
+  color: #f68d2e;
+}
+
+.TabHeader li:hover .Tab::after {
+  content: ' ';
+  position: absolute;
+  width: 100%;
+  opacity: 1;
+}
+
+.TabHeader li.Active .Tab {
+  color: #f68d2e;
+}
+
+.TabHeader li.Active .Tab::after {
+  content: ' ';
+  position: absolute;
+  color: #f68d2e;
+  width: 100%;
+  opacity: 1;
+}
+
+.TabContent {
+  display: flex;
+  flex: 1 1 100%;
+  overflow: hidden;
+}
+
+.SummaryContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.SummaryHeader {
+  display: flex;
+  flex: 1 1 80px;
+  background: #e5e5e5;
+  padding: 5px 10px;
+  align-items: center;
+}
+
+.SummaryHeader .Item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 24px;
+  flex: 1 1 100%;
+}
+
+.SummaryHeader .Item:first-child {
+  border-right: 1px solid #a6a6a6;
+  flex: 1 1 391px;
+}
+
+.SummaryHeader .Item p {
+  display: flex;
+  align-items: center;
+  font-family: "EtihadAltis-Bold", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 23px;
+  color: #4e4c4a;
+  margin: 0;
+}
+
+.SummaryHeader .Item p:first-child {
+  margin-bottom: 9px;
+}
+
+.PricingIcon {
+  width: 22px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+.CheckInIcon {
+  width: 22px;
+  height: 22px;
+  margin-right: 10px;
+  margin-left: -3px;
+}
+
+.Description {
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 26px;
+  color: #4e4c4a;
+  margin: 22px 35px 40px;
+  overflow-y: auto;
+  max-height: 240px;
+}
+
+.LocationContent {
+  display: flex;
+  flex: 1 1 100%;
+}
+
+.AmentityContiner {
+  display: flex;
+  flex: 1 1 100%;
+  overflow: hidden;
+  padding: 28px 43px;
+}
+
+.AmentityCol {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 30%;
+}
+
+.AmentityColHeader {
+  display: flex;
+  flex: 1 0 29px;
+  align-items: center;
+  font-family: "EtihadAltis-Bold", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 23px;
+  color: #4e4c4a;
+}
+
+.AmentityColHeader img {
+  margin-right: 5px;
+}
+
+.AmentityCol ul {
+  margin: 11.8px 15px 0 5px;
+  flex: 1 1 100%;
+  overflow-x: visible;
+  overflow-y: auto;
+}
+
+.AmentityCol ul li {
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1rem;
+  line-height: 22px;
+  color: #4e4c4a;
+}
+
+.AmentityCol ul li span {
+  margin-right: 5px;
+}

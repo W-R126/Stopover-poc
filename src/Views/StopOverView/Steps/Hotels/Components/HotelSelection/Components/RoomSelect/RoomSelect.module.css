@@ -31,6 +31,7 @@
   outline: none;
   background: none;
   margin-left: auto;
+  cursor: pointer;
 }
 
 .CheckInDiv {

@@ -44,11 +44,11 @@ export interface Text {
 export interface HotelInfo {
   amenities: Amenities;
   chainName?: string;
-  locationInfo?: LocationInfo;
+  locationInfo: LocationInfo;
   chainCode?: string;
   propertyTypeInfo: PropertyTypeInfo;
   hotelCode: string;
-  hotelName?: string;
+  hotelName: string;
   rating: string;
   currencyCode?: string;
   recommended?: boolean;
@@ -76,8 +76,8 @@ export interface Amenity {
 export interface LocationInfo {
   address?: Address;
   contact?: Contact;
-  latitude?: string;
-  longitude?: string;
+  latitude: string;
+  longitude: string;
 }
 
 export interface Address {

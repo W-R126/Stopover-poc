@@ -4,6 +4,7 @@ import { HotelRateInfo } from '../../../../../../../../Services/Responses/Confir
 
 interface RoomSelectProps {
   hotelRateInfo: HotelRateInfo;
+  showDetailModal: Function;
 }
 
 interface RoomSelectState {
@@ -30,13 +31,19 @@ export default class RoomSelect extends React.Component<RoomSelectProps, RoomSel
 
   render(): JSX.Element {
     const { showRoomsCount } = this.state;
-    const { hotelRateInfo } = this.props;
+    const { hotelRateInfo, showDetailModal } = this.props;
     return (
       <>
         <div className={css.RoomContainer}>
           <div className={css.SelectRoomDiv}>
             <h3>Select your room</h3>
-            <div className={css.HideDetailBtn}>Hotel details</div>
+            <div
+              className={css.HideDetailBtn}
+              onClick={() => { showDetailModal(); }}
+              role="button"
+            >
+              Hotel details
+            </div>
           </div>
           <div className={css.CheckInDiv}>
             Check-in 03 June Check-out 05 June (2 nights), 1 Audit
