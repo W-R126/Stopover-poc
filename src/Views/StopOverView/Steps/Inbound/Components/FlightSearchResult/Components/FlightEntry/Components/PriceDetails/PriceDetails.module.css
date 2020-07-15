@@ -1,0 +1,76 @@
+.PriceDetails > table {
+  width: 100%;
+}
+
+.PriceDetails td > img {
+  height: 34px;
+  width: 34px;
+  vertical-align: middle;
+}
+
+html:not([dir='rtl']) .PriceDetails td > img {
+  margin-right: 16px;
+}
+
+html[dir='rtl'] .PriceDetails td > img {
+  margin-left: 16px;
+}
+
+.PriceDetails > table tr > td {
+  padding: 16px;
+}
+
+.PriceDetails > table tr > td:not(:first-child) {
+  text-align: center;
+}
+
+.PriceDetails > table tr > td > button {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.PriceDetails > table > thead {
+  font-size: 18px;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  font-weight: 900;
+}
+
+.PriceDetails > table > tbody > tr:nth-child(odd):not(:last-child) {
+  background-color: #f3f3f3;
+}
+
+.PriceDetails > table > tbody > tr > td:not(:first-child) {
+  font-weight: 900;
+}
+
+.PriceDetails > table tr > td.Selected {
+  position: relative;
+}
+
+.PriceDetails > table tr > td.Selected::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 4px solid #bd8b13;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  pointer-events: none;
+}
+
+.PriceDetails > table > thead > tr > td.Selected::before {
+  border-top-width: 4px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.PriceDetails > table > tbody > tr:last-child > td.Selected::before {
+  height: calc(100% - 1px);
+  bottom: 0;
+  border-bottom-width: 4px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}

@@ -11,6 +11,7 @@ import StopOverService from './Services/StopOverService';
 import StopOverView from './Views/StopOverView';
 import { StopOverProgressStepEnum } from './Enums/StopOverProgressStepEnum';
 import FlightOfferService from './Services/FlightOfferService';
+import SelectInbound from './Views/SelectInbound';
 
 export default function App({ config }: { config: Config }): JSX.Element {
   const contentService = new ContentService('en-GB', 'EUR', config.apiBaseURL);
@@ -44,11 +45,19 @@ export default function App({ config }: { config: Config }): JSX.Element {
             Object.keys(StopOverProgressStepEnum).map((step) => step).join('|')
           })`}
         >
-          <StopOverView contentService={contentService} stopOverService={stopOverService} />
+          <StopOverView
+            contentService={contentService}
+            stopOverService={stopOverService}
+            flightOfferService={flightOfferService}
+          />
         </Route>
 
         <Route path="/select-inbound">
-          <strong>Select inbound flight.</strong>
+          <SelectInbound
+            stopOverService={stopOverService}
+            flightOfferService={flightOfferService}
+            contentService={contentService}
+          />
         </Route>
 
         <Route path="/stopover-accepted">

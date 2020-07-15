@@ -356,3 +356,27 @@ export interface CombinabilityMapping {
   from: number[];
   to: number[];
 }
+
+export interface SelectOnwardFlightAndHotelResponse {
+  airSearchResults: AirSearchResults;
+}
+
+export interface AirSearchResults {
+  searchResultMetaData: SearchResultMetaData;
+  fareFamilies: FareFamily[];
+  unbundledOffers: UnbundledOffer[][];
+  bundledOffers: UnbundledOffer[];
+  bundledAlternateDateOffers: UnbundledOffer[];
+  brandedResults: BrandedResults;
+  resultMapping: ResultMapping;
+  travelPartAdvisories: any[][];
+  soldOutDatesOutbound: any[];
+  soldOutDatesInbound: any[];
+  noneScheduledDatesOutbound: Date[];
+  noneScheduledDatesInbound: Date[];
+  warnings: any[];
+  currency: string;
+  promocodeValid: string;
+  negotiateFarePresent: string;
+  conversionRatesFound: string;
+}

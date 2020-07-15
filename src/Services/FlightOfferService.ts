@@ -12,6 +12,7 @@ import {
   BrandOffer,
   FareFamily,
   UnbundledAlternateDateOffer,
+  SelectOnwardFlightAndHotelResponse,
 } from './Responses/FlightOffersResponse';
 import SessionManager from '../SessionManager';
 import {
@@ -22,6 +23,7 @@ import {
   AlternateFlightOfferModel,
 } from '../Models/FlightOfferModel';
 import { AirportModel } from '../Models/AirportModel';
+
 import { FlightOffersRequest } from './Requests/FlightOffersRequest';
 
 export default class FlightOfferService extends BaseService {
@@ -322,5 +324,78 @@ export default class FlightOfferService extends BaseService {
         },
       };
     });
+  }
+
+  // for the inbound section of stopover
+  async getInboundOffers(
+    stopoverItineraryParts: number,
+    hotelRateKey?: string,
+  ): Promise<{offers: FlightOfferModel[][]}> {
+    const airportsReq = this.airportService.getAirports();
+
+    let resp;
+
+    try {
+      const { data, headers, status } = await this.http.post<SelectOnwardFlightAndHotelResponse>(
+        '/selectOnwardFlightAndHotel',
+        {
+          stopoverItineraryParts: [{
+            selectedOfferRef: stopoverItineraryParts,
+          }],
+          hotelRateKey,
+        },
+        { headers: SessionManager.getSessionHeaders() },
+      );
+
+      SessionManager.setSessionHeaders(headers);
+
+      if (status === 200) {
+        resp = data;
+      }
+    } catch (err) {
+      return { offers: [] };
+    }
+
+    if (!resp) {
+      return { offers: [] };
+    }
+
+    const airports = await airportsReq;
+    const fareFamilies = this.getFareFamilies(resp.airSearchResults.fareFamilies);
+    const itineraryRefs = this.getItineraryRefs(resp.airSearchResults.unbundledOffers);
+    const segmentRefs = this.getSegmentRefs(itineraryRefs);
+    const offers = this.getBrandedOffers(
+      resp.airSearchResults.brandedResults.itineraryPartBrands,
+      itineraryRefs,
+      segmentRefs,
+      fareFamilies,
+      airports,
+    );
+
+    return {
+      offers,
+    };
+  }
+
+  async getInboundOffersTest(
+    resultData: SelectOnwardFlightAndHotelResponse,
+  ): Promise<{offers: FlightOfferModel[][]}> {
+    const airportsReq = this.airportService.getAirports();
+
+    const airports = await airportsReq;
+    const fareFamilies = this.getFareFamilies(resultData.airSearchResults.fareFamilies);
+    const itineraryRefs = this.getItineraryRefs(resultData.airSearchResults.unbundledOffers);
+    const segmentRefs = this.getSegmentRefs(itineraryRefs);
+    const offers = this.getBrandedOffers(
+      resultData.airSearchResults.brandedResults.itineraryPartBrands,
+      itineraryRefs,
+      segmentRefs,
+      fareFamilies,
+      airports,
+    );
+
+    return {
+      offers,
+    };
   }
 }

@@ -12,6 +12,7 @@ export default class AppState {
     stopOverInfo: 'StopOver.info',
     packageInfo: 'StopOver.packageInfo',
     selectedHotel: 'StopOver.selectedHotel',
+    inboundFare: 'Booking.inboundFare',
   };
 
   static get outboundFare(): FareModel | undefined {
@@ -59,5 +60,13 @@ export default class AppState {
 
   static set selectedHotel(selectedHotel: HotelModel | undefined) {
     Utils.sessionStore.set(AppState.keys.selectedHotel, selectedHotel);
+  }
+
+  static get inboundFare(): FareModel | undefined {
+    return parseFare(Utils.sessionStore.get(AppState.keys.inboundFare));
+  }
+
+  static set inboundFare(offer: FareModel | undefined) {
+    Utils.sessionStore.set(AppState.keys.inboundFare, offer);
   }
 }

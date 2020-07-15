@@ -13,6 +13,7 @@ import ContentService from '../../Services/ContentService';
 import FlightItem from '../../Components/ShoppingCart/Items/FlightItem';
 import AppState from '../../AppState';
 import StopOverService from '../../Services/StopOverService';
+import FlightOfferService from '../../Services/FlightOfferService';
 import HotelItem from '../../Components/ShoppingCart/Items/HotelItem';
 import { HotelModel } from '../../Models/HotelModel';
 import { FareModel } from '../../Models/FlightOfferModel';
@@ -20,6 +21,7 @@ import { FareModel } from '../../Models/FlightOfferModel';
 interface StopOverProps extends RouteComponentProps<{ progressStep: StopOverProgressStepEnum }> {
   contentService: ContentService;
   stopOverService: StopOverService;
+  flightOfferService: FlightOfferService;
 }
 
 interface StopOverState {
@@ -27,6 +29,7 @@ interface StopOverState {
   startDate: Date;
   endDate: Date;
   selectedHotel?: HotelModel;
+  inboundFare?: FareModel;
 }
 
 class StopOverView extends React.Component<StopOverProps, StopOverState> {
@@ -38,6 +41,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
       startDate: new Date(2020, 7, 5),
       endDate: new Date(2020, 7, 7),
       selectedHotel: AppState.selectedHotel,
+      inboundFare: AppState.inboundFare,
     };
 
     this.onSelectHotel = this.onSelectHotel.bind(this);
@@ -55,6 +59,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
       history,
       match: { params: { progressStep } },
       stopOverService,
+      flightOfferService,
     } = this.props;
     const {
       outboundFare,
@@ -156,19 +161,30 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
               endDate={endDate}
             />
           )}
-          {progressStep === 'inbound' && (<Inbound />)}
+          {progressStep === 'inbound' && (
+            <Inbound
+              flightOfferService={flightOfferService}
+              stopOverService={stopOverService}
+              contentService={contentService}
+              isStopOver
+            />
+          )}
         </div>
 
-        <ShoppingCart currency={contentService.currency}>
-          {outboundFare && (
+        {
+          (progressStep === 'hotels' || progressStep === 'experiences') && (
+          <ShoppingCart currency={contentService.currency}>
+            {
+            outboundFare && (
             <FlightItem
               currency={outboundFare.price.currency}
               item={outboundFare}
               price={outboundFare.price.total}
               contentService={contentService}
             />
-          )}
-          {selectedHotel && (
+            )
+          }
+            {selectedHotel && (
             <HotelItem
               item={selectedHotel}
               contentService={contentService}
@@ -177,8 +193,10 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
                 selectedHotel.hotelRateInfo.rooms.room[0].ratePlans.ratePlan[0].rateInfo.netRate
               }
             />
-          )}
-        </ShoppingCart>
+            )}
+          </ShoppingCart>
+          )
+        }
       </div>
     );
   }
