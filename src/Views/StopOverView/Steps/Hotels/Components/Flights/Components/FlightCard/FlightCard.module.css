@@ -132,6 +132,7 @@
 .FlightCardItem .AddButton.Disabled {
   background: #f3f3f3;
   color: #71706e;
+  visibility: hidden;
 }
 
 .AngleDown {

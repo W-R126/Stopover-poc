@@ -22,7 +22,7 @@ export const callTestApis = async (): Promise<
           useNearbyLocations: false,
         },
         when: {
-          date: '2020-07-14',
+          date: '2020-08-14',
         },
       },
       {
@@ -35,7 +35,7 @@ export const callTestApis = async (): Promise<
           useNearbyLocations: false,
         },
         when: {
-          date: '2020-07-28',
+          date: '2020-08-28',
         },
       },
       ],

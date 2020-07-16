@@ -7,6 +7,7 @@ import { HOTEL_RATING_RANGE, HOTEL_AMENTITY_RANGE } from '../../../../Utils';
 interface FilterMenuProps {
   filterValue: any;
   changeFilter: Function;
+  priceSpan: any;
 }
 interface FilterMenuState {
   collapsed: boolean;
@@ -15,6 +16,8 @@ interface FilterMenuState {
 
 export default class FilterMenu extends React.Component<FilterMenuProps, FilterMenuState> {
   private readonly selfRef = React.createRef<HTMLDivElement>();
+
+  private readonly PRICE_MAX_ADD = 0.01;
 
   constructor(props: FilterMenuProps) {
     super(props);
@@ -100,14 +103,17 @@ export default class FilterMenu extends React.Component<FilterMenuProps, FilterM
   }
 
   private handleChangePrice(event: React.ChangeEvent<HTMLInputElement>): void {
+    const { priceSpan } = this.props;
+
     this.setState({
-      price: parseFloat(event.target.value) === 100 ? -1 : parseFloat(event.target.value),
+      price: parseFloat(event.target.value) === priceSpan + this.PRICE_MAX_ADD ? -1 : parseFloat(event.target.value),
     });
   }
 
   private updateChnagrPrice(event: any): void {
-    const { filterValue, changeFilter } = this.props;
-    const value = parseFloat(event.target.value) === 100 ? -1 : parseFloat(event.target.value);
+    const { filterValue, changeFilter, priceSpan } = this.props;
+    const value = parseFloat(event.target.value) === priceSpan + this.PRICE_MAX_ADD
+      ? -1 : parseFloat(event.target.value);
     changeFilter({
       ...filterValue,
       price: value,
@@ -146,7 +152,7 @@ export default class FilterMenu extends React.Component<FilterMenuProps, FilterM
 
   render(): JSX.Element {
     const { collapsed, price } = this.state;
-    const { filterValue } = this.props;
+    const { filterValue, priceSpan } = this.props;
     return (
       <div
         className={css.Container}
@@ -171,15 +177,16 @@ export default class FilterMenu extends React.Component<FilterMenuProps, FilterM
           </div>
           <div className={css.SliderContainer}>
             <p className={css.SubTitle}>
-              {`Price ᛫ ${(price === 100 || price === -1) ? 'Any' : price}`}
+              {`Price ᛫ ${(price === priceSpan.max + this.PRICE_MAX_ADD || price === -1) ? 'Any' : price}`}
             </p>
             <input
               type="range"
-              min={0}
-              max={100}
-              value={price === -1 ? 100 : price}
+              min={priceSpan.min}
+              max={priceSpan.max === 0 ? priceSpan.max : priceSpan.max + this.PRICE_MAX_ADD}
+              value={price === -1 ? priceSpan.max + this.PRICE_MAX_ADD : price}
               onChange={this.handleChangePrice}
               onMouseUp={this.updateChnagrPrice}
+              step={this.PRICE_MAX_ADD}
             />
           </div>
 

@@ -50,7 +50,7 @@ export interface HotelInfo {
   hotelCode: string;
   hotelName: string;
   rating: string;
-  currencyCode?: string;
+  currencyCode: string;
   recommended?: boolean;
   free?: boolean;
   reviews: Review[];
@@ -146,7 +146,7 @@ export interface RatePlans {
 
 export interface RatePlan {
   availableQuantity?: number;
-  rateKey?: string;
+  rateKey: string;
   rateInfo: RateInfo;
   mealsIncluded?: MealsIncluded;
 }
@@ -210,7 +210,7 @@ export interface Taxes {
 }
 
 export interface RoomDescription {
-  name?: string;
+  name: string;
 }
 
 // for AirSearchResult Start

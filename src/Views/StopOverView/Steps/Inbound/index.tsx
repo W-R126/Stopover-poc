@@ -12,12 +12,10 @@ import StopOverService from '../../../../Services/StopOverService';
 import ContentService from '../../../../Services/ContentService';
 import { callTestApis } from './test';
 import FlightOfferService from '../../../../Services/FlightOfferService';
-import ShoppingCart from '../../../../Components/ShoppingCart';
-import FlightItem from '../../../../Components/ShoppingCart/Items/FlightItem';
 
 interface InboundState {
   offers?: FlightOfferModel[][];
-  packageInfo: PackageTypeModel;
+  packageInfo?: PackageTypeModel;
   trip: TripModel;
   inboundFare?: FareModel;
 }
@@ -26,6 +24,7 @@ interface InboundProps {
   flightOfferService: FlightOfferService;
   stopOverService: StopOverService;
   contentService: ContentService;
+  selectInbound: Function;
   isStopOver?: boolean;
 }
 export default class Inbound extends React.Component<InboundProps, InboundState> {
@@ -35,7 +34,7 @@ export default class Inbound extends React.Component<InboundProps, InboundState>
     super(props);
     this.state = {
       offers: undefined,
-      packageInfo: AppState.packageInfo ?? { hotelCode: '', flightId: '', night: -1 },
+      packageInfo: AppState.packageInfo,
       inboundFare: AppState.inboundFare,
       trip: AppState.tripSearch ? AppState.tripSearch : copyTrip(),
     };
@@ -48,19 +47,25 @@ export default class Inbound extends React.Component<InboundProps, InboundState>
   }
 
   private onInboundOfferChange(inBoundOffer?: FareModel): void {
-    AppState.inboundFare = inBoundOffer;
+    const { selectInbound } = this.props;
+
     this.setState({
       inboundFare: inBoundOffer,
     });
+
+    selectInbound(inBoundOffer);
   }
 
   private async getOffers(): Promise<void> {
     const { flightOfferService, isStopOver } = this.props;
     const { packageInfo } = this.state;
-    if (isStopOver && packageInfo) {
+    if (isStopOver
+      && packageInfo
+      && packageInfo.shoppingBasketHashCode
+      && packageInfo.rateKey) {
       const offerReq = flightOfferService.getInboundOffers(
-        parseInt(packageInfo.flightId ?? '0', 0),
-        packageInfo.hotelCode,
+        packageInfo.shoppingBasketHashCode,
+        packageInfo.rateKey,
       );
       const offerResult = await offerReq;
       this.setState({
@@ -118,19 +123,6 @@ export default class Inbound extends React.Component<InboundProps, InboundState>
             contentService={contentService}
           />
         </div>
-
-        <ShoppingCart currency={contentService.currency}>
-          {
-            inboundFare && (
-              <FlightItem
-                currency={inboundFare.price.currency}
-                item={inboundFare}
-                price={inboundFare.price.total}
-                contentService={contentService}
-              />
-            )
-          }
-        </ShoppingCart>
       </>
     );
   }

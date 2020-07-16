@@ -11,7 +11,7 @@ import {
 import Utils from '../../../../../../Utils';
 import {
   HOTEL_RATING_RANGE, HOTEL_SORT_RANGE, HOTEL_AMENTITY_RANGE,
-  getNetRateOfHotelAvailInfo,
+  getCheapestRoomNetRate,
 } from '../../Utils';
 import ContentService from '../../../../../../Services/ContentService';
 
@@ -39,6 +39,7 @@ export class HotelSelection extends React.Component<HotelSelectionProps, HotelSe
         price: -1,
       },
     };
+    this.getFilterPriceSpan = this.getFilterPriceSpan.bind(this);
   }
 
   private getFilterAndSortedHotel(): HotelAvailInfo[] {
@@ -76,6 +77,19 @@ export class HotelSelection extends React.Component<HotelSelectionProps, HotelSe
     );
 
     return `${startStr} - ${endStr}`;
+  }
+
+  private getFilterPriceSpan(hotelAvailabilityInfos: HotelAvailabilityInfos | undefined): any {
+    if (!hotelAvailabilityInfos) return { min: 0, max: 0 };
+    const { hotelAvailInfo } = hotelAvailabilityInfos;
+    const minNetArr = hotelAvailInfo.map(
+      (item: HotelAvailInfo): number => getCheapestRoomNetRate(item.hotelRateInfo),
+    );
+
+    if (minNetArr.length > 0) {
+      return { min: Math.min.apply(null, minNetArr), max: Math.max.apply(null, minNetArr) };
+    }
+    return { min: 0, max: 0 };
   }
 
   private filterAmentity(amentitiyCodes: number[], amentityArr: Amenity[]): boolean {
@@ -127,7 +141,7 @@ export class HotelSelection extends React.Component<HotelSelectionProps, HotelSe
 
     if (filterValue.price > -1) {
       tempList = tempList.filter(
-        (item: HotelAvailInfo) => getNetRateOfHotelAvailInfo(item) < filterValue.price,
+        (item: HotelAvailInfo) => getCheapestRoomNetRate(item.hotelRateInfo) <= filterValue.price,
       );
     }
     return tempList;
@@ -141,12 +155,12 @@ export class HotelSelection extends React.Component<HotelSelectionProps, HotelSe
         if (b.hotelInfo?.recommended) return 1;
         return 0;
       } if (sortValue === 'Lowest price') {
-        const aNetRate = getNetRateOfHotelAvailInfo(a);
-        const bNetRate = getNetRateOfHotelAvailInfo(b);
+        const aNetRate = getCheapestRoomNetRate(a.hotelRateInfo);
+        const bNetRate = getCheapestRoomNetRate(b.hotelRateInfo);
         return aNetRate - bNetRate;
       } if (sortValue === 'Highest price') {
-        const aNetRate = getNetRateOfHotelAvailInfo(a);
-        const bNetRate = getNetRateOfHotelAvailInfo(b);
+        const aNetRate = getCheapestRoomNetRate(a.hotelRateInfo);
+        const bNetRate = getCheapestRoomNetRate(b.hotelRateInfo);
         return bNetRate - aNetRate;
       } if (sortValue === 'Hotel Class') {
         return parseInt(b.hotelInfo.rating, 0) - parseInt(a.hotelInfo.rating, 0);
@@ -167,6 +181,7 @@ export class HotelSelection extends React.Component<HotelSelectionProps, HotelSe
       selectedNight,
       selectHotel,
       selectedHotelCode,
+      hotelAvailabilityInfos,
     } = this.props;
 
     return (
@@ -184,6 +199,7 @@ export class HotelSelection extends React.Component<HotelSelectionProps, HotelSe
                 filterValue: { ...selectedFilter },
               });
             }}
+            priceSpan={this.getFilterPriceSpan(hotelAvailabilityInfos)}
           />
           <SortMenu
             selectedSort={sortValue}
@@ -197,7 +213,9 @@ export class HotelSelection extends React.Component<HotelSelectionProps, HotelSe
             <div key={index}>
               <HotelCard
                 {...item}
-                selectHotel={(hotelCode: string): void => { selectHotel(hotelCode); }}
+                selectHotel={(hotelCode: string, rateKey: string): void => {
+                  selectHotel(hotelCode, rateKey);
+                }}
                 selectedNight={selectedNight}
                 selectedHotelCode={selectedHotelCode}
               />

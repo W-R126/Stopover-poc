@@ -39,7 +39,7 @@ export default class RoomSelect extends React.Component<RoomSelectProps, RoomSel
             <h3>Select your room</h3>
             <div
               className={css.HideDetailBtn}
-              onClick={() => { showDetailModal(); }}
+              onClick={(): void => { showDetailModal(); }}
               role="button"
             >
               Hotel details

@@ -35,12 +35,13 @@ interface HotelsState {
 export default class Hotels extends React.Component<HotelsProps, HotelsState> {
   constructor(props: any) {
     super(props);
-
     this.state = {
       loading: false,
       confirmStopOverResponse: undefined,
       stopoverDays: [],
-      packageInfo: AppState.packageInfo ?? { hotelCode: '', flightId: '', night: -1 },
+      packageInfo: AppState.packageInfo ?? {
+        hotelCode: '', flightId: '', night: -1, shoppingBasketHashCode: -1, rateKey: '',
+      },
       outboundFare: AppState.outboundFare,
       trip: AppState.tripSearch,
       stopOverInfo: AppState.stopOverInfo,
@@ -54,7 +55,7 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
     this.getStopOverOffers();
   }
 
-  private onSelectHotel(hotelCode: string): void {
+  private onSelectHotel(hotelCode: string, rateKey: string): void {
     const { onSelectHotel } = this.props;
     const { packageInfo, confirmStopOverResponse } = this.state;
 
@@ -79,23 +80,29 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
     this.setPackageInfo({
       flightId: packageInfo.flightId,
       night: packageInfo.night,
+      shoppingBasketHashCode: packageInfo.shoppingBasketHashCode,
+      rateKey,
       hotelCode,
     });
   }
 
-  private onSelectFlight(flightId: string): void {
+  private onSelectFlight(flightId: string, shoppingBasketHashCode: number): void {
     const { packageInfo } = this.state;
 
     this.setPackageInfo({
       flightId,
+      shoppingBasketHashCode,
       night: packageInfo.night,
       hotelCode: packageInfo.hotelCode,
+      rateKey: packageInfo.rateKey,
     });
   }
 
   private async getStopOverOffers(nightValue?: number): Promise<void> {
     const { stopOverService } = this.props;
-    const { outboundFare, trip, stopOverInfo } = this.state;
+    const {
+      outboundFare, trip, stopOverInfo, packageInfo,
+    } = this.state;
 
     await new Promise((resolve) => this.setState({ loading: true }, resolve));
 
@@ -117,7 +124,13 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
       trip.legs[trip.legs.length - 1].departure,
     );
 
-    this.setPackageInfo({ hotelCode: '', flightId: '', night: nextNightValue });
+    this.setPackageInfo({
+      hotelCode: packageInfo.hotelCode,
+      flightId: packageInfo.flightId,
+      night: nextNightValue,
+      shoppingBasketHashCode: packageInfo.shoppingBasketHashCode,
+      rateKey: packageInfo.rateKey,
+    });
 
     this.setState({
       loading: false,
@@ -133,6 +146,14 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
   }
 
   private async changeNight(selectedOne: number): Promise<void> {
+    const { packageInfo } = this.state;
+    this.setPackageInfo({
+      hotelCode: '',
+      flightId: '',
+      night: packageInfo.night,
+      shoppingBasketHashCode: -1,
+      rateKey: '',
+    });
     this.getStopOverOffers(selectedOne);
   }
 

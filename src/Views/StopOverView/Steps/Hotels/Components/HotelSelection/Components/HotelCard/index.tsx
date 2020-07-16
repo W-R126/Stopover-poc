@@ -3,11 +3,10 @@ import css from './HotelCard.module.css';
 import {
   HotelAvailInfo, ImageItem,
 } from '../../../../../../../../Services/Responses/ConfirmStopOverResponse';
-import { getNetRateOfHotelAvailInfo } from '../../../../Utils';
+import { getCheapestRoomRateKey, getCheapestRoomRatePlan } from '../../../../Utils';
 import ReviewStar from '../ReviewStar';
 import RoomSelect from '../RoomSelect';
 import HotelDetailModal from '../HotelDetailModal';
-import Utils from '../../../../../../../../Utils';
 
 interface HotelCardProps extends HotelAvailInfo {
   selectHotel: Function;
@@ -23,20 +22,28 @@ interface HotelCardStat {
 export class HotelCard extends React.Component<HotelCardProps, HotelCardStat> {
   constructor(props: HotelCardProps) {
     super(props);
+
     this.state = {
       showRoomList: false,
       showDetailModal: false,
     };
   }
 
-  getImageURL = (imageItem: ImageItem[]): string => {
+  private getImageURL = (imageItem: ImageItem[]): string => {
     if (imageItem.length > 0) {
       return `http://photos.hotelbeds.com/giata/${imageItem[0]?.image?.url}`;
     }
     return '';
   };
 
-  changeRoom = (): void => {
+  private getPriceStr(): string {
+    const { hotelRateInfo } = this.props;
+    const rateInfo = getCheapestRoomRatePlan(hotelRateInfo);
+    if (rateInfo) return `${rateInfo.rateInfo.currencyCode} ${rateInfo.rateInfo.netRate}`;
+    return '';
+  }
+
+  private changeRoom = (): void => {
     this.setState((previousState) => ({
       showRoomList: !previousState.showRoomList,
     }));
@@ -95,13 +102,7 @@ export class HotelCard extends React.Component<HotelCardProps, HotelCardStat> {
                     {`${selectedNight} Nights 1 Adult`}
                   </p>
                   <h4 className={css.Price}>
-                    {`${hotelInfo?.currencyCode} ${Utils.formatCurrency(
-                      getNetRateOfHotelAvailInfo({
-                        hotelImageInfo,
-                        hotelInfo,
-                        hotelRateInfo,
-                      }),
-                    )}`}
+                    {this.getPriceStr()}
                   </h4>
                 </div>
               </div>
@@ -118,7 +119,9 @@ export class HotelCard extends React.Component<HotelCardProps, HotelCardStat> {
                 className={
                   `${css.SelectHotelBtn} ${selectedHotelCode === hotelInfo.hotelCode ? css.Selected : ''}`
                 }
-                onClick={(): void => { selectHotel(hotelInfo.hotelCode); }}
+                onClick={(): void => {
+                  selectHotel(hotelInfo.hotelCode, getCheapestRoomRateKey(hotelRateInfo));
+                }}
                 type="button"
               >
                 {selectedHotelCode === hotelInfo.hotelCode ? 'Selected' : 'Select'}
@@ -128,7 +131,7 @@ export class HotelCard extends React.Component<HotelCardProps, HotelCardStat> {
         </div>
         <RoomSelect
           hotelRateInfo={hotelRateInfo}
-          showDetailModal={() => {
+          showDetailModal={(): void => {
             this.setState({ showDetailModal: true });
           }}
         />
@@ -140,7 +143,7 @@ export class HotelCard extends React.Component<HotelCardProps, HotelCardStat> {
             hotelInfo,
             hotelRateInfo,
           }}
-          hideModal={() => this.setState({
+          hideModal={(): void => this.setState({
             showDetailModal: false,
           })}
         />

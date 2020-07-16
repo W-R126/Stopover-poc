@@ -10,6 +10,7 @@ type FlightCardProps = {
   selectFlight: Function;
   selectedFlightId?: string;
   differenceFromLowestPrice?: DifferenceFromLowestPrice;
+  isEnableSelect?: boolean;
 }
 
 type FlightCardState = {
@@ -57,8 +58,15 @@ export default class FlightCard extends React.Component<FlightCardProps, FlightC
   }
 
   render(): JSX.Element {
-    const { segment, selectFlight, selectedFlightId } = this.props;
+    const {
+      segment, selectFlight, selectedFlightId, isEnableSelect,
+    } = this.props;
     const { isShowDetail } = this.state;
+
+    const selectBtnClassList = [css.AddButton];
+    if (!isEnableSelect) { selectBtnClassList.push(css.Disabled); }
+    if (selectedFlightId === segment['@id']) { selectBtnClassList.push(css.Selected); }
+
     return (
       <div
         className={
@@ -102,9 +110,7 @@ export default class FlightCard extends React.Component<FlightCardProps, FlightC
             </div>
           </div>
           <button
-            className={
-            `${css.AddButton} ${selectedFlightId === segment['@id'] ? css.Selected : ''}`
-          }
+            className={selectBtnClassList.join(' ')}
             onClick={(e): void => {
               e.preventDefault();
               e.stopPropagation();

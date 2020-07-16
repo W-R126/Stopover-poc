@@ -72,7 +72,9 @@ export class Flights extends React.Component<FlightProps, FlightState> {
             <FlightCard
               key={`selected-segment-${idx}`}
               segment={item}
-              selectFlight={(flightId: number): void => { selectFlight(flightId); }}
+              selectFlight={(flightId: number): void => {
+                selectFlight(flightId, -1);
+              }}
               selectedFlightId={selectedFlightId}
             />,
           );
@@ -97,9 +99,12 @@ export class Flights extends React.Component<FlightProps, FlightState> {
                 <FlightCard
                   key={`offer-${idx}`}
                   segment={item.onwardsSegments[0]}
-                  selectFlight={(flightId: number): void => { selectFlight(flightId); }}
+                  selectFlight={(flightId: number): void => {
+                    selectFlight(flightId, item.shoppingBasketHashCode);
+                  }}
                   selectedFlightId={selectedFlightId}
                   differenceFromLowestPrice={item.onwardsSegments.differenceFromLowestPrice}
+                  isEnableSelect
                 />,
               );
             }

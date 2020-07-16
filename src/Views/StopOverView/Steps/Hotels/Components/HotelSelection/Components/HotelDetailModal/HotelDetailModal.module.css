@@ -182,7 +182,7 @@
 
 .SummaryHeader {
   display: flex;
-  flex: 1 1 80px;
+  flex: 0 1 80px;
   background: #e5e5e5;
   padding: 5px 10px;
   align-items: center;
@@ -240,6 +240,7 @@
   margin: 22px 35px 40px;
   overflow-y: auto;
   max-height: 240px;
+  flex: 1 1 100%;
 }
 
 .LocationContent {

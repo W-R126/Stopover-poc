@@ -45,12 +45,18 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
     };
 
     this.onSelectHotel = this.onSelectHotel.bind(this);
+    this.onSelectInbound = this.onSelectInbound.bind(this);
   }
 
   private onSelectHotel(selectedHotel?: HotelModel): void {
     AppState.selectedHotel = selectedHotel;
 
     this.setState({ selectedHotel });
+  }
+
+  private onSelectInbound(selectedInboud?: FareModel): void {
+    AppState.inboundFare = selectedInboud;
+    this.setState({ inboundFare: selectedInboud });
   }
 
   render(): JSX.Element {
@@ -66,6 +72,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
       startDate,
       endDate,
       selectedHotel,
+      inboundFare,
     } = this.state;
 
     const hotelsClassList = [css.Step];
@@ -166,15 +173,14 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
               flightOfferService={flightOfferService}
               stopOverService={stopOverService}
               contentService={contentService}
+              selectInbound={this.onSelectInbound}
               isStopOver
             />
           )}
         </div>
 
-        {
-          (progressStep === 'hotels' || progressStep === 'experiences') && (
-          <ShoppingCart currency={contentService.currency}>
-            {
+        <ShoppingCart currency={contentService.currency}>
+          {
             outboundFare && (
             <FlightItem
               currency={outboundFare.price.currency}
@@ -184,7 +190,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
             />
             )
           }
-            {selectedHotel && (
+          {selectedHotel && (
             <HotelItem
               item={selectedHotel}
               contentService={contentService}
@@ -193,10 +199,18 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
                 selectedHotel.hotelRateInfo.rooms.room[0].ratePlans.ratePlan[0].rateInfo.netRate
               }
             />
-            )}
-          </ShoppingCart>
-          )
-        }
+          )}
+          {
+            inboundFare && (
+              <FlightItem
+                currency={inboundFare.price.currency}
+                item={inboundFare}
+                price={inboundFare.price.total}
+                contentService={contentService}
+              />
+            )
+          }
+        </ShoppingCart>
       </div>
     );
   }

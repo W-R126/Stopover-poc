@@ -1,5 +1,5 @@
 import React from 'react';
-import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import GoogleMapReact from 'google-map-react';
 import css from './HotelDetailModal.module.css';
@@ -9,8 +9,9 @@ import checkInIcon from '../../../../../../../../Assets/Images/access_time-24px.
 import SpaIcon from '../../../../../../../../Assets/Images/spa.svg';
 import GolfIcon from '../../../../../../../../Assets/Images/golf.svg';
 import InfoStationIcon from '../../../../../../../../Assets/Images/info-station.svg';
-import { HotelAvailInfo } from '../../../../../../../../Services/Responses/ConfirmStopOverResponse';
+import { HotelAvailInfo, Amenity } from '../../../../../../../../Services/Responses/ConfirmStopOverResponse';
 import Marker from './Components/Marker';
+import { getCheapestRoomRatePlan, getCheapestRoomDescription } from '../../../../Utils';
 
 interface HotelDetailModalProps {
   hideModal: Function;
@@ -41,7 +42,28 @@ HotelDetailModalState
     return '';
   };
 
-  renderImageCarousle(): JSX.Element {
+  private getPricingStr(): string {
+    const { hotelAvailInfo } = this.props;
+    const { hotelRateInfo } = hotelAvailInfo;
+    const cheapRatePlan = getCheapestRoomRatePlan(hotelRateInfo);
+    if (cheapRatePlan) { return `From ${cheapRatePlan.rateInfo.currencyCode}, ${cheapRatePlan.rateInfo.netRate}`; }
+    return '';
+  }
+
+  private getCheckInStr(): string {
+    const { hotelAvailInfo } = this.props;
+    const { hotelInfo } = hotelAvailInfo;
+    const filteredOne = hotelInfo.amenities.amenity.filter((item: Amenity) => item.description === 'Check-in hour');
+    if (filteredOne.length > 0 && filteredOne[0].value) {
+      const valueArr = filteredOne[0].value.split(':');
+      const hourValue = parseInt(valueArr[0], 0);
+      if (hourValue <= 12) return `${(`0${hourValue}`).slice(-2)}:${valueArr[1]} am`;
+      return `${(`0${hourValue - 12}`).slice(-2)}:${valueArr[1]} pm`;
+    }
+    return 'Not specified';
+  }
+
+  private renderImageCarousle(): JSX.Element {
     const { hotelAvailInfo } = this.props;
     const { hotelImageInfo } = hotelAvailInfo;
     const divs: JSX.Element[] = [];
@@ -66,6 +88,7 @@ HotelDetailModalState
     const { hideModal, hotelAvailInfo } = this.props;
     const {
       hotelInfo,
+      hotelRateInfo,
     } = hotelAvailInfo;
 
     return (
@@ -77,7 +100,7 @@ HotelDetailModalState
               <button
                 className={css.CloseButton}
                 type="button"
-                onClick={() => {
+                onClick={(): void => {
                   hideModal();
                 }}
               >
@@ -95,7 +118,7 @@ HotelDetailModalState
                       {this.TABS.map((item, idx) => (
                         <li
                           className={`${idx === tab ? css.Active : ''}`}
-                          onClick={() => { this.setState({ tab: idx }); }}
+                          onClick={(): void => { this.setState({ tab: idx }); }}
                           role="button"
                         >
                           <div className={css.Tab}>{item}</div>
@@ -114,7 +137,7 @@ HotelDetailModalState
                             Pricing
                           </p>
                           <p>
-                            From AED 1,150
+                            {this.getPricingStr()}
                           </p>
                         </div>
                         <div className={css.Item}>
@@ -122,11 +145,11 @@ HotelDetailModalState
                             <img className={css.CheckInIcon} src={checkInIcon} alt="CheckIn Icon" />
                             Check-in
                           </p>
-                          <p>10:00am</p>
+                          <p>{this.getCheckInStr()}</p>
                         </div>
                       </div>
                       <div className={css.Description}>
-                        {hotelAvailInfo.hotelRateInfo.rooms.room[0].roomDescription}
+                        {getCheapestRoomDescription(hotelRateInfo)}
                       </div>
                     </div>
                     )}
