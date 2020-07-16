@@ -12,7 +12,7 @@
 }
 
 .SelectRoomDiv h3 {
-  font-family: "EtihadAltis-Bold", Arial, Helvetica, sans-serif;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-size: 18px;
   line-height: 23px;
@@ -21,7 +21,7 @@
 }
 
 .HideDetailBtn {
-  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
   font-weight: 350;
   font-size: 18px;
   line-height: 23px;
@@ -36,7 +36,7 @@
 
 .CheckInDiv {
   background: #f68d2e;
-  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -56,7 +56,7 @@
 .RoomInfo {
   display: flex;
   flex-direction: column;
-  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -70,7 +70,7 @@
   background: #bd8b13;
   border-radius: 8px;
   border: none;
-  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -93,7 +93,7 @@
   border: none;
   outline: none;
   background: none;
-  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;

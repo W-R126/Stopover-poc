@@ -1,7 +1,6 @@
 export interface PackageTypeModel {
   hotelCode?: string;
   rateKey?: string;
-  flightId?: string;
-  shoppingBasketHashCode?: number;
+  fareHashCode?: number;
   night?: number;
 }

@@ -75,6 +75,10 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
       inboundFare,
     } = this.state;
 
+    if (!outboundFare) {
+      return (<div>No outbound fare selected</div>); // TODO: Something pretty
+    }
+
     const hotelsClassList = [css.Step];
     const experiencesClassList = [css.Step];
     const inboundClassList = [css.Step];
@@ -157,6 +161,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
         <div className={`${css.ContentWrapper} ${commonCss.ContentWrapper}`}>
           {progressStep === 'hotels' && (
             <Hotels
+              outboundFare={outboundFare}
               contentService={contentService}
               stopOverService={stopOverService}
               onSelectHotel={this.onSelectHotel}

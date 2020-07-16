@@ -39,7 +39,7 @@
 }
 
 .ModalTitle {
-  font-family: "EtihadAltis-Bold", Arial, Helvetica, sans-serif;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-size: 30px;
   line-height: 22px;
@@ -204,7 +204,7 @@
 .SummaryHeader .Item p {
   display: flex;
   align-items: center;
-  font-family: "EtihadAltis-Bold", Arial, Helvetica, sans-serif;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 18px;
@@ -265,7 +265,7 @@
   display: flex;
   flex: 1 0 29px;
   align-items: center;
-  font-family: "EtihadAltis-Bold", Arial, Helvetica, sans-serif;
+  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 600;
   font-size: 18px;

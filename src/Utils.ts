@@ -1,5 +1,6 @@
 import { CabinClassEnum } from './Enums/CabinClassEnum';
 import { CoordinateModel } from './Models/CoordinateModel';
+import { LegModel } from './Models/FlightOfferModel';
 
 function createStore(store: Storage): {
   get: <T>(key: string, def?: T) => T | undefined;
@@ -38,6 +39,20 @@ function createStore(store: Storage): {
 }
 
 export default class Utils {
+  static getLegDurationMinutes(legs: LegModel[]): number {
+    let duration = 0;
+
+    legs.forEach((leg, idx) => {
+      duration += leg.duration;
+
+      if (idx !== legs.length - 1) {
+        duration += (leg.arrival.valueOf() - legs[idx + 1].departure.valueOf()) / 60000;
+      }
+    });
+
+    return duration;
+  }
+
   static getCabinClasses(cabinClass: CabinClassEnum): CabinClassEnum[] {
     const result: CabinClassEnum[] = [cabinClass];
 

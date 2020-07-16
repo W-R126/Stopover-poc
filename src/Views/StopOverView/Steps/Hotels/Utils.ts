@@ -1,5 +1,5 @@
 import {
-  HotelAvailInfo, HotelRateInfo, Room, RatePlan,
+  HotelRateInfo, Room, RatePlan,
 } from '../../../../Services/Responses/ConfirmStopOverResponse';
 
 export const HOTEL_RATING_RANGE = ['3', '4', '5'];

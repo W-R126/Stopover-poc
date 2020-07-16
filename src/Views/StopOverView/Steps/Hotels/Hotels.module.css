@@ -216,7 +216,7 @@
   font-size: 14px;
   color: #4e4c4a;
   margin: 0;
-  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
 }
 
 .CardInnerRight {
@@ -232,7 +232,7 @@
   font-size: 12px;
   color: #4e4c4a;
   margin-bottom: 5px;
-  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
 }
 
 .Price {
@@ -253,7 +253,7 @@
   font-size: 16px;
   line-height: 21px;
   color: #fff;
-  font-family: "EtihadAltis-Normal", Arial, Helvetica, sans-serif;
+  font-family: "EtihadAltis-Text", Arial, Helvetica, sans-serif;
   margin-top: 2rem;
   outline: none !important;
   cursor: pointer;

@@ -1,129 +1,100 @@
 import React from 'react';
 import css from './FlightCard.module.css';
-import { Segment, DifferenceFromLowestPrice } from '../../../../../../../../Services/Responses/ConfirmStopOverResponse';
 import arrowRight from '../../../../../../../../Assets/Images/arrow-right.svg';
-import FlightCardDetail from '../FlightCardDetail';
 import DateUtils from '../../../../../../../../DateUtils';
+import { FlightOfferModel, FareModel } from '../../../../../../../../Models/FlightOfferModel';
+import Utils from '../../../../../../../../Utils';
 
 type FlightCardProps = {
-  segment: Segment;
-  selectFlight: Function;
-  selectedFlightId?: string;
-  differenceFromLowestPrice?: DifferenceFromLowestPrice;
+  offer: FlightOfferModel;
+  onSelectOffer: (offer?: FlightOfferModel) => void;
+  selectedOffer?: FlightOfferModel;
   isEnableSelect?: boolean;
+  outboundFare: FareModel;
 }
 
-type FlightCardState = {
-  isShowDetail: boolean;
-}
-
-export default class FlightCard extends React.Component<FlightCardProps, FlightCardState> {
-  constructor(props: FlightCardProps) {
-    super(props);
-    this.state = { isShowDetail: false };
-    this.showFlightDetail = this.showFlightDetail.bind(this);
-  }
-
-  private getFormattedDuaration(duarationValue: number | undefined): string {
-    if (duarationValue === undefined) { return ''; }
-    const hValue = duarationValue / 60;
-    const mValue = duarationValue % 60;
-    return `${hValue >= 1 ? `${Math.floor(hValue)} h` : ''} ${mValue > 0 ? `${mValue} m` : ''}`;
-  }
-
+export default class FlightCard extends React.Component<FlightCardProps> {
   private getStopsStr(): string {
-    const { segment } = this.props;
-    const { stopAirports } = segment.flight;
-    if (stopAirports.length === 0) { return 'Direct'; }
-    return stopAirports.toString();
-  }
+    const { offer } = this.props;
+    const abuDhabiOutboundIdx = offer.fares.findIndex((fare) => fare.origin.code === 'AUH');
+    const fareCount = offer.fares.slice(abuDhabiOutboundIdx).length;
 
-  private getDetalStr(): string {
-    const { differenceFromLowestPrice } = this.props;
-    if (differenceFromLowestPrice === undefined) {
-      return '+ AED 0';
+    if (fareCount === 1) {
+      return 'Direct';
     }
 
-    const deltaValue = differenceFromLowestPrice.alternatives[0][0].amount;
-    if (deltaValue > 0) return `AED + ${deltaValue}`;
-    if (deltaValue < 0) return `AED - ${deltaValue}`;
-
-    return '+AED 0';
+    return offer.stops.slice(abuDhabiOutboundIdx + 1).join(', ');
   }
 
-  private showFlightDetail(): void {
-    this.setState((previousState: FlightCardState) => ({
-      isShowDetail: !previousState.isShowDetail,
-    }));
+  private getPriceDelta(): string {
+    const { outboundFare, offer } = this.props;
+
+    const { price } = offer.fares[0];
+    const priceDelta = price.total - outboundFare.price.total;
+
+    return `${priceDelta < 0 ? '-' : '+'} ${price.currency} ${
+      Utils.formatCurrency(Math.abs(priceDelta))
+    }`;
   }
 
   render(): JSX.Element {
     const {
-      segment, selectFlight, selectedFlightId, isEnableSelect,
+      offer,
+      onSelectOffer,
+      selectedOffer,
     } = this.props;
-    const { isShowDetail } = this.state;
 
-    const selectBtnClassList = [css.AddButton];
-    if (!isEnableSelect) { selectBtnClassList.push(css.Disabled); }
-    if (selectedFlightId === segment['@id']) { selectBtnClassList.push(css.Selected); }
+    const classList = [css.FlightCardItem];
+    const isSelected = selectedOffer?.fares[0].hashCode === offer.fares[0].hashCode;
+
+    if (isSelected) {
+      classList.push(css.Selected);
+    }
+
+    const onwardLegs = offer.legs.slice(offer.legs.findIndex((leg) => leg.origin.code === 'AUH'));
+    const startLeg = onwardLegs[0];
+    const endLeg = onwardLegs[onwardLegs.length - 1];
 
     return (
       <div
-        className={
-          `${css.FlightCardItem} ${selectedFlightId === segment['@id'] ? css.Selected : ''}`
-        }
+        className={classList.join(' ')}
+        onClick={(): void => onSelectOffer(isSelected ? undefined : offer)}
+        role="button"
       >
-        <div
-          className={css.MainContent}
-          onClick={this.showFlightDetail}
-          role="button"
-        >
-          <div className={css.InnerItem}>
-            <h4 className={css.Time}>
-              {DateUtils.getHourMinuteString(new Date(segment.departure))}
-            </h4>
-            <p className={css.State}>{segment.origin}</p>
-          </div>
-          <div className={css.ArrowRight}>
-            <img src={arrowRight} alt="Flight Right Arrow" />
-          </div>
-          <div className={css.InnerItem}>
-            <h4 className={css.Time}>
-              {DateUtils.getHourMinuteString(new Date(segment.arrival))}
-            </h4>
-            <p className={css.State}>{segment.destination}</p>
-          </div>
-          <div className={css.InnerItem}>
-            <div className={css.Content}>
-              <h4 className={css.TravelTime}>{this.getFormattedDuaration(segment.duration)}</h4>
-              <p className={css.TravelTimeText}>Travel time</p>
-            </div>
-          </div>
-          <div className={css.InnerItem}>
-            <div className={css.Content}>
-              <h4 className={css.TravelTime}>{this.getStopsStr()}</h4>
-            </div>
-          </div>
-          <div className={css.InnerItem}>
-            <div className={css.Content}>
-              <h4 className={css.Delta}>{this.getDetalStr()}</h4>
-            </div>
-          </div>
-          <button
-            className={selectBtnClassList.join(' ')}
-            onClick={(e): void => {
-              e.preventDefault();
-              e.stopPropagation();
-              selectFlight(segment['@id']);
-            }}
-            type="button"
-          >
-            {selectedFlightId === segment['@id'] ? 'Selected' : 'Select'}
-          </button>
-          {isShowDetail ? <span className={css.AngleUp} /> : <span className={css.AngleDown} />}
+        <div className={css.Airport}>
+          <h4>{DateUtils.getHourMinuteString(new Date(startLeg.departure))}</h4>
+          <span>{`${startLeg.origin.cityName} (${startLeg.origin.code})`}</span>
         </div>
-        {isShowDetail
-        && <FlightCardDetail segment={segment} />}
+
+        <div className={css.ArrowRight}>
+          <img src={arrowRight} alt="Flight Right Arrow" />
+        </div>
+
+        <div className={css.Airport}>
+          <h4>
+            {DateUtils.getHourMinuteString(new Date(endLeg.arrival))}
+            <span>
+              {DateUtils.getTimeZoneDelta(startLeg.origin.timeZone, endLeg.destination.timeZone)}
+            </span>
+          </h4>
+          <span>{`${endLeg.destination.cityName} (${endLeg.destination.code})`}</span>
+        </div>
+
+        <div className={css.TravelTime}>
+          <h4>{DateUtils.getDDHHMMFromMinutes(Utils.getLegDurationMinutes(onwardLegs))}</h4>
+          <span>Travel time</span>
+        </div>
+
+        <span className={css.Stops}>{this.getStopsStr()}</span>
+
+        <button
+          className={css.AddButton}
+          type="button"
+          role="option"
+          aria-selected={isSelected}
+        >
+          {this.getPriceDelta()}
+        </button>
       </div>
     );
   }

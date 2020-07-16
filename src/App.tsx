@@ -16,9 +16,14 @@ import SelectInbound from './Views/SelectInbound';
 export default function App({ config }: { config: Config }): JSX.Element {
   const contentService = new ContentService('en-GB', 'EUR', config.apiBaseURL);
   const airportService = new AirportService(contentService, config.apiBaseURL);
-  const stopOverService = new StopOverService(config.apiBaseURL);
   const flightOfferService = new FlightOfferService(
     contentService,
+    airportService,
+    config.apiBaseURL,
+  );
+  const stopOverService = new StopOverService(
+    contentService,
+    flightOfferService,
     airportService,
     config.apiBaseURL,
   );

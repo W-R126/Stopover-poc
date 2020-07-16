@@ -33,8 +33,8 @@ export default class SessionManager {
     }
 
     return {
-      'session-id': SessionManager.sessionId,
-      'tab-session-id': SessionManager.tabSessionId,
+      'session-id': sessionId,
+      'tab-session-id': tabSessionId,
     };
   }
 }

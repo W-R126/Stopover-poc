@@ -1,12 +1,38 @@
 .FlightCardItem {
-  padding: 31px 25px;
-  border-bottom: 1px solid #f3f3f3;
-  display: flex;
-  flex-direction: column;
+  padding: 16px;
+  border: 3px solid transparent;
+  user-select: none;
+  color: #4e4c4a;
+  display: grid;
+  grid-template-columns:
+    [origin] max-content
+    [arrow] max-content
+    [destination] max-content
+    [traveltime] 1fr
+    [stops] 1fr
+    [select] max-content;
+  cursor: pointer;
+  align-items: center;
+  gap: 0 16px;
+  font-size: 12px;
 }
 
 .FlightCardItem.Selected {
-  border: 4px solid #bd8b13;
+  border-color: #bd8b13;
+}
+
+.FlightCardItem:not(:last-child)::after {
+  display: block;
+  width: 100%;
+  grid-column: 1 / -1;
+  border-bottom: 1px solid transparent;
+  content: '';
+  position: relative;
+  top: 19px;
+}
+
+.FlightCardItem:not(.Selected):not(:last-child)::after {
+  border-bottom-color: #f3f3f3;
 }
 
 .FlightCardItem:first-child {
@@ -19,142 +45,56 @@
   border-bottom-right-radius: 8px;
 }
 
-.FlightCardItem .MainContent {
-  display: flex;
-  flex: 1 1 100%;
-  align-items: center;
-  justify-content: space-around;
-  cursor: pointer;
-}
-
-.FlightCardItem .InnerItem {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 100%;
-  justify-content: center;
-}
-
-.FlightCardItem .InnerItem:first-child {
-  flex: 1 1 auto;
-  justify-content: flex-start;
-}
-
-.FlightCardItem .InnerItem .Time {
-  font-weight: 500;
+.FlightCardItem h4 {
   font-size: 18px;
-  line-height: 23px;
-  color: #4e4c4a;
-  margin-bottom: 0;
-  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  font-weight: 100;
+  margin-bottom: 6px;
 }
 
-.FlightCardItem .InnerItem:first-child .Time {
+.Airport > h4 > span {
+  position: relative;
+  top: -8px;
+  left: 2px;
+  font-size: 12px;
+  color: #7a9a01;
+}
+
+.TravelTime {
   white-space: nowrap;
-  overflow: hidden;
+  text-align: center;
 }
 
-.FlightCardItem .InnerItem .State {
-  font-weight: 300;
-  font-size: 10px;
-  line-height: 13px;
-  color: #4e4c4a;
-  margin: 0;
-  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
+.TravelTime > h4 {
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  font-weight: 100;
 }
 
-.FlightCardItem .InnerItem:first-child .State {
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.FlightCardItem .ArrowRight {
-  display: flex;
-  align-items: center;
-  flex: 1 0 80px;
-  justify-content: center;
-}
-
-.FlightCardItem .InnerItem .Content {
-  display: inline-flex;
-  flex-direction: column;
-  align-self: center;
-}
-
-.FlightCardItem .InnerItem .TravelTime {
-  font-weight: 400;
+.Stops {
+  text-align: center;
   font-size: 16px;
-  line-height: 21px;
-  color: #4e4c4a;
-  margin: 0;
-  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
-  text-align: center;
 }
 
-.FlightCardItem .InnerItem .TravelTimeText {
-  font-weight: 400;
-  font-size: 10px;
-  line-height: 13px;
-  margin: 0;
-  color: #4e4c4a;
-  font-family: "EtihadAltis-Book", Arial, Helvetica, sans-serif;
-  text-align: center;
-}
-
-.FlightCardItem .InnerItem .Delta {
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 23px;
-  color: #bd8b13;
-  margin-bottom: 0;
-  font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
-}
-
-.FlightCardItem .AddButton {
-  background: #005f96;
+.AddButton {
+  white-space: nowrap;
+  background: #f3f3f3;
   border-radius: 8px;
-  flex: 1 0 90px;
-  height: 45px;
-  border: 1px solid #005f96;
-  font-weight: 500;
+  padding: 12px 26px;
+  border: 1px solid #f3f3f3;
+  outline: 0;
   font-size: 16px;
-  line-height: 21px;
-  color: #fff;
+  color: #71706e;
   cursor: pointer;
   font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
-  margin: 0 15px;
 }
 
-.FlightCardItem .AddButton.Selected {
+.AddButton[aria-selected='true'] {
   background: #bd8b13;
   border-color: #bd8b13;
+  color: #fff;
 }
 
-.FlightCardItem .AddButton.Disabled {
+.AddButton:disabled {
   background: #f3f3f3;
   color: #71706e;
-  visibility: hidden;
-}
-
-.AngleDown {
-  display: flex;
-  align-items: center;
-}
-
-.AngleDown::after {
-  display: block;
-  content: '\f107';
-  font-family: 'Icons', Arial, Helvetica, sans-serif;
-  font-size: 22px;
-}
-
-.AngleUp {
-  display: flex;
-  align-items: center;
-}
-
-.AngleUp::after {
-  display: block;
-  content: '\f106';
-  font-family: 'Icons', Arial, Helvetica, sans-serif;
-  font-size: 22px;
 }

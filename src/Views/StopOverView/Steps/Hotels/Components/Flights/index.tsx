@@ -2,18 +2,16 @@ import React from 'react';
 import css from './Flights.module.css';
 import Plane from '../../../../../../Assets/Images/plane.svg';
 import FlightCard from './Components/FlightCard';
-import {
-  AirSearchResults,
-} from '../../../../../../Services/Responses/ConfirmStopOverResponse';
 import ContentService from '../../../../../../Services/ContentService';
 import { TripModel } from '../../../../../../Models/TripModel';
-import AppState from '../../../../../../AppState';
+import { FlightOfferModel, FareModel } from '../../../../../../Models/FlightOfferModel';
 
 interface FlightProps {
-  airSearchResults?: AirSearchResults;
-  selectFlight: Function;
-  selectedFlightId?: string;
+  offers?: FlightOfferModel[];
+  onSelectOffer: (offer?: FlightOfferModel) => void;
+  selectedOffer?: FlightOfferModel;
   contentService: ContentService;
+  outboundFare: FareModel;
 }
 
 interface FlightState {
@@ -26,29 +24,24 @@ export class Flights extends React.Component<FlightProps, FlightState> {
     super(props);
     this.state = {
       showFlightsCount: 3,
-      tripSearch: AppState.tripSearch,
     };
   }
 
   componentDidUpdate(prevProps: FlightProps): void {
-    const { airSearchResults } = this.props;
-    if (prevProps.airSearchResults !== airSearchResults) {
-      const listLength = this.getOnwardsSegmentOfferLength(airSearchResults);
+    const { offers } = this.props;
+    if (prevProps.offers !== offers) {
+      const listLength = offers?.length ?? 0;
+
       this.setState({
         showFlightsCount: listLength > 3 ? 3 : listLength,
       });
     }
   }
 
-  private getOnwardsSegmentOfferLength(airSearchResults?: AirSearchResults): number {
-    if (airSearchResults === undefined) { return 0; }
-    return airSearchResults.segmentContextShoppingResults.onwardsSegmentOffers.length;
-  }
-
-  private handleAddMore(): void {
+  private showMore(): void {
     const { showFlightsCount } = this.state;
-    const { airSearchResults } = this.props;
-    const listLength = this.getOnwardsSegmentOfferLength(airSearchResults);
+    const { offers } = this.props;
+    const listLength = offers?.length ?? 0;
 
     if (showFlightsCount === listLength) {
       this.setState({
@@ -61,123 +54,60 @@ export class Flights extends React.Component<FlightProps, FlightState> {
     }
   }
 
-  private renderSelectedSegment(): JSX.Element[] {
-    const returnRender: JSX.Element[] = [];
-    const { airSearchResults, selectFlight, selectedFlightId } = this.props;
-
-    if (airSearchResults !== undefined) {
-      airSearchResults.segmentContextShoppingResults.selectedSegments.forEach(
-        (item: any, idx: number): void => {
-          returnRender.push(
-            <FlightCard
-              key={`selected-segment-${idx}`}
-              segment={item}
-              selectFlight={(flightId: number): void => {
-                selectFlight(flightId, -1);
-              }}
-              selectedFlightId={selectedFlightId}
-            />,
-          );
-        },
-      );
-    }
-
-    return returnRender;
-  }
-
-  private renderOfferSegments(): JSX.Element[] {
-    const returnRender: JSX.Element[] = [];
-    const { airSearchResults, selectFlight, selectedFlightId } = this.props;
+  render(): JSX.Element {
+    const {
+      offers,
+      contentService,
+      onSelectOffer,
+      selectedOffer,
+      outboundFare,
+    } = this.props;
     const { showFlightsCount } = this.state;
 
-    if (airSearchResults !== undefined) {
-      airSearchResults.segmentContextShoppingResults.onwardsSegmentOffers.forEach(
-        (item: any, idx: number): void => {
-          if (item.onwardsSegments && item.onwardsSegments.length > 0) {
-            if (idx < showFlightsCount) {
-              returnRender.push(
-                <FlightCard
-                  key={`offer-${idx}`}
-                  segment={item.onwardsSegments[0]}
-                  selectFlight={(flightId: number): void => {
-                    selectFlight(flightId, item.shoppingBasketHashCode);
-                  }}
-                  selectedFlightId={selectedFlightId}
-                  differenceFromLowestPrice={item.onwardsSegments.differenceFromLowestPrice}
-                  isEnableSelect
-                />,
-              );
-            }
-          }
-        },
-      );
-
-      const listLength = airSearchResults.segmentContextShoppingResults.onwardsSegmentOffers.length;
-      if (showFlightsCount < listLength) {
-        returnRender.push(
-          <div
-            className={css.MoreFlights}
-            onClick={(): void => this.handleAddMore()}
-            role="button"
-          >
-            {
-              showFlightsCount < listLength ? (
-                <>
-                  <span className={css.AngleUp} />
-                  <p>{`${listLength - showFlightsCount > 3 ? 3 : listLength - showFlightsCount} more flights`}</p>
-                </>
-              )
-                : (
-                  <>
-                    <span className={css.AngleDown} />
-                    <p>Show only 3 flights</p>
-                  </>
-                )
-            }
-          </div>,
-        );
-      }
-    }
-
-    return returnRender;
-  }
-
-  render(): JSX.Element {
-    const { airSearchResults, contentService } = this.props;
-    const { tripSearch } = this.state;
-
-    const dateStr = airSearchResults?.segmentContextShoppingResults
-      .onwardsSegmentOffers[0].onwardsSegments[0].departure;
-
-    let date;
-
-    if (dateStr) {
-      date = new Date(dateStr);
-    }
-
-    let destination;
-    if (tripSearch) {
-      destination = tripSearch.legs[0].destination?.cityName;
-    }
+    const abuDhabiLeg = offers && offers[0].legs.find((leg) => leg.origin.code === 'AUH');
+    const date = abuDhabiLeg?.departure;
+    const destination = offers && offers[0].destination;
 
     return (
       <div className={css.RightWrap}>
         <div className={css.HotelTop}>
           <img src={Plane} alt="" />
+
           <p style={{ marginBottom: '0px' }}>Select your onward flight:</p>
-          <p className={css.DayDuaration}>
-            {`Abu Dhabi to ${destination}, ${date?.toLocaleDateString(
-              contentService.locale,
-              { month: 'long', year: 'numeric', day: 'numeric' },
-            )}`}
-          </p>
-        </div>
-        <div className={css.RightCard}>
-          {this.renderSelectedSegment()}
+
+          {destination && date && (
+            <p className={css.DayDuaration}>
+              {`${abuDhabiLeg?.origin.cityName} to ${destination?.cityName}, ${
+                date?.toLocaleDateString(
+                  contentService.locale,
+                  { month: 'long', year: 'numeric', day: 'numeric' },
+                )
+              }`}
+            </p>
+          )}
         </div>
 
         <div className={css.RightCard}>
-          {this.renderOfferSegments()}
+          {offers?.slice(0, showFlightsCount).map((offer, idx) => (
+            <FlightCard
+              key={`offer-${idx}`}
+              offer={offer}
+              onSelectOffer={onSelectOffer}
+              selectedOffer={selectedOffer}
+              outboundFare={outboundFare}
+            />
+          ))}
+
+          {showFlightsCount < (offers?.length ?? 0) && (
+            <div
+              className={css.MoreFlights}
+              onClick={(): void => this.showMore()}
+              role="button"
+            >
+              <span className={css.AngleUp} />
+              <p>{`${(offers?.length ?? 0) - showFlightsCount} more flights`}</p>
+            </div>
+          )}
         </div>
       </div>
     );

@@ -5,7 +5,7 @@ import { HotelSelection } from './Components/HotelSelection';
 import { Flights } from './Components/Flights';
 import LoadingSpinner from './Components/LoadingSpinner';
 
-import { ConfirmStopOverResponse } from '../../../../Services/Responses/ConfirmStopOverResponse';
+import { HotelAvailabilityInfos } from '../../../../Services/Responses/ConfirmStopOverResponse';
 import ContentService from '../../../../Services/ContentService';
 import AppState from '../../../../AppState';
 import StopOverService from '../../../../Services/StopOverService';
@@ -13,20 +13,21 @@ import { TripModel } from '../../../../Models/TripModel';
 import { StopOverModel } from '../../../../Models/StopOverModel';
 import { PackageTypeModel } from '../../../../Models/PackageTypeModel';
 import { HotelModel } from '../../../../Models/HotelModel';
-import { FareModel } from '../../../../Models/FlightOfferModel';
+import { FareModel, FlightOfferModel } from '../../../../Models/FlightOfferModel';
 
 interface HotelsProps {
   contentService: ContentService;
   stopOverService: StopOverService;
   onSelectHotel: (selectedHotel?: HotelModel) => void;
+  outboundFare: FareModel;
 }
 
 interface HotelsState {
   loading: boolean;
-  confirmStopOverResponse?: ConfirmStopOverResponse;
+  flightOffers?: FlightOfferModel[];
+  hotelOffers?: HotelAvailabilityInfos;
   stopoverDays: number[];
   packageInfo: PackageTypeModel;
-  outboundFare?: FareModel;
   trip?: TripModel;
   stopOverOffers?: any;
   stopOverInfo?: StopOverModel;
@@ -37,18 +38,21 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
     super(props);
     this.state = {
       loading: false,
-      confirmStopOverResponse: undefined,
+      flightOffers: undefined,
+      hotelOffers: undefined,
       stopoverDays: [],
       packageInfo: AppState.packageInfo ?? {
-        hotelCode: '', flightId: '', night: -1, shoppingBasketHashCode: -1, rateKey: '',
+        hotelCode: undefined,
+        night: undefined,
+        fareHashCode: undefined,
+        rateKey: undefined,
       },
-      outboundFare: AppState.outboundFare,
       trip: AppState.tripSearch,
       stopOverInfo: AppState.stopOverInfo,
     };
 
     this.onSelectHotel = this.onSelectHotel.bind(this);
-    this.onSelectFlight = this.onSelectFlight.bind(this);
+    this.onSelectFare = this.onSelectFare.bind(this);
   }
 
   componentDidMount(): void {
@@ -57,11 +61,11 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
 
   private onSelectHotel(hotelCode: string, rateKey: string): void {
     const { onSelectHotel } = this.props;
-    const { packageInfo, confirmStopOverResponse } = this.state;
+    const { packageInfo, hotelOffers } = this.state;
 
-    const checkIn = confirmStopOverResponse?.hotelAvailabilityInfos.checkIn ?? '';
-    const checkOut = confirmStopOverResponse?.hotelAvailabilityInfos.checkOut ?? '';
-    const hotel = confirmStopOverResponse?.hotelAvailabilityInfos.hotelAvailInfo.find(
+    const checkIn = hotelOffers?.checkIn ?? '';
+    const checkOut = hotelOffers?.checkOut ?? '';
+    const hotel = hotelOffers?.hotelAvailInfo.find(
       (nextHotel) => nextHotel.hotelInfo.hotelCode === hotelCode,
     );
 
@@ -78,20 +82,18 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
     onSelectHotel(selectedHotel);
 
     this.setPackageInfo({
-      flightId: packageInfo.flightId,
       night: packageInfo.night,
-      shoppingBasketHashCode: packageInfo.shoppingBasketHashCode,
+      fareHashCode: packageInfo.fareHashCode,
       rateKey,
       hotelCode,
     });
   }
 
-  private onSelectFlight(flightId: string, shoppingBasketHashCode: number): void {
+  private onSelectFare(offer?: FlightOfferModel): void {
     const { packageInfo } = this.state;
 
     this.setPackageInfo({
-      flightId,
-      shoppingBasketHashCode,
+      fareHashCode: offer?.fares[0].hashCode,
       night: packageInfo.night,
       hotelCode: packageInfo.hotelCode,
       rateKey: packageInfo.rateKey,
@@ -99,9 +101,11 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
   }
 
   private async getStopOverOffers(nightValue?: number): Promise<void> {
-    const { stopOverService } = this.props;
+    const { stopOverService, outboundFare } = this.props;
     const {
-      outboundFare, trip, stopOverInfo, packageInfo,
+      trip,
+      stopOverInfo,
+      packageInfo,
     } = this.state;
 
     await new Promise((resolve) => this.setState({ loading: true }, resolve));
@@ -116,7 +120,7 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
 
     const nextNightValue = nightValue === undefined ? stopOverInfo.days[0] : nightValue;
 
-    const stopOverAccept = await stopOverService.acceptStopOver(
+    const stopOverOffers = await stopOverService.getStopOverOffers(
       outboundFare.hashCode,
       stopOverInfo.airportCode,
       nextNightValue,
@@ -124,18 +128,24 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
       trip.legs[trip.legs.length - 1].departure,
     );
 
+    if (!stopOverOffers) {
+      return;
+    }
+
+    const { flightOffers, hotelAvailabilityInfos } = stopOverOffers;
+
     this.setPackageInfo({
       hotelCode: packageInfo.hotelCode,
-      flightId: packageInfo.flightId,
       night: nextNightValue,
-      shoppingBasketHashCode: packageInfo.shoppingBasketHashCode,
+      fareHashCode: packageInfo.fareHashCode,
       rateKey: packageInfo.rateKey,
     });
 
     this.setState({
       loading: false,
       stopoverDays: stopOverInfo.days,
-      confirmStopOverResponse: stopOverAccept,
+      flightOffers: flightOffers[0],
+      hotelOffers: hotelAvailabilityInfos,
     });
   }
 
@@ -145,16 +155,17 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
     this.setState({ packageInfo });
   }
 
-  private async changeNight(selectedOne: number): Promise<void> {
+  private async changeNights(value: number): Promise<void> {
     const { packageInfo } = this.state;
+
     this.setPackageInfo({
-      hotelCode: '',
-      flightId: '',
+      hotelCode: undefined,
       night: packageInfo.night,
-      shoppingBasketHashCode: -1,
-      rateKey: '',
+      fareHashCode: undefined,
+      rateKey: undefined,
     });
-    this.getStopOverOffers(selectedOne);
+
+    this.getStopOverOffers(value);
   }
 
   render(): JSX.Element {
@@ -162,10 +173,11 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
       stopoverDays,
       loading,
       packageInfo,
-      confirmStopOverResponse,
+      flightOffers,
+      hotelOffers,
     } = this.state;
 
-    const { contentService } = this.props;
+    const { contentService, outboundFare } = this.props;
 
     return (
       <div className={css.FullContainer}>
@@ -173,7 +185,7 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
           <NightSelector
             selectedNight={packageInfo.night}
             changeNight={(selectedOne: number): void => {
-              this.changeNight(selectedOne);
+              this.changeNights(selectedOne);
             }}
             stopoverDays={stopoverDays === undefined ? [] : stopoverDays}
           />
@@ -182,16 +194,19 @@ export default class Hotels extends React.Component<HotelsProps, HotelsState> {
             <HotelSelection
               contentService={contentService}
               selectedNight={packageInfo.night}
-              hotelAvailabilityInfos={confirmStopOverResponse?.hotelAvailabilityInfos}
+              hotelAvailabilityInfos={hotelOffers}
               selectHotel={this.onSelectHotel}
               selectedHotelCode={packageInfo.hotelCode}
             />
 
             <Flights
               contentService={contentService}
-              airSearchResults={confirmStopOverResponse?.airSearchResults}
-              selectFlight={this.onSelectFlight}
-              selectedFlightId={packageInfo.flightId}
+              offers={flightOffers}
+              onSelectOffer={this.onSelectFare}
+              selectedOffer={flightOffers?.find(
+                (fos) => fos.fares[0].hashCode === packageInfo.fareHashCode,
+              )}
+              outboundFare={outboundFare}
             />
           </div>
         </div>

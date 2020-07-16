@@ -36,4 +36,30 @@ export default abstract class BaseService {
 
     return pending;
   }
+
+  protected getResponseRefs(data?: any): { [key: string]: any } {
+    const result: { [key: string]: any } = {};
+
+    if (!data) {
+      return result;
+    }
+
+    if (data instanceof Array) {
+      data.forEach((item) => Object.assign(result, this.getResponseRefs(item)));
+    } else if (typeof data === 'object') {
+      try {
+        if (data['@id']) {
+          result[data['@id']] = data;
+        }
+
+        Object.keys(data).forEach((key) => {
+          Object.assign(result, this.getResponseRefs(data[key]));
+        });
+      } catch (err) {
+        //
+      }
+    }
+
+    return result;
+  }
 }

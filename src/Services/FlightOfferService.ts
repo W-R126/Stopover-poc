@@ -5,14 +5,13 @@ import { CabinClassEnum } from '../Enums/CabinClassEnum';
 import { GuestsModel } from '../Models/GuestsModel';
 import {
   FlightOffersResponse,
-  UnbundledOffer,
-  ItineraryPart,
   ItineraryPartBrand,
   Segment,
   BrandOffer,
   FareFamily,
   UnbundledAlternateDateOffer,
   SelectOnwardFlightAndHotelResponse,
+  ItineraryPart,
 } from './Responses/FlightOffersResponse';
 import SessionManager from '../SessionManager';
 import {
@@ -104,10 +103,9 @@ export default class FlightOfferService extends BaseService {
         { headers: SessionManager.getSessionHeaders() },
       );
 
-      SessionManager.setSessionHeaders(headers);
-
       if (status === 200) {
         resp = data;
+        SessionManager.setSessionHeaders(headers);
       }
     } catch (err) {
       return undefined;
@@ -118,17 +116,15 @@ export default class FlightOfferService extends BaseService {
     }
 
     const airports = await airportsReq;
+    const refs = this.getResponseRefs(resp);
     const fareFamilies = this.getFareFamilies(resp.fareFamilies);
-    const itineraryRefs = this.getItineraryRefs(resp.unbundledOffers);
-    const segmentRefs = this.getSegmentRefs(itineraryRefs);
-    const altOffers = this.getAltOffers(resp.unbundledAlternateDateOffers);
     const offers = this.getBrandedOffers(
       resp.brandedResults.itineraryPartBrands,
-      itineraryRefs,
-      segmentRefs,
+      refs,
       fareFamilies,
       airports,
     );
+    const altOffers = this.getAltOffers(resp.unbundledAlternateDateOffers);
 
     return {
       offers,
@@ -143,36 +139,6 @@ export default class FlightOfferService extends BaseService {
       result[ff.brandId] = (ff.brandLabel.find(
         (bl) => bl.languageId.replace('_', '-') === this.contentService.locale,
       ) ?? ff.brandLabel[0]).marketingText;
-    });
-
-    return result;
-  }
-
-  private getItineraryRefs(unbundledOffers: UnbundledOffer[][]): { [key: string]: ItineraryPart } {
-    const result: { [key: string]: ItineraryPart } = {};
-
-    unbundledOffers.forEach((uos) => uos.forEach((uo) => {
-      if (uo.itineraryPart[0]['@id']) {
-        [result[uo.itineraryPart[0]['@id']]] = uo.itineraryPart;
-      }
-    }));
-
-    return result;
-  }
-
-  private getSegmentRefs(
-    itineraryRefs: { [key: string]: ItineraryPart },
-  ): { [key: string]: Segment} {
-    const result: { [key: string]: Segment } = {};
-
-    Object.keys(itineraryRefs).forEach((itineraryId) => {
-      const itinerary = itineraryRefs[itineraryId];
-
-      itinerary.segments.forEach((segment) => {
-        if (segment['@id'] !== undefined) {
-          result[segment['@id']] = segment;
-        }
-      });
     });
 
     return result;
@@ -207,16 +173,15 @@ export default class FlightOfferService extends BaseService {
 
   private getBrandedOffers(
     itineraryPartBrands: ItineraryPartBrand[][],
-    itineraryRefs: { [key: string]: ItineraryPart },
-    segmentRefs: { [key: string]: Segment },
+    refs: { [key: string]: any },
     fareFamilies: { [key: string]: string },
     airports: AirportModel[],
   ): FlightOfferModel[][] {
     return itineraryPartBrands.map(
       (ipbs): FlightOfferModel[] => ipbs.map((ipb): FlightOfferModel => {
         const legs = this.getLegs(
-          itineraryRefs[ipb.itineraryPart['@ref']].segments,
-          segmentRefs,
+          (refs[ipb.itineraryPart['@ref']] as ItineraryPart).segments,
+          refs,
           airports,
         );
 
@@ -362,12 +327,10 @@ export default class FlightOfferService extends BaseService {
 
     const airports = await airportsReq;
     const fareFamilies = this.getFareFamilies(resp.airSearchResults.fareFamilies);
-    const itineraryRefs = this.getItineraryRefs(resp.airSearchResults.unbundledOffers);
-    const segmentRefs = this.getSegmentRefs(itineraryRefs);
+    const refs = this.getResponseRefs(resp.airSearchResults);
     const offers = this.getBrandedOffers(
       resp.airSearchResults.brandedResults.itineraryPartBrands,
-      itineraryRefs,
-      segmentRefs,
+      refs,
       fareFamilies,
       airports,
     );
@@ -384,12 +347,10 @@ export default class FlightOfferService extends BaseService {
 
     const airports = await airportsReq;
     const fareFamilies = this.getFareFamilies(resultData.airSearchResults.fareFamilies);
-    const itineraryRefs = this.getItineraryRefs(resultData.airSearchResults.unbundledOffers);
-    const segmentRefs = this.getSegmentRefs(itineraryRefs);
+    const refs = this.getResponseRefs(resultData.airSearchResults);
     const offers = this.getBrandedOffers(
       resultData.airSearchResults.brandedResults.itineraryPartBrands,
-      itineraryRefs,
-      segmentRefs,
+      refs,
       fareFamilies,
       airports,
     );

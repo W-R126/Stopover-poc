@@ -61,10 +61,10 @@ export default class Inbound extends React.Component<InboundProps, InboundState>
     const { packageInfo } = this.state;
     if (isStopOver
       && packageInfo
-      && packageInfo.shoppingBasketHashCode
+      && packageInfo.fareHashCode
       && packageInfo.rateKey) {
       const offerReq = flightOfferService.getInboundOffers(
-        packageInfo.shoppingBasketHashCode,
+        packageInfo.fareHashCode,
         packageInfo.rateKey,
       );
       const offerResult = await offerReq;
