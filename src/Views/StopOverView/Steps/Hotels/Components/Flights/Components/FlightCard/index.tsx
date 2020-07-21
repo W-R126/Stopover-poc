@@ -7,10 +7,9 @@ import Utils from '../../../../../../../../Utils';
 
 type FlightCardProps = {
   offer: FlightOfferModel;
-  onSelectOffer: (offer?: FlightOfferModel) => void;
-  selectedOffer?: FlightOfferModel;
-  isEnableSelect?: boolean;
   outboundFare: FareModel;
+  selected: boolean;
+  onSelect: (offer?: FlightOfferModel) => void;
 }
 
 export default class FlightCard extends React.Component<FlightCardProps> {
@@ -38,16 +37,11 @@ export default class FlightCard extends React.Component<FlightCardProps> {
   }
 
   render(): JSX.Element {
-    const {
-      offer,
-      onSelectOffer,
-      selectedOffer,
-    } = this.props;
+    const { offer, onSelect, selected } = this.props;
 
     const classList = [css.FlightCardItem];
-    const isSelected = selectedOffer?.fares[0].hashCode === offer.fares[0].hashCode;
 
-    if (isSelected) {
+    if (selected) {
       classList.push(css.Selected);
     }
 
@@ -57,9 +51,10 @@ export default class FlightCard extends React.Component<FlightCardProps> {
 
     return (
       <div
+        onClick={(): void => onSelect(selected ? undefined : offer)}
         className={classList.join(' ')}
-        onClick={(): void => onSelectOffer(isSelected ? undefined : offer)}
-        role="button"
+        role="option"
+        aria-selected={selected}
       >
         <div className={css.Airport}>
           <h4>{DateUtils.getHourMinuteString(new Date(startLeg.departure))}</h4>
@@ -87,12 +82,7 @@ export default class FlightCard extends React.Component<FlightCardProps> {
 
         <span className={css.Stops}>{this.getStopsStr()}</span>
 
-        <button
-          className={css.AddButton}
-          type="button"
-          role="option"
-          aria-selected={isSelected}
-        >
+        <button className={css.AddButton} type="button">
           {this.getPriceDelta()}
         </button>
       </div>

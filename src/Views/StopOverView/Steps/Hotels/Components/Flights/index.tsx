@@ -92,8 +92,8 @@ export class Flights extends React.Component<FlightProps, FlightState> {
             <FlightCard
               key={`offer-${idx}`}
               offer={offer}
-              onSelectOffer={onSelectOffer}
-              selectedOffer={selectedOffer}
+              onSelect={onSelectOffer}
+              selected={selectedOffer?.fares[0].hashCode === offer.fares[0].hashCode}
               outboundFare={outboundFare}
             />
           ))}

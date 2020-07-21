@@ -1,3 +1,5 @@
 export default class Config {
-  apiBaseURL = 'http://40.80.199.170/api';
+  apiBaseURL = 'https://devapiads.southcentralus.cloudapp.azure.com/apis/ibe';
+
+  authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJpc3MiOiJmN2JkLWtleS1zbm93ZmFsbCJ9.j4v0em_fikrGt_gQr9BaV7AUqhtakAW-4HbtkJb_-V0';
 }

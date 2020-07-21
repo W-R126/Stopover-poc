@@ -24,6 +24,7 @@ import {
 import { AirportModel } from '../Models/AirportModel';
 
 import { FlightOffersRequest } from './Requests/FlightOffersRequest';
+import Config from '../Config';
 
 export default class FlightOfferService extends BaseService {
   private readonly contentService: ContentService;
@@ -33,9 +34,9 @@ export default class FlightOfferService extends BaseService {
   constructor(
     contentService: ContentService,
     airportService: AirportService,
-    baseURL?: string,
+    config?: Config,
   ) {
-    super(baseURL);
+    super(config);
 
     this.contentService = contentService;
     this.airportService = airportService;

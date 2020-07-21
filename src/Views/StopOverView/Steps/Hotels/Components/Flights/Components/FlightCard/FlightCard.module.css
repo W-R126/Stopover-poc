@@ -88,7 +88,7 @@
   font-family: "EtihadAltis-Medium", Arial, Helvetica, sans-serif;
 }
 
-.AddButton[aria-selected='true'] {
+.FlightCardItem[aria-selected='true'] .AddButton {
   background: #bd8b13;
   border-color: #bd8b13;
   color: #fff;

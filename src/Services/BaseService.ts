@@ -1,13 +1,15 @@
 import axios, { AxiosInstance } from 'axios';
+import Config from '../Config';
 
 export default abstract class BaseService {
   protected readonly http: AxiosInstance;
 
   protected readonly pendingRequests: { [key: string]: Promise<any> } = {};
 
-  constructor(baseURL?: string) {
+  constructor(config?: Config) {
     this.http = axios.create({
-      baseURL,
+      baseURL: config?.apiBaseURL,
+      headers: config?.authToken && { Authorization: `Bearer ${config.authToken}` },
     });
   }
 

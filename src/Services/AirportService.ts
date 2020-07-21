@@ -2,12 +2,13 @@ import BaseService from './BaseService';
 import { AirportModel } from '../Models/AirportModel';
 import ContentService from './ContentService';
 import Airports from './Content/Airports';
+import Config from '../Config';
 
 export default class AirportService extends BaseService {
   private readonly contentService: ContentService;
 
-  constructor(contentService: ContentService, baseURL?: string) {
-    super(baseURL);
+  constructor(contentService: ContentService, config?: Config) {
+    super(config);
 
     this.contentService = contentService;
   }

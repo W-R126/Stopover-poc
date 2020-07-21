@@ -7,14 +7,15 @@ import FlightModels from './Content/FlightModels';
 import TimeZones from './Content/TimeZones';
 import MainMenu from './Content/MainMenu';
 import Common from './Content/Common';
+import Config from '../Config';
 
 export default class ContentService extends BaseService {
   locale = 'en-GB';
 
   currency = 'AED';
 
-  constructor(locale = 'en-GB', currency = 'AED', baseURL?: string) {
-    super(baseURL);
+  constructor(locale = 'en-GB', currency = 'AED', config?: Config) {
+    super(config);
 
     this.locale = locale;
     this.currency = currency;

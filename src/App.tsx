@@ -14,18 +14,18 @@ import FlightOfferService from './Services/FlightOfferService';
 import SelectInbound from './Views/SelectInbound';
 
 export default function App({ config }: { config: Config }): JSX.Element {
-  const contentService = new ContentService('en-GB', 'EUR', config.apiBaseURL);
-  const airportService = new AirportService(contentService, config.apiBaseURL);
+  const contentService = new ContentService('en-GB', 'EUR', config);
+  const airportService = new AirportService(contentService, config);
   const flightOfferService = new FlightOfferService(
     contentService,
     airportService,
-    config.apiBaseURL,
+    config,
   );
   const stopOverService = new StopOverService(
     contentService,
     flightOfferService,
     airportService,
-    config.apiBaseURL,
+    config,
   );
 
   return (

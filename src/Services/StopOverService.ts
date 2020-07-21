@@ -20,6 +20,7 @@ import {
   CheapestFareModel,
 } from '../Models/FlightOfferModel';
 import { CabinClassEnum } from '../Enums/CabinClassEnum';
+import Config from '../Config';
 
 export default class StopOverService extends BaseService {
   private readonly airportService: AirportService;
@@ -32,9 +33,9 @@ export default class StopOverService extends BaseService {
     contentService: ContentService,
     flightOfferService: FlightOfferService,
     airportService: AirportService,
-    baseURL?: string,
+    config?: Config,
   ) {
-    super(baseURL);
+    super(config);
 
     this.airportService = airportService;
     this.flightOfferService = flightOfferService;
@@ -117,15 +118,22 @@ export default class StopOverService extends BaseService {
       return undefined;
     }
 
-    const { airSearchResults: flights, hotelAvailabilityInfos } = resp;
+    const { airSearchResults: flights, hotelAvailabilityInfos: hotels } = resp;
     const airports = await airportsReq;
-    const refs = this.getResponseRefs(flights);
+    const flightRefs = this.getResponseRefs(flights);
     const fareFamilies = this.getFareFamilies(flights.fareFamilies);
-    const flightOffers = this.getFlightOffers(flights.brandedResults, refs, fareFamilies, airports);
+    const flightOffers = this.getFlightOffers(
+      flights.brandedResults,
+      flightRefs,
+      fareFamilies,
+      airports,
+    );
+
+    console.log(hotels);
 
     return {
       flightOffers,
-      hotelAvailabilityInfos,
+      hotelAvailabilityInfos: hotels,
     };
   }
 
