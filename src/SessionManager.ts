@@ -23,13 +23,13 @@ export default class SessionManager {
   }
 
   static getSessionHeaders(): {
-    'session-id': string | undefined;
-    'tab-session-id': string | undefined;
-  } | {} {
+    'session-id': string;
+    'tab-session-id': string;
+  } | undefined {
     const { sessionId, tabSessionId } = SessionManager;
 
     if (!(sessionId && tabSessionId)) {
-      return {};
+      return undefined;
     }
 
     return {

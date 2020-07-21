@@ -117,6 +117,7 @@ export interface UnbundledOffer {
 export interface ItineraryPart {
   '@type': string;
   '@id': string;
+  '@ref': string;
   segments: Segment[];
   stops: number;
   totalDuration: number;

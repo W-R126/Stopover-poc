@@ -7,6 +7,8 @@ import {
   Segment,
   BrandedResults,
   BrandOffer,
+  HotelAvailabilityInfos,
+  ItineraryPart,
 } from './Responses/ConfirmStopOverResponseNew';
 import { StopOverModel } from '../Models/StopOverModel';
 import AirportService from './AirportService';
@@ -21,6 +23,7 @@ import {
 } from '../Models/FlightOfferModel';
 import { CabinClassEnum } from '../Enums/CabinClassEnum';
 import Config from '../Config';
+import { HotelOfferModel, HotelModel } from '../Models/HotelOfferModel';
 
 export default class StopOverService extends BaseService {
   private readonly airportService: AirportService;
@@ -129,7 +132,9 @@ export default class StopOverService extends BaseService {
       airports,
     );
 
-    console.log(hotels);
+    const hotelOffers = this.getHotelOffers(hotels);
+
+    console.log(hotelOffers);
 
     return {
       flightOffers,
@@ -176,7 +181,7 @@ export default class StopOverService extends BaseService {
     return brandedResults.itineraryPartBrands.map(
       (ipbs): FlightOfferModel[] => ipbs.map((ipb): FlightOfferModel => {
         const legs = this.getLegs(
-          ipb.itineraryPart.segments,
+          (refs[ipb.itineraryPart['@id'] ?? ipb.itineraryPart['@ref']] as ItineraryPart).segments,
           refs,
           airports,
         );
@@ -285,5 +290,49 @@ export default class StopOverService extends BaseService {
         },
       };
     });
+  }
+
+  private getHotelOffers(hotelsInfo: HotelAvailabilityInfos): HotelOfferModel {
+    const hotels = hotelsInfo.hotelAvailInfo.map((hotelInfo): HotelModel => {
+      const rates: any[] = [];
+      const images: any[] = [];
+      const info = hotelInfo.hotelInfo;
+      const { locationInfo } = info;
+
+      return {
+        images,
+        rates,
+        chain: {
+          code: info.chainCode,
+          name: info.chainName,
+        },
+        name: info.hotelName,
+        code: info.hotelCode,
+        rating: Number.parseInt(info.rating, 10),
+        recommended: info.recommended,
+        reviews: info.reviews.map((review) => ({
+          rating: review.rate,
+          count: review.reviewCount,
+          type: review.type,
+        })),
+        categories: info.propertyTypeInfo.propertyType.map(
+          (propertyType) => propertyType.description.trim(),
+        ),
+        coordinates: {
+          lat: Number.parseFloat(locationInfo.latitude),
+          long: Number.parseFloat(locationInfo.longitude),
+        },
+        contact: {
+          phone: locationInfo.contact.phone,
+          fax: locationInfo.contact.fax,
+        },
+      };
+    });
+
+    return {
+      checkIn: new Date(hotelsInfo.checkIn),
+      checkOut: new Date(hotelsInfo.checkOut),
+      hotels,
+    };
   }
 }
