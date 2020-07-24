@@ -77,7 +77,7 @@ export default class Utils {
   static upperCaseFirst(str: string): string {
     const [char, ...rest] = str.split('');
 
-    return [char.toUpperCase(), ...rest].join('');
+    return [(char ?? '').toUpperCase(), ...rest].join('');
   }
 
   static deepCopy(obj: any): any {
