@@ -1,7 +1,7 @@
 import React from 'react';
 
 import css from './Hotel.module.css';
-import { RoomOfferModel, HotelModel } from '../../../../../../Models/HotelOfferModel';
+import { RoomOfferModel, HotelModel, getHotelRoomOfferChain } from '../../../../../../Models/HotelOfferModel';
 import DateUtils from '../../../../../../DateUtils';
 import Utils from '../../../../../../Utils';
 
@@ -44,10 +44,7 @@ export default class Hotel extends React.Component<HotelProps> {
     }
 
     const nextRoomOffer = roomOffer ?? hotel.rooms[0].offers[0];
-    const room = hotel.rooms.find(
-      (nextRoom) => nextRoom.offers.findIndex((ro) => ro.hashCode === nextRoomOffer.hashCode),
-    );
-
+    const room = getHotelRoomOfferChain([hotel], nextRoomOffer)[1];
     const roomType = Utils.upperCaseFirst(room?.type.description.toLowerCase() ?? '');
 
     return (

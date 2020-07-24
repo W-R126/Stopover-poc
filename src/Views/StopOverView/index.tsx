@@ -55,8 +55,8 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
 
     let nextHotelRoom = room;
 
-    const nextHash = nextHotelRoom?.hashCode.split('+').slice(0, 2).join('+');
-    const prevHash = hotelRoom?.hashCode.split('+').slice(0, 2).join('+');
+    const nextHash = nextHotelRoom?.hashCode.substr(0, 91);
+    const prevHash = hotelRoom?.hashCode.substr(0, 91);
 
     if (nextHash === prevHash) {
       nextHotelRoom = undefined;

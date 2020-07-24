@@ -384,7 +384,12 @@ export default class StopOverService extends BaseService {
     };
   }
 
-  private getRoomOffers(rooms: Room[], checkIn: Date, checkOut: Date, hotelName: string): any {
+  private getRoomOffers(
+    rooms: Room[],
+    checkIn: Date,
+    checkOut: Date,
+    hotelName: string,
+  ): RoomModel[] {
     return rooms.map((room): RoomModel => ({
       category: room.roomCategory,
       occupancy: {

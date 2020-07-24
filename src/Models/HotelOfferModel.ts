@@ -139,7 +139,7 @@ export function getHotelRoomOfferChain(hotels?: HotelModel[], roomOffer?: RoomOf
     return [undefined, undefined, undefined];
   }
 
-  const hashCode = roomOffer?.hashCode.split('+').slice(0, 2).join('+');
+  const hashCode = roomOffer?.hashCode.substr(0, 91);
 
   let room: RoomModel | undefined;
   let offer: RoomOfferModel | undefined;
