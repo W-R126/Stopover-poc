@@ -49,7 +49,12 @@ export default class Hotels extends React.Component<HotelProps> {
 
     const recommended = offers.hotels.find((hotel) => hotel.recommended === true) as HotelModel;
     const restOffers = offers.hotels.filter((hotel) => hotel !== recommended);
-    const [selected] = getHotelRoomOfferChain(offers.hotels, hotelRoom);
+
+    let selected: HotelModel | undefined;
+
+    if (hotelRoom) {
+      [selected] = getHotelRoomOfferChain(offers.hotels, hotelRoom);
+    }
 
     return (
       <div className={classList.join(' ')}>
