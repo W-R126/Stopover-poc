@@ -4,6 +4,9 @@ import { StopOverModel } from './Models/StopOverModel';
 import { PackageTypeModel } from './Models/PackageTypeModel';
 import { FareModel, parseFare } from './Models/FlightOfferModel';
 import { RoomOfferModel, parseRoomOffer } from './Models/HotelOfferModel';
+import { ExperienceDateModel } from './Models/ExperienceDateModel';
+import { ExperienceModel, TimeSlotModel } from './Models/ExperienceModel';
+import { ExperienceCategoryEnum } from './Enums/ExperienceCategoryEnum';
 
 export default class AppState {
   private static readonly keys = {
@@ -15,7 +18,45 @@ export default class AppState {
     inboundFare: 'Booking.inboundFare',
     onwardFare: 'StopOver.onwardFare',
     stopOverDays: 'StopOver.stopOverDays',
+    experienceDates: 'StopOver.experienceDates',
   };
+
+  static get experienceDates(): ExperienceDateModel[] {
+    const experienceDates: ExperienceDateModel[] = Utils.sessionStore.get(
+      AppState.keys.experienceDates,
+    ) ?? [];
+
+    return experienceDates.map(
+      (experienceDate) => ({
+        date: new Date(experienceDate.date),
+        experiences: experienceDate.experiences.map(({
+          categories,
+          timeSlots,
+          opens,
+          closes,
+          ...rest
+        }): ExperienceModel => {
+          return {
+            categories: categories.map(
+              (category) => ExperienceCategoryEnum[category as keyof typeof ExperienceCategoryEnum],
+            ),
+            timeSlots: timeSlots?.map((ts): TimeSlotModel => ({
+              date: new Date(ts.date),
+              all: ts.all.map((d) => new Date(d)),
+              available: ts.available.map((d) => new Date(d)),
+            })),
+            opens: new Date(opens),
+            closes: new Date(closes),
+            ...rest,
+          };
+        }),
+      }),
+    );
+  }
+
+  static set experienceDates(experienceDates: ExperienceDateModel[]) {
+    Utils.sessionStore.set(AppState.keys.experienceDates, experienceDates);
+  }
 
   static get outboundFare(): FareModel | undefined {
     return parseFare(Utils.sessionStore.get(AppState.keys.outboundFare));

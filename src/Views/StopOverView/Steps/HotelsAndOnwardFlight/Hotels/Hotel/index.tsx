@@ -39,17 +39,24 @@ export default class Hotel extends React.Component<HotelProps> {
       classList.push(className);
     }
 
-    if (hotel.recommended) {
-      classList.push(css.Recommended);
-    }
-
     const nextRoomOffer = roomOffer ?? hotel.rooms[0].offers[0];
     const room = getHotelRoomOfferChain([hotel], nextRoomOffer)[1];
     const roomType = Utils.upperCaseFirst(room?.type.description.toLowerCase() ?? '');
 
     return (
       <div className={classList.join(' ')} aria-selected={selected}>
-        <img src={hotel.images[0].thumb} alt={hotel.images[0].description} className={css.Image} />
+        <div className={css.Image}>
+          {hotel.recommended && (
+            <div className={css.Recommended}>
+              <span>Recommended</span>
+            </div>
+          )}
+
+          <img
+            src={hotel.images[0].thumb}
+            alt={hotel.images[0].description}
+          />
+        </div>
 
         <div className={css.Info}>
           <div className={css.Details}>
@@ -89,12 +96,6 @@ export default class Hotel extends React.Component<HotelProps> {
           <div className={css.RoomDetails}>
             <div className={css.RoomDescription}>
               <span>{roomType}</span>
-
-              {selected && (
-                <button type="button">
-                  Change Room
-                </button>
-              )}
             </div>
 
             <button

@@ -154,7 +154,7 @@ export function getHotelRoomOfferChain(hotels?: HotelModel[], roomOffer?: RoomOf
                 return o;
               }
 
-              return o.hashCode.startsWith(hashCode);
+              return o.hashCode.startsWith(hashCode) ? o : undefined;
             },
           );
 

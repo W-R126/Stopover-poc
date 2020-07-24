@@ -9,6 +9,7 @@ interface SelectedExperienceProps {
   className?: string;
   data: ExperienceModel;
   timeSlots?: TimeSlotModel;
+  guests: number;
   onRemove: () => void;
 }
 
@@ -124,6 +125,7 @@ export default class SelectedExperience extends React.Component<
       data,
       onRemove,
       timeSlots,
+      guests,
     } = this.props;
 
     const { selectedTimeSlot } = this.state;
@@ -155,7 +157,7 @@ export default class SelectedExperience extends React.Component<
           <span className={css.Title}>{data.title}</span>
 
           <div className={css.Quantity}>
-            3 Guests
+            {`${guests} Guests`}
           </div>
 
           <span className={css.Price}>

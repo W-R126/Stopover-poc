@@ -9,11 +9,9 @@ import MockExperiences from './MockExperiences';
 import { ExperienceCategoryEnum } from '../../../../Enums/ExperienceCategoryEnum';
 import SelectedExperience from './Components/SelectedExperience';
 import DateUtils from '../../../../DateUtils';
-
-type ExperienceDate = {
-  date: Date;
-  experiences: ExperienceModel[];
-}
+import { TripModel } from '../../../../Models/TripModel';
+import AppState from '../../../../AppState';
+import { ExperienceDateModel } from '../../../../Models/ExperienceDateModel';
 
 interface ExperiencesProps {
   startDate: Date;
@@ -23,8 +21,9 @@ interface ExperiencesProps {
 interface ExperiencesState {
   selectedCategory: ExperienceCategoryEnum;
   experiences?: ExperienceModel[];
-  experienceDates: ExperienceDate[];
+  experienceDates: ExperienceDateModel[];
   dragging?: 'experience' | 'selectedExperience';
+  trip?: TripModel;
 }
 
 export default class Experiences extends React.Component<ExperiencesProps, ExperiencesState> {
@@ -34,27 +33,33 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
     this.state = {
       selectedCategory: ExperienceCategoryEnum.all,
       experiences: undefined,
-      experienceDates: [],
+      experienceDates: AppState.experienceDates,
       dragging: undefined,
+      trip: AppState.tripSearch,
     };
   }
 
   componentDidMount(): void {
     const { startDate, endDate } = this.props;
+    const { experienceDates } = this.state;
 
-    const experienceDates: ExperienceDate[] = [];
+    const nextExperienceDates: ExperienceDateModel[] = [];
     const daysDelta = DateUtils.getDaysDelta(startDate, endDate);
 
     for (let i = 0; i <= daysDelta; i += 1) {
       const date = new Date(startDate);
       date.setDate(date.getDate() + i);
 
-      experienceDates.push({ date, experiences: [] });
+      const next = experienceDates.find(
+        (ed) => ed.date.toLocaleDateString('sv-SE') === date.toLocaleDateString('sv-SE'),
+      ) ?? { date, experiences: [] };
+
+      nextExperienceDates.push(next);
     }
 
     this.setState({
       experiences: MockExperiences,
-      experienceDates,
+      experienceDates: nextExperienceDates,
     });
   }
 
@@ -85,7 +90,7 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
   }
 
   private onDropExperience(
-    experienceDate: ExperienceDate,
+    experienceDate: ExperienceDateModel,
     e: React.DragEvent<HTMLDivElement>,
   ): void {
     const { experiences } = this.state;
@@ -101,14 +106,17 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
     const experience = experiences.find((item) => item.id === id);
 
     if (experience) {
+      const { experienceDates } = this.state;
       experienceDate.experiences.push(experience);
+
+      this.updateSelected(experienceDates);
     }
 
     this.setState({ dragging: undefined });
   }
 
   private onDropSelectedExperience(
-    experienceDate: ExperienceDate,
+    experienceDate: ExperienceDateModel,
     e: React.DragEvent<HTMLDivElement>,
   ): void {
     const { experiences } = this.state;
@@ -132,6 +140,8 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
       });
 
       experienceDate.experiences.push(experience);
+
+      this.updateSelected(experienceDates);
     }
 
     this.setState({ dragging: undefined });
@@ -146,6 +156,8 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
 
     if (experienceDate) {
       experienceDate.experiences.splice(experienceDate.experiences.indexOf(experience), 1);
+
+      this.updateSelected(experienceDates);
     }
 
     this.forceUpdate();
@@ -174,8 +186,17 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
     return finalExperiences.filter((experience) => selectedExperiences.indexOf(experience) === -1);
   }
 
+  private updateSelected(experienceDates: ExperienceDateModel[]): void {
+    AppState.experienceDates = experienceDates;
+  }
+
   render(): JSX.Element {
-    const { selectedCategory, experienceDates, dragging } = this.state;
+    const {
+      selectedCategory,
+      experienceDates,
+      dragging,
+      trip,
+    } = this.state;
     const { startDate, endDate } = this.props;
 
     const experiences = this.getFilteredExperiences()?.sort((a, b) => {
@@ -185,6 +206,12 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
 
       return a.recommended ? -1 : 1;
     });
+
+    const totalGuests = (
+      (trip?.passengers.adults ?? 0)
+      + (trip?.passengers.children ?? 0)
+      + (trip?.passengers.infants ?? 0)
+    );
 
     return (
       <div className={css.Experiences}>
@@ -315,6 +342,7 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
                               <SelectedExperience
                                 className={css.SelectedExperience}
                                 data={experience}
+                                guests={totalGuests}
                                 timeSlots={timeSlots}
                                 key={`experience-${itemIdx}`}
                                 onRemove={(): void => this.onRemove(experience)}

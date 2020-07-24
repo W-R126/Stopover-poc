@@ -444,4 +444,19 @@ export default class StopOverService extends BaseService {
       })) ?? [],
     }));
   }
+
+  async getFlights(flightHashCode: number, hotelHashCode: string): Promise<any> {
+    const asd = await this.http.post(
+      '/selectFlightsWithStopover',
+      {
+        selectFlights: [flightHashCode],
+        hotelRateKey: hotelHashCode,
+      },
+      {
+        headers: SessionManager.getSessionHeaders(),
+      },
+    );
+
+    return asd;
+  }
 }
