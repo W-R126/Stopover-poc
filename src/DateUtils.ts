@@ -65,16 +65,24 @@ export default class DateUtils {
     return DateUtils.getTimeDeltaFromMs(delta);
   }
 
-  static getTimeZoneDelta(tz1?: string, tz2?: string): string | undefined {
+  static getTimeZoneDeltaMs(tz1?: string, tz2?: string): number | undefined {
     if (!(tz1 && tz2)) {
-      return undefined;
+      return 0;
     }
 
     const date = new Date();
     const date1 = new Date(date.toLocaleString('sv-SE', { timeZone: tz1 }));
     const date2 = new Date(date.toLocaleString('sv-SE', { timeZone: tz2 }));
 
-    const timeDeltaMs = date2.valueOf() - date1.valueOf();
+    return date2.valueOf() - date1.valueOf();
+  }
+
+  static getTimeZoneDelta(tz1?: string, tz2?: string): string | undefined {
+    const timeDeltaMs = this.getTimeZoneDeltaMs(tz1, tz2);
+
+    if (timeDeltaMs === undefined) {
+      return undefined;
+    }
 
     if (timeDeltaMs < 0) {
       return `-${DateUtils.getTimeDeltaFromMs(Math.abs(timeDeltaMs))}`;
@@ -83,10 +91,8 @@ export default class DateUtils {
     return `+${DateUtils.getTimeDeltaFromMs(Math.abs(timeDeltaMs))}`;
   }
 
-  static getHourMinuteString(date: Date): string {
-    const [hour, minute] = date.toLocaleTimeString('sv-SE').split(':');
-
-    return `${hour}:${minute}`;
+  static getHHMM(date: Date): string {
+    return date.toLocaleTimeString('sv-SE').split(':').slice(0, 2).join(':');
   }
 
   static getDateString(date: Date): string {
@@ -95,7 +101,7 @@ export default class DateUtils {
 
   static getFullDateString(date: Date): string {
     const strDate = date.toLocaleDateString('sv-SE');
-    const strHours = this.getHourMinuteString(date);
+    const strHours = this.getHHMM(date);
 
     return `${strDate} ${strHours}`;
   }

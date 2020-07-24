@@ -109,6 +109,7 @@ export function parseFare(fare?: Partial<FareModel>): FareModel | undefined {
     const destination = parseAirport(fare.destination);
     const departure = fare.departure ? new Date(fare.departure) : undefined;
     const arrival = fare.arrival ? new Date(fare.arrival) : undefined;
+    const legs = fare.legs?.map((leg) => parseLeg(leg));
 
     if (
       !(brandId && brandLabel && price && !Number.isNaN(hashCode) && !Number.isNaN(milesEarned))
@@ -118,6 +119,7 @@ export function parseFare(fare?: Partial<FareModel>): FareModel | undefined {
       || Number.isNaN(arrival)
       || !(departure instanceof Date)
       || Number.isNaN(departure)
+      || (!legs || legs.indexOf(undefined) !== -1)
     ) {
       return undefined;
     }
@@ -132,6 +134,7 @@ export function parseFare(fare?: Partial<FareModel>): FareModel | undefined {
       origin,
       destination,
       departure,
+      legs: legs as LegModel[],
       arrival,
     };
   } catch (err) {
@@ -240,6 +243,7 @@ export interface FareModel {
   cabinClass: CabinClassEnum;
   hashCode: number;
   price: PriceModel;
+  legs: LegModel[];
   milesEarned: number;
   origin: AirportModel;
   destination: AirportModel;

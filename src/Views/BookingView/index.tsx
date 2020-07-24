@@ -157,6 +157,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     }
 
     AppState.stopOverInfo = result;
+    AppState.stopOverDays = undefined;
 
     this.stopOverPromptRef.current.show(result.customerSegment, result.airportCode);
   }

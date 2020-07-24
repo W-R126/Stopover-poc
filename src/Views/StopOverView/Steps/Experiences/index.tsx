@@ -37,8 +37,6 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
       experienceDates: [],
       dragging: undefined,
     };
-
-    this.onDropExperience = this.onDropExperience.bind(this);
   }
 
   componentDidMount(): void {
@@ -293,9 +291,16 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
                               ? css.ShowDropHint
                               : ''
                           }`}
-                          onDrop={dragging === 'experience'
-                            ? (e): void => this.onDropExperience(experienceDate, e)
-                            : (e): void => this.onDropSelectedExperience(experienceDate, e)}
+                          onDrop={(e): void => {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            if (dragging === 'experience') {
+                              this.onDropExperience(experienceDate, e);
+                            } else {
+                              this.onDropSelectedExperience(experienceDate, e);
+                            }
+                          }}
                           onDragOver={this.onDragOver}
                           onDragLeave={this.onDragLeave}
                           onDragEnter={this.onDragEnter}

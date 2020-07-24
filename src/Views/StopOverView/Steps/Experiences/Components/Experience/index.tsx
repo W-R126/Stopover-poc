@@ -145,8 +145,8 @@ export default class Experience extends React.Component<ExperienceProps> {
             <span className={css.OpeningHours}>
               {data.timeSlots
                 ? 'Limited time slots'
-                : `${DateUtils.getHourMinuteString(data.opens)} - ${
-                  DateUtils.getHourMinuteString(data.closes)
+                : `${DateUtils.getHHMM(data.opens)} - ${
+                  DateUtils.getHHMM(data.closes)
                 }`}
             </span>
           </div>

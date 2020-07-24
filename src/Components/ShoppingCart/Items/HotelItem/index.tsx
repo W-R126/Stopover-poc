@@ -1,18 +1,18 @@
 import React from 'react';
 
 import css from './HotelItem.module.css';
-import hotelIcon from '../../../../Assets/Images/hotel-bed.svg';
+import hotelIcon from '../../../../Assets/Images/hotel-icon.svg';
 import shoppingCartCss from '../../ShoppingCart.module.css';
 import { ShoppingCartItemProps } from '../..';
 import ContentService from '../../../../Services/ContentService';
-import { HotelModel } from '../../../../Models/HotelModel';
+import { RoomOfferModel } from '../../../../Models/HotelOfferModel';
 
-interface HotelItemProps extends ShoppingCartItemProps<HotelModel> {
+interface HotelItemProps extends ShoppingCartItemProps<RoomOfferModel> {
   contentService: ContentService;
 }
 
 export default function HotelItem({
-  item: hotel,
+  item: hotelRoom,
   className,
   contentService,
 }: HotelItemProps): JSX.Element {
@@ -28,18 +28,16 @@ export default function HotelItem({
 
       <div className={css.Info}>
         <strong>
-          {`${hotel.checkIn.toLocaleDateString(
+          {`${hotelRoom.checkIn.toLocaleDateString(
             contentService.locale,
             { month: 'long', day: 'numeric' },
-          )} - ${hotel.checkOut.toLocaleDateString(
+          )} - ${hotelRoom.checkOut.toLocaleDateString(
             contentService.locale,
-            { month: 'long', year: 'numeric', day: 'numeric' },
+            { month: 'long', day: 'numeric' },
           )}`}
         </strong>
 
-        {hotel.hotelInfo.hotelName}
-
-        <button type="button">View details</button>
+        {hotelRoom.hotelName}
       </div>
     </div>
   );

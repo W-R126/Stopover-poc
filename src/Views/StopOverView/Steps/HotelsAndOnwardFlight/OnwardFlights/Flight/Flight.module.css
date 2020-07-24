@@ -1,0 +1,118 @@
+.Flight {
+  user-select: none;
+}
+
+.Info {
+  display: grid;
+  grid-template-columns:
+    max-content
+    max-content
+    max-content
+    1fr
+    1fr
+    max-content;
+  color: #4e4c4a;
+  align-items: center;
+  gap: 20px;
+}
+
+.Airport {
+  white-space: nowrap;
+}
+
+.Airport > strong {
+  display: block;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 100;
+  margin-bottom: 6px;
+}
+
+.Airport > strong > span {
+  color: #7a9a01;
+  font-size: 12px;
+  position: relative;
+  top: -8px;
+  left: 2px;
+}
+
+.Airport > span {
+  display: block;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.Arrow {
+  display: inline-flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 19px;
+  margin: 0 16px;
+  height: 2px;
+  background-color: #4e4c4a;
+}
+
+.Arrow::after {
+  display: inline-block;
+  content: '';
+  height: 12px;
+  width: 12px;
+  border: 2px solid #4e4c4a;
+  border-bottom-width: 0;
+  border-left-width: 0;
+  transform: rotateZ(45deg);
+}
+
+.TravelTime {
+  text-align: center;
+}
+
+.TravelTime > strong {
+  display: block;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 100;
+  margin-bottom: 6px;
+}
+
+.TravelTime > span {
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.Stops {
+  text-align: center;
+}
+
+.Stops > strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.Stops > span {
+  font-size: 14px;
+}
+
+.SelectOffer {
+  background-color: #dcdbdb;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  padding: 12px 16px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  outline: 0;
+  color: #4e4c4a;
+  cursor: pointer;
+  min-width: 124px;
+}
+
+.Flight[aria-selected='true'] .SelectOffer {
+  background-color: #bd8b13;
+  color: #fff;
+}
+
+.SelectOffer:focus {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px #6997d3;
+}
+

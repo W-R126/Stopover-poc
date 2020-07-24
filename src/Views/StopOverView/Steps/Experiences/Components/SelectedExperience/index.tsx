@@ -194,9 +194,9 @@ export default class SelectedExperience extends React.Component<
                       ) === -1}
                     />
                     <label htmlFor={id}>
-                      {`${DateUtils.getHourMinuteString(start)}${
+                      {`${DateUtils.getHHMM(start)}${
                         end
-                          ? ` - ${DateUtils.getHourMinuteString(end)}`
+                          ? ` - ${DateUtils.getHHMM(end)}`
                           : ''
                       }`}
                     </label>

@@ -122,7 +122,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
         <div className={css.OriginDestination}>
           <div className={css.Origin}>
             <strong>
-              {DateUtils.getHourMinuteString(offer.departure)}
+              {DateUtils.getHHMM(offer.departure)}
             </strong>
             <span>{`${offer.origin?.cityName} ${offer.origin?.code}`}</span>
           </div>
@@ -131,7 +131,7 @@ export default class FlightEntry extends React.Component<FlightEntryProps, Fligh
 
           <div className={css.Destination}>
             <strong>
-              {DateUtils.getHourMinuteString(offer.arrival)}
+              {DateUtils.getHHMM(offer.arrival)}
               {timeZoneDelta && (<span className={css.TimeZoneDelta}>{timeZoneDelta}</span>)}
             </strong>
             <span>{`${offer.destination.cityName} ${offer.destination.code}`}</span>

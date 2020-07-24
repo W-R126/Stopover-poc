@@ -4,7 +4,7 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import commonCss from '../../common.module.css';
 import css from './StopOverView.module.css';
 import Button from '../../Components/UI/Button';
-import Hotels from './Steps/Hotels';
+import HotelsAndOnwardFlight from './Steps/HotelsAndOnwardFlight';
 import Experiences from './Steps/Experiences';
 import Inbound from './Steps/Inbound';
 import ShoppingCart from '../../Components/ShoppingCart';
@@ -15,8 +15,9 @@ import AppState from '../../AppState';
 import StopOverService from '../../Services/StopOverService';
 import FlightOfferService from '../../Services/FlightOfferService';
 import HotelItem from '../../Components/ShoppingCart/Items/HotelItem';
-import { HotelModel } from '../../Models/HotelModel';
 import { FareModel } from '../../Models/FlightOfferModel';
+import { RoomOfferModel } from '../../Models/HotelOfferModel';
+import { StopOverModel } from '../../Models/StopOverModel';
 
 interface StopOverProps extends RouteComponentProps<{ progressStep: StopOverProgressStepEnum }> {
   contentService: ContentService;
@@ -26,10 +27,10 @@ interface StopOverProps extends RouteComponentProps<{ progressStep: StopOverProg
 
 interface StopOverState {
   outboundFare?: FareModel;
-  startDate: Date;
-  endDate: Date;
-  selectedHotel?: HotelModel;
+  hotelRoom?: RoomOfferModel;
+  onwardFare?: FareModel;
   inboundFare?: FareModel;
+  stopOverInfo?: StopOverModel;
 }
 
 class StopOverView extends React.Component<StopOverProps, StopOverState> {
@@ -38,25 +39,57 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
 
     this.state = {
       outboundFare: AppState.outboundFare,
-      startDate: new Date(2020, 7, 5),
-      endDate: new Date(2020, 7, 7),
-      selectedHotel: AppState.selectedHotel,
+      hotelRoom: AppState.hotelRoom,
+      onwardFare: AppState.onwardFare,
       inboundFare: AppState.inboundFare,
+      stopOverInfo: AppState.stopOverInfo,
     };
 
-    this.onSelectHotel = this.onSelectHotel.bind(this);
-    this.onSelectInbound = this.onSelectInbound.bind(this);
+    this.selectRoom = this.selectRoom.bind(this);
+    this.selectInbound = this.selectInbound.bind(this);
+    this.selectOnward = this.selectOnward.bind(this);
   }
 
-  private onSelectHotel(selectedHotel?: HotelModel): void {
-    AppState.selectedHotel = selectedHotel;
+  private selectRoom(room?: RoomOfferModel): void {
+    const { hotelRoom } = this.state;
 
-    this.setState({ selectedHotel });
+    let nextHotelRoom = room;
+
+    const nextHash = nextHotelRoom?.hashCode.split('+').slice(0, 2).join('+');
+    const prevHash = hotelRoom?.hashCode.split('+').slice(0, 2).join('+');
+
+    if (nextHash === prevHash) {
+      nextHotelRoom = undefined;
+    }
+
+    AppState.hotelRoom = nextHotelRoom;
+    this.setState({ hotelRoom: nextHotelRoom });
   }
 
-  private onSelectInbound(selectedInboud?: FareModel): void {
-    AppState.inboundFare = selectedInboud;
-    this.setState({ inboundFare: selectedInboud });
+  private selectOnward(fare?: FareModel): void {
+    const { onwardFare } = this.state;
+
+    let nextOnwardFare = fare;
+
+    if (nextOnwardFare?.hashCode === onwardFare?.hashCode) {
+      nextOnwardFare = undefined;
+    }
+
+    AppState.onwardFare = nextOnwardFare;
+    this.setState({ onwardFare: nextOnwardFare });
+  }
+
+  private selectInbound(fare?: FareModel): void {
+    const { inboundFare } = this.state;
+
+    let nextInboundFare = fare;
+
+    if (nextInboundFare?.hashCode === inboundFare?.hashCode) {
+      nextInboundFare = undefined;
+    }
+
+    AppState.inboundFare = nextInboundFare;
+    this.setState({ inboundFare: nextInboundFare });
   }
 
   render(): JSX.Element {
@@ -67,12 +100,13 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
       stopOverService,
       flightOfferService,
     } = this.props;
+
     const {
       outboundFare,
-      startDate,
-      endDate,
-      selectedHotel,
+      hotelRoom,
       inboundFare,
+      onwardFare,
+      stopOverInfo,
     } = this.state;
 
     if (!outboundFare) {
@@ -83,7 +117,6 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
     const experiencesClassList = [css.Step];
     const inboundClassList = [css.Step];
     let nextFunc;
-
     let backLink;
 
     switch (progressStep) {
@@ -160,17 +193,21 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
 
         <div className={`${css.ContentWrapper} ${commonCss.ContentWrapper}`}>
           {progressStep === 'hotels' && (
-            <Hotels
-              outboundFare={outboundFare}
+            <HotelsAndOnwardFlight
+              originalFare={outboundFare}
               contentService={contentService}
               stopOverService={stopOverService}
-              onSelectHotel={this.onSelectHotel}
+              stopOverInfo={stopOverInfo}
+              onwardFare={onwardFare}
+              onSelectOnward={this.selectOnward}
+              onSelectRoom={this.selectRoom}
+              hotelRoom={hotelRoom}
             />
           )}
           {progressStep === 'experiences' && (
             <Experiences
-              startDate={startDate}
-              endDate={endDate}
+              startDate={hotelRoom?.checkIn ?? new Date()}
+              endDate={hotelRoom?.checkOut ?? new Date()}
             />
           )}
           {progressStep === 'inbound' && (
@@ -178,7 +215,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
               flightOfferService={flightOfferService}
               stopOverService={stopOverService}
               contentService={contentService}
-              selectInbound={this.onSelectInbound}
+              selectInbound={this.selectInbound}
               isStopOver
             />
           )}
@@ -187,24 +224,39 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
         <ShoppingCart currency={contentService.currency}>
           {
             outboundFare && (
-            <FlightItem
-              currency={outboundFare.price.currency}
-              item={outboundFare}
-              price={outboundFare.price.total}
-              contentService={contentService}
-            />
+              <FlightItem
+                currency={outboundFare.price.currency}
+                item={outboundFare}
+                price={onwardFare ? 0 : outboundFare.price.total}
+                contentService={contentService}
+                legs={!onwardFare ? undefined : outboundFare.legs.slice(
+                  0,
+                  outboundFare.legs.findIndex((leg) => leg.origin.code === 'AUH'),
+                )}
+              />
             )
           }
-          {selectedHotel && (
+          {hotelRoom && (
             <HotelItem
-              item={selectedHotel}
+              item={hotelRoom}
               contentService={contentService}
-              currency={selectedHotel.hotelInfo.currencyCode ?? contentService.currency}
-              price={
-                selectedHotel.hotelRateInfo.rooms.room[0].ratePlans.ratePlan[0].rateInfo.netRate
-              }
+              currency={hotelRoom.price.currency}
+              price={hotelRoom.price.total}
             />
           )}
+          {
+            onwardFare && (
+              <FlightItem
+                currency={onwardFare.price.currency}
+                item={onwardFare}
+                price={onwardFare.price.total}
+                contentService={contentService}
+                legs={onwardFare.legs.slice(
+                  onwardFare.legs.findIndex((leg) => leg.origin.code === 'AUH'),
+                )}
+              />
+            )
+          }
           {
             inboundFare && (
               <FlightItem

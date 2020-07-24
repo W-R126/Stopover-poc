@@ -1,0 +1,74 @@
+.OnwardFlights {
+  user-select: none;
+}
+
+.Header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.Header > .Icon {
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border-radius: 50%;
+  background-color: #f2e8d0;
+  transform: rotateZ(90deg);
+  align-self: center;
+  margin-bottom: 10px;
+}
+
+.Header > h1 {
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  color: #4e4c4a;
+  margin-bottom: 8px;
+}
+
+.Header > h2 {
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #bd8b13;
+}
+
+.Recommended,
+.Offers {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.Recommended {
+  margin-bottom: 20px;
+}
+
+.FlightEntry {
+  border: 4px solid transparent;
+  padding: 20px;
+  position: relative;
+}
+
+.FlightEntry:not([aria-selected='true']):not(:first-child)::before {
+  border-top: 1px solid #dcdbdb;
+  width: 100%;
+  content: '';
+  display: block;
+  position: absolute;
+  top: -4px;
+  left: 0;
+}
+
+.FlightEntry[aria-selected='true'] {
+  border-color: #bd8b13;
+}
+
+.FlightEntry:first-child {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.FlightEntry:last-child {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+

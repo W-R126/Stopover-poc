@@ -23,7 +23,6 @@ export default function App({ config }: { config: Config }): JSX.Element {
   );
   const stopOverService = new StopOverService(
     contentService,
-    flightOfferService,
     airportService,
     config,
   );

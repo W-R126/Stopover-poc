@@ -1,7 +1,7 @@
+import { CustomerSegmentEnum } from '../Enums/CustomerSegment';
+
 export interface StopOverModel {
   airportCode: string;
   days: number[];
-  customerSegment: CustomerSegment;
+  customerSegment: CustomerSegmentEnum;
 }
-
-export type CustomerSegment = 'Family' | 'Leisure' | 'Business';

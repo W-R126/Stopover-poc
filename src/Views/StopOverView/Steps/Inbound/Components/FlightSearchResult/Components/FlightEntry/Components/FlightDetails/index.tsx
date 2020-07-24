@@ -34,7 +34,7 @@ export default function FlightDetails({ className, legs }: FlightDetailsProps): 
 
             <span className={css.Location}>
               <span className={css.Time}>
-                {DateUtils.getHourMinuteString(leg.departure)}
+                {DateUtils.getHHMM(leg.departure)}
               </span>
 
               <span className={css.Airport}>
@@ -48,7 +48,7 @@ export default function FlightDetails({ className, legs }: FlightDetailsProps): 
 
             <span className={css.Location}>
               <span className={css.Time}>
-                {DateUtils.getHourMinuteString(leg.arrival)}
+                {DateUtils.getHHMM(leg.arrival)}
               </span>
 
               <span className={css.Airport}>

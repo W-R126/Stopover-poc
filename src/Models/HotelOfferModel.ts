@@ -1,4 +1,5 @@
 import { CoordinateModel } from './CoordinateModel';
+import { PriceModel } from './FlightOfferModel';
 
 export interface HotelOfferModel {
   checkIn: Date;
@@ -7,12 +8,15 @@ export interface HotelOfferModel {
 }
 
 export interface HotelModel {
-  images: any[];
-  rates: any[];
+  images: ImageModel[];
+  rooms: RoomModel[];
   chain: {
     code?: string;
     name?: string;
   };
+  checkIn?: string;
+  checkOut?: string;
+  free: boolean;
   name: string;
   code: string;
   rating: number;
@@ -23,11 +27,144 @@ export interface HotelModel {
   contact: {
     phone: string;
     fax?: string;
+  };
+  address: AddressModel;
+  amenities: AmenityModel[];
+}
+
+export interface ImageModel {
+  thumb: string;
+  original: string;
+  code: string;
+  description: string;
+}
+
+export interface RoomModel {
+  occupancy: {
+    min: number;
+    max: number;
+  };
+  amenities: AmenityModel[];
+  category: string;
+  type: {
+    name: string;
+    description: string;
+    code: string;
+  };
+  offers: RoomOfferModel[];
+}
+
+export interface RoomOfferModel {
+  available: number;
+  includedMeals: {
+    breakfast: boolean;
+    dinner: boolean;
+    lunch: boolean;
+    lunchOrDinner: boolean;
+  };
+  checkIn: Date;
+  checkOut: Date;
+  hashCode: string;
+  price: PriceModel;
+  hotelName: string;
+  cancelPenalty: {
+    price: PriceModel;
+    deadline: Date;
+  };
+  discounts: {
+    total: number;
+    code: number;
+    name: string;
+  }[];
+}
+
+export function parseRoomOffer(data?: any): RoomOfferModel | undefined {
+  if (!data) {
+    return undefined;
   }
+
+  const {
+    checkIn,
+    checkOut,
+    cancelPenalty,
+    ...restProps
+  } = data;
+
+  return {
+    checkIn: new Date(checkIn),
+    checkOut: new Date(checkOut),
+    cancelPenalty: {
+      price: cancelPenalty.price,
+      deadline: new Date(cancelPenalty.deadline),
+    },
+    ...restProps,
+  };
 }
 
 export interface ReviewModel {
   rating: number;
   count: number;
   type: string;
+}
+
+export interface AddressModel {
+  line1: string;
+  city: {
+    name: string;
+    code: string;
+  };
+  country: {
+    name: string;
+    code: string;
+  };
+  state: {
+    name: string;
+    code: string;
+  };
+}
+
+export interface AmenityModel {
+  code: number;
+  description: string;
+  value?: string;
+  complimentary: boolean;
+}
+
+export function getHotelRoomOfferChain(hotels?: HotelModel[], roomOffer?: RoomOfferModel): [
+  HotelModel | undefined,
+  RoomModel | undefined,
+  RoomOfferModel | undefined,
+] {
+  if (!hotels) {
+    return [undefined, undefined, undefined];
+  }
+
+  const hashCode = roomOffer?.hashCode.split('+').slice(0, 2).join('+');
+
+  let room: RoomModel | undefined;
+  let offer: RoomOfferModel | undefined;
+
+  const hotel = hotels.find(
+    (h) => {
+      room = h.rooms.find(
+        (r) => {
+          offer = r.offers.find(
+            (o) => {
+              if (!hashCode) {
+                return o;
+              }
+
+              return o.hashCode.startsWith(hashCode);
+            },
+          );
+
+          return offer ? r : undefined;
+        },
+      );
+
+      return room ? h : undefined;
+    },
+  );
+
+  return [hotel, room, offer];
 }

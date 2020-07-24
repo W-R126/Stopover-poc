@@ -4,8 +4,8 @@ import css from './StopOverPrompt.module.css';
 import EtihadLogo from '../EtihadLogo';
 import Button from '../UI/Button';
 import Offer from './Components/Offer';
-import { CustomerSegment } from '../../Models/StopOverModel';
 import Data from './Data';
+import { CustomerSegmentEnum } from '../../Enums/CustomerSegment';
 
 interface StopOverPromptProps {
   onAccept: () => void;
@@ -14,7 +14,7 @@ interface StopOverPromptProps {
 
 interface StopOverPromptState {
   show: boolean;
-  customerSegment?: CustomerSegment;
+  customerSegment?: CustomerSegmentEnum;
   outbound?: Date;
   inbound?: Date;
   days?: number[];
@@ -55,7 +55,7 @@ export default class StopOverPrompt extends React.Component<
     onAccept();
   }
 
-  show(customerSegment: CustomerSegment, airportCode: string): void {
+  show(customerSegment: CustomerSegmentEnum, airportCode: string): void {
     this.setState({
       show: true,
       customerSegment,

@@ -2,8 +2,8 @@ import Utils from './Utils';
 import { TripModel, parseTrip } from './Models/TripModel';
 import { StopOverModel } from './Models/StopOverModel';
 import { PackageTypeModel } from './Models/PackageTypeModel';
-import { HotelModel } from './Models/HotelModel';
 import { FareModel, parseFare } from './Models/FlightOfferModel';
+import { RoomOfferModel, parseRoomOffer } from './Models/HotelOfferModel';
 
 export default class AppState {
   private static readonly keys = {
@@ -13,6 +13,8 @@ export default class AppState {
     packageInfo: 'StopOver.packageInfo',
     selectedHotel: 'StopOver.selectedHotel',
     inboundFare: 'Booking.inboundFare',
+    onwardFare: 'StopOver.onwardFare',
+    stopOverDays: 'StopOver.stopOverDays',
   };
 
   static get outboundFare(): FareModel | undefined {
@@ -21,6 +23,14 @@ export default class AppState {
 
   static set outboundFare(offer: FareModel | undefined) {
     Utils.sessionStore.set(AppState.keys.outboundFare, offer);
+  }
+
+  static get onwardFare(): FareModel | undefined {
+    return parseFare(Utils.sessionStore.get(AppState.keys.onwardFare));
+  }
+
+  static set onwardFare(onwardFare: FareModel | undefined) {
+    Utils.sessionStore.set(AppState.keys.onwardFare, onwardFare);
   }
 
   static get tripSearch(): TripModel | undefined {
@@ -39,6 +49,14 @@ export default class AppState {
     Utils.sessionStore.set(AppState.keys.stopOverInfo, stopOverInfo);
   }
 
+  static get stopOverDays(): number | undefined {
+    return Utils.sessionStore.get(AppState.keys.stopOverDays);
+  }
+
+  static set stopOverDays(stopOverDays: number | undefined) {
+    Utils.sessionStore.set(AppState.keys.stopOverDays, stopOverDays);
+  }
+
   static get packageInfo(): PackageTypeModel | undefined {
     return Utils.sessionStore.get(AppState.keys.packageInfo);
   }
@@ -47,18 +65,13 @@ export default class AppState {
     Utils.sessionStore.set(AppState.keys.packageInfo, packageInfo);
   }
 
-  static get selectedHotel(): HotelModel | undefined {
-    const selectedHotel = Utils.sessionStore.get<HotelModel>(AppState.keys.selectedHotel);
+  static get hotelRoom(): RoomOfferModel | undefined {
+    const hotelRoom = Utils.sessionStore.get<RoomOfferModel>(AppState.keys.selectedHotel);
 
-    if (selectedHotel) {
-      selectedHotel.checkIn = new Date(selectedHotel.checkIn);
-      selectedHotel.checkOut = new Date(selectedHotel.checkOut);
-    }
-
-    return selectedHotel;
+    return parseRoomOffer(hotelRoom);
   }
 
-  static set selectedHotel(selectedHotel: HotelModel | undefined) {
+  static set hotelRoom(selectedHotel: RoomOfferModel | undefined) {
     Utils.sessionStore.set(AppState.keys.selectedHotel, selectedHotel);
   }
 

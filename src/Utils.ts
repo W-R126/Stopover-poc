@@ -74,6 +74,12 @@ export default class Utils {
     return result;
   }
 
+  static upperCaseFirst(str: string): string {
+    const [char, ...rest] = str.split('');
+
+    return [char.toUpperCase(), ...rest].join('');
+  }
+
   static deepCopy(obj: any): any {
     if (obj instanceof Array) {
       const result: any[] = [];

@@ -1,0 +1,146 @@
+.HotelsAndOnwardFlight {
+  color: #4e4c4a;
+}
+
+.Header > h1 {
+  color: #bd8b13;
+  font-size: 18px;
+  font-style: italic;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.Header > h2 {
+  font-size: 18px;
+  font-style: italic;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.DayOptions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.DayButton {
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  border: 2px solid #dcdbdb;
+  color: #4e4c4a;
+  font-size: 16px;
+  padding: 12px;
+  min-width: 160px;
+  background-color: #fff;
+  outline: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0 8px;
+}
+
+.DayButton[aria-selected='true'] {
+  border-color: #bd8b13;
+  color: #bd8b13;
+}
+
+.OtherOptions {
+  position: relative;
+}
+
+.OtherOptions > .OtherDayOptions {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  white-space: nowrap;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 8px 0;
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: all;
+  transition:
+    opacity 100ms,
+    transform 100ms;
+  z-index: 1000;
+}
+
+.OtherOptions > .OtherDayOptions[aria-expanded='false'] {
+  transform: scale(0.9);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.OtherDayButton {
+  display: grid;
+  grid-template-columns:
+    max-content
+    1fr
+    max-content;
+  gap: 16px;
+  padding: 8px 16px;
+  align-items: center;
+  font-size: 18px;
+}
+
+.OtherDayButton:hover {
+  background-color: #ededec;
+}
+
+.OtherDayButton > span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+}
+
+.OtherDayButton > strong {
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+}
+
+.OtherDayButton > em {
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  color: #7a9a01;
+  font-size: 16px;
+}
+
+.OtherDayButton[aria-selected='true'] > span::after {
+  display: block;
+  border: 2px solid #4e4c4a;
+  border-left-width: 0;
+  border-top-width: 0;
+  height: 18px;
+  width: 8px;
+  transform: rotateZ(45deg);
+  content: '';
+  margin-top: -4px;
+}
+
+.Searching {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Searching > img {
+  height: 48px;
+  margin: 0 8px;
+}
+
+.Results {
+  display: grid;
+  grid-template-columns:
+    1fr
+    1fr;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.Results > .NoResult {
+  display: block;
+  width: 100%;
+  text-align: center;
+  grid-column: 1 / -1;
+}

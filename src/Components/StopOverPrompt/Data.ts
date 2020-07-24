@@ -25,7 +25,7 @@ const Data: {
     }[];
   };
 } = {
-  Family: {
+  family: {
     imageUrl: family,
     offers: [
       {
@@ -51,7 +51,7 @@ const Data: {
       },
     ],
   },
-  Leisure: {
+  leisure: {
     imageUrl: leisure,
     offers: [
       {
@@ -77,7 +77,7 @@ const Data: {
       },
     ],
   },
-  Business: {
+  business: {
     imageUrl: businessTraveller,
     offers: [
       {

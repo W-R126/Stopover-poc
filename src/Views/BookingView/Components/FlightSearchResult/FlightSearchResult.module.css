@@ -18,18 +18,6 @@
   display: flex;
 }
 
-/* html:not([dir='rtl']) .Filters:not(:focus) .FiltersHeader,
-html[dir='rtl'] .Sorting:not(:focus) .SortingWrapper {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-html:not([dir='rtl']) .Sorting:not(:focus) .SortingWrapper,
-html[dir='rtl'] .Filters:not(:focus) .FiltersHeader {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-} */
-
 html:not([dir='rtl']) .Sorting {
   margin-left: -1px;
 }

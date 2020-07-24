@@ -9,11 +9,11 @@ import {
   BrandOffer,
   HotelAvailabilityInfos,
   ItineraryPart,
+  Room,
 } from './Responses/ConfirmStopOverResponseNew';
 import { StopOverModel } from '../Models/StopOverModel';
 import AirportService from './AirportService';
 import ContentService from './ContentService';
-import FlightOfferService from './FlightOfferService';
 import { AirportModel } from '../Models/AirportModel';
 import {
   FlightOfferModel,
@@ -23,25 +23,30 @@ import {
 } from '../Models/FlightOfferModel';
 import { CabinClassEnum } from '../Enums/CabinClassEnum';
 import Config from '../Config';
-import { HotelOfferModel, HotelModel } from '../Models/HotelOfferModel';
+import {
+  HotelOfferModel,
+  HotelModel,
+  RoomOfferModel,
+  RoomModel,
+} from '../Models/HotelOfferModel';
+import { CustomerSegmentEnum } from '../Enums/CustomerSegment';
 
 export default class StopOverService extends BaseService {
   private readonly airportService: AirportService;
 
-  private readonly flightOfferService: FlightOfferService;
+  private readonly hotelImageBaseURL: string;
 
   private readonly contentService: ContentService;
 
   constructor(
     contentService: ContentService,
-    flightOfferService: FlightOfferService,
     airportService: AirportService,
-    config?: Config,
+    config: Config,
   ) {
     super(config);
 
     this.airportService = airportService;
-    this.flightOfferService = flightOfferService;
+    this.hotelImageBaseURL = config.hotelImageBaseURL ?? '';
     this.contentService = contentService;
   }
 
@@ -59,7 +64,9 @@ export default class StopOverService extends BaseService {
         return {
           airportCode: result.data.airportCode,
           days: result.data.stopoverDays,
-          customerSegment: result.data.customerSegment,
+          customerSegment: CustomerSegmentEnum[
+            result.data.customerSegment.toLowerCase() as keyof typeof CustomerSegmentEnum
+          ],
         };
       }
     } catch (err) {
@@ -69,7 +76,7 @@ export default class StopOverService extends BaseService {
     return undefined;
   }
 
-  async getStopOverOffers(
+  async getOffers(
     hash: number,
     airportCode: string,
     days: number,
@@ -77,7 +84,7 @@ export default class StopOverService extends BaseService {
     inbound?: Date,
   ): Promise<{
     flightOffers: FlightOfferModel[][];
-    hotelAvailabilityInfos: any;
+    hotelOffers: HotelOfferModel;
   } | undefined> {
     const airportsReq = this.airportService.getAirports();
     let nextInbound;
@@ -134,11 +141,9 @@ export default class StopOverService extends BaseService {
 
     const hotelOffers = this.getHotelOffers(hotels);
 
-    console.log(hotelOffers);
-
     return {
       flightOffers,
-      hotelAvailabilityInfos: hotels,
+      hotelOffers,
     };
   }
 
@@ -198,6 +203,7 @@ export default class StopOverService extends BaseService {
           arrival,
           origin,
           destination,
+          legs,
           fareFamilies,
         );
         const cheapestFares = this.getCheapestFares(fares);
@@ -243,6 +249,7 @@ export default class StopOverService extends BaseService {
     arrival: Date,
     origin: AirportModel,
     destination: AirportModel,
+    legs: LegModel[],
     fareFamilies: { [key: string]: string },
   ): FareModel[] {
     return offers.map((bo): FareModel => ({
@@ -254,6 +261,7 @@ export default class StopOverService extends BaseService {
       departure,
       arrival,
       origin,
+      legs,
       destination,
       price: {
         total: bo.total.alternatives[0][0].amount,
@@ -293,19 +301,38 @@ export default class StopOverService extends BaseService {
   }
 
   private getHotelOffers(hotelsInfo: HotelAvailabilityInfos): HotelOfferModel {
+    const checkIn = new Date(hotelsInfo.checkIn);
+    const checkOut = new Date(hotelsInfo.checkOut);
+
     const hotels = hotelsInfo.hotelAvailInfo.map((hotelInfo): HotelModel => {
-      const rates: any[] = [];
-      const images: any[] = [];
+      const images = hotelInfo.hotelImageInfo.imageItems;
       const info = hotelInfo.hotelInfo;
       const { locationInfo } = info;
 
       return {
-        images,
-        rates,
+        images: images.map((image) => ({
+          thumb: `${this.hotelImageBaseURL}/${image.image.url}`,
+          original: `${this.hotelImageBaseURL}/bigger/${image.image.url}`,
+          code: image.imageCategory.code,
+          description: image.imageCategory.description.text[0].value,
+        })),
+        rooms: this.getRoomOffers(
+          hotelInfo.hotelRateInfo.rooms.room,
+          checkIn,
+          checkOut,
+          hotelInfo.hotelInfo.hotelName,
+        ),
         chain: {
           code: info.chainCode,
           name: info.chainName,
         },
+        checkIn: (info.amenities.amenity.find(
+          (amenity) => amenity.description === 'Check-in hour',
+        )?.value ?? '').split(':').slice(0, 2).join(':'),
+        checkOut: (info.amenities.amenity.find(
+          (amenity) => amenity.description === 'Check-out hour',
+        )?.value ?? '').split(':').slice(0, 2).join(':'),
+        free: info.free,
         name: info.hotelName,
         code: info.hotelCode,
         rating: Number.parseInt(info.rating, 10),
@@ -326,13 +353,90 @@ export default class StopOverService extends BaseService {
           phone: locationInfo.contact.phone,
           fax: locationInfo.contact.fax,
         },
+        address: {
+          city: {
+            name: locationInfo.address.cityName.value,
+            code: locationInfo.address.cityName.cityCode,
+          },
+          country: {
+            name: locationInfo.address.countryName.value,
+            code: locationInfo.address.countryName.code,
+          },
+          line1: locationInfo.address.addressLine1,
+          state: {
+            name: locationInfo.address.stateProv.value,
+            code: locationInfo.address.stateProv.stateCode,
+          },
+        },
+        amenities: info.amenities.amenity.map((amenity) => ({
+          code: amenity.code,
+          description: amenity.description,
+          value: amenity.value,
+          complimentary: amenity.complimentaryInd ?? false,
+        })).filter((amenity) => amenity.value !== undefined),
       };
     });
 
     return {
-      checkIn: new Date(hotelsInfo.checkIn),
-      checkOut: new Date(hotelsInfo.checkOut),
+      checkIn,
+      checkOut,
       hotels,
     };
+  }
+
+  private getRoomOffers(rooms: Room[], checkIn: Date, checkOut: Date, hotelName: string): any {
+    return rooms.map((room): RoomModel => ({
+      category: room.roomCategory,
+      occupancy: {
+        min: room.occupancy.min,
+        max: room.occupancy.max,
+      },
+      type: {
+        name: room.roomType,
+        description: room.roomDescription.name,
+        code: room.roomTypeCode,
+      },
+      offers: room.ratePlans.ratePlan.map((ratePlan): RoomOfferModel => ({
+        available: ratePlan.availableQuantity,
+        hashCode: ratePlan.rateKey,
+        includedMeals: {
+          breakfast: ratePlan.mealsIncluded.breakfast,
+          dinner: ratePlan.mealsIncluded.dinner,
+          lunch: ratePlan.mealsIncluded.lunch,
+          lunchOrDinner: ratePlan.mealsIncluded.lunchOrDinner,
+        },
+        checkIn,
+        checkOut,
+        hotelName,
+        price: {
+          total: ratePlan.rateInfo.netRate, // TODO: Add tax on top of this?
+          currency: ratePlan.rateInfo.currencyCode,
+          tax: ratePlan.rateInfo.taxes.tax[0].amount,
+        },
+        cancelPenalty: {
+          price: {
+            total: ratePlan.rateInfo.cancelPenalties.cancelPenalty[0].amountPercent.amount,
+            currency: ratePlan.rateInfo.cancelPenalties.cancelPenalty[0]
+              .amountPercent.currencyCode,
+            tax: 0,
+          },
+          deadline: new Date(
+            ratePlan.rateInfo.cancelPenalties.cancelPenalty[0]
+              .deadline.absoluteDeadline.split('+')[0],
+          ),
+        },
+        discounts: ratePlan.rateInfo.offers?.map((offer) => ({
+          code: offer.code,
+          name: offer.name,
+          total: offer.amount,
+        })) ?? [],
+      })),
+      amenities: room.amenities?.amenity.map((amenity) => ({
+        code: amenity.code,
+        complimentary: amenity.complimentaryInd ?? false,
+        description: amenity.description,
+        value: amenity.value,
+      })) ?? [],
+    }));
   }
 }

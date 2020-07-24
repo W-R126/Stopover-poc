@@ -1,4 +1,5 @@
 import React from 'react';
+
 import css from './FlightSearchResult.module.css';
 import spinner from '../../../../Assets/Images/spinner.svg';
 import flightIcon from '../../../../Assets/Images/flight.svg';

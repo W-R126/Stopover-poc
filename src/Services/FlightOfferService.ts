@@ -197,6 +197,7 @@ export default class FlightOfferService extends BaseService {
           departure,
           arrival,
           origin,
+          legs,
           destination,
           fareFamilies,
         );
@@ -242,6 +243,7 @@ export default class FlightOfferService extends BaseService {
     departure: Date,
     arrival: Date,
     origin: AirportModel,
+    legs: LegModel[],
     destination: AirportModel,
     fareFamilies: { [key: string]: string },
   ): FareModel[] {
@@ -251,6 +253,7 @@ export default class FlightOfferService extends BaseService {
       cabinClass: CabinClassEnum[bo.cabinClass.toLowerCase() as keyof typeof CabinClassEnum],
       hashCode: bo.shoppingBasketHashCode,
       milesEarned,
+      legs,
       departure,
       arrival,
       origin,
