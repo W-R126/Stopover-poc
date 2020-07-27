@@ -59,14 +59,19 @@ export default class Inbound extends React.Component<InboundProps, InboundState>
 
   private async getOffers(trip: TripModel): Promise<void> {
     const { flightOfferService } = this.props;
+    const { onwardFare } = this.state;
 
     const offers = await flightOfferService.getOffers(
       trip.passengers,
-      trip.legs.map((leg) => ({
-        originCode: leg.origin?.code ?? '',
-        destinationCode: leg.destination?.code ?? '',
-        departure: leg.departure as Date,
-      })),
+      onwardFare.legs.map((leg) => ({
+        originCode: leg.origin.code,
+        destinationCode: leg.destination.code,
+        departure: leg.departure,
+      })).concat({
+        originCode: trip.legs[1].origin?.code as string,
+        destinationCode: trip.legs[1].destination?.code as string,
+        departure: trip.legs[1].departure as Date,
+      }),
       trip.cabinClass,
     );
 
@@ -115,7 +120,6 @@ export default class Inbound extends React.Component<InboundProps, InboundState>
     } = this.state;
 
     const classList = [css.Inbound, className];
-
     const { departure, origin, destination } = trip.legs[1];
 
     return (
@@ -141,8 +145,8 @@ export default class Inbound extends React.Component<InboundProps, InboundState>
           selectedDepartureDate={departure as Date}
           onDepartureChange={this.inboundDateChange}
           cabinClass={trip.cabinClass}
-          offers={offers && offers[1]}
-          altOffers={altOffers && altOffers[1]}
+          offers={offers && offers[offers.length - 1]}
+          altOffers={altOffers && altOffers[altOffers.length - 1]}
           className={css.FlightSearchResult}
           onFareChange={this.inboundOfferChange}
           selectedFare={inboundFare}

@@ -10,7 +10,7 @@ import {
   HotelAvailabilityInfos,
   ItineraryPart,
   Room,
-} from './Responses/ConfirmStopOverResponseNew';
+} from './Responses/ConfirmStopOverResponse';
 import { StopOverModel } from '../Models/StopOverModel';
 import AirportService from './AirportService';
 import ContentService from './ContentService';

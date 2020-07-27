@@ -236,14 +236,16 @@ export default class FlightSearchResult extends React.Component<
 
     return (
       <>
-        <DayRibbon
-          selectedDate={selectedDepartureDate}
-          className={css.DayRibbon}
-          altOffers={altOffers}
-          onChange={this.onDepartureChange}
-          min={defaultMin}
-          max={defaultMax}
-        />
+        {altOffers.length > 0 && (
+          <DayRibbon
+            selectedDate={selectedDepartureDate}
+            className={css.DayRibbon}
+            altOffers={altOffers}
+            onChange={this.onDepartureChange}
+            min={defaultMin}
+            max={defaultMax}
+          />
+        )}
 
         <div className={css.FlightEntries}>
           {offers.slice(0, showCount).map((offer, idx) => (
