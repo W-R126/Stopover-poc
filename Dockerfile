@@ -1,8 +1,11 @@
+ARG ENV_FILE=.env.dev
+
 # The build is split up into two steps in order to have a bare bone Nginx image
 # where we run the built app.
 
 # Node.js build stage. Builds and compiles the app.
 FROM tiangolo/node-frontend:10 as build-stage
+ARG ENV_FILE
 
 # Copy package json
 COPY package.json package-lock.json /app/
@@ -11,6 +14,7 @@ COPY package.json package-lock.json /app/
 RUN cd /app/ && npm install
 
 COPY ./ /app/
+COPY ${ENV_FILE} /app/.env
 
 # Build the app
 RUN cd /app/ && npm run build
