@@ -445,11 +445,18 @@ export default class StopOverService extends BaseService {
     }));
   }
 
-  async getFlights(flightHashCode: number, hotelHashCode: string): Promise<any> {
+  async getFlights(
+    outboundHashCode: number,
+    onwardHashCode: number,
+    hotelHashCode: string,
+  ): Promise<any> {
     const asd = await this.http.post(
       '/selectFlightsWithStopover',
       {
-        selectFlights: [flightHashCode],
+        selectFlights: [
+          outboundHashCode,
+          onwardHashCode,
+        ],
         hotelRateKey: hotelHashCode,
       },
       {

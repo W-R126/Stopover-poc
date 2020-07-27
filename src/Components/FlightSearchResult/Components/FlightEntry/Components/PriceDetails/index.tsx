@@ -1,15 +1,15 @@
 import React from 'react';
 
 import css from './PriceDetails.module.css';
-import earnMilesIcon from '../../../../../../../../../../Assets/Images/earn-miles.svg';
-import checkedBaggageIcon from '../../../../../../../../../../Assets/Images/checked-baggage.svg';
-import refundIcon from '../../../../../../../../../../Assets/Images/free-refund.svg';
-import checkinIcon from '../../../../../../../../../../Assets/Images/check-in area.svg';
-import upgradeIcon from '../../../../../../../../../../Assets/Images/upgrade-seat.svg';
-import calendarIcon from '../../../../../../../../../../Assets/Images/calendar.svg';
-import Utils from '../../../../../../../../../../Utils';
-import Button from '../../../../../../../../../../Components/UI/Button';
-import { FareModel } from '../../../../../../../../../../Models/FlightOfferModel';
+import earnMilesIcon from '../../../../../../Assets/Images/earn-miles.svg';
+import checkedBaggageIcon from '../../../../../../Assets/Images/checked-baggage.svg';
+import refundIcon from '../../../../../../Assets/Images/free-refund.svg';
+import checkinIcon from '../../../../../../Assets/Images/check-in area.svg';
+import upgradeIcon from '../../../../../../Assets/Images/upgrade-seat.svg';
+import calendarIcon from '../../../../../../Assets/Images/calendar.svg';
+import Utils from '../../../../../../Utils';
+import Button from '../../../../../../Components/UI/Button';
+import { FareModel } from '../../../../../../Models/FlightOfferModel';
 
 interface PriceDetailsProps {
   fares: FareModel[];

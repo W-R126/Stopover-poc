@@ -1,14 +1,14 @@
 import React from 'react';
 
 import css from './FlightEntry.module.css';
-import Collapsable from '../../../../../../Components/UI/Collapsable';
+import Collapsable from '../../../../Components/UI/Collapsable';
 import FlightDetails from './Components/FlightDetails';
-import Utils from '../../../../../../Utils';
+import Utils from '../../../../Utils';
 import PriceDetails from './Components/PriceDetails';
-import { CabinClassEnum } from '../../../../../../Enums/CabinClassEnum';
-import DateUtils from '../../../../../../DateUtils';
-import { FareModel, FlightOfferModel } from '../../../../../../Models/FlightOfferModel';
-import ContentService from '../../../../../../Services/ContentService';
+import { CabinClassEnum } from '../../../../Enums/CabinClassEnum';
+import DateUtils from '../../../../DateUtils';
+import { FareModel, FlightOfferModel } from '../../../../Models/FlightOfferModel';
+import ContentService from '../../../../Services/ContentService';
 
 interface FlightEntryProps {
   offer: FlightOfferModel;

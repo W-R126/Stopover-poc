@@ -11,6 +11,7 @@ import { StopOverModel } from '../../../../Models/StopOverModel';
 import { TripModel } from '../../../../Models/TripModel';
 import Hotels from './Hotels';
 import OnwardFlights from './OnwardFlights';
+import DateUtils from '../../../../DateUtils';
 
 interface HotelsAndOnwardFlightProps {
   originalFare: FareModel;
@@ -76,13 +77,34 @@ export default class HotelsAndOnwardFlight extends React.Component<
   }
 
   private async getOffers(days: number): Promise<void> {
-    const { days: prevDays } = this.state;
+    const { days: prevDays, trip } = this.state;
 
     AppState.stopOverDays = days;
 
+    if (trip) {
+      const outboundDate = trip.legs[0].departure as Date;
+      const inboundDate = trip.legs[1].departure as Date;
+
+      const tripDaysDelta = DateUtils.getDaysDelta(
+        outboundDate,
+        inboundDate,
+      );
+
+      if (tripDaysDelta < days) {
+        inboundDate.setDate(outboundDate.getDate() + days + 2);
+      }
+    }
+
+    AppState.tripSearch = trip;
+
     await new Promise(
       (resolve) => this.setState(
-        { days, flightOffers: undefined, hotelOffers: undefined },
+        {
+          days,
+          flightOffers: undefined,
+          hotelOffers: undefined,
+          trip,
+        },
         resolve,
       ),
     );
@@ -95,7 +117,6 @@ export default class HotelsAndOnwardFlight extends React.Component<
       onSelectOnward,
       onSelectRoom,
     } = this.props;
-    const { trip } = this.state;
 
     if (prevDays !== days) {
       onSelectOnward(undefined);
@@ -228,7 +249,7 @@ export default class HotelsAndOnwardFlight extends React.Component<
               onClick={(): void => this.setState({ otherOptionsExpanded: !otherOptionsExpanded })}
               ref={this.otherOptionsRef}
               role="option"
-              aria-selected={stopOver?.days.indexOf(days ?? 0) === -1}
+              aria-selected={nextStopOverDays.indexOf(days ?? 0) === -1}
             >
               Other Options
 

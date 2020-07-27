@@ -1,38 +1,28 @@
-.InboundContainer {
+.Inbound {
   background: #fff;
-  box-shadow: 0 0 5px #b8b7b7;
   border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 120px;
 }
 
 .Header {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 100%;
-  justify-content: center;
-  padding-top: 40px;
-  padding-bottom: 30px;
-  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
-}
-
-.Header p {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 22px;
-  line-height: 28px;
   text-align: center;
-  color: #4e4c4a;
-  margin: 0;
 }
 
-.Header p strong {
-  color: #bd8b13;
+.Header > h1 {
+  font-size: 22px;
+  margin-bottom: 24px;
 }
 
-.Header img {
-  margin: 45px 0 10px;
+.Header > h2 {
+  font-size: 18px;
+  margin-bottom: 32px;
+}
+
+.Header > img {
+  margin-bottom: 16px;
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  padding: 6px;
 }
 
 .FlightSearchResult {

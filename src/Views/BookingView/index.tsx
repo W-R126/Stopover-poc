@@ -8,7 +8,7 @@ import { TripTypeEnum } from '../../Enums/TripTypeEnum';
 import AirportService from '../../Services/AirportService';
 import Progress, { ProgressStep } from './Components/Progress';
 import SearchDetails from './Components/SearchDetails';
-import FlightSearchResult from './Components/FlightSearchResult';
+import FlightSearchResult from '../../Components/FlightSearchResult';
 import StopOverService from '../../Services/StopOverService';
 import StopOverPrompt from '../../Components/StopOverPrompt';
 import {
@@ -134,10 +134,10 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     this.onTripSearch(nextTrip);
   }
 
-  private onOutboundOfferChange(outboundOffer?: FareModel): void {
-    AppState.outboundFare = outboundOffer;
+  private onOutboundOfferChange(outboundFare?: FareModel): void {
+    AppState.outboundFare = outboundFare;
 
-    this.setState({ outboundFare: outboundOffer });
+    this.setState({ outboundFare });
   }
 
   private async onSelectInbound(): Promise<void> {

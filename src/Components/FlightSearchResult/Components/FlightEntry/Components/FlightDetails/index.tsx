@@ -1,9 +1,9 @@
 import React from 'react';
 
 import css from './FlightDetails.module.css';
-import tailIcon from '../../../../../../../../../../Assets/Images/tail.webp';
-import { LegModel } from '../../../../../../../../../../Models/FlightOfferModel';
-import DateUtils from '../../../../../../../../../../DateUtils';
+import tailIcon from '../../../../../../Assets/Images/tail.webp';
+import { LegModel } from '../../../../../../Models/FlightOfferModel';
+import DateUtils from '../../../../../../DateUtils';
 
 interface FlightDetailsProps {
   className?: string;

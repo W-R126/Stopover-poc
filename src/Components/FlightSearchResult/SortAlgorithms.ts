@@ -1,5 +1,5 @@
-import { CabinClassEnum } from '../../../../Enums/CabinClassEnum';
-import { FlightOfferModel } from '../../../../Models/FlightOfferModel';
+import { CabinClassEnum } from '../../Enums/CabinClassEnum';
+import { FlightOfferModel } from '../../Models/FlightOfferModel';
 
 export type SortAlgorithm = (a: FlightOfferModel, b: FlightOfferModel) => number;
 

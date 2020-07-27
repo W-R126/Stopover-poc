@@ -1,23 +1,32 @@
 import React from 'react';
+
 import css from './FlightSearchResult.module.css';
-import spinner from '../../../../../../Assets/Images/spinner.svg';
+import spinner from '../../Assets/Images/spinner.svg';
+import flightIcon from '../../Assets/Images/flight.svg';
+import DayRibbon from './Components/DayRibbon';
 import FlightEntry from './Components/FlightEntry';
 import SortAlgorithms, { SortAlgorithm } from './SortAlgorithms';
-import { CabinClassEnum } from '../../../../../../Enums/CabinClassEnum';
+import { AirportModel } from '../../Models/AirportModel';
+import { CabinClassEnum } from '../../Enums/CabinClassEnum';
 import Filters from './Components/Filters';
 import SortMenu, { SortMenuItem } from './Components/SortMenu';
-import Utils from '../../../../../../Utils';
+import Utils from '../../Utils';
 import {
   FlightOfferModel,
   FareModel,
-} from '../../../../../../Models/FlightOfferModel';
-import { TripModel } from '../../../../../../Models/TripModel';
-import DateUtils from '../../../../../../DateUtils';
-import ContentService from '../../../../../../Services/ContentService';
+  AlternateFlightOfferModel,
+} from '../../Models/FlightOfferModel';
+import { TripModel } from '../../Models/TripModel';
+import DateUtils from '../../DateUtils';
+import ContentService from '../../Services/ContentService';
 
 interface FlightSearchResultProps {
   cabinClass: CabinClassEnum;
+  origin: AirportModel;
+  destination: AirportModel;
   offers?: FlightOfferModel[];
+  altOffers?: AlternateFlightOfferModel[];
+  selectedDepartureDate: Date;
   className?: string;
   onDepartureChange?: (departure: Date) => void;
   onFareChange: (fare?: FareModel) => void;
@@ -192,6 +201,7 @@ export default class FlightSearchResult extends React.Component<
 
   private renderResult(
     offers: FlightOfferModel[],
+    altOffers: AlternateFlightOfferModel[],
   ): JSX.Element {
     if (offers.length === 0) {
       return (
@@ -204,7 +214,7 @@ export default class FlightSearchResult extends React.Component<
     const { showCountFactor } = this.state;
     const {
       onFareChange,
-      // selectedDepartureDate,
+      selectedDepartureDate,
       selectedFare,
       cabinClass,
       trip,
@@ -226,6 +236,15 @@ export default class FlightSearchResult extends React.Component<
 
     return (
       <>
+        <DayRibbon
+          selectedDate={selectedDepartureDate}
+          className={css.DayRibbon}
+          altOffers={altOffers}
+          onChange={this.onDepartureChange}
+          min={defaultMin}
+          max={defaultMax}
+        />
+
         <div className={css.FlightEntries}>
           {offers.slice(0, showCount).map((offer, idx) => (
             <FlightEntry
@@ -258,7 +277,10 @@ export default class FlightSearchResult extends React.Component<
   render(): JSX.Element {
     const {
       offers,
+      altOffers,
       className,
+      origin,
+      destination,
     } = this.props;
     const { sortingAlgorithm } = this.state;
 
@@ -278,6 +300,13 @@ export default class FlightSearchResult extends React.Component<
       <div className={classList.join(' ')}>
 
         <div className={css.Header}>
+          <div className={css.OriginDestination}>
+            <img src={flightIcon} alt="Flight" />
+            <strong>
+              {`${origin.cityName} to ${destination.cityName}`}
+            </strong>
+          </div>
+
           <div className={css.Actions}>
             {offers !== undefined && offers?.length > 0
               && (
@@ -305,7 +334,7 @@ export default class FlightSearchResult extends React.Component<
                 Searching
               </strong>
             )
-            : (this.renderResult(filteredOffers))}
+            : (this.renderResult(filteredOffers, altOffers ?? []))}
         </div>
       </div>
     );

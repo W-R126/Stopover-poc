@@ -1,11 +1,11 @@
 import React from 'react';
-import closeIcon from '../../../../../../Assets/Images/close-btn.svg';
+import closeIcon from '../../../../Assets/Images/close-btn.svg';
 import css from './Filters.module.css';
-import RangeSlider from '../../../../../../Components/UI/RangeSlider';
-import Radio from '../../../../../../Components/UI/Radio';
-import Utils from '../../../../../../Utils';
-import DateUtils from '../../../../../../DateUtils';
-import { FlightOfferModel } from '../../../../../../Models/FlightOfferModel';
+import RangeSlider from '../../../../Components/UI/RangeSlider';
+import Radio from '../../../../Components/UI/Radio';
+import Utils from '../../../../Utils';
+import DateUtils from '../../../../DateUtils';
+import { FlightOfferModel } from '../../../../Models/FlightOfferModel';
 
 interface FiltersProps {
   headerClassName?: string;

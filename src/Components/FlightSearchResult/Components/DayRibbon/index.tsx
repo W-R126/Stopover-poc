@@ -1,9 +1,9 @@
 import React from 'react';
 
 import css from './DayRibbon.module.css';
-import Utils from '../../../../../../Utils';
-import DateUtils from '../../../../../../DateUtils';
-import { AlternateFlightOfferModel } from '../../../../../../Models/FlightOfferModel';
+import Utils from '../../../../Utils';
+import DateUtils from '../../../../DateUtils';
+import { AlternateFlightOfferModel } from '../../../../Models/FlightOfferModel';
 
 interface DayRibbonProps {
   className?: string;

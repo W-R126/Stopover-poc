@@ -1,5 +1,5 @@
 import React from 'react';
-import checkedIcon from '../../../../../../Assets/Images/checked-icon.svg';
+import checkedIcon from '../../../../Assets/Images/checked-icon.svg';
 import css from './SortMenu.module.css';
 import { SortAlgorithm } from '../../SortAlgorithms';
 

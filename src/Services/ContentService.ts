@@ -12,9 +12,9 @@ import Config from '../Config';
 export default class ContentService extends BaseService {
   locale = 'en-GB';
 
-  currency = 'AED';
+  currency = 'EUR';
 
-  constructor(locale = 'en-GB', currency = 'AED', config?: Config) {
+  constructor(locale = 'en-GB', currency = 'EUR', config?: Config) {
     super(config);
 
     this.locale = locale;
