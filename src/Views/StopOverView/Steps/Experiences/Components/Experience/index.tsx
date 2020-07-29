@@ -1,9 +1,9 @@
 import React from 'react';
 
 import css from './Experience.module.css';
-import { ExperienceModel } from '../../../../../../Models/ExperienceModel';
+import raffleIcon from '../../../../../../Assets/Images/raffles.svg';
+import { ExperienceModel } from '../../../../../../Models/ExperienceModelNew';
 import Utils from '../../../../../../Utils';
-import DateUtils from '../../../../../../DateUtils';
 
 interface ExperienceProps {
   className?: string;
@@ -122,14 +122,6 @@ export default class Experience extends React.Component<ExperienceProps> {
         draggable
         role="button"
       >
-        {data.recommended
-          ? (
-            <div className={css.Recommended}>
-              Recommended
-            </div>
-          )
-          : (<div />)}
-
         <div className={css.DragHint}>
           <span />
           <span />
@@ -137,24 +129,19 @@ export default class Experience extends React.Component<ExperienceProps> {
         </div>
 
         <div className={css.Info}>
-          <img className={css.Image} src={data.image?.url} alt={data.image?.alt} />
+          <img className={css.Image} src={data.image?.thumbURL ?? raffleIcon} alt="Experience" />
 
           <div className={css.Details}>
             <strong className={css.Title}>{data.title}</strong>
-            <span className={css.Location}>{data.location}</span>
-            <span className={css.OpeningHours}>
-              {data.timeSlots
-                ? 'Limited time slots'
-                : `${DateUtils.getHHMM(data.opens)} - ${
-                  DateUtils.getHHMM(data.closes)
-                }`}
-            </span>
+            <span className={css.Location}>{data.locations[0].description}</span>
           </div>
 
           <div className={css.Pricing}>
             <span className={css.Quantity}>Per person</span>
             <strong className={css.Price}>
-              {`${data.currency} ${Utils.formatCurrency(data.prices.adult)}`}
+              {`${data.startingFromPrice.currency} ${
+                Utils.formatCurrency(data.startingFromPrice.total)
+              }`}
             </strong>
             <button type="button" className={css.ViewDetails}>
               View details

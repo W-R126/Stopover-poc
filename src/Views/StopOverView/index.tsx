@@ -18,16 +18,21 @@ import HotelItem from '../../Components/ShoppingCart/Items/HotelItem';
 import { FareModel } from '../../Models/FlightOfferModel';
 import { RoomOfferModel } from '../../Models/HotelOfferModel';
 import { StopOverModel } from '../../Models/StopOverModel';
+import ExperienceService from '../../Services/ExperienceService';
+import { ExperienceDateModel } from '../../Models/ExperienceDateModel';
+import ExperienceItem from '../../Components/ShoppingCart/Items/ExperienceItem';
 
 interface StopOverProps extends RouteComponentProps<{ progressStep: StopOverProgressStepEnum }> {
   contentService: ContentService;
   stopOverService: StopOverService;
+  experienceService: ExperienceService;
   flightOfferService: FlightOfferService;
 }
 
 interface StopOverState {
   outboundFare?: FareModel;
   hotelRoom?: RoomOfferModel;
+  experiences: ExperienceDateModel[];
   onwardFare?: FareModel;
   inboundFare?: FareModel;
   stopOverInfo?: StopOverModel;
@@ -40,6 +45,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
     this.state = {
       outboundFare: AppState.outboundFare,
       hotelRoom: AppState.hotelRoom,
+      experiences: AppState.experienceDates,
       onwardFare: AppState.onwardFare,
       inboundFare: AppState.inboundFare,
       stopOverInfo: AppState.stopOverInfo,
@@ -48,6 +54,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
     this.selectRoom = this.selectRoom.bind(this);
     this.selectInbound = this.selectInbound.bind(this);
     this.selectOnward = this.selectOnward.bind(this);
+    this.experiencesChange = this.experiencesChange.bind(this);
   }
 
   private selectRoom(room?: RoomOfferModel): void {
@@ -55,10 +62,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
 
     let nextHotelRoom = room;
 
-    const nextHash = nextHotelRoom?.hashCode.substr(0, 91);
-    const prevHash = hotelRoom?.hashCode.substr(0, 91);
-
-    if (nextHash === prevHash) {
+    if (nextHotelRoom?.id === hotelRoom?.id) {
       nextHotelRoom = undefined;
     }
 
@@ -92,12 +96,18 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
     this.setState({ inboundFare: nextInboundFare });
   }
 
+  private experiencesChange(experiences: ExperienceDateModel[]): void {
+    AppState.experienceDates = experiences;
+    this.setState({ experiences });
+  }
+
   render(): JSX.Element {
     const {
       contentService,
       history,
       match: { params: { progressStep } },
       stopOverService,
+      experienceService,
       flightOfferService,
     } = this.props;
 
@@ -107,10 +117,13 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
       inboundFare,
       onwardFare,
       stopOverInfo,
+      experiences,
     } = this.state;
 
+    const filteredExperiences = experiences.filter((exp) => exp.experiences.length > 0);
+
     if (!outboundFare) {
-      return (<div>No outbound fare selected</div>); // TODO: Something pretty
+      return (<div>No outbound fare selected</div>);
     }
 
     const hotelsClassList = [css.Step];
@@ -206,8 +219,11 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
           )}
           {progressStep === 'experiences' && (
             <Experiences
+              stopOverInfo={stopOverInfo as StopOverModel}
               startDate={hotelRoom?.checkIn ?? new Date()}
               endDate={hotelRoom?.checkOut ?? new Date()}
+              experienceService={experienceService}
+              onExperiencesChange={this.experiencesChange}
             />
           )}
           {progressStep === 'inbound' && (
@@ -242,6 +258,20 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
               contentService={contentService}
               currency={hotelRoom.price.currency}
               price={hotelRoom.price.total}
+            />
+          )}
+          {filteredExperiences.length > 0 && (
+            <ExperienceItem
+              item={filteredExperiences}
+              contentService={contentService}
+              currency={contentService.currency}
+              price={filteredExperiences.reduce(
+                (prev, curr) => prev + curr.experiences.reduce(
+                  (prev2, curr2) => prev2 + curr2.experience.startingFromPrice.total * curr2.guests,
+                  0,
+                ),
+                0,
+              )}
             />
           )}
           {

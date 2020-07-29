@@ -12,6 +12,7 @@ import StopOverView from './Views/StopOverView';
 import { StopOverProgressStepEnum } from './Enums/StopOverProgressStepEnum';
 import FlightOfferService from './Services/FlightOfferService';
 import SelectInbound from './Views/SelectInbound';
+import ExperienceService from './Services/ExperienceService';
 
 export default function App({ config }: { config: Config }): JSX.Element {
   const contentService = new ContentService('en-GB', 'EUR', config);
@@ -26,6 +27,7 @@ export default function App({ config }: { config: Config }): JSX.Element {
     airportService,
     config,
   );
+  const experienceService = new ExperienceService(config);
 
   return (
     <div id="app">
@@ -52,6 +54,7 @@ export default function App({ config }: { config: Config }): JSX.Element {
           <StopOverView
             contentService={contentService}
             stopOverService={stopOverService}
+            experienceService={experienceService}
             flightOfferService={flightOfferService}
           />
         </Route>
@@ -63,11 +66,6 @@ export default function App({ config }: { config: Config }): JSX.Element {
             contentService={contentService}
           />
         </Route>
-
-        <Route path="/stopover-accepted">
-          <strong>Stopover was accepted.</strong>
-        </Route>
-
       </Switch>
     </div>
   );

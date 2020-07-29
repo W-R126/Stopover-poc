@@ -4,4 +4,5 @@ export interface StopOverModel {
   airportCode: string;
   days: number[];
   customerSegment: CustomerSegmentEnum;
+  customerSegmentCode: string;
 }

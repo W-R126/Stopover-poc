@@ -5,8 +5,7 @@ import { PackageTypeModel } from './Models/PackageTypeModel';
 import { FareModel, parseFare } from './Models/FlightOfferModel';
 import { RoomOfferModel, parseRoomOffer } from './Models/HotelOfferModel';
 import { ExperienceDateModel } from './Models/ExperienceDateModel';
-import { ExperienceModel, TimeSlotModel } from './Models/ExperienceModel';
-import { ExperienceCategoryEnum } from './Enums/ExperienceCategoryEnum';
+import { ExperienceAvailabilityModel } from './Models/ExperienceModelNew';
 
 export default class AppState {
   private static readonly keys = {
@@ -27,29 +26,24 @@ export default class AppState {
     ) ?? [];
 
     return experienceDates.map(
-      (experienceDate) => ({
+      (experienceDate): ExperienceDateModel => ({
         date: new Date(experienceDate.date),
-        experiences: experienceDate.experiences.map(({
-          categories,
-          timeSlots,
-          opens,
-          closes,
-          ...rest
-        }): ExperienceModel => {
-          return {
-            categories: categories.map(
-              (category) => ExperienceCategoryEnum[category as keyof typeof ExperienceCategoryEnum],
-            ),
-            timeSlots: timeSlots?.map((ts): TimeSlotModel => ({
-              date: new Date(ts.date),
-              all: ts.all.map((d) => new Date(d)),
-              available: ts.available.map((d) => new Date(d)),
-            })),
-            opens: new Date(opens),
-            closes: new Date(closes),
-            ...rest,
-          };
-        }),
+        experiences: experienceDate.experiences.map(
+          ({ selectedTimeSlot, guests, experience: { availability, ...rest } }) => ({
+            selectedTimeSlot: new Date(selectedTimeSlot),
+            guests,
+            experience: {
+              availability: availability.map(
+                ({ start, end, ...rest2 }): ExperienceAvailabilityModel => ({
+                  start: new Date(start),
+                  end: new Date(end),
+                  ...rest2,
+                }),
+              ),
+              ...rest,
+            },
+          }),
+        ),
       }),
     );
   }

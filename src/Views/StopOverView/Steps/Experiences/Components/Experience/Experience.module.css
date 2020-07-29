@@ -1,7 +1,6 @@
 .Experience {
   display: grid;
   grid-template-columns:
-    [recommended] max-content
     [draghint] max-content
     [info] 1fr;
   border-radius: 8px;
@@ -61,6 +60,7 @@
 }
 
 .Image {
+  object-fit: cover;
   height: 100px;
   width: 100px;
   border-radius: 8px;

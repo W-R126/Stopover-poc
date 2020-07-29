@@ -1,6 +1,10 @@
-import { ExperienceModel } from './ExperienceModel';
+import { ExperienceModel } from './ExperienceModelNew';
 
 export interface ExperienceDateModel {
   date: Date;
-  experiences: ExperienceModel[];
+  experiences: {
+    selectedTimeSlot: Date;
+    guests: number;
+    experience: ExperienceModel;
+  }[];
 }

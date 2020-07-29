@@ -10,7 +10,6 @@ import AppState from '../../../../AppState';
 import StopOverService from '../../../../Services/StopOverService';
 import ContentService from '../../../../Services/ContentService';
 import FlightOfferService from '../../../../Services/FlightOfferService';
-import { RoomOfferModel } from '../../../../Models/HotelOfferModel';
 import { AirportModel } from '../../../../Models/AirportModel';
 
 interface InboundProps {
@@ -26,9 +25,7 @@ interface InboundState {
   offers?: FlightOfferModel[][];
   altOffers?: AlternateFlightOfferModel[][];
   trip: TripModel;
-  outboundFare: FareModel;
   onwardFare: FareModel;
-  hotelRoom: RoomOfferModel;
   inboundFare?: FareModel;
 }
 
@@ -40,10 +37,8 @@ export default class Inbound extends React.Component<InboundProps, InboundState>
     this.state = {
       offers: undefined,
       altOffers: undefined,
-      outboundFare: AppState.outboundFare as FareModel,
       inboundFare: AppState.inboundFare,
       onwardFare: AppState.onwardFare as FareModel,
-      hotelRoom: AppState.hotelRoom as RoomOfferModel,
       trip: AppState.tripSearch as TripModel,
     };
 
@@ -120,6 +115,7 @@ export default class Inbound extends React.Component<InboundProps, InboundState>
     } = this.state;
 
     const classList = [css.Inbound, className];
+
     const { departure, origin, destination } = trip.legs[1];
 
     return (
@@ -145,8 +141,8 @@ export default class Inbound extends React.Component<InboundProps, InboundState>
           selectedDepartureDate={departure as Date}
           onDepartureChange={this.inboundDateChange}
           cabinClass={trip.cabinClass}
-          offers={offers && offers[offers.length - 1]}
-          altOffers={altOffers && altOffers[altOffers.length - 1]}
+          offers={offers && offers[1]}
+          altOffers={altOffers && altOffers[1]}
           className={css.FlightSearchResult}
           onFareChange={this.inboundOfferChange}
           selectedFare={inboundFare}

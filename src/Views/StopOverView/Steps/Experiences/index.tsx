@@ -3,19 +3,23 @@ import React from 'react';
 import css from './Experiences.module.css';
 import rafflesIcon from '../../../../Assets/Images/raffles.svg';
 import spinnerIcon from '../../../../Assets/Images/spinner.svg';
-import { ExperienceModel } from '../../../../Models/ExperienceModel';
+import { ExperienceModel } from '../../../../Models/ExperienceModelNew';
 import Experience from './Components/Experience';
-import MockExperiences from './MockExperiences';
 import { ExperienceCategoryEnum } from '../../../../Enums/ExperienceCategoryEnum';
 import SelectedExperience from './Components/SelectedExperience';
 import DateUtils from '../../../../DateUtils';
 import { TripModel } from '../../../../Models/TripModel';
 import AppState from '../../../../AppState';
 import { ExperienceDateModel } from '../../../../Models/ExperienceDateModel';
+import ExperienceService from '../../../../Services/ExperienceService';
+import { StopOverModel } from '../../../../Models/StopOverModel';
 
 interface ExperiencesProps {
   startDate: Date;
   endDate: Date;
+  stopOverInfo: StopOverModel;
+  experienceService: ExperienceService;
+  onExperiencesChange: (experiences: ExperienceDateModel[]) => void;
 }
 
 interface ExperiencesState {
@@ -23,25 +27,44 @@ interface ExperiencesState {
   experiences?: ExperienceModel[];
   experienceDates: ExperienceDateModel[];
   dragging?: 'experience' | 'selectedExperience';
-  trip?: TripModel;
+  trip: TripModel;
+  startDate: Date;
+  endDate: Date;
+  guests: number;
 }
 
 export default class Experiences extends React.Component<ExperiencesProps, ExperiencesState> {
   constructor(props: ExperiencesProps) {
     super(props);
 
+    let { startDate, endDate } = props;
+    startDate = new Date(startDate);
+    startDate.setDate(startDate.getDate() + 1);
+    endDate = new Date(endDate);
+    endDate.setDate(endDate.getDate() - 1);
+
+    const trip = AppState.tripSearch as TripModel;
+
     this.state = {
       selectedCategory: ExperienceCategoryEnum.all,
       experiences: undefined,
       experienceDates: AppState.experienceDates,
       dragging: undefined,
-      trip: AppState.tripSearch,
+      trip,
+      startDate,
+      endDate,
+      guests: (
+        trip.passengers.adults
+        + trip.passengers.children
+        + trip.passengers.infants
+      ),
     };
   }
 
   componentDidMount(): void {
-    const { startDate, endDate } = this.props;
-    const { experienceDates } = this.state;
+    const { experienceDates, startDate, endDate } = this.state;
+
+    this.getExperiences();
 
     const nextExperienceDates: ExperienceDateModel[] = [];
     const daysDelta = DateUtils.getDaysDelta(startDate, endDate);
@@ -57,10 +80,7 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
       nextExperienceDates.push(next);
     }
 
-    this.setState({
-      experiences: MockExperiences,
-      experienceDates: nextExperienceDates,
-    });
+    this.setState({ experienceDates: nextExperienceDates });
   }
 
   private onSelectCategory(selectedCategory: ExperienceCategoryEnum): void {
@@ -93,7 +113,7 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
     experienceDate: ExperienceDateModel,
     e: React.DragEvent<HTMLDivElement>,
   ): void {
-    const { experiences } = this.state;
+    const { experiences, guests } = this.state;
     const target = e.target as HTMLDivElement;
 
     target.classList.remove(css.Hover);
@@ -102,12 +122,32 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
       return;
     }
 
-    const id = Number.parseInt(e.dataTransfer.getData('text/plain'), 10);
+    const id = e.dataTransfer.getData('text/plain');
     const experience = experiences.find((item) => item.id === id);
 
     if (experience) {
       const { experienceDates } = this.state;
-      experienceDate.experiences.push(experience);
+
+      const availability = experience.availability.filter(
+        (value) => (
+          value.start.valueOf() >= experienceDate.date.valueOf()
+          && value.end.valueOf() <= experienceDate.date.valueOf() + 86400000
+        ),
+      );
+
+      if (availability.length === 0) {
+        this.setState({ dragging: undefined });
+
+        alert('No time slots available for this day.');
+
+        return;
+      }
+
+      experienceDate.experiences.push({
+        experience,
+        guests,
+        selectedTimeSlot: availability[0].start,
+      });
 
       this.updateSelected(experienceDates);
     }
@@ -119,27 +159,50 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
     experienceDate: ExperienceDateModel,
     e: React.DragEvent<HTMLDivElement>,
   ): void {
-    const { experiences } = this.state;
+    const { experiences, guests } = this.state;
+    const target = e.target as HTMLDivElement;
+
+    target.classList.remove(css.Hover);
 
     if (!experiences) {
       return;
     }
 
-    const id = Number.parseInt(e.dataTransfer.getData('text/plain'), 10);
+    const id = e.dataTransfer.getData('text/plain');
     const experience = experiences.find((item) => item.id === id);
 
     if (experience) {
       const { experienceDates } = this.state;
 
+      const availability = experience.availability.filter(
+        (value) => (
+          value.start.valueOf() >= experienceDate.date.valueOf()
+          && value.end.valueOf() <= experienceDate.date.valueOf() + 86400000
+        ),
+      );
+
+      if (availability.length === 0) {
+        this.setState({ dragging: undefined });
+
+        alert('No time slots available for this day.');
+
+        return;
+      }
+
       experienceDates.forEach((item) => {
-        const idx = item.experiences.indexOf(experience);
+        // Remove experience from previous date if it's already added.
+        const idx = item.experiences.findIndex((item2) => item2.experience.id === experience.id);
 
         if (idx !== -1) {
           item.experiences.splice(idx, 1);
         }
       });
 
-      experienceDate.experiences.push(experience);
+      experienceDate.experiences.push({
+        experience,
+        guests,
+        selectedTimeSlot: availability[0].start,
+      });
 
       this.updateSelected(experienceDates);
     }
@@ -151,16 +214,36 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
     const { experienceDates } = this.state;
 
     const experienceDate = experienceDates.find(
-      (ed) => ed.experiences.indexOf(experience) !== -1,
+      (ed) => ed.experiences.findIndex((item) => item.experience === experience) !== -1,
     );
 
     if (experienceDate) {
-      experienceDate.experiences.splice(experienceDate.experiences.indexOf(experience), 1);
+      experienceDate.experiences.splice(experienceDate.experiences.findIndex(
+        (item) => item.experience.id === experience.id,
+      ), 1);
 
       this.updateSelected(experienceDates);
     }
 
     this.forceUpdate();
+  }
+
+  private async getExperiences(): Promise<void> {
+    const {
+      stopOverInfo,
+      experienceService,
+    } = this.props;
+
+    const { trip, startDate, endDate } = this.state;
+
+    const experiences = await experienceService.getExperiences(
+      trip.passengers,
+      startDate,
+      endDate,
+      stopOverInfo.customerSegmentCode,
+    );
+
+    this.setState({ experiences });
   }
 
   private getFilteredExperiences(): ExperienceModel[] | undefined {
@@ -171,7 +254,7 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
     }
 
     const selectedExperiences = experienceDates.reduce(
-      (prev, curr) => prev.concat(curr.experiences),
+      (prev, curr) => prev.concat(curr.experiences.map((exp) => exp.experience)),
       ([] as ExperienceModel[]),
     );
 
@@ -179,15 +262,36 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
 
     if (selectedCategory !== ExperienceCategoryEnum.all) {
       finalExperiences = experiences.filter(
-        (experience) => experience.categories.indexOf(selectedCategory) !== -1,
+        (experience) => experience.categories.indexOf(7) !== -1, // TODO: Classify categories
       );
     }
 
-    return finalExperiences.filter((experience) => selectedExperiences.indexOf(experience) === -1);
+    return finalExperiences.filter(
+      (experience) => selectedExperiences.findIndex((exp) => exp.id === experience.id) === -1,
+    );
+  }
+
+  private selectTimeSlot(experience: ExperienceModel, date: Date): void {
+    const { experienceDates } = this.state;
+
+    experienceDates.forEach((expd) => {
+      const exp = expd.experiences.find((item) => item.experience.id === experience.id);
+
+      if (!exp) {
+        return;
+      }
+
+      exp.selectedTimeSlot = date;
+    });
+
+    this.updateSelected(experienceDates);
+    this.setState({ experienceDates });
   }
 
   private updateSelected(experienceDates: ExperienceDateModel[]): void {
-    AppState.experienceDates = experienceDates;
+    const { onExperiencesChange } = this.props;
+
+    onExperiencesChange(experienceDates);
   }
 
   render(): JSX.Element {
@@ -196,21 +300,16 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
       experienceDates,
       dragging,
       trip,
+      startDate,
+      endDate,
     } = this.state;
-    const { startDate, endDate } = this.props;
 
-    const experiences = this.getFilteredExperiences()?.sort((a, b) => {
-      if (a.recommended && b.recommended) {
-        return 0;
-      }
-
-      return a.recommended ? -1 : 1;
-    });
+    const experiences = this.getFilteredExperiences();
 
     const totalGuests = (
-      (trip?.passengers.adults ?? 0)
-      + (trip?.passengers.children ?? 0)
-      + (trip?.passengers.infants ?? 0)
+      (trip.passengers.adults ?? 0)
+      + (trip.passengers.children ?? 0)
+      + (trip.passengers.infants ?? 0)
     );
 
     return (
@@ -314,7 +413,7 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
 
                         <div
                           className={`${css.SelectedExperiences} ${
-                            dragging || experienceDate.experiences.length === 0
+                            experienceDate.experiences.length === 0
                               ? css.ShowDropHint
                               : ''
                           }`}
@@ -332,16 +431,21 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
                           onDragLeave={this.onDragLeave}
                           onDragEnter={this.onDragEnter}
                         >
-                          {experienceDate.experiences.map((experience, itemIdx) => {
-                            const timeSlots = (experience.timeSlots ?? []).find(
-                              (timeSlot) => timeSlot.date.toLocaleDateString('sv-SE')
+                          {experienceDate.experiences.map((exp, itemIdx) => {
+                            const { experience } = exp;
+
+                            const timeSlots = experience.availability.filter(
+                              (avail) => avail.start.toLocaleDateString('sv-SE')
                                 === experienceDate.date.toLocaleDateString('sv-SE'),
                             );
 
                             return (
                               <SelectedExperience
                                 className={css.SelectedExperience}
-                                data={experience}
+                                data={exp}
+                                onSelectTimeSlot={(date): void => {
+                                  this.selectTimeSlot(experience, date);
+                                }}
                                 guests={totalGuests}
                                 timeSlots={timeSlots}
                                 key={`experience-${itemIdx}`}

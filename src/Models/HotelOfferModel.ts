@@ -65,6 +65,7 @@ export interface RoomOfferModel {
   checkIn: Date;
   checkOut: Date;
   hashCode: string;
+  id: string;
   price: PriceModel;
   hotelName: string;
   cancelPenalty: {
@@ -139,8 +140,6 @@ export function getHotelRoomOfferChain(hotels?: HotelModel[], roomOffer?: RoomOf
     return [undefined, undefined, undefined];
   }
 
-  const hashCode = roomOffer?.hashCode.substr(0, 91);
-
   let room: RoomModel | undefined;
   let offer: RoomOfferModel | undefined;
 
@@ -150,11 +149,11 @@ export function getHotelRoomOfferChain(hotels?: HotelModel[], roomOffer?: RoomOf
         (r) => {
           offer = r.offers.find(
             (o) => {
-              if (!hashCode) {
+              if (roomOffer?.id === undefined) {
                 return o;
               }
 
-              return o.hashCode.startsWith(hashCode) ? o : undefined;
+              return o.id === roomOffer.id;
             },
           );
 

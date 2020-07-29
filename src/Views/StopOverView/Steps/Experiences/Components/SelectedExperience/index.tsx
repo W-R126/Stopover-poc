@@ -1,25 +1,24 @@
 import React from 'react';
 
 import css from './SelectedExperience.module.css';
-import { ExperienceModel, TimeSlotModel } from '../../../../../../Models/ExperienceModel';
 import Utils from '../../../../../../Utils';
 import DateUtils from '../../../../../../DateUtils';
+import { ExperienceAvailabilityModel, ExperienceModel } from '../../../../../../Models/ExperienceModelNew';
 
 interface SelectedExperienceProps {
   className?: string;
-  data: ExperienceModel;
-  timeSlots?: TimeSlotModel;
+  data: {
+    selectedTimeSlot: Date;
+    experience: ExperienceModel;
+  };
+  timeSlots: ExperienceAvailabilityModel[];
   guests: number;
   onRemove: () => void;
-}
-
-interface SelectedExperienceState {
-  selectedTimeSlot?: Date;
+  onSelectTimeSlot: (timeSlot: Date) => void;
 }
 
 export default class SelectedExperience extends React.Component<
-  SelectedExperienceProps,
-  SelectedExperienceState
+  SelectedExperienceProps
 > {
   private readonly selfRef = React.createRef<HTMLDivElement>();
 
@@ -32,17 +31,6 @@ export default class SelectedExperience extends React.Component<
   constructor(props: SelectedExperienceProps) {
     super(props);
 
-    let selectedTimeSlot;
-
-    if (props.timeSlots) {
-      [selectedTimeSlot] = props.timeSlots.available;
-    }
-
-    this.state = {
-      selectedTimeSlot,
-    };
-
-    this.onTimeSlotChange = this.onTimeSlotChange.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
@@ -77,7 +65,7 @@ export default class SelectedExperience extends React.Component<
 
     const { data } = this.props;
 
-    e.dataTransfer.setData('text/plain', data.id.toString());
+    e.dataTransfer.setData('text/plain', data.experience.id);
 
     this.clone = selfRef.cloneNode(true) as HTMLDivElement;
     e.dataTransfer.setDragImage(selfRef.cloneNode() as HTMLDivElement, 0, 0);
@@ -115,10 +103,6 @@ export default class SelectedExperience extends React.Component<
     this.clone.style.top = `${e.clientY - this.yOffset}px`;
   }
 
-  private onTimeSlotChange(selectedTimeSlot: Date): void {
-    this.setState({ selectedTimeSlot });
-  }
-
   render(): JSX.Element {
     const {
       className,
@@ -126,9 +110,10 @@ export default class SelectedExperience extends React.Component<
       onRemove,
       timeSlots,
       guests,
+      onSelectTimeSlot,
     } = this.props;
 
-    const { selectedTimeSlot } = this.state;
+    const { selectedTimeSlot, experience } = data;
 
     const classList = [css.SelectedExperience];
 
@@ -154,47 +139,44 @@ export default class SelectedExperience extends React.Component<
             <span />
           </span>
 
-          <span className={css.Title}>{data.title}</span>
+          <span className={css.Title}>{experience.title}</span>
 
           <div className={css.Quantity}>
             {`${guests} Guests`}
           </div>
 
           <span className={css.Price}>
-            {`${data.currency} ${Utils.formatCurrency(data.prices.adult)}`}
+            {`${experience.startingFromPrice.currency} ${
+              Utils.formatCurrency(experience.startingFromPrice.total * guests)
+            }`}
           </span>
 
           <button type="button" className={css.Remove} onClick={onRemove}>
             ×
           </button>
         </div>
+
         {timeSlots && (
           <div className={css.Time}>
             <span>Please select your preferred time slot</span>
 
             <div className={css.TimeSlots}>
-              {timeSlots.all.map((timeSlot, idx) => {
-                const id = `selected-experience-${data.id}-${timeSlot.valueOf()}`;
+              {timeSlots.map((timeSlot, idx) => {
+                const id = `selected-experience-${experience.id}-${timeSlot.start.valueOf()}`;
 
-                const start = timeSlot;
-                let end;
-
-                if (data.duration !== undefined) {
-                  end = new Date(timeSlot);
-                  end.setMinutes(timeSlot.getMinutes() + data.duration);
-                }
+                const { start } = timeSlot;
+                const end = new Date(start);
+                end.setMinutes(end.getMinutes() + experience.duration);
 
                 return (
                   <div className={css.TimeSlot} key={`time-slot-${idx}`}>
                     <input
                       type="radio"
-                      checked={selectedTimeSlot?.valueOf() === timeSlot.valueOf()}
+                      checked={selectedTimeSlot?.valueOf() === start.valueOf()}
                       id={id}
-                      onChange={(): void => this.onTimeSlotChange(timeSlot)}
-                      disabled={timeSlots.available.findIndex(
-                        (ts) => timeSlot.valueOf() === ts.valueOf(),
-                      ) === -1}
+                      onChange={(): void => onSelectTimeSlot(start)}
                     />
+
                     <label htmlFor={id}>
                       {`${DateUtils.getHHMM(start)}${
                         end

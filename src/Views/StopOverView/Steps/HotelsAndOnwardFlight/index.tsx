@@ -12,6 +12,7 @@ import { TripModel } from '../../../../Models/TripModel';
 import Hotels from './Hotels';
 import OnwardFlights from './OnwardFlights';
 import DateUtils from '../../../../DateUtils';
+import { TripTypeEnum } from '../../../../Enums/TripTypeEnum';
 
 interface HotelsAndOnwardFlightProps {
   originalFare: FareModel;
@@ -81,7 +82,7 @@ export default class HotelsAndOnwardFlight extends React.Component<
 
     AppState.stopOverDays = days;
 
-    if (trip) {
+    if (trip && trip.type === TripTypeEnum.roundTrip) {
       const outboundDate = trip.legs[0].departure as Date;
       const inboundDate = trip.legs[1].departure as Date;
 
@@ -113,14 +114,16 @@ export default class HotelsAndOnwardFlight extends React.Component<
       stopOverService,
       originalFare,
       onwardFare,
-      hotelRoom,
       onSelectOnward,
       onSelectRoom,
     } = this.props;
 
+    let { hotelRoom } = this.props;
+
     if (prevDays !== days) {
       onSelectOnward(undefined);
       onSelectRoom(undefined);
+      hotelRoom = undefined;
     }
 
     const startLeg = trip?.legs[0];

@@ -64,6 +64,7 @@ export default class StopOverService extends BaseService {
         return {
           airportCode: result.data.airportCode,
           days: result.data.stopoverDays,
+          customerSegmentCode: result.data.originalCustomerSegmentCode,
           customerSegment: CustomerSegmentEnum[
             result.data.customerSegment.toLowerCase() as keyof typeof CustomerSegmentEnum
           ],
@@ -71,6 +72,58 @@ export default class StopOverService extends BaseService {
       }
     } catch (err) {
       //
+    }
+
+    return undefined;
+  }
+
+  async selectOnwardFlightAndHotel(
+    flightHashCode: number,
+    hotelHashCode?: string,
+  ): Promise<FlightOfferModel[][] | undefined> {
+    try {
+      const airportsReq = this.airportService.getAirports();
+
+      const requestData: {
+        stopoverItineraryParts: {
+          selectedOfferRef: number;
+        }[];
+        hotelRateKey?: string;
+      } = {
+        stopoverItineraryParts: [{
+          selectedOfferRef: flightHashCode,
+        }],
+      };
+
+      if (hotelHashCode) {
+        requestData.hotelRateKey = hotelHashCode;
+      }
+
+      const { data, status, headers } = await this.http.post(
+        '/selectOnwardFlightAndHotel',
+        requestData,
+        {
+          headers: SessionManager.getSessionHeaders(),
+        },
+      );
+
+      if (status === 200) {
+        SessionManager.setSessionHeaders(headers);
+
+        const airports = await airportsReq;
+        const flightRefs = this.getResponseRefs(data.airSearchResults);
+        const fareFamilies = this.getFareFamilies(data.airSearchResults.fareFamilies);
+        const flightOffers = this.getFlightOffers(
+          data.airSearchResults.brandedResults,
+          flightRefs,
+          fareFamilies,
+          airports,
+        );
+
+        return flightOffers;
+      }
+    } catch (err) {
+      return undefined;
     }
 
     return undefined;
@@ -301,9 +354,6 @@ export default class StopOverService extends BaseService {
   }
 
   private getHotelOffers(hotelsInfo: HotelAvailabilityInfos): HotelOfferModel {
-    const checkIn = new Date(hotelsInfo.checkIn);
-    const checkOut = new Date(hotelsInfo.checkOut);
-
     const hotels = hotelsInfo.hotelAvailInfo.map((hotelInfo): HotelModel => {
       const images = hotelInfo.hotelImageInfo.imageItems;
       const info = hotelInfo.hotelInfo;
@@ -318,8 +368,6 @@ export default class StopOverService extends BaseService {
         })),
         rooms: this.getRoomOffers(
           hotelInfo.hotelRateInfo.rooms.room,
-          checkIn,
-          checkOut,
           hotelInfo.hotelInfo.hotelName,
         ),
         chain: {
@@ -378,16 +426,14 @@ export default class StopOverService extends BaseService {
     });
 
     return {
-      checkIn,
-      checkOut,
+      checkIn: new Date(hotelsInfo.checkIn),
+      checkOut: new Date(hotelsInfo.checkOut),
       hotels,
     };
   }
 
   private getRoomOffers(
     rooms: Room[],
-    checkIn: Date,
-    checkOut: Date,
     hotelName: string,
   ): RoomModel[] {
     return rooms.map((room): RoomModel => ({
@@ -401,41 +447,46 @@ export default class StopOverService extends BaseService {
         description: room.roomDescription.name,
         code: room.roomTypeCode,
       },
-      offers: room.ratePlans.ratePlan.map((ratePlan): RoomOfferModel => ({
-        available: ratePlan.availableQuantity,
-        hashCode: ratePlan.rateKey,
-        includedMeals: {
-          breakfast: ratePlan.mealsIncluded.breakfast,
-          dinner: ratePlan.mealsIncluded.dinner,
-          lunch: ratePlan.mealsIncluded.lunch,
-          lunchOrDinner: ratePlan.mealsIncluded.lunchOrDinner,
-        },
-        checkIn,
-        checkOut,
-        hotelName,
-        price: {
-          total: ratePlan.rateInfo.netRate, // TODO: Add tax on top of this?
-          currency: ratePlan.rateInfo.currencyCode,
-          tax: ratePlan.rateInfo.taxes.tax[0].amount,
-        },
-        cancelPenalty: {
-          price: {
-            total: ratePlan.rateInfo.cancelPenalties.cancelPenalty[0].amountPercent.amount,
-            currency: ratePlan.rateInfo.cancelPenalties.cancelPenalty[0]
-              .amountPercent.currencyCode,
-            tax: 0,
+      offers: room.ratePlans.ratePlan.map((ratePlan): RoomOfferModel => {
+        const rateKeyInfo = this.decodeHotelRateKey(ratePlan.rateKey);
+
+        return {
+          available: ratePlan.availableQuantity,
+          hashCode: ratePlan.rateKey,
+          includedMeals: {
+            breakfast: ratePlan.mealsIncluded.breakfast,
+            dinner: ratePlan.mealsIncluded.dinner,
+            lunch: ratePlan.mealsIncluded.lunch,
+            lunchOrDinner: ratePlan.mealsIncluded.lunchOrDinner,
           },
-          deadline: new Date(
-            ratePlan.rateInfo.cancelPenalties.cancelPenalty[0]
-              .deadline.absoluteDeadline.split('+')[0],
-          ),
-        },
-        discounts: ratePlan.rateInfo.offers?.map((offer) => ({
-          code: offer.code,
-          name: offer.name,
-          total: offer.amount,
-        })) ?? [],
-      })),
+          checkIn: rateKeyInfo.checkIn,
+          checkOut: rateKeyInfo.checkOut,
+          id: rateKeyInfo.id,
+          hotelName,
+          price: {
+            total: ratePlan.rateInfo.netRate,
+            currency: ratePlan.rateInfo.currencyCode,
+            tax: ratePlan.rateInfo.taxes.tax[0].amount,
+          },
+          cancelPenalty: {
+            price: {
+              total: ratePlan.rateInfo.cancelPenalties.cancelPenalty[0].amountPercent.amount,
+              currency: ratePlan.rateInfo.cancelPenalties.cancelPenalty[0]
+                .amountPercent.currencyCode,
+              tax: 0,
+            },
+            deadline: new Date(
+              ratePlan.rateInfo.cancelPenalties.cancelPenalty[0]
+                .deadline.absoluteDeadline.split('+')[0],
+            ),
+          },
+          discounts: ratePlan.rateInfo.offers?.map((offer) => ({
+            code: offer.code,
+            name: offer.name,
+            total: offer.amount,
+          })) ?? [],
+        };
+      }),
       amenities: room.amenities?.amenity.map((amenity) => ({
         code: amenity.code,
         complimentary: amenity.complimentaryInd ?? false,
@@ -445,25 +496,28 @@ export default class StopOverService extends BaseService {
     }));
   }
 
-  async getFlights(
-    outboundHashCode: number,
-    onwardHashCode: number,
-    hotelHashCode: string,
-  ): Promise<any> {
-    const asd = await this.http.post(
-      '/selectFlightsWithStopover',
-      {
-        selectFlights: [
-          outboundHashCode,
-          onwardHashCode,
-        ],
-        hotelRateKey: hotelHashCode,
-      },
-      {
-        headers: SessionManager.getSessionHeaders(),
-      },
-    );
+  private decodeHotelRateKey(rateKey: string): {
+    checkIn: Date;
+    checkOut: Date;
+    id: string;
+  } {
+    const values = atob(rateKey).split('|');
 
-    return asd;
+    const checkIn = new Date(`${values[0].substr(0, 4)}-${values[0].substr(4, 2)}-${
+      values[0].substr(6, 2)
+    }`);
+
+    const checkOut = new Date(`${values[1].substr(0, 4)}-${values[1].substr(4, 2)}-${
+      values[1].substr(6, 2)
+    }`);
+
+    const info = values[11].split('~');
+    const infoId = info[2];
+
+    return {
+      checkIn,
+      checkOut,
+      id: `${values[4]}-${values[5]}-${infoId}`,
+    };
   }
 }
