@@ -40,7 +40,7 @@ export interface PaxJourneyList {
 export interface PaxJourney {
   Duration: string;
   PaxJourneyID: string;
-  PaxSegmentRefID: string[];
+  PaxSegmentRefID: string|string[];
 }
 
 export interface PaxList {

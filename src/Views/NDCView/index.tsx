@@ -139,10 +139,14 @@ class NDCView extends React.Component<NDCViewProps, NDCViewState> {
 
     PaxSegmentList.PaxSegment.forEach((itemOne: PaxSegment) => {
       if (!selectedPaxJourney || !selectedPaxJourney.PaxSegmentRefID) { return; }
-      const filteredOne = selectedPaxJourney.PaxSegmentRefID.filter(
-        (itemFilter: string) => itemFilter === itemOne.PaxSegmentID,
-      );
-      if (filteredOne.length > 0) { segementList.push(itemOne); }
+      if (Array.isArray(selectedPaxJourney.PaxSegmentRefID)) {
+        const filteredOne = selectedPaxJourney.PaxSegmentRefID.filter(
+          (itemFilter: string) => itemFilter === itemOne.PaxSegmentID,
+        );
+        if (filteredOne.length > 0) { segementList.push(itemOne); }
+      } else if (selectedPaxJourney.PaxSegmentRefID === itemOne.PaxSegmentID) {
+        segementList.push(itemOne);
+      }
     });
     return {
       paxJourney: selectedPaxJourney,
