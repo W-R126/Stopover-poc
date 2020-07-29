@@ -39,61 +39,53 @@ export default function App({ config }: { config: Config }): JSX.Element {
 
   return (
     <div id="app">
-
       <Switch>
-
-        <Route exact path="/">
-          <Header contentService={contentService} />
-          <HomeView airportService={airportService} contentService={contentService} />
-        </Route>
-
-        <Route path="/booking">
-          <Header contentService={contentService} />
-          <BookingView
-            stopOverService={stopOverService}
-            airportService={airportService}
-            flightOfferService={flightOfferService}
-            contentService={contentService}
-          />
-        </Route>
-
-        <Route
-          path={`/stopover/:progressStep(${
-            Object.keys(StopOverProgressStepEnum).map((step) => step).join('|')
-          })`}
-        >
-          <Header contentService={contentService} />
-
-          <StopOverView
-            contentService={contentService}
-            stopOverService={stopOverService}
-            experienceService={experienceService}
-            flightOfferService={flightOfferService}
-          />
-        </Route>
-
-        <Route path="/select-inbound">
-          <Header contentService={contentService} />
-
-          <SelectInbound
-            stopOverService={stopOverService}
-            flightOfferService={flightOfferService}
-            contentService={contentService}
-          />
-        </Route>
-
-        <Route path="/stopover-accepted">
-          <Header contentService={contentService} />
-
-          <strong>Stopover was accepted.</strong>
-        </Route>
-
         <Route path="/ndc">
           <NDCView
             ndcService={ndcService}
             airportService={airportService}
             contentService={ndcContentService}
           />
+        </Route>
+
+        <Route path="/">
+          <Header contentService={contentService} />
+
+          <Switch>
+            <Route exact path="/">
+              <HomeView airportService={airportService} contentService={contentService} />
+            </Route>
+
+            <Route path="/booking">
+              <BookingView
+                stopOverService={stopOverService}
+                airportService={airportService}
+                flightOfferService={flightOfferService}
+                contentService={contentService}
+              />
+            </Route>
+
+            <Route
+              path={`/stopover/:progressStep(${
+                Object.keys(StopOverProgressStepEnum).map((step) => step).join('|')
+              })`}
+            >
+              <StopOverView
+                contentService={contentService}
+                stopOverService={stopOverService}
+                experienceService={experienceService}
+                flightOfferService={flightOfferService}
+              />
+            </Route>
+
+            <Route path="/select-inbound">
+              <SelectInbound
+                stopOverService={stopOverService}
+                flightOfferService={flightOfferService}
+                contentService={contentService}
+              />
+            </Route>
+          </Switch>
         </Route>
       </Switch>
     </div>
