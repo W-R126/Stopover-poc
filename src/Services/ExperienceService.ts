@@ -122,6 +122,6 @@ export default class ExperienceService extends BaseService {
           country: location.locationAddress.country,
         })),
       };
-    });
+    }).filter((experience) => experience.availability.length > 0);
   }
 }

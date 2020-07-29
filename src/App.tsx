@@ -13,6 +13,7 @@ import { StopOverProgressStepEnum } from './Enums/StopOverProgressStepEnum';
 import FlightOfferService from './Services/FlightOfferService';
 import SelectInbound from './Views/SelectInbound';
 import ExperienceService from './Services/ExperienceService';
+import GoogleMaps from './Components/GoogleMaps';
 
 export default function App({ config }: { config: Config }): JSX.Element {
   const contentService = new ContentService('en-GB', 'EUR', config);
@@ -28,6 +29,8 @@ export default function App({ config }: { config: Config }): JSX.Element {
     config,
   );
   const experienceService = new ExperienceService(config);
+
+  GoogleMaps.apiKey = config.googleMapsApiKey;
 
   return (
     <div id="app">

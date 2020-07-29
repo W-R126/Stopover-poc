@@ -1,0 +1,77 @@
+.Summary{
+  font-size: 16px;
+}
+
+.Summary > .Header {
+  background-color: #e5e5e5;
+  display: grid;
+  grid-template-columns:
+    1fr
+    max-content
+    max-content;
+  padding: 16px;
+  font-family: 'EtihadAltis-Medium';
+  font-size: 18px;
+}
+
+.Summary > .Header > * {
+  padding: 4px 16px;
+}
+
+.Summary > .Header > *:not(:first-child) {
+  border-left: 1px solid #acacac;
+}
+
+.Summary > .Header > * > div {
+  margin-top: 12px;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+}
+
+.Summary > .Header > .Pricing > span::before {
+  display: inline-block;
+  margin-right: 8px;
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f0d6';
+}
+
+.PricingEntry {
+  display: inline-block;
+}
+
+.PricingEntry:not(:first-child) {
+  margin-left: 16px;
+}
+
+.Summary > .Header > .Duration > span::before {
+  display: inline-block;
+  margin-right: 8px;
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f017';
+}
+
+.Summary > .Header > .Language > span::before {
+  display: inline-block;
+  margin-right: 8px;
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f0e5';
+}
+
+.Location{
+  padding: 16px;
+  height: 400px;
+}
+
+.Included{
+  padding: 16px;
+}
+
+.Content {
+  padding: 16px;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  line-height: 1.4;
+  font-size: 18px;
+}
+
+.Content > p:not(:first-child) {
+  margin-top: 16px;
+}

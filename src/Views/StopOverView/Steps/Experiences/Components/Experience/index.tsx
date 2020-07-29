@@ -10,6 +10,7 @@ interface ExperienceProps {
   data: ExperienceModel;
   onDragStart: () => void;
   onDragEnd: () => void;
+  onShowDetails: (experience?: ExperienceModel) => void;
 }
 
 export default class Experience extends React.Component<ExperienceProps> {
@@ -104,7 +105,7 @@ export default class Experience extends React.Component<ExperienceProps> {
   }
 
   render(): JSX.Element {
-    const { className, data } = this.props;
+    const { className, data, onShowDetails } = this.props;
     const classList = [css.Experience];
 
     if (className) {
@@ -143,7 +144,11 @@ export default class Experience extends React.Component<ExperienceProps> {
                 Utils.formatCurrency(data.startingFromPrice.total)
               }`}
             </strong>
-            <button type="button" className={css.ViewDetails}>
+            <button
+              type="button"
+              className={css.ViewDetails}
+              onClick={(): void => onShowDetails(data)}
+            >
               View details
             </button>
           </div>

@@ -13,6 +13,7 @@ import AppState from '../../../../AppState';
 import { ExperienceDateModel } from '../../../../Models/ExperienceDateModel';
 import ExperienceService from '../../../../Services/ExperienceService';
 import { StopOverModel } from '../../../../Models/StopOverModel';
+import ExperienceInfoModal from './Components/ExperienceInfoModal';
 
 interface ExperiencesProps {
   startDate: Date;
@@ -31,6 +32,7 @@ interface ExperiencesState {
   startDate: Date;
   endDate: Date;
   guests: number;
+  showDetails?: ExperienceModel;
 }
 
 export default class Experiences extends React.Component<ExperiencesProps, ExperiencesState> {
@@ -58,6 +60,7 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
         + trip.passengers.children
         + trip.passengers.infants
       ),
+      showDetails: undefined,
     };
   }
 
@@ -294,6 +297,10 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
     onExperiencesChange(experienceDates);
   }
 
+  private toggleDetails(showDetails?: ExperienceModel): void {
+    this.setState({ showDetails });
+  }
+
   render(): JSX.Element {
     const {
       selectedCategory,
@@ -302,6 +309,7 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
       trip,
       startDate,
       endDate,
+      showDetails,
     } = this.state;
 
     const experiences = this.getFilteredExperiences();
@@ -333,6 +341,13 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
           )
           : (
             <>
+              {showDetails && (
+                <ExperienceInfoModal
+                  experience={showDetails}
+                  onClose={(): void => this.toggleDetails(undefined)}
+                />
+              )}
+
               <div className={css.Categories}>
                 {Object.keys(ExperienceCategoryEnum).map((category, idx) => {
                   let categoryLabel;
@@ -387,6 +402,7 @@ export default class Experiences extends React.Component<ExperiencesProps, Exper
                         data={experience}
                         key={`experience-${idx}`}
                         className={css.Experience}
+                        onShowDetails={(nextExperience): void => this.toggleDetails(nextExperience)}
                       />
                     ))}
                 </div>
