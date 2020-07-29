@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import Header from './Partial/Header';
 import HomeView from './Views/HomeView';
 import ContentService from './Services/ContentService';
+import NDCContentService from './Views/NDCView/Services/ContentService';
 import AirportService from './Services/AirportService';
 import BookingView from './Views/BookingView';
 import Config from './Config';
@@ -14,10 +15,14 @@ import FlightOfferService from './Services/FlightOfferService';
 import SelectInbound from './Views/SelectInbound';
 import ExperienceService from './Services/ExperienceService';
 import GoogleMaps from './Components/GoogleMaps';
+import NDCView from './Views/NDCView';
+import NDCService from './Views/NDCView/Services/NDCService';
 
 export default function App({ config }: { config: Config }): JSX.Element {
   const contentService = new ContentService('en-GB', 'EUR', config);
   const airportService = new AirportService(contentService, config);
+  const ndcContentService = new NDCContentService('en-GB', 'EUR', config);
+  const ndcService = new NDCService(ndcContentService, airportService, config);
   const flightOfferService = new FlightOfferService(
     contentService,
     airportService,
@@ -34,13 +39,16 @@ export default function App({ config }: { config: Config }): JSX.Element {
 
   return (
     <div id="app">
-      <Header contentService={contentService} />
+
       <Switch>
+
         <Route exact path="/">
+          <Header contentService={contentService} />
           <HomeView airportService={airportService} contentService={contentService} />
         </Route>
 
         <Route path="/booking">
+          <Header contentService={contentService} />
           <BookingView
             stopOverService={stopOverService}
             airportService={airportService}
@@ -54,6 +62,8 @@ export default function App({ config }: { config: Config }): JSX.Element {
             Object.keys(StopOverProgressStepEnum).map((step) => step).join('|')
           })`}
         >
+          <Header contentService={contentService} />
+
           <StopOverView
             contentService={contentService}
             stopOverService={stopOverService}
@@ -63,10 +73,26 @@ export default function App({ config }: { config: Config }): JSX.Element {
         </Route>
 
         <Route path="/select-inbound">
+          <Header contentService={contentService} />
+
           <SelectInbound
             stopOverService={stopOverService}
             flightOfferService={flightOfferService}
             contentService={contentService}
+          />
+        </Route>
+
+        <Route path="/stopover-accepted">
+          <Header contentService={contentService} />
+
+          <strong>Stopover was accepted.</strong>
+        </Route>
+
+        <Route path="/ndc">
+          <NDCView
+            ndcService={ndcService}
+            airportService={airportService}
+            contentService={ndcContentService}
           />
         </Route>
       </Switch>

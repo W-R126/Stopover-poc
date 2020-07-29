@@ -1,0 +1,141 @@
+.DatePicker {
+  display: inline-flex;
+  flex-flow: row wrap;
+  user-select: none;
+  position: relative;
+}
+
+.DatePicker label {
+  font-family: 'Open Sans', sans-serif !important;
+  font-size: 16px;
+  color: #000;
+}
+
+.Outbound,
+.Inbound {
+  width: 50%;
+  display: inline-flex;
+  flex-flow: column;
+}
+
+.DatePicker:not(.ReturnTrip) > .Outbound {
+  width: 100%;
+}
+
+.Outbound > input,
+.Inbound > input {
+  width: 100%;
+  z-index: 0;
+  cursor: pointer;
+  height: 40px;
+  font-size: 16px;
+  color: #000;
+}
+
+.Outbound > input:focus,
+.Inbound > input:focus {
+  z-index: 1 !important;
+}
+
+.DatePicker[aria-expanded='false'] > .ModalWrapper {
+  display: none;
+}
+
+.CalendarWrapper {
+  width: 700px;
+  position: absolute;
+  top: 91px;
+  background-color: #fff;
+  border: 1px solid #fff;
+  box-shadow:
+    0 0 0 2px #6997d3,
+    0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 11px 16px;
+  z-index: 1;
+}
+
+html:not([dir='rtl']) .CalendarWrapper {
+  right: 0;
+}
+
+html[dir='rtl'] .CalendarWrapper {
+  left: 0;
+}
+
+.CalendarWrapper > button {
+  width: 100%;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 900px) {
+  .CalendarWrapper {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 481px) {
+  html[dir='rtl'] .Inbound > input {
+    border-right: 0;
+  }
+
+  html:not([dir='rtl']) .Inbound > input:not(:focus) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  html[dir='rtl'] .Inbound > input:not(:focus) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  html:not([dir='rtl']) .DatePicker.ReturnTrip > .Outbound > input {
+    border-right: 0;
+  }
+
+  html:not([dir='rtl']) .DatePicker.ReturnTrip > .Outbound > input:not(:focus) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  html[dir='rtl'] .DatePicker.ReturnTrip > .Outbound > input:not(:focus) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .CalendarWrapper > button {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .Outbound,
+  .Inbound {
+    width: 100%;
+  }
+
+  .Inbound {
+    margin-top: 8px;
+  }
+
+  .ModalWrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    padding: 16px;
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  .CalendarWrapper {
+    margin-top: calc(50vh - 210px);
+    position: static;
+    box-shadow: none;
+    border-radius: 8px;
+    padding: 16px;
+  }
+}

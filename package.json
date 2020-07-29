@@ -16,7 +16,8 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
-    "typescript": "^3.7.5"
+    "typescript": "^3.7.5",
+    "xml-js": "^1.6.11"
   },
   "scripts": {
     "analyze": "eslint --ext ts,tsx src & stylelint \"**/*.css\"",

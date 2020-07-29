@@ -1,0 +1,65 @@
+.LoadingHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+  background-color: #001d83;
+}
+
+.LoadingHeader img {
+  animation: rotation 1s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.LoadingHeader p {
+  font-style: normal;
+  font-weight: 300;
+  font-size: 24px;
+  line-height: 33px;
+  text-align: center;
+  color: #fff;
+  margin: 0 0 20px 0;
+}
+
+.PanelBody {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 475px;
+  overflow: hidden;
+}
+
+.Description {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 25px;
+  color: #fff;
+  text-align: center;
+  width: 100%;
+  padding-left: 10%;
+  padding-right: 10%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+.PanelBody img {
+  width: 100%;
+}

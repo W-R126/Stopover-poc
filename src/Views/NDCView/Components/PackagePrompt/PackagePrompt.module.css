@@ -1,0 +1,140 @@
+
+.PackagePrompt {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 9999;
+}
+
+.PackageModal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1 1 100%;
+  margin-top: 87px;
+  height: 625px;
+  background-color: #ddd;
+  padding: 0;
+}
+
+.HeaderSection {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 23px 40px 32px;
+}
+
+.HeaderSection .Title {
+  font-style: normal;
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 33px;
+  color: #001d83;
+  margin-bottom: 14.5px;
+}
+
+.HeaderSection .SubTitle {
+  font-style: normal;
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 41px;
+  color: #000;
+}
+
+.CloseButton {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.FooterSection {
+  display: flex;
+  justify-content: space-between;
+  height: 80px;
+  background: #001d83;
+  padding: 20px 50px;
+  margin-top: auto;
+}
+
+.FooterSection .Contents {
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+.FooterSection .Contents > div {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.FooterSection .Contents img {
+  margin: 0 15px;
+}
+
+.FooterSection .Contents img:first-child {
+  margin-left: 0;
+}
+
+.FooterSection .Contents p {
+  margin: 8px 0 0 0;
+  font-size: 10px;
+}
+
+.PriceContents {
+  display: flex;
+}
+
+.PriceContents .GoButton {
+  width: 100px;
+  height: 40px;
+  border: none;
+  background-color: #fff;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 130%;
+  text-align: center;
+  color: #000;
+  margin-left: 19.3px;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.PriceContents .OriginPrice {
+  font-size: 12px;
+  line-height: 120%;
+  text-align: right;
+  text-decoration-line: line-through;
+  color: #fff;
+}
+
+.PriceContents .CurPrice {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 120%;
+  text-align: right;
+  color: #fff;
+}
+
+.PriceContents .Taxes {
+  font-size: 10px;
+  line-height: 132%;
+  text-align: right;
+  color: #fff;
+}
+
+.PackageContainer {
+  display: flex;
+  padding: 0 40px;
+  height: 340px;
+}

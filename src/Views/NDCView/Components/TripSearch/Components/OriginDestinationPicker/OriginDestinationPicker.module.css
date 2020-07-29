@@ -1,0 +1,41 @@
+.OriginDestinationPicker {
+  display: inline-flex;
+  flex-flow: row;
+  position: relative;
+  user-select: none;
+  font-size: 16px;
+  color: #000;
+}
+
+.OriginDestinationPicker label {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.OriginDestinationPicker > div {
+  width: calc(50% - 35px);
+  flex: 1 1 100%;
+}
+
+.OriginDestinationPicker > button {
+  background-color: #fff;
+  outline: 0;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+  margin: 28px 12px 0;
+  height: 35px;
+  border-radius: 35px;
+  padding: 4px;
+  flex: 0 0 35px;
+}
+
+.OriginDestinationPicker > button:disabled {
+  cursor: not-allowed;
+}
+
+.OriginDestinationPicker > button:focus {
+  border-color: #fff;
+  box-shadow:
+    0 0 0 2px #6997d3,
+    1px 1px 5px rgba(0, 0, 0, 0.4);
+}

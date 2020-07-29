@@ -1,0 +1,116 @@
+
+.PackageItem {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1 1 100%;
+  height: 100%;
+}
+
+.PackageItemHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 80px;
+  padding: 11px 40px 9px;
+  background-color: #001d83;
+}
+
+.PackageItemHeader.Hotel {
+  background-color: #f97700;
+}
+
+.PackageItemHeader.Experience {
+  background-color: #01a4c8;
+}
+
+.PackageItemHeader .Title {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
+  color: #fff;
+  margin: 0;
+  text-align: center;
+}
+
+.PackageItemHeader .Day {
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 14px;
+  color: #fff;
+  margin: 0;
+}
+
+.PackageContent {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  padding: 0;
+  background-color: #fff;
+  flex: 1 1 100%;
+}
+
+.ExperienceItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 27px 32px;
+  position: relative;
+  flex: 1 1 100%;
+}
+
+.HotelImage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.HotelImageOverlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.ExperienceItem .Title {
+  z-index: 1;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 100%;
+  color: #fff;
+  text-align: center;
+}
+
+.ExperienceItem .Location {
+  z-index: 1;
+  font-size: 12px;
+  line-height: 130%;
+  text-align: center;
+  color: #fff;
+}
+
+.ExperienceItem .Description {
+  font-size: 11px;
+  line-height: 130%;
+  text-align: center;
+  color: #fff;
+  z-index: 1;
+  margin: 20px 0 0 0;
+}
+
+.ExperienceItem .Passenger {
+  z-index: 1;
+  margin: 13px 0 0 0;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 130%;
+  text-align: center;
+  color: #fff;
+}

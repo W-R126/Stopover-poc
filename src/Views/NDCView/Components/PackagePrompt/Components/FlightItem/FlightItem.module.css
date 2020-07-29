@@ -1,0 +1,145 @@
+.PackageItem {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1 1 100%;
+  height: 100%;
+}
+
+.PackageItemHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 80px;
+  padding: 11px 40px 9px;
+  background-color: #001d83;
+}
+
+.PackageItemHeader.Hotel {
+  background-color: #f97700;
+}
+
+.PackageItemHeader.Experience {
+  background-color: #01a4c8;
+}
+
+.PackageItemHeader .Title {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
+  color: #fff;
+  margin: 0;
+}
+
+.PackageItemHeader .Day {
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 14px;
+  color: #fff;
+  margin: 0;
+}
+
+.PackageContent {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  padding: 21px;
+  background-color: #fff;
+  flex: 1 1 100%;
+  overflow: hidden;
+}
+
+.FlightDivContainer:last-child {
+  margin-bottom: 0;
+}
+
+.PackageContent .FlightDiv {
+  display: flex;
+  margin-top: 12px;
+}
+
+.PackageContent .FlightDiv .Airport {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.FlightDiv .Airport .Time {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 25px;
+  color: #000;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.FlightDiv .Airport .Description {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 14px;
+  color: #000;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.FlightDiv .DirectDiv {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 100%;
+  padding: 3px 9px 0;
+  align-items: center;
+}
+
+.FlightDiv .DirectDiv .DotFlight {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+}
+
+.FlightDiv .DirectDiv .DotFlight img {
+  z-index: 1;
+}
+
+.FlightDiv .DotFlight .DotLine {
+  position: absolute;
+  left: 0;
+  top: calc(50% - 1px);
+  width: 100%;
+  height: 4px;
+  border-top: 2px dotted #ddd;
+}
+
+.FlightDiv .DirectDiv .Duaration {
+  font-size: 12px;
+  line-height: 14px;
+  color: #001d83;
+}
+
+.FlightDiv .DirectDiv .Stopport {
+  font-size: 12px;
+  line-height: 14px;
+  color: #000;
+}
+
+.Airway {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 44px;
+}
+
+.Airway .FlightNumber {
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  color: #000;
+  margin: 6px 0 0 0;
+}
+
+.Airway .FlightDetail {
+  font-size: 12px;
+  line-height: 16px;
+  color: #000;
+}

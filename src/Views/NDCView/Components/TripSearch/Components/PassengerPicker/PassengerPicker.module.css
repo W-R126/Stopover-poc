@@ -1,0 +1,81 @@
+.PassengerPicker {
+  display: block;
+  position: relative;
+  user-select: none;
+  outline: none;
+  color: #000;
+  font-size: 16px;
+}
+
+.Wrapper {
+  position: relative;
+}
+
+.Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.Header::after {
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f107';
+  font-size: 22px;
+  transition: transform 100ms;
+}
+
+html:not([dir='rtl']) .Header::after {
+  margin-left: 6px;
+}
+
+html[dir='rtl'] .Header::after {
+  margin-right: 6px;
+}
+
+.PassengerPicker[aria-expanded='true'] .Header::after {
+  transform: rotateZ(-180deg);
+}
+
+.Header > .Passengers {
+  position: absolute;
+}
+
+.PassengerPicker > .Wrapper > .ModalWrapper {
+  display: none;
+  position: absolute;
+  background: #fff;
+  box-shadow: 0 0 8px #a6a6a6;
+  border-radius: 8px;
+  left: 0;
+  top: 0;
+  padding: 20px 30px 30px;
+  z-index: 4;
+  width: 280px;
+}
+
+.PassengerPicker[aria-expanded='true'] > .Wrapper > .ModalWrapper {
+  display: flex;
+}
+
+.Pickers {
+  padding: 0;
+  display: flex;
+  flex-flow: column;
+  width: 100%;
+}
+
+.Pickers > :not(:first-child) {
+  margin-top: 24px;
+}
+
+@media screen and (min-width: 481px) {
+  .PassengerPicker:focus {
+    position: relative;
+    z-index: 1;
+  }
+
+  .Pickers > button {
+    display: none;
+  }
+}

@@ -1,0 +1,96 @@
+.PackageItem {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1 1 100%;
+  height: 100%;
+}
+
+.PackageItemHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 80px;
+  padding: 11px 40px 9px;
+  background-color: #001d83;
+}
+
+.PackageItemHeader.Hotel {
+  background-color: #f97700;
+}
+
+.PackageItemHeader .Title {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
+  color: #fff;
+  margin: 0;
+}
+
+.PackageItemHeader .Day {
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 14px;
+  color: #fff;
+  margin: 0;
+}
+
+.PackageContent {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  padding: 21px;
+  background-color: #fff;
+  flex: 1 1 100%;
+}
+
+.HotelImage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.HotelImageOverlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.ReviewStar {
+  margin: 0 auto;
+}
+
+.PackageContent .HotelName {
+  font-size: 18px;
+  line-height: 100%;
+  color: #fff;
+  margin: 6px 0 0 0;
+  font-weight: bold;
+  z-index: 1;
+  text-align: center;
+}
+
+.PackageContent .HotelLocation {
+  font-size: 16px;
+  line-height: 130%;
+  color: #fff;
+  margin: 4px 0 0 0;
+  z-index: 1;
+  text-align: center;
+}
+
+.PackageContent .DayNight {
+  margin: 20px 0 0 0;
+  font-size: 14px;
+  text-align: center;
+  color: #fff;
+  z-index: 1;
+}

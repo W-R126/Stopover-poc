@@ -1,0 +1,148 @@
+.TripSearch {
+  display: inline-flex;
+  flex-flow: row wrap;
+  background-color: #fff;
+  padding: 24px;
+  transition: padding 300ms;
+  z-index: 3;
+}
+
+.TopSelector {
+  width: 100%;
+  display: flex;
+  margin-bottom: 25px;
+  z-index: 3;
+}
+
+.TripTypePicker {
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.OriginDestinationPicker {
+  flex: 1 1 100%;
+  width: calc(100% - 430px);
+}
+
+.PassengerPicker {
+  margin-left: 48px;
+}
+
+.CabinClass {
+  margin-left: 46px;
+}
+
+.CabinClassSelect {
+  width: 100%;
+}
+
+.Passengers {
+  margin-left: 48px;
+}
+
+.LocationDate {
+  display: flex;
+  width: 100%;
+}
+
+.DatePicker {
+  flex: 1 0 410px;
+}
+
+.SearchFlight {
+  width: 360px;
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  justify-content: space-between;
+  margin-left: auto;
+  margin-top: 22px;
+}
+
+.BookWithMiles > label {
+  margin-bottom: 0;
+}
+
+.SearchButton {
+  margin-right: 6px;
+  background-color: #d4d4d4;
+  color: #000;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 22px;
+  border: none;
+  border-radius: 6px;
+  flex: 1 1 100%;
+  font-family: 'Open Sans', sans-serif !important;
+  height: 40px;
+}
+
+.LuckyButton {
+  margin-left: 6px;
+  background-color: #d4d4d4;
+  color: #000;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 22px;
+  border: none;
+  border-radius: 6px;
+  flex: 1 1 100%;
+  font-family: 'Open Sans', sans-serif !important;
+  height: 40px;
+}
+
+@media screen and (min-width: 901px) {
+  html:not([dir='rtl']) .DatePicker {
+    margin-left: 19px;
+  }
+
+  html[dir='rtl'] .DatePicker {
+    margin-right: 16px;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .OriginDestinationPicker {
+    width: 100%;
+  }
+
+  .DatePicker {
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .SearchFlight {
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .SearchFlight > button {
+    width: 50%;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .TripSearch {
+    padding: 16px;
+  }
+
+  .DatePicker {
+    margin-top: 8px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .SearchFlight {
+    display: block;
+    height: unset;
+  }
+
+  .BookWithMiles,
+  .SearchFlight > button {
+    width: 100%;
+  }
+
+  .SearchFlight > button {
+    margin-top: 16px;
+  }
+}

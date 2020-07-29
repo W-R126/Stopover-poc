@@ -1,0 +1,102 @@
+.AmountPicker {
+  display: flex;
+  font-size: 16px;
+}
+
+.AmountPicker > img {
+  height: 40px;
+}
+
+html:not([dir='rtl']) .AmountPicker > img {
+  margin-right: 10px;
+}
+
+html[dir='rtl'] .AmountPicker > img {
+  margin-left: 10px;
+}
+
+.Info {
+  display: flex;
+  flex-grow: 1;
+  flex-flow: column;
+  justify-content: center;
+}
+
+.Info > span {
+  display: block;
+}
+
+.Info > .title {
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.Amount {
+  display: flex;
+  align-items: center;
+}
+
+.Amount > button {
+  border: 1px solid #000;
+  background-color: transparent;
+  border-radius: 4px;
+  width: 30px;
+  height: 30px;
+  outline: 0;
+  font-size: 0;
+  cursor: pointer;
+}
+
+.Amount > button:disabled {
+  cursor: not-allowed;
+  border-color: #dcdbdb;
+  background-color: #dcdbdb;
+  color: #4e4c4a;
+}
+
+.Amount > button:focus {
+  box-shadow: 0 0 0 2px #6997d3;
+  border-color: transparent;
+}
+
+.Amount > button::after {
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 28px;
+}
+
+.Amount > .Decrease:not(:disabled) {
+  background-color: transparent;
+  border-color: #4e4c4a;
+  color: #4e4c4a;
+}
+
+.Amount > .Decrease:not(:disabled):hover,
+.Amount > .Decrease:not(:disabled):focus {
+  background-color: #4e4c4a;
+  color: #fff;
+}
+
+.Amount > .Decrease::after {
+  content: '\f068';
+}
+
+.Amount > .Increase:not(:disabled) {
+  border-color: #bd8b13;
+  background-color: #bd8b13;
+  color: #fff;
+}
+
+.Amount > .Increase:not(:disabled):hover {
+  background-color: #976f0f;
+}
+
+.Amount > .Increase::after {
+  content: '\f067';
+}
+
+.Amount > span {
+  width: 30px;
+  text-align: center;
+}
