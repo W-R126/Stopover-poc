@@ -1,8 +1,8 @@
 import React from 'react';
 import closeIcon from '../../../../Assets/Images/close-btn.svg';
 import css from './Filters.module.css';
-import RangeSlider from '../../../../Components/UI/RangeSlider';
-import Radio from '../../../../Components/UI/Radio';
+import RangeSlider from '../../../UI/RangeSlider';
+import Radio from '../../../UI/Radio';
 import Utils from '../../../../Utils';
 import DateUtils from '../../../../DateUtils';
 import { FlightOfferModel } from '../../../../Models/FlightOfferModel';
@@ -105,7 +105,6 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
       departureTimeSpan,
       stops,
       price,
-      priceSpan,
     } = this.state;
 
     onChange((offer: FlightOfferModel): boolean => {
@@ -116,7 +115,7 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
       let priceOk = false;
 
       offer.fares.forEach((fare) => {
-        if (fare.price.total >= priceSpan.max || fare.price.total <= price) {
+        if (Math.floor(fare.price.total) <= price) {
           priceOk = true;
         }
       });
@@ -162,8 +161,8 @@ export default class Filters extends React.Component<FiltersProps, FiltersState>
     });
 
     const priceSpan = {
-      min: Math.min(...prices),
-      max: Math.max(...prices),
+      min: Math.floor(Math.min(...prices)),
+      max: Math.floor(Math.max(...prices)),
     };
 
     this.setState({
