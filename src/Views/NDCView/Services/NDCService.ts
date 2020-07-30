@@ -36,9 +36,10 @@ export default class NDCService extends BaseService {
     }[],
     cabinClass?: CabinClassEnum,
   ): Promise<{
-    responseNDC: IataAirShoppingRs;
-    offerTotalPrice: TotalOfferPrice;
-  }|undefined> {
+    responseNDC: IataAirShoppingRs | undefined;
+    offerTotalPrice: TotalOfferPrice | undefined;
+    status: number;
+  }> {
     let resp;
     try {
       const config = new Config();
@@ -70,15 +71,40 @@ export default class NDCService extends BaseService {
           return {
             responseNDC: result.IATA_AirShoppingRS,
             offerTotalPrice: this.getCurrencyCode(resp, result.IATA_AirShoppingRS),
+            status,
           };
         }
-        return undefined;
+        return {
+          responseNDC: undefined,
+          offerTotalPrice: undefined,
+          status: 204,
+        };
+      } if (status === 204) { // no flight has been found
+        return {
+          responseNDC: undefined,
+          offerTotalPrice: undefined,
+          status: 204,
+        };
+      } if (status === 500) { // internal server error
+        return {
+          responseNDC: undefined,
+          offerTotalPrice: undefined,
+          status: 500,
+        };
       }
     } catch (err) {
-      return undefined;
+      return {
+        responseNDC: undefined,
+        offerTotalPrice: undefined,
+        status: 500,
+      };
     }
 
-    return undefined;
+    return {
+      responseNDC: undefined,
+      offerTotalPrice: undefined,
+      status: 500,
+    };
   }
 
   private getCurrencyCode(

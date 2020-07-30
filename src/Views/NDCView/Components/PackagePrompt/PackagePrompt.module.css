@@ -138,3 +138,49 @@
   padding: 0 40px;
   height: 340px;
 }
+
+.ErrorScreen {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 100%;
+  overflow: hidden;
+}
+
+.ErrorScreen .ErrorHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1 0 150px;
+  height: 150px;
+  background-color: #001d83;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 24px;
+  line-height: 33px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+}
+
+.NoFlight {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 100%;  
+  background-image: url('../../../../Assets/Images/NDC/loading2.png');
+  background-position: center center;
+  background-size: 100% 100%;
+}  
+
+.Overlay {
+  display: flex;
+  flex: 1 1 100%;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 25px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.45);
+}

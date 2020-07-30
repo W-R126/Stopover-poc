@@ -26,7 +26,7 @@ import { LegModel } from '../../Models/LegModel';
 
 interface NDCViewState {
   trip: TripModel;
-  loading: boolean;
+  packageStatus: number; // 0: loading, 200: result success, 204, 500: error
   showPackage: boolean;
   outbound?: FlightItemModel;
   inbound?: FlightItemModel;
@@ -49,7 +49,7 @@ class NDCView extends React.Component<NDCViewProps, NDCViewState> {
 
     this.state = {
       trip: copyTrip(),
-      loading: false,
+      packageStatus: 0,
       showPackage: false,
       outbound: undefined,
       inbound: undefined,
@@ -72,7 +72,7 @@ class NDCView extends React.Component<NDCViewProps, NDCViewState> {
 
     this.setState({
       showPackage: true,
-      loading: true,
+      packageStatus: 0,
     });
 
     const ndcReq = ndcService.getFlights(
@@ -87,40 +87,51 @@ class NDCView extends React.Component<NDCViewProps, NDCViewState> {
 
     const ndcResponse = ndcReq;
     ndcResponse.then(async (responseData): Promise<void> => {
-      if (responseData === undefined) { return; }
+      if (responseData.status === 200 && responseData.responseNDC && responseData.offerTotalPrice) {
+        const airportsReq = airportService.getAirports();
+        const airports = await airportsReq;
+        const response = responseData.responseNDC.Response;
+        const outbound = this.getDepatureOnwards(response.DataLists, 0);
+        const inbound = this.getDepatureOnwards(response.DataLists, 1);
+        const paxList = response.DataLists.PaxList
+          ? this.formatPaxList(response.DataLists.PaxList)
+          : undefined;
+        const AugmentationPoint = responseData.responseNDC.AugmentationPoint ?? undefined;
+        const totalPrice = responseData.offerTotalPrice;
 
-      const airportsReq = airportService.getAirports();
-      const airports = await airportsReq;
-      const response = responseData.responseNDC.Response;
-      const outbound = this.getDepatureOnwards(response.DataLists, 0);
-      const inbound = this.getDepatureOnwards(response.DataLists, 1);
-      const paxList = response.DataLists.PaxList
-        ? this.formatPaxList(response.DataLists.PaxList)
-        : undefined;
-      const AugmentationPoint = responseData.responseNDC.AugmentationPoint ?? undefined;
-      const totalPrice = responseData.offerTotalPrice;
+        let experience;
+        let hotel;
+        if (AugmentationPoint) {
+          if (AugmentationPoint['ns1:ExperienceList'] && AugmentationPoint['ns1:ExperienceList']['ns1:Experience']) {
+            experience = AugmentationPoint['ns1:ExperienceList']['ns1:Experience'] ?? undefined;
+          }
+          if (AugmentationPoint['ns1:HotelList']) {
+            hotel = AugmentationPoint['ns1:HotelList']['ns1:Hotel'] ?? undefined;
+          }
+        }
 
-      let experience;
-      let hotel;
-      if (AugmentationPoint) {
-        if (AugmentationPoint['ns1:ExperienceList'] && AugmentationPoint['ns1:ExperienceList']['ns1:Experience']) {
-          experience = AugmentationPoint['ns1:ExperienceList']['ns1:Experience'] ?? undefined;
-        }
-        if (AugmentationPoint['ns1:HotelList']) {
-          hotel = AugmentationPoint['ns1:HotelList']['ns1:Hotel'] ?? undefined;
-        }
+        this.setState({
+          packageStatus: 200,
+          outbound,
+          inbound,
+          hotel,
+          experience,
+          paxList,
+          airports,
+          totalPrice,
+        });
+      } else {
+        this.setState({
+          packageStatus: responseData.status,
+          outbound: undefined,
+          inbound: undefined,
+          hotel: undefined,
+          experience: undefined,
+          paxList: undefined,
+          airports: undefined,
+          totalPrice: undefined,
+        });
       }
-
-      this.setState({
-        loading: false,
-        outbound,
-        inbound,
-        hotel,
-        experience,
-        paxList,
-        airports,
-        totalPrice,
-      });
     });
   }
 
@@ -169,7 +180,7 @@ class NDCView extends React.Component<NDCViewProps, NDCViewState> {
     const {
       trip,
       showPackage,
-      loading,
+      packageStatus,
       outbound,
       inbound,
       hotel,
@@ -203,7 +214,7 @@ class NDCView extends React.Component<NDCViewProps, NDCViewState> {
         </div>
         {showPackage && (
           <PackagePrompt
-            loading={loading}
+            viewStatus={packageStatus}
             closePrompt={(): void => {
               this.setState({
                 showPackage: false,

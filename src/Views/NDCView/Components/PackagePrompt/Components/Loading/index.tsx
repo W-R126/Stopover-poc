@@ -13,10 +13,10 @@ export default class Loading extends React.Component<{}, LoadingState> {
 
   private Loading_Str = [
     'Did you know that Finland has almost 180,000 islands. More than any country on earth.',
-    'Did you know that Finland has almost 180,000 islands. More than any country on earth.',
+    'Every penny thrown into Rome’s Trevi Fountain is collected every day and donated to charities.',
     'Did you know that Finland has almost 180,000 islands. More than any country on earth.',
     'Every penny thrown into Rome’s Trevi Fountain is collected every day and donated to charities.',
-    'Every penny thrown into Rome’s Trevi Fountain is collected every day and donated to charities.',
+    'Did you know that Finland has almost 180,000 islands. More than any country on earth.',
     'Every penny thrown into Rome’s Trevi Fountain is collected every day and donated to charities.',
     'Every penny thrown into Rome’s Trevi Fountain is collected every day and donated to charities.',
     'Every penny thrown into Rome’s Trevi Fountain is collected every day and donated to charities.',
@@ -33,7 +33,7 @@ export default class Loading extends React.Component<{}, LoadingState> {
   }
 
   componentDidMount(): void {
-    this.interval = setInterval(this.timer, 2000);
+    this.interval = setInterval(this.timer, 4000);
   }
 
   componentWillUnmount(): void {
@@ -60,7 +60,7 @@ export default class Loading extends React.Component<{}, LoadingState> {
         </div>
         <div className={css.PanelBody}>
           <img
-            src={curView <= 2 ? this.Loading_Img[0] : this.Loading_Img[1]}
+            src={curView % 2 === 0 ? this.Loading_Img[0] : this.Loading_Img[1]}
             alt="panel back"
           />
           <div className={css.Description}>{this.Loading_Str[curView]}</div>
