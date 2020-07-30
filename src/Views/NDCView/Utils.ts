@@ -1,6 +1,6 @@
 export const RemoveJsonTextAttribute = function (value: any, parentElement: any) {
   try {
-    const parentOfParent = parentElement._parent;
+    // const parentOfParent = parentElement._parent;
     const pOpKeys = Object.keys(parentElement._parent);
     const keyNo = pOpKeys.length;
     const keyName = pOpKeys[keyNo - 1];

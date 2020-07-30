@@ -30,6 +30,53 @@
   color: #bd8b13;
 }
 
+.SortingAndFiltering {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.SortMenu[aria-expanded='true'],
+.FilterMenu[aria-expanded='true'] {
+  z-index: 1;
+}
+
+.FilterMenu {
+  margin-right: 16px;
+}
+
+.SortMenuContent {
+  display: flex;
+  flex-flow: column;
+  padding: 8px 0;
+}
+
+.SortMenuContent > input {
+  display: none;
+}
+
+.SortMenuContent > label {
+  font-size: 18px;
+  padding: 8px 20px;
+  cursor: pointer;
+}
+
+.SortMenuContent > label::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 18px;
+  border: 2px solid transparent;
+  border-top: 0;
+  border-left: 0;
+  transform: rotateZ(45deg);
+  margin-right: 24px;
+}
+
+.SortMenuContent > input:checked + label::before {
+  border-color: #4e4c4a;
+}
+
 .Offers {
   padding: 12px;
   max-height: 600px;

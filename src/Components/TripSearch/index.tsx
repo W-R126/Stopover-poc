@@ -215,7 +215,7 @@ class TripSearch extends React.Component<TripSearchProps, TripSearchState> {
             <Checkbox
               checked={trip.bookWithMiles}
               id="book-with-miles"
-              onChange={(e): Promise<void> => this.onChange({ bookWithMiles: e.target.checked })}
+              onChange={(bookWithMiles): Promise<void> => this.onChange({ bookWithMiles })}
             >
               Book with miles
             </Checkbox>

@@ -32,6 +32,46 @@ export interface HotelModel {
   amenities: AmenityModel[];
 }
 
+function getMinMaxPrice(
+  func: (a: number, b: number) => boolean,
+): (hotels: HotelModel[]) => [HotelModel, number] {
+  return (hotels: HotelModel[]): [HotelModel, number] => {
+    let result = hotels[0];
+    let { total } = result.rooms[0].offers[0].price;
+
+    hotels.forEach(
+      (hotel) => {
+        hotel.rooms.forEach(
+          (room) => {
+            room.offers.forEach(
+              (offer) => {
+                if (func(offer.price.total, total)) {
+                  result = hotel;
+                  total = offer.price.total;
+                }
+              },
+            );
+          },
+        );
+      },
+    );
+
+    return [result, total];
+  };
+}
+
+export const getCheapestHotelPrice = getMinMaxPrice((a: number, b: number) => a < b);
+
+export const getMostExpensiveHotelPrice = getMinMaxPrice((a: number, b: number) => a > b);
+
+export function getCheapestHotelPrices(hotels: HotelModel[]): number[] {
+  return hotels.map((hotel) => getCheapestHotelPrice([hotel])[1]);
+}
+
+export function getMostExpensiveHotelPrices(hotels: HotelModel[]): number[] {
+  return hotels.map((hotel) => getMostExpensiveHotelPrice([hotel])[1]);
+}
+
 export interface ImageModel {
   thumb: string;
   original: string;

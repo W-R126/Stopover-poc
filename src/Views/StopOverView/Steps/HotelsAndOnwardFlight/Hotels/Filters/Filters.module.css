@@ -1,0 +1,38 @@
+.FilterMenuContent {
+  padding: 16px 20px;
+  min-width: 400px;
+}
+
+.Label {
+  font-size: 14px;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  color: #4e4c4a;
+}
+
+.Price,
+.HotelClass {
+  margin-bottom: 16px;
+}
+
+.PriceSlider {
+  display: block;
+  width: 100%;
+}
+
+.HotelClasses {
+  display: grid;
+  grid-template-columns:
+    1fr
+    1fr
+    1fr;
+  gap: 16px;
+}
+
+.AmenityOptions {
+  display: grid;
+  grid-template-columns:
+    1fr
+    1fr
+    1fr;
+  gap: 16px;
+}
