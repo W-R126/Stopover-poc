@@ -32,6 +32,8 @@ export default function InfoModal({
     };
   });
 
+  const [imageIdx, setImageIdx] = useState(0);
+
   return (
     <div className={css.InfoModalWrapper} onClick={onClose} role="button">
       <div
@@ -51,9 +53,27 @@ export default function InfoModal({
 
         {images.length > 0 && (
           <div className={css.Images}>
-            {images.map((image, idx) => (
-              <img src={image.url} alt={image.alt ?? 'Image'} key={`image-${idx}`} />
-            ))}
+            {images.length > 1 && imageIdx !== 0 && (
+              <button
+                type="button"
+                className={[css.ImageButton, css.PrevImage].join(' ')}
+                onClick={(): void => setImageIdx(imageIdx - 1)}
+              >
+                <span />
+              </button>
+            )}
+
+            <img src={images[imageIdx].url} alt={images[imageIdx].alt ?? 'Image'} />
+
+            {images.length > 1 && imageIdx !== images.length - 1 && (
+              <button
+                type="button"
+                className={[css.ImageButton, css.NextImage].join(' ')}
+                onClick={(): void => setImageIdx(imageIdx + 1)}
+              >
+                <span />
+              </button>
+            )}
           </div>
         )}
 

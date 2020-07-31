@@ -1,0 +1,55 @@
+.Summary > .Header {
+  background-color: #e5e5e5;
+  display: grid;
+  grid-template-columns:
+    1fr
+    1fr;
+  padding: 16px;
+  font-family: 'EtihadAltis-Medium';
+  font-size: 18px;
+}
+
+.Summary > .Header > * {
+  padding: 4px 16px;
+}
+
+.Summary > .Header > *:not(:first-child) {
+  border-left: 1px solid #acacac;
+}
+
+.Summary > .Header > * > div {
+  margin-top: 12px;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+}
+
+.Summary > .Header > .Pricing > span::before {
+  display: inline-block;
+  margin-right: 8px;
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f0d6';
+}
+
+.Summary > .Header > .CheckIn > span::before {
+  display: inline-block;
+  margin-right: 8px;
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f017';
+}
+
+.Summary > .Content {
+  padding: 16px;
+}
+
+.Location{
+  padding: 16px;
+  height: 400px;
+}
+
+.Amenities {
+  display: grid;
+  grid-template-columns:
+    1fr
+    1fr
+    1fr;
+  gap: 8px 16px;
+}

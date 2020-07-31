@@ -34,6 +34,7 @@
 
 .Image > img {
   object-fit: cover;
+  object-position: 50% 50%;
   width: 100%;
   height: 100%;
   display: block;
@@ -103,6 +104,20 @@
 
 .Pricing > span {
   font-size: 13px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.Pricing > button {
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  color: #005f96;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1.4;
+  outline: 0;
+  background-color: transparent;
+  border: 0;
 }
 
 .RoomDetails {

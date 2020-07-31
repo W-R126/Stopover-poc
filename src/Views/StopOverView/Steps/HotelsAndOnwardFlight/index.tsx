@@ -5,7 +5,7 @@ import spinner from '../../../../Assets/Images/spinner.svg';
 import ContentService from '../../../../Services/ContentService';
 import StopOverService from '../../../../Services/StopOverService';
 import { HotelOfferModel, RoomOfferModel, getHotelRoomOfferChain } from '../../../../Models/HotelOfferModel';
-import { FlightOfferModel, FareModel, LegModel } from '../../../../Models/FlightOfferModel';
+import { FlightOfferModel, FareModel } from '../../../../Models/FlightOfferModel';
 import AppState from '../../../../AppState';
 import { StopOverModel } from '../../../../Models/StopOverModel';
 import { TripModel } from '../../../../Models/TripModel';
@@ -27,11 +27,12 @@ interface HotelsAndOnwardFlightProps {
 
 interface HotelsAndOnwardFlightState {
   days?: number;
-  trip?: TripModel;
+  trip: TripModel;
   flightOffers?: FlightOfferModel[];
   hotelOffers?: HotelOfferModel;
-  stopOver?: StopOverModel;
+  stopOver: StopOverModel;
   otherOptionsExpanded: boolean;
+  outboundFare: FareModel;
 }
 
 export default class HotelsAndOnwardFlight extends React.Component<
@@ -49,12 +50,13 @@ export default class HotelsAndOnwardFlight extends React.Component<
     super(props);
 
     this.state = {
-      trip: AppState.tripSearch,
+      trip: AppState.tripSearch as TripModel,
       days: AppState.stopOverDays,
       flightOffers: undefined,
       hotelOffers: undefined,
-      stopOver: AppState.stopOverInfo,
+      stopOver: AppState.stopOverInfo as StopOverModel,
       otherOptionsExpanded: false,
+      outboundFare: AppState.outboundFare as FareModel,
     };
 
     this.clickOutside = this.clickOutside.bind(this);
@@ -63,7 +65,7 @@ export default class HotelsAndOnwardFlight extends React.Component<
   componentDidMount(): void {
     const { days, stopOver } = this.state;
 
-    const nextDays = days ?? stopOver?.days[0] ?? 0;
+    const nextDays = days ?? stopOver.days[0] ?? 0;
 
     this.getOffers(nextDays);
 
@@ -78,13 +80,13 @@ export default class HotelsAndOnwardFlight extends React.Component<
   }
 
   private async getOffers(days: number): Promise<void> {
-    const { days: prevDays, trip } = this.state;
+    const { days: prevDays, trip, outboundFare } = this.state;
 
     AppState.stopOverDays = days;
 
-    if (trip && trip.type === TripTypeEnum.roundTrip) {
-      const outboundDate = trip.legs[0].departure as Date;
-      const inboundDate = trip.legs[1].departure as Date;
+    if (trip.type === TripTypeEnum.roundTrip) {
+      const outboundDate = outboundFare.arrival;
+      const inboundDate = trip.legs[trip.legs.length - 1].departure as Date;
 
       const tripDaysDelta = DateUtils.getDaysDelta(
         outboundDate,
@@ -126,8 +128,8 @@ export default class HotelsAndOnwardFlight extends React.Component<
       hotelRoom = undefined;
     }
 
-    const startLeg = trip?.legs[0];
-    const endLeg = trip?.legs[(trip?.legs.length ?? 1) - 1];
+    const startLeg = trip.legs[0];
+    const endLeg = trip.legs[trip.legs.length - 1];
 
     let flightOffers;
     let hotelOffers;
@@ -156,30 +158,15 @@ export default class HotelsAndOnwardFlight extends React.Component<
     }
 
     if (flightOffers && flightOffers[0]) {
-      flightOffers[0].sort((a, b) => {
-        const aStartLeg = a.legs.find((leg) => leg.origin.code === 'AUH') as LegModel;
-        const bStartLeg = b.legs[b.legs.length - 1];
-
-        if (aStartLeg.departure < bStartLeg.departure) {
-          return -1;
-        }
-
-        if (aStartLeg.departure > bStartLeg.departure) {
-          return 1;
-        }
-
-        return 0;
-      });
-
       if (!onwardFare || flightOffers[0].findIndex(
         (fo) => fo.fares[0].hashCode === onwardFare.hashCode,
       ) === -1) {
         onSelectOnward(flightOffers[0][0].fares[0]);
       }
+    }
 
-      if (!hotelRoom) {
-        onSelectRoom(getHotelRoomOfferChain(hotelOffers?.hotels, hotelRoom)[2]);
-      }
+    if (!hotelRoom) {
+      onSelectRoom(getHotelRoomOfferChain(hotelOffers?.hotels, hotelRoom)[2]);
     }
 
     this.setState({
@@ -221,9 +208,9 @@ export default class HotelsAndOnwardFlight extends React.Component<
       trip,
     } = this.state;
 
-    const passengers = trip?.passengers || { adults: 1, children: 0, infants: 0 };
+    const { passengers } = trip;
     const occupants = passengers.adults + passengers.children + passengers.infants;
-    const nextStopOverDays = (stopOver?.days ?? []).slice(0, 3);
+    const nextStopOverDays = stopOver.days.slice(0, 3);
 
     return (
       <div className={css.HotelsAndOnwardFlight}>
@@ -270,12 +257,7 @@ export default class HotelsAndOnwardFlight extends React.Component<
                   >
                     <span />
                     <strong>{`${day} Nights`}</strong>
-                    <em
-                      style={{ visibility: day === (stopOver?.days[0] ?? 0)
-                        ? undefined
-                        : 'hidden',
-                      }}
-                    >
+                    <em style={{ visibility: day === stopOver.days[0] ? undefined : 'hidden' }}>
                       Recommended
                     </em>
                   </div>

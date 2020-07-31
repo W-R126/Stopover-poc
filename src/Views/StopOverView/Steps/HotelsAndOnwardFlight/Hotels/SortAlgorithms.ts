@@ -1,16 +1,25 @@
 import { HotelModel } from '../../../../../Models/HotelOfferModel';
 
-function getMinMaxFunc(func: (...values: number[]) => number): (hotel: HotelModel) => number {
-  return (hotel: HotelModel): number => hotel.rooms.reduce(
-    (prev, curr) => func(prev, curr.offers.reduce(
-      (prev2, curr2) => func(prev2, curr2.price.total),
-      curr.offers[0].price.total,
-    )),
-    hotel.rooms[0].offers[0].price.total,
-  );
+function getMinMaxFunc(
+  func: (...values: number[]) => number,
+  freeCheck = false,
+): (hotel: HotelModel) => number {
+  return (hotel: HotelModel): number => {
+    if (freeCheck && hotel.free) {
+      return 0;
+    }
+
+    return hotel.rooms.reduce(
+      (prev, curr) => func(prev, curr.offers.reduce(
+        (prev2, curr2) => func(prev2, curr2.price.total),
+        curr.offers[0].price.total,
+      )),
+      hotel.rooms[0].offers[0].price.total,
+    );
+  };
 }
 
-const getMinPrice = getMinMaxFunc(Math.min);
+const getMinPrice = getMinMaxFunc(Math.min, true);
 const getMaxPrice = getMinMaxFunc(Math.max);
 
 export default {

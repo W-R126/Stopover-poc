@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 
 import css from './Hotel.module.css';
 import { RoomOfferModel, HotelModel, getHotelRoomOfferChain } from '../../../../../../Models/HotelOfferModel';
 import DateUtils from '../../../../../../DateUtils';
 import Utils from '../../../../../../Utils';
+import HotelInfoModal from './HotelInfoModal';
 
 interface HotelProps {
   className?: string;
@@ -16,34 +17,40 @@ interface HotelProps {
   selected?: boolean;
 }
 
-export default class Hotel extends React.Component<HotelProps> {
-  private asd(): void {
-    //
-  }
+export default function Hotel({
+  className,
+  selected,
+  hotel,
+  checkIn,
+  checkOut,
+  occupants,
+  roomOffer,
+  onSelect,
+}: HotelProps): JSX.Element {
+  const classList = [css.Hotel, className];
 
-  render(): JSX.Element {
-    const {
-      className,
-      selected,
-      hotel,
-      checkIn,
-      checkOut,
-      occupants,
-      roomOffer,
-      onSelect,
-    } = this.props;
+  const nextRoomOffer = roomOffer ?? hotel.rooms[0].offers[0];
 
-    const classList = [css.Hotel];
+  const room = useMemo(
+    () => getHotelRoomOfferChain([hotel], nextRoomOffer)[1],
+    [nextRoomOffer, hotel],
+  );
 
-    if (className) {
-      classList.push(className);
-    }
+  const roomType = useMemo(
+    () => Utils.upperCaseFirst(room?.type.description.toLowerCase() ?? ''),
+    [room],
+  );
 
-    const nextRoomOffer = roomOffer ?? hotel.rooms[0].offers[0];
-    const room = getHotelRoomOfferChain([hotel], nextRoomOffer)[1];
-    const roomType = Utils.upperCaseFirst(room?.type.description.toLowerCase() ?? '');
+  const [showDetails, setShowDetails] = useState(false);
 
-    return (
+  return (
+    <>
+      {showDetails && (
+        <HotelInfoModal
+          hotel={hotel}
+          onClose={(): void => setShowDetails(false)}
+        />
+      )}
       <div className={classList.join(' ')} aria-selected={selected}>
         <div className={css.Image}>
           {hotel.recommended && (
@@ -81,9 +88,11 @@ export default class Hotel extends React.Component<HotelProps> {
 
           <div className={css.Pricing}>
             <strong>
-              {`${nextRoomOffer.price.currency} ${
-                Utils.formatCurrency(nextRoomOffer.price.total)
-              }`}
+              {hotel.free
+                ? 'FREE'
+                : `${nextRoomOffer.price.currency} ${
+                  Utils.formatCurrency(nextRoomOffer.price.total)
+                }`}
             </strong>
 
             <span>
@@ -91,6 +100,13 @@ export default class Hotel extends React.Component<HotelProps> {
                 occupants === 1 ? 'guest' : 'guests'
               }`}
             </span>
+
+            <button
+              type="button"
+              onClick={(): void => setShowDetails(true)}
+            >
+              Hotel details
+            </button>
           </div>
 
           <div className={css.RoomDetails}>
@@ -108,6 +124,6 @@ export default class Hotel extends React.Component<HotelProps> {
           </div>
         </div>
       </div>
-    );
-  }
+    </>
+  );
 }

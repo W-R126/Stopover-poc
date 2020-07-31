@@ -6,6 +6,7 @@ import { ExperienceModel } from '../../../../../../Models/ExperienceModelNew';
 import Page from '../../../../InfoModal/Page';
 import DateUtils from '../../../../../../DateUtils';
 import GoogleMaps from '../../../../../../Components/GoogleMaps';
+import Utils from '../../../../../../Utils';
 
 interface ExperienceInfoModalProps {
   experience: ExperienceModel;
@@ -35,7 +36,7 @@ export default function ExperienceInfoModal({
                 ageTo,
               }, idx) => (
                 <div key={`pricing-${idx}`} className={css.PricingEntry}>
-                  <strong>{`${price.currency} ${price.total}`}</strong>
+                  <strong>{`${price.currency} ${Utils.formatCurrency(price.total)}`}</strong>
                   <span>{`/${label} (${ageFrom} - ${ageTo}yrs)`}</span>
                 </div>
               ))}
