@@ -10,6 +10,7 @@ import { AirportModel } from '../../Models/AirportModel';
 import { CabinClassEnum } from '../../Enums/CabinClassEnum';
 import Filters from './Components/Filters';
 import SortMenu, { SortMenuItem } from './Components/SortMenu';
+import TeaserBanner from './Components/TeaserBanner';
 import Utils from '../../Utils';
 import {
   FlightOfferModel,
@@ -17,6 +18,8 @@ import {
   AlternateFlightOfferModel,
 } from '../../Models/FlightOfferModel';
 import { TripModel } from '../../Models/TripModel';
+import { CustomerSegmentationModel } from '../../Models/CustomerSegmentMappingModel';
+
 import DateUtils from '../../DateUtils';
 import ContentService from '../../Services/ContentService';
 
@@ -33,6 +36,7 @@ interface FlightSearchResultProps {
   selectedFare?: FareModel;
   trip: TripModel;
   contentService: ContentService;
+  mapCustomerSegment?: CustomerSegmentationModel;
 }
 
 interface FlightSearchResultState {
@@ -219,6 +223,7 @@ export default class FlightSearchResult extends React.Component<
       cabinClass,
       trip,
       contentService,
+      mapCustomerSegment,
     } = this.props;
 
     const showCount = showCountFactor * this.showCount;
@@ -246,6 +251,9 @@ export default class FlightSearchResult extends React.Component<
             max={defaultMax}
           />
         )}
+        {
+          mapCustomerSegment && <TeaserBanner mapCustomerSegment={mapCustomerSegment} />
+        }
 
         <div className={css.FlightEntries}>
           {offers.slice(0, showCount).map((offer, idx) => (

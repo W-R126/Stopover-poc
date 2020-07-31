@@ -17,10 +17,12 @@ export default class ExperienceItem extends React.Component<ExperienceItemProps,
 
     const experinceDate = new Date(dateStr);
 
-    return experinceDate.toLocaleDateString(
+    const experienceDateStr = experinceDate.toLocaleDateString(
       contentService.locale,
       { month: 'short', day: 'numeric' },
     );
+    const dateArr = experienceDateStr.split(' ');
+    return `${dateArr[1]} ${dateArr[0]}`;
   }
 
   private getImgUrl(): string {

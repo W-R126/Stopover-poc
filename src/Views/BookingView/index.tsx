@@ -24,6 +24,7 @@ import ContentService from '../../Services/ContentService';
 import AppState from '../../AppState';
 import FlightOfferService from '../../Services/FlightOfferService';
 import { FlightOfferModel, FareModel, AlternateFlightOfferModel } from '../../Models/FlightOfferModel';
+import { CustomerSegmentationModel } from '../../Models/CustomerSegmentMappingModel';
 import DateUtils from '../../DateUtils';
 
 interface BookingViewProps extends RouteComponentProps {
@@ -39,6 +40,7 @@ interface BookingState {
   offers?: FlightOfferModel[][];
   altOffers?: AlternateFlightOfferModel[][];
   outboundFare?: FareModel;
+  mapCustomerSegment?: CustomerSegmentationModel;
 }
 
 class BookingView extends React.Component<BookingViewProps, BookingState> {
@@ -60,6 +62,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       trip: copyTrip(),
       editing: false,
       outboundFare: AppState.outboundFare,
+      mapCustomerSegment: undefined,
     };
 
     this.onOutboundDateChange = this.onOutboundDateChange.bind(this);
@@ -229,6 +232,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
         this.setState({
           offers: offers?.offers,
           altOffers: offers?.altOffers,
+          mapCustomerSegment: offers?.mapCustomerSegment,
         });
       }
     });
@@ -248,6 +252,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
       trip,
       editing,
       outboundFare,
+      mapCustomerSegment,
     } = this.state;
 
     const { departure, origin, destination } = trip.legs[0];
@@ -310,6 +315,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
                 onFareChange={this.onOutboundOfferChange}
                 selectedFare={outboundFare}
                 contentService={contentService}
+                mapCustomerSegment={mapCustomerSegment}
               />
             </>
           )}

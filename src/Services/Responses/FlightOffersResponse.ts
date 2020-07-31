@@ -3,6 +3,7 @@ export interface FlightOffersResponse {
   unbundledOffers: UnbundledOffer[][];
   brandedResults: BrandedResults;
   unbundledAlternateDateOffers: UnbundledAlternateDateOffer[][];
+  customerSegmentation: CustomerSegmentation;
 }
 
 export interface FareFamily {
@@ -107,4 +108,9 @@ export interface AirSearchResults {
   promocodeValid: string;
   negotiateFarePresent: string;
   conversionRatesFound: string;
+}
+
+export interface CustomerSegmentation {
+  id: string;
+  modelType: string;
 }

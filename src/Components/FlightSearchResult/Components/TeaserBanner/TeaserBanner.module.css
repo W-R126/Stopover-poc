@@ -1,0 +1,78 @@
+.ComponetContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 220px;
+  padding: 30px 41px 18px;
+  font-family: 'EtihadAltis-Book', Arial, Helvetica, sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+.BannerBack {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 100% 100%;
+}
+
+.BannerImg1 {
+  background-image: url('../../../../Assets/Images/banner1.jpg');
+}
+.BannerImg2 {
+  background-image: url('../../../../Assets/Images/banner2.jpg');
+}
+.BannerImg3 {
+  background-image: url('../../../../Assets/Images/banner3.jpg');
+}
+
+.Overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.MainTitle {
+  z-index: 1;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 36px;
+  color: #fff;
+}
+
+.Description {
+  z-index: 1;
+  width: 100%;
+  max-width: 500px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 135%;
+  color: #fff;
+  margin-top: 2px;
+}
+
+.Footer {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 135%;
+  color: #fff;
+  margin-top: auto;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+
+.Footer img {
+  width: 11.67px;
+  height: 16.67px;
+  margin-right: 10.17px;
+  z-index: 1;
+}

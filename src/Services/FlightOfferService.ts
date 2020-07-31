@@ -12,6 +12,7 @@ import {
   UnbundledAlternateDateOffer,
   SelectOnwardFlightAndHotelResponse,
   ItineraryPart,
+  CustomerSegmentation,
 } from './Responses/FlightOffersResponse';
 import SessionManager from '../SessionManager';
 import {
@@ -22,8 +23,10 @@ import {
   AlternateFlightOfferModel,
 } from '../Models/FlightOfferModel';
 import { AirportModel } from '../Models/AirportModel';
-
+import { CustomerSegmentationModel } from '../Models/CustomerSegmentMappingModel';
 import { FlightOffersRequest } from './Requests/FlightOffersRequest';
+import { MockMappingData } from '../Components/FlightSearchResult/Components/TeaserBanner/BannerMapping';
+
 import Config from '../Config';
 
 export default class FlightOfferService extends BaseService {
@@ -53,6 +56,7 @@ export default class FlightOfferService extends BaseService {
   ): Promise<{
     offers: FlightOfferModel[][];
     altOffers: AlternateFlightOfferModel[][];
+    mapCustomerSegment: CustomerSegmentationModel | undefined;
   } | undefined> {
     const airportsReq = this.airportService.getAirports();
 
@@ -126,10 +130,12 @@ export default class FlightOfferService extends BaseService {
       airports,
     );
     const altOffers = this.getAltOffers(resp.unbundledAlternateDateOffers);
+    const mappedCustomerSegment = this.mapCustomerSegment(resp.customerSegmentation);
 
     return {
       offers,
       altOffers,
+      mapCustomerSegment: mappedCustomerSegment,
     };
   }
 
@@ -362,5 +368,12 @@ export default class FlightOfferService extends BaseService {
     return {
       offers,
     };
+  }
+
+  private mapCustomerSegment(
+    segmentation: CustomerSegmentation,
+  ): CustomerSegmentationModel|undefined {
+    const finedOne = MockMappingData.find((item) => item.Cluster === segmentation.id);
+    return finedOne;
   }
 }
