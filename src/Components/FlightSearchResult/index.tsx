@@ -251,9 +251,8 @@ export default class FlightSearchResult extends React.Component<
             max={defaultMax}
           />
         )}
-        {
-          mapCustomerSegment && <TeaserBanner mapCustomerSegment={mapCustomerSegment} />
-        }
+
+        {mapCustomerSegment && (<TeaserBanner mapCustomerSegment={mapCustomerSegment} />)}
 
         <div className={css.FlightEntries}>
           {offers.slice(0, showCount).map((offer, idx) => (
@@ -326,6 +325,7 @@ export default class FlightSearchResult extends React.Component<
                     onChange={this.onFiltersChange}
                     ref={this.flightFilterRefs}
                   />
+
                   <SortMenu
                     sortItems={this.getSortItems()}
                     selectedSort={sortingAlgorithm}

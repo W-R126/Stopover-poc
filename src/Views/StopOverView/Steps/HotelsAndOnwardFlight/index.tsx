@@ -20,6 +20,7 @@ interface HotelsAndOnwardFlightProps {
   stopOverService: StopOverService;
   onSelectOnward: (fare?: FareModel) => void;
   onSelectRoom: (room?: RoomOfferModel) => void;
+  onDaysChange: () => void;
   stopOverInfo?: StopOverModel;
   onwardFare?: FareModel;
   roomOffer?: RoomOfferModel;
@@ -204,6 +205,14 @@ export default class HotelsAndOnwardFlight extends React.Component<
     this.setState({ otherOptionsExpanded: false });
   }
 
+  private daysChange(days: number): void {
+    const { onDaysChange } = this.props;
+
+    onDaysChange();
+
+    this.getOffers(days);
+  }
+
   render(): JSX.Element {
     const {
       contentService,
@@ -242,7 +251,7 @@ export default class HotelsAndOnwardFlight extends React.Component<
                 aria-selected={day === days}
                 disabled={day === days}
                 role="option"
-                onClick={(): Promise<void> => this.getOffers(day)}
+                onClick={(): void => this.daysChange(day)}
               >
                 {`${day} Nights`}
               </button>
@@ -268,7 +277,7 @@ export default class HotelsAndOnwardFlight extends React.Component<
                     role="option"
                     key={`optional-day-${day}`}
                     aria-selected={day === days}
-                    onClick={(): Promise<void> => this.getOffers(day)}
+                    onClick={(): void => this.daysChange(day)}
                   >
                     <span />
                     <strong>{`${day} Nights`}</strong>

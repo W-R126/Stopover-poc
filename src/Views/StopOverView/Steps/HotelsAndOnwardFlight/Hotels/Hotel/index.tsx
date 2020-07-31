@@ -164,10 +164,10 @@ export default function Hotel({
                   onSelect(nextRoom.offers[0]);
                 }}
               >
-                {`${nextRoom.offers[0].price.currency} ${
-                  hotel.free
-                    ? 'FREE'
-                    : Utils.formatCurrency(nextRoom.offers[0].price.total)}`}
+                {hotel.free
+                  ? 'FREE'
+                  : `${nextRoom.offers[0].price.currency} ${
+                    Utils.formatCurrency(nextRoom.offers[0].price.total)}`}
               </button>
             </div>
           ))}

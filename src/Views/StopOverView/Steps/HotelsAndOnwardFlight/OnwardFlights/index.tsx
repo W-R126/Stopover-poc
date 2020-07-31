@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import css from './OnwardFlights.module.css';
 import flightIcon from '../../../../../Assets/Images/flight.svg';

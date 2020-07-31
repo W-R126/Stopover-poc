@@ -55,6 +55,14 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
     this.selectInbound = this.selectInbound.bind(this);
     this.selectOnward = this.selectOnward.bind(this);
     this.experiencesChange = this.experiencesChange.bind(this);
+    this.daysChange = this.daysChange.bind(this);
+  }
+
+  private daysChange(): void {
+    this.selectRoom(undefined);
+    this.selectOnward(undefined);
+    this.experiencesChange([]);
+    this.selectInbound(undefined);
   }
 
   private selectRoom(room?: RoomOfferModel): void {
@@ -214,6 +222,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
               onwardFare={onwardFare}
               onSelectOnward={this.selectOnward}
               onSelectRoom={this.selectRoom}
+              onDaysChange={this.daysChange}
               roomOffer={roomOffer}
             />
           )}
@@ -238,20 +247,19 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
         </div>
 
         <ShoppingCart currency={contentService.currency}>
-          {
-            outboundFare && (
-              <FlightItem
-                currency={outboundFare.price.currency}
-                item={outboundFare}
-                price={onwardFare ? 0 : outboundFare.price.total}
-                contentService={contentService}
-                legs={!onwardFare ? undefined : outboundFare.legs.slice(
-                  0,
-                  outboundFare.legs.findIndex((leg) => leg.origin.code === 'AUH'),
-                )}
-              />
-            )
-          }
+          {outboundFare && (
+            <FlightItem
+              currency={outboundFare.price.currency}
+              item={outboundFare}
+              price={onwardFare ? 0 : outboundFare.price.total}
+              contentService={contentService}
+              legs={!onwardFare ? undefined : outboundFare.legs.slice(
+                0,
+                outboundFare.legs.findIndex((leg) => leg.origin.code === 'AUH'),
+              )}
+            />
+          )}
+
           {roomOffer && (
             <HotelItem
               item={roomOffer}
@@ -260,6 +268,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
               price={roomOffer.price.total}
             />
           )}
+
           {filteredExperiences.length > 0 && (
             <ExperienceItem
               item={filteredExperiences}
@@ -274,29 +283,27 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
               )}
             />
           )}
-          {
-            onwardFare && (
-              <FlightItem
-                currency={onwardFare.price.currency}
-                item={onwardFare}
-                price={onwardFare.price.total}
-                contentService={contentService}
-                legs={onwardFare.legs.slice(
-                  onwardFare.legs.findIndex((leg) => leg.origin.code === 'AUH'),
-                )}
-              />
-            )
-          }
-          {
-            inboundFare && (
-              <FlightItem
-                currency={inboundFare.price.currency}
-                item={inboundFare}
-                price={inboundFare.price.total}
-                contentService={contentService}
-              />
-            )
-          }
+
+          {onwardFare && (
+            <FlightItem
+              currency={onwardFare.price.currency}
+              item={onwardFare}
+              price={onwardFare.price.total}
+              contentService={contentService}
+              legs={onwardFare.legs.slice(
+                onwardFare.legs.findIndex((leg) => leg.origin.code === 'AUH'),
+              )}
+            />
+          )}
+
+          {inboundFare && (
+            <FlightItem
+              currency={inboundFare.price.currency}
+              item={inboundFare}
+              price={inboundFare.price.total}
+              contentService={contentService}
+            />
+          )}
         </ShoppingCart>
       </div>
     );

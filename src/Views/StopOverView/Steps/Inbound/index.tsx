@@ -3,14 +3,15 @@ import PlaneImg from '../../../../Assets/Images/plane.svg';
 import css from './Inbound.module.css';
 
 import FlightSearchResult from '../../../../Components/FlightSearchResult';
-import { FlightOfferModel, FareModel, AlternateFlightOfferModel } from '../../../../Models/FlightOfferModel';
-import { TripModel, copyTrip } from '../../../../Models/TripModel';
+import { FlightOfferModel, FareModel } from '../../../../Models/FlightOfferModel';
+import { TripModel } from '../../../../Models/TripModel';
 
 import AppState from '../../../../AppState';
 import StopOverService from '../../../../Services/StopOverService';
 import ContentService from '../../../../Services/ContentService';
 import FlightOfferService from '../../../../Services/FlightOfferService';
 import { AirportModel } from '../../../../Models/AirportModel';
+import { RoomOfferModel } from '../../../../Models/HotelOfferModel';
 
 interface InboundProps {
   className?: string;
@@ -22,77 +23,51 @@ interface InboundProps {
 }
 
 interface InboundState {
-  offers?: FlightOfferModel[][];
-  altOffers?: AlternateFlightOfferModel[][];
+  offers?: FlightOfferModel[];
   trip: TripModel;
   onwardFare: FareModel;
+  roomOffer?: RoomOfferModel;
   inboundFare?: FareModel;
 }
 
 export default class Inbound extends React.Component<InboundProps, InboundState> {
-  private readonly flightSearchResultRef = React.createRef<FlightSearchResult>();
-
   constructor(props: any) {
     super(props);
     this.state = {
       offers: undefined,
-      altOffers: undefined,
       inboundFare: AppState.inboundFare,
       onwardFare: AppState.onwardFare as FareModel,
+      roomOffer: AppState.roomOffer,
       trip: AppState.tripSearch as TripModel,
     };
 
     this.inboundOfferChange = this.inboundOfferChange.bind(this);
-    this.inboundDateChange = this.inboundDateChange.bind(this);
   }
 
   componentDidMount(): void {
-    const { trip } = this.state;
-
-    this.getOffers(trip);
+    this.getOffers();
   }
 
-  private async getOffers(trip: TripModel): Promise<void> {
-    const { flightOfferService } = this.props;
-    const { onwardFare } = this.state;
+  private async getOffers(): Promise<void> {
+    const { stopOverService } = this.props;
+    const { onwardFare, roomOffer } = this.state;
 
-    const offers = await flightOfferService.getOffers(
-      trip.passengers,
-      onwardFare.legs.map((leg) => ({
-        originCode: leg.origin.code,
-        destinationCode: leg.destination.code,
-        departure: leg.departure,
-      })).concat({
-        originCode: trip.legs[1].origin?.code as string,
-        destinationCode: trip.legs[1].destination?.code as string,
-        departure: trip.legs[1].departure as Date,
-      }),
-      trip.cabinClass,
+    const offers = await stopOverService.selectOnwardFlightAndHotel(
+      onwardFare.hashCode,
+      roomOffer?.hashCode,
     );
 
     if (offers) {
-      this.setState({
-        offers: offers.offers,
-        altOffers: offers.altOffers,
-      });
+      const nextOnwardFare = offers[0][0].fares[0];
+
+      AppState.onwardFare = nextOnwardFare;
+
+      this.setState({ onwardFare: nextOnwardFare });
     }
-  }
 
-  private async inboundDateChange(nextInbound: Date): Promise<void> {
-    await new Promise((resolve) => this.setState(
-      { offers: undefined, altOffers: undefined },
-      resolve,
-    ));
-
-    const { trip } = this.state;
-    const nextTrip = copyTrip(trip);
-
-    nextTrip.legs[1].departure = nextInbound;
-
-    this.setState({ trip: nextTrip });
-    AppState.tripSearch = nextTrip;
-
-    this.getOffers(nextTrip);
+    this.setState({
+      offers: offers ? offers[offers.length - 1] : [],
+    });
   }
 
   private inboundOfferChange(inboundFare?: FareModel): void {
@@ -109,17 +84,14 @@ export default class Inbound extends React.Component<InboundProps, InboundState>
     const { contentService, className } = this.props;
     const {
       offers,
-      altOffers,
       trip,
       inboundFare,
     } = this.state;
 
-    const classList = [css.Inbound, className];
-
     const { departure, origin, destination } = trip.legs[1];
 
     return (
-      <div className={classList.join(' ')}>
+      <div className={[css.Inbound, className].join(' ')}>
         <div className={css.Header}>
           <h1>Finally, select your return flight</h1>
 
@@ -139,10 +111,8 @@ export default class Inbound extends React.Component<InboundProps, InboundState>
           origin={origin as AirportModel}
           destination={destination as AirportModel}
           selectedDepartureDate={departure as Date}
-          onDepartureChange={this.inboundDateChange}
           cabinClass={trip.cabinClass}
-          offers={offers && offers[1]}
-          altOffers={altOffers && altOffers[1]}
+          offers={offers}
           className={css.FlightSearchResult}
           onFareChange={this.inboundOfferChange}
           selectedFare={inboundFare}
