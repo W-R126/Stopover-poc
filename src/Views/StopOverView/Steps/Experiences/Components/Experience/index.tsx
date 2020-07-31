@@ -2,7 +2,7 @@ import React from 'react';
 
 import css from './Experience.module.css';
 import raffleIcon from '../../../../../../Assets/Images/raffles.svg';
-import { ExperienceModel } from '../../../../../../Models/ExperienceModelNew';
+import { ExperienceModel } from '../../../../../../Models/ExperienceModel';
 import Utils from '../../../../../../Utils';
 
 interface ExperienceProps {

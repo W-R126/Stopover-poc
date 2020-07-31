@@ -22,7 +22,7 @@ interface HotelsAndOnwardFlightProps {
   onSelectRoom: (room?: RoomOfferModel) => void;
   stopOverInfo?: StopOverModel;
   onwardFare?: FareModel;
-  hotelRoom?: RoomOfferModel;
+  roomOffer?: RoomOfferModel;
 }
 
 interface HotelsAndOnwardFlightState {
@@ -120,12 +120,12 @@ export default class HotelsAndOnwardFlight extends React.Component<
       onSelectRoom,
     } = this.props;
 
-    let { hotelRoom } = this.props;
+    let { roomOffer } = this.props;
 
     if (prevDays !== days) {
       onSelectOnward(undefined);
       onSelectRoom(undefined);
-      hotelRoom = undefined;
+      roomOffer = undefined;
     }
 
     const startLeg = trip.legs[0];
@@ -165,8 +165,8 @@ export default class HotelsAndOnwardFlight extends React.Component<
       }
     }
 
-    if (!hotelRoom) {
-      onSelectRoom(getHotelRoomOfferChain(hotelOffers?.hotels, hotelRoom)[2]);
+    if (!roomOffer) {
+      onSelectRoom(getHotelRoomOfferChain(hotelOffers?.hotels, roomOffer)[2]);
     }
 
     this.setState({
@@ -196,7 +196,7 @@ export default class HotelsAndOnwardFlight extends React.Component<
       onSelectOnward,
       onSelectRoom,
       onwardFare,
-      hotelRoom,
+      roomOffer,
     } = this.props;
 
     const {
@@ -286,7 +286,7 @@ export default class HotelsAndOnwardFlight extends React.Component<
                   <>
                     <Hotels
                       offers={hotelOffers}
-                      hotelRoom={hotelRoom}
+                      roomOffer={roomOffer}
                       className={css.Hotels}
                       contentService={contentService}
                       occupants={occupants}

@@ -2,7 +2,7 @@ import BaseService from './BaseService';
 import { GuestsModel } from '../Models/GuestsModel';
 import SessionManager from '../SessionManager';
 import { ExperienceResponse, Experience } from './Responses/ExperienceResponse';
-import { ExperienceModel, ExperienceAvailabilityModel } from '../Models/ExperienceModelNew';
+import { ExperienceModel, ExperienceAvailabilityModel } from '../Models/ExperienceModel';
 
 export default class ExperienceService extends BaseService {
   async getExperiences(

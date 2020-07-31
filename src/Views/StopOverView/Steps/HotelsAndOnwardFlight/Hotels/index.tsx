@@ -19,13 +19,14 @@ interface HotelProps {
   offers: HotelOfferModel;
   contentService: ContentService;
   occupants: number;
-  hotelRoom?: RoomOfferModel;
+  roomOffer?: RoomOfferModel;
   onSelectRoom: (room?: RoomOfferModel) => void;
 }
 
 interface HotelState {
   sorting: string;
   filtering?: FilterFunc;
+  expandedHotel?: HotelModel;
 }
 
 export default class Hotels extends React.Component<HotelProps, HotelState> {
@@ -48,12 +49,13 @@ export default class Hotels extends React.Component<HotelProps, HotelState> {
     };
 
     this.filterChange = this.filterChange.bind(this);
+    this.changeRoomExpanded = this.changeRoomExpanded.bind(this);
   }
 
   componentDidMount(): void {
-    const { hotelRoom, offers } = this.props;
+    const { roomOffer, offers } = this.props;
 
-    const [selectedHotel] = getHotelRoomOfferChain(offers.hotels, hotelRoom);
+    const [selectedHotel] = getHotelRoomOfferChain(offers.hotels, roomOffer);
 
     if (selectedHotel && this.offersRef.current) {
       const child = this.offersRef.current.children[offers.hotels.indexOf(selectedHotel)];
@@ -67,17 +69,30 @@ export default class Hotels extends React.Component<HotelProps, HotelState> {
     this.setState({ filtering });
   }
 
+  private changeRoomExpanded(expandedHotel?: HotelModel): void {
+    const { offers } = this.props;
+
+    if (expandedHotel && this.offersRef.current) {
+      const child = this.offersRef.current.children[offers.hotels.indexOf(expandedHotel)];
+
+      child.scrollIntoView(true);
+      this.offersRef.current.scrollTop -= 16;
+    }
+
+    this.setState({ expandedHotel });
+  }
+
   render(): JSX.Element {
     const {
       className,
       offers,
       contentService,
       occupants,
-      hotelRoom,
+      roomOffer,
       onSelectRoom,
     } = this.props;
 
-    const { sorting, filtering } = this.state;
+    const { sorting, filtering, expandedHotel } = this.state;
     const { sortLabels } = this;
 
     offers.hotels.sort(SortAlgorithms[sorting as keyof typeof SortAlgorithms]);
@@ -90,8 +105,8 @@ export default class Hotels extends React.Component<HotelProps, HotelState> {
 
     let selected: HotelModel | undefined;
 
-    if (hotelRoom) {
-      [selected] = getHotelRoomOfferChain(offers.hotels, hotelRoom);
+    if (roomOffer) {
+      [selected] = getHotelRoomOfferChain(offers.hotels, roomOffer);
     }
 
     const filteredHotels = offers.hotels.filter(filtering ?? ((): boolean => true));
@@ -147,7 +162,10 @@ export default class Hotels extends React.Component<HotelProps, HotelState> {
             ? (<span className={css.NoResult}>No hotels found.</span>)
             : filteredHotels.map((hotel, idx) => (
               <Hotel
+                onChangeRoomExpanded={this.changeRoomExpanded}
+                changeRoomExpanded={hotel.code === expandedHotel?.code}
                 hotel={hotel}
+                roomOffer={roomOffer}
                 onSelect={onSelectRoom}
                 key={`hotel-${idx}`}
                 checkIn={offers.checkIn}

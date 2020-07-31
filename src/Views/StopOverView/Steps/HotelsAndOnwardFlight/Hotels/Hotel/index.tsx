@@ -5,6 +5,7 @@ import { RoomOfferModel, HotelModel, getHotelRoomOfferChain } from '../../../../
 import DateUtils from '../../../../../../DateUtils';
 import Utils from '../../../../../../Utils';
 import HotelInfoModal from './HotelInfoModal';
+import Collapsable from '../../../../../../Components/UI/Collapsable';
 
 interface HotelProps {
   className?: string;
@@ -14,6 +15,8 @@ interface HotelProps {
   occupants: number;
   roomOffer?: RoomOfferModel;
   onSelect: (roomOffer?: RoomOfferModel) => void;
+  onChangeRoomExpanded: (hotel?: HotelModel) => void;
+  changeRoomExpanded: boolean;
   selected?: boolean;
 }
 
@@ -24,20 +27,26 @@ export default function Hotel({
   checkIn,
   checkOut,
   occupants,
-  roomOffer,
+  roomOffer: propRoomOffer,
   onSelect,
+  onChangeRoomExpanded,
+  changeRoomExpanded,
 }: HotelProps): JSX.Element {
   const classList = [css.Hotel, className];
 
-  const nextRoomOffer = roomOffer ?? hotel.rooms[0].offers[0];
+  let roomOffer = hotel.rooms[0].offers[0];
+
+  if (selected && propRoomOffer) {
+    roomOffer = propRoomOffer;
+  }
 
   const room = useMemo(
-    () => getHotelRoomOfferChain([hotel], nextRoomOffer)[1],
-    [nextRoomOffer, hotel],
+    () => getHotelRoomOfferChain([hotel], roomOffer)[1],
+    [roomOffer, hotel],
   );
 
   const roomType = useMemo(
-    () => Utils.upperCaseFirst(room?.type.description.toLowerCase() ?? ''),
+    () => Utils.upperCaseFirst(room?.type.description ?? ''),
     [room],
   );
 
@@ -51,6 +60,7 @@ export default function Hotel({
           onClose={(): void => setShowDetails(false)}
         />
       )}
+
       <div className={classList.join(' ')} aria-selected={selected}>
         <div className={css.Image}>
           {hotel.recommended && (
@@ -90,8 +100,8 @@ export default function Hotel({
             <strong>
               {hotel.free
                 ? 'FREE'
-                : `${nextRoomOffer.price.currency} ${
-                  Utils.formatCurrency(nextRoomOffer.price.total)
+                : `${roomOffer.price.currency} ${
+                  Utils.formatCurrency(roomOffer.price.total)
                 }`}
             </strong>
 
@@ -102,6 +112,7 @@ export default function Hotel({
             </span>
 
             <button
+              className={css.BlueLink}
               type="button"
               onClick={(): void => setShowDetails(true)}
             >
@@ -110,19 +121,57 @@ export default function Hotel({
           </div>
 
           <div className={css.RoomDetails}>
-            <div className={css.RoomDescription}>
-              <span>{roomType}</span>
-            </div>
+            <span>{roomType}</span>
 
             <button
               type="button"
-              onClick={(): void => onSelect(nextRoomOffer)}
-              className={selected ? css.Selected : undefined}
+              className={css.BlueLink}
+              onClick={(): void => onChangeRoomExpanded(changeRoomExpanded ? undefined : hotel)}
             >
-              {selected ? 'Deselect' : 'Select' }
+              Change room
             </button>
           </div>
+
+          <button
+            type="button"
+            onClick={(): void => onSelect(roomOffer)}
+            className={[css.SelectButton, selected ? css.Selected : undefined].join(' ')}
+          >
+            {selected ? 'Deselect' : 'Select' }
+          </button>
         </div>
+
+        <Collapsable collapsed={!changeRoomExpanded} className={css.Rooms}>
+          {hotel.rooms.map((nextRoom, idx) => (
+            <div key={`room-${idx}`} className={css.Room}>
+              <span>
+                {Utils.upperCaseFirst(nextRoom.type.description)}
+              </span>
+
+              <button
+                className={[
+                  css.SelectButton,
+                  selected && nextRoom.offers.findIndex((o) => o.id === roomOffer?.id) !== -1
+                    ? css.Selected
+                    : undefined,
+                ].join(' ')}
+                type="button"
+                onClick={(): void => {
+                  if (nextRoom.offers[0].id === roomOffer?.id) {
+                    return;
+                  }
+
+                  onSelect(nextRoom.offers[0]);
+                }}
+              >
+                {`${nextRoom.offers[0].price.currency} ${
+                  hotel.free
+                    ? 'FREE'
+                    : Utils.formatCurrency(nextRoom.offers[0].price.total)}`}
+              </button>
+            </div>
+          ))}
+        </Collapsable>
       </div>
     </>
   );

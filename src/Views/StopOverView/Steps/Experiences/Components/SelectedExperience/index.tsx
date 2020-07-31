@@ -3,7 +3,7 @@ import React from 'react';
 import css from './SelectedExperience.module.css';
 import Utils from '../../../../../../Utils';
 import DateUtils from '../../../../../../DateUtils';
-import { ExperienceAvailabilityModel, ExperienceModel } from '../../../../../../Models/ExperienceModelNew';
+import { ExperienceAvailabilityModel, ExperienceModel } from '../../../../../../Models/ExperienceModel';
 
 interface SelectedExperienceProps {
   className?: string;

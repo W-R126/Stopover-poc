@@ -3,7 +3,7 @@ import React from 'react';
 import css from './Experiences.module.css';
 import rafflesIcon from '../../../../Assets/Images/raffles.svg';
 import spinnerIcon from '../../../../Assets/Images/spinner.svg';
-import { ExperienceModel } from '../../../../Models/ExperienceModelNew';
+import { ExperienceModel } from '../../../../Models/ExperienceModel';
 import Experience from './Components/Experience';
 import { ExperienceCategoryEnum } from '../../../../Enums/ExperienceCategoryEnum';
 import SelectedExperience from './Components/SelectedExperience';

@@ -1,4 +1,4 @@
-import { ExperienceModel } from './ExperienceModelNew';
+import { ExperienceModel } from './ExperienceModel';
 
 export interface ExperienceDateModel {
   date: Date;

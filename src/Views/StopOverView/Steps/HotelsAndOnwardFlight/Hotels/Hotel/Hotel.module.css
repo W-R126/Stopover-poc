@@ -108,7 +108,7 @@
   margin-bottom: 8px;
 }
 
-.Pricing > button {
+.BlueLink {
   font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
   font-size: 16px;
   color: #005f96;
@@ -122,14 +122,21 @@
 
 .RoomDetails {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
-  font-size: 14px;
-  grid-column: 1 / -1;
+  flex-flow: column;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-.RoomDetails > button {
+.RoomDetails > span {
+  width: 100%;
+  font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  display: block;
+  line-height: 1.6;
+}
+
+.SelectButton {
+  align-self: flex-end;
   border: 1px solid transparent;
   background-color: #dcdbdb;
   padding: 12px 16px;
@@ -142,17 +149,29 @@
   min-width: 120px;
 }
 
-.RoomDetails > button.Selected {
+.SelectButton.Selected {
   background-color: #bd8b13;
   color: #fff;
 }
 
-.RoomDetails > button:focus {
+.SelectButton:focus {
   border-color: #fff;
   box-shadow: 0 0 0 2px #6997d3;
 }
 
-.RoomDescription > span {
-  display: block;
-  margin-bottom: 4px;
+.Rooms {
+  grid-column: 1 / -1;
+}
+
+.Room {
+  display: grid;
+  grid-template-columns:
+    1fr
+    max-content;
+  padding: 8px 24px;
+  border-top: 1px solid #e6e6e6;
+}
+
+.Room > span {
+  align-self: center;
 }

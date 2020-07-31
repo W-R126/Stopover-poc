@@ -2,7 +2,7 @@ import React from 'react';
 
 import css from './ExperienceInfoModal.module.css';
 import InfoModal from '../../../../InfoModal';
-import { ExperienceModel } from '../../../../../../Models/ExperienceModelNew';
+import { ExperienceModel } from '../../../../../../Models/ExperienceModel';
 import Page from '../../../../InfoModal/Page';
 import DateUtils from '../../../../../../DateUtils';
 import GoogleMaps from '../../../../../../Components/GoogleMaps';

@@ -75,7 +75,7 @@ export default class Utils {
   }
 
   static upperCaseFirst(str: string): string {
-    const [char, ...rest] = str.split('');
+    const [char, ...rest] = str.toLowerCase().split('');
 
     return [(char ?? '').toUpperCase(), ...rest].join('');
   }

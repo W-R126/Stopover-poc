@@ -12,7 +12,7 @@ interface HotelItemProps extends ShoppingCartItemProps<RoomOfferModel> {
 }
 
 export default function HotelItem({
-  item: hotelRoom,
+  item: roomOffer,
   className,
   contentService,
 }: HotelItemProps): JSX.Element {
@@ -28,16 +28,16 @@ export default function HotelItem({
 
       <div className={css.Info}>
         <strong>
-          {`${hotelRoom.checkIn.toLocaleDateString(
+          {`${roomOffer.checkIn.toLocaleDateString(
             contentService.locale,
             { month: 'long', day: 'numeric' },
-          )} - ${hotelRoom.checkOut.toLocaleDateString(
+          )} - ${roomOffer.checkOut.toLocaleDateString(
             contentService.locale,
             { month: 'long', day: 'numeric' },
           )}`}
         </strong>
 
-        {hotelRoom.hotelName}
+        {roomOffer.hotelName}
       </div>
     </div>
   );

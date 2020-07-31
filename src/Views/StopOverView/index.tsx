@@ -31,7 +31,7 @@ interface StopOverProps extends RouteComponentProps<{ progressStep: StopOverProg
 
 interface StopOverState {
   outboundFare?: FareModel;
-  hotelRoom?: RoomOfferModel;
+  roomOffer?: RoomOfferModel;
   experiences: ExperienceDateModel[];
   onwardFare?: FareModel;
   inboundFare?: FareModel;
@@ -44,7 +44,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
 
     this.state = {
       outboundFare: AppState.outboundFare,
-      hotelRoom: AppState.hotelRoom,
+      roomOffer: AppState.roomOffer,
       experiences: AppState.experienceDates,
       onwardFare: AppState.onwardFare,
       inboundFare: AppState.inboundFare,
@@ -58,16 +58,16 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
   }
 
   private selectRoom(room?: RoomOfferModel): void {
-    const { hotelRoom } = this.state;
+    const { roomOffer } = this.state;
 
-    let nextHotelRoom = room;
+    let nextRoomOffer = room;
 
-    if (nextHotelRoom?.id === hotelRoom?.id) {
-      nextHotelRoom = undefined;
+    if (nextRoomOffer?.id === roomOffer?.id) {
+      nextRoomOffer = undefined;
     }
 
-    AppState.hotelRoom = nextHotelRoom;
-    this.setState({ hotelRoom: nextHotelRoom });
+    AppState.roomOffer = nextRoomOffer;
+    this.setState({ roomOffer: nextRoomOffer });
   }
 
   private selectOnward(fare?: FareModel): void {
@@ -113,7 +113,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
 
     const {
       outboundFare,
-      hotelRoom,
+      roomOffer,
       inboundFare,
       onwardFare,
       stopOverInfo,
@@ -214,14 +214,14 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
               onwardFare={onwardFare}
               onSelectOnward={this.selectOnward}
               onSelectRoom={this.selectRoom}
-              hotelRoom={hotelRoom}
+              roomOffer={roomOffer}
             />
           )}
           {progressStep === 'experiences' && (
             <Experiences
               stopOverInfo={stopOverInfo as StopOverModel}
-              startDate={hotelRoom?.checkIn ?? new Date()}
-              endDate={hotelRoom?.checkOut ?? new Date()}
+              startDate={roomOffer?.checkIn ?? new Date()}
+              endDate={roomOffer?.checkOut ?? new Date()}
               experienceService={experienceService}
               onExperiencesChange={this.experiencesChange}
             />
@@ -252,12 +252,12 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
               />
             )
           }
-          {hotelRoom && (
+          {roomOffer && (
             <HotelItem
-              item={hotelRoom}
+              item={roomOffer}
               contentService={contentService}
-              currency={hotelRoom.price.currency}
-              price={hotelRoom.price.total}
+              currency={roomOffer.price.currency}
+              price={roomOffer.price.total}
             />
           )}
           {filteredExperiences.length > 0 && (

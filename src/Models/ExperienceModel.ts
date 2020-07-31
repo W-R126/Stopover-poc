@@ -1,29 +1,52 @@
-import { ExperienceCategoryEnum } from '../Enums/ExperienceCategoryEnum';
-
-export interface TimeSlotModel {
-  date: Date;
-  all: Date[];
-  available: Date[];
-}
+import { PriceModel } from './FlightOfferModel';
+import { CoordinateModel } from './CoordinateModel';
 
 export interface ExperienceModel {
-  id: number;
+  availability: ExperienceAvailabilityModel[];
   title: string;
-  location: string;
-  prices: {
-    adult: number;
-    child: number;
-    infant: number;
+  supplier: string;
+  id: string;
+  description: {
+    long: string;
+    short: string;
   };
-  categories: ExperienceCategoryEnum[];
-  currency: string;
-  timeSlots?: TimeSlotModel[];
-  opens: Date;
-  closes: Date;
-  recommended: boolean;
-  duration?: number;
-  image?: {
-    url: string;
-    alt: string;
+  included: string[];
+  categories: number[];
+  pricing: ExperiencePricingModel[];
+  startingFromPrice: PriceModel;
+  duration: number;
+  info: {
+    additional: string;
+    note: string;
+    highlights: string[];
   };
+  image: {
+    url?: string;
+    thumbURL?: string;
+  };
+  locations: ExperienceLocationModel[];
+}
+
+export interface ExperienceAvailabilityModel {
+  start: Date;
+  end: Date;
+  duration: number;
+}
+
+export interface ExperiencePricingModel {
+  type: string;
+  ageFrom: number;
+  ageTo: number;
+  id: string;
+  label: string;
+  price: PriceModel;
+}
+
+export interface ExperienceLocationModel {
+  name: string;
+  city: string;
+  type: string;
+  description: string;
+  country: string;
+  coordinates: CoordinateModel;
 }
