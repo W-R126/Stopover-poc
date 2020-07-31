@@ -17,7 +17,7 @@ interface OnwardFlightsProps {
 
 export default function OnwardFlights({
   className,
-  offers: propOffers,
+  offers,
   contentService,
   originalFare,
   onSelect,
@@ -28,29 +28,6 @@ export default function OnwardFlights({
   if (className) {
     classList.push(className);
   }
-
-  const offers = useMemo(
-    () => {
-      const nextOffers = [...propOffers];
-      nextOffers.sort((a, b) => {
-        const aLeg = a.legs.find((leg) => leg.origin.code === 'AUH') as LegModel;
-        const bLeg = b.legs.find((leg) => leg.origin.code === 'AUH') as LegModel;
-
-        if (aLeg.departure.valueOf() === bLeg.departure.valueOf()) {
-          return 0;
-        }
-
-        if (aLeg.departure.valueOf() < bLeg.departure.valueOf()) {
-          return -1;
-        }
-
-        return 1;
-      });
-
-      return nextOffers;
-    },
-    [propOffers],
-  );
 
   const abuDhabiLeg = offers[0].legs.find((leg) => leg.origin.code === 'AUH') as LegModel;
   const endLeg = offers[0].legs[offers[0].legs.length - 1];

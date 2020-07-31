@@ -5,7 +5,7 @@ import spinner from '../../../../Assets/Images/spinner.svg';
 import ContentService from '../../../../Services/ContentService';
 import StopOverService from '../../../../Services/StopOverService';
 import { HotelOfferModel, RoomOfferModel, getHotelRoomOfferChain } from '../../../../Models/HotelOfferModel';
-import { FlightOfferModel, FareModel } from '../../../../Models/FlightOfferModel';
+import { FlightOfferModel, FareModel, LegModel } from '../../../../Models/FlightOfferModel';
 import AppState from '../../../../AppState';
 import { StopOverModel } from '../../../../Models/StopOverModel';
 import { TripModel } from '../../../../Models/TripModel';
@@ -158,6 +158,21 @@ export default class HotelsAndOnwardFlight extends React.Component<
     }
 
     if (flightOffers && flightOffers[0]) {
+      flightOffers[0].sort((a, b) => {
+        const aLeg = a.legs.find((leg) => leg.origin.code === 'AUH') as LegModel;
+        const bLeg = b.legs.find((leg) => leg.origin.code === 'AUH') as LegModel;
+
+        if (aLeg.departure.valueOf() === bLeg.departure.valueOf()) {
+          return 0;
+        }
+
+        if (aLeg.departure.valueOf() < bLeg.departure.valueOf()) {
+          return -1;
+        }
+
+        return 1;
+      });
+
       if (!onwardFare || flightOffers[0].findIndex(
         (fo) => fo.fares[0].hashCode === onwardFare.hashCode,
       ) === -1) {
