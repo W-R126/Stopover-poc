@@ -2,20 +2,25 @@ import React from 'react';
 import css from './ExperienceItem.module.css';
 import FlagStarSvg from '../../../../../../Assets/Images/NDC/flag-star-white.svg';
 import ContentService from '../../../../Services/ContentService';
-import { Ns1Experience, PaxList, Pax } from '../../../../Models/NDCModel';
+import {
+  Ns1Experience, PaxList, Pax, FlightItemModel,
+} from '../../../../Models/NDCModel';
 
 interface ExperienceItemProps {
   contentService: ContentService;
   experience: Ns1Experience;
   paxList: PaxList|undefined;
+  flightItem: FlightItemModel;
 }
 
 export default class ExperienceItem extends React.Component<ExperienceItemProps, {}> {
   private getDuration(): string {
-    const { experience, contentService } = this.props;
-    const dateStr = experience['ns1:Availabilities']['ns1:Items'][0]['ns1:AvailabilityFromDateTime'];
+    const { experience, contentService, flightItem } = this.props;
+    const availabilities = experience['ns1:Availabilities'] ?? undefined;
+    if (availabilities) {
+      const dateStr = availabilities['ns1:Items'][0]['ns1:AvailabilityFromDateTime'];
 
-    const experinceDate = new Date(dateStr);
+      const experinceDate = new Date(dateStr);
 
     const experienceDateStr = experinceDate.toLocaleDateString(
       contentService.locale,

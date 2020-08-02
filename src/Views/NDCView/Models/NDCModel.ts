@@ -53,7 +53,7 @@ export interface Pax {
 }
 
 export interface PaxSegmentList {
-  PaxSegment: PaxSegment[];
+  PaxSegment: PaxSegment[]|PaxSegment;
 }
 
 export interface PaxSegment {

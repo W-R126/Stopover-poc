@@ -124,11 +124,12 @@ export default function PackagePrompt({
                   />
                 )
               }
-              {experience && (
+              {(experience && outbound) && (
                 <ExperienceItem
                   experience={experience}
                   contentService={contentService}
                   paxList={paxList}
+                  flightItem={outbound}
                 />
               )}
               {inbound && (

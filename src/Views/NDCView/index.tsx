@@ -135,30 +135,45 @@ class NDCView extends React.Component<NDCViewProps, NDCViewState> {
     });
   }
 
-  private getDepatureOnwards(dataList: DataLists, boundKind: number): FlightItemModel | undefined {
+  private getDepatureOnwards(
+    dataList: DataLists, nBoundKind: number,
+  ): FlightItemModel | undefined {
     const { PaxJourneyList, PaxSegmentList } = dataList;
     const segementList: PaxSegment[] = [];
     let selectedPaxJourney: PaxJourney;
+
     if (Array.isArray(PaxJourneyList.PaxJourney)) {
-      selectedPaxJourney = PaxJourneyList.PaxJourney[boundKind] ?? undefined;
+      selectedPaxJourney = PaxJourneyList.PaxJourney[nBoundKind] ?? undefined;
+    } else if (PaxJourneyList.PaxJourney) {
+      if (Array.isArray(PaxJourneyList.PaxJourney.PaxSegmentRefID)) {
+        selectedPaxJourney = {
+          Duration: PaxJourneyList.PaxJourney.Duration,
+          PaxJourneyID: PaxJourneyList.PaxJourney.PaxJourneyID,
+          PaxSegmentRefID: PaxJourneyList.PaxJourney.PaxSegmentRefID[nBoundKind],
+        };
+      } else { selectedPaxJourney = PaxJourneyList.PaxJourney ?? undefined; }
     } else {
-      if (boundKind === 1) { return undefined; }
-      selectedPaxJourney = PaxJourneyList.PaxJourney ?? undefined;
+      return undefined;
     }
 
     if (!selectedPaxJourney) { return undefined; }
 
-    PaxSegmentList.PaxSegment.forEach((itemOne: PaxSegment) => {
-      if (!selectedPaxJourney || !selectedPaxJourney.PaxSegmentRefID) { return; }
-      if (Array.isArray(selectedPaxJourney.PaxSegmentRefID)) {
-        const filteredOne = selectedPaxJourney.PaxSegmentRefID.filter(
-          (itemFilter: string) => itemFilter === itemOne.PaxSegmentID,
-        );
-        if (filteredOne.length > 0) { segementList.push(itemOne); }
-      } else if (selectedPaxJourney.PaxSegmentRefID === itemOne.PaxSegmentID) {
-        segementList.push(itemOne);
-      }
-    });
+    if (Array.isArray(PaxSegmentList.PaxSegment)) {
+      PaxSegmentList.PaxSegment.forEach((itemOne: PaxSegment) => {
+        if (!selectedPaxJourney || !selectedPaxJourney.PaxSegmentRefID) { return; }
+        if (Array.isArray(selectedPaxJourney.PaxSegmentRefID)) {
+          const filteredOne = selectedPaxJourney.PaxSegmentRefID.filter(
+            (itemFilter: string) => itemFilter === itemOne.PaxSegmentID,
+          );
+          if (filteredOne.length > 0) { segementList.push(itemOne); }
+        } else if (selectedPaxJourney.PaxSegmentRefID === itemOne.PaxSegmentID) {
+          segementList.push(itemOne);
+        }
+      });
+    } else {
+      segementList.push(PaxSegmentList.PaxSegment);
+    }
+
     return {
       paxJourney: selectedPaxJourney,
       paxSegment: segementList,
