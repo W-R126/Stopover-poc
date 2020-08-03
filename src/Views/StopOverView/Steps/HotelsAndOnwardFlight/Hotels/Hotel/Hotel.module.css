@@ -66,6 +66,15 @@
   font-weight: 100;
 }
 
+.Rating > .AverageReview {
+  font-size: 12px;
+  position: relative;
+  top: -2px;
+  left: 12px;
+  font-weight: 100;
+  color: #7a9a01;
+}
+
 .Rating > span {
   display: inline-block;
   color: transparent;

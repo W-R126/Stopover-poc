@@ -88,6 +88,13 @@ export default function Hotel({
                   ★
                 </span>
               ))}
+
+              <strong className={css.AverageReview}>
+                {`Avg. review: ${(hotel.reviews.reduce(
+                  (prev, curr) => prev + curr.rating,
+                  0,
+                ) / hotel.reviews.length).toFixed(2)}`}
+              </strong>
             </div>
 
             <div className={css.CheckInCheckOut}>

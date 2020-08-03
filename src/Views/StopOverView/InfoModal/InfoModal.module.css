@@ -80,6 +80,7 @@
 .Images {
   width: 100%;
   position: relative;
+  min-height: 150px;
 }
 
 .ImageButton {
