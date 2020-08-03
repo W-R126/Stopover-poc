@@ -40,7 +40,7 @@ export function copyTrip(trip?: Partial<TripModel>): TripModel {
   }
 
   const passengers = copyGuests(trip?.passengers);
-  const cabinClass = trip?.cabinClass ?? CabinClassEnum.P;
+  const cabinClass = trip?.cabinClass ?? CabinClassEnum.Y;
   const legs = defaultLegs.map((leg) => copyLeg(leg));
 
   return {

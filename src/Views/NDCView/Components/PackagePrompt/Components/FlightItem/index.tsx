@@ -102,7 +102,7 @@ export default class FlightItem extends React.Component<FlihghtItemProps, {}> {
 
   render(): JSX.Element {
     const { flightItem, label } = this.props;
-    const { paxSegment, paxJourney } = flightItem;
+    const { paxSegment } = flightItem;
 
     return (
       <div className={css.PackageItem}>

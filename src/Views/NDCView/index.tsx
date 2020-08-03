@@ -152,10 +152,17 @@ class NDCView extends React.Component<NDCViewProps, NDCViewState> {
     }
 
     if (Array.isArray(paxJourneyTemp.PaxSegmentRefID)) {
-      selectedPaxJourney = {
-        ...paxJourneyTemp,
-        PaxSegmentRefID: paxJourneyTemp.PaxSegmentRefID[nBoundKind],
-      };
+      if (nBoundKind === 0) {
+        selectedPaxJourney = {
+          ...paxJourneyTemp,
+          PaxSegmentRefID: paxJourneyTemp.PaxSegmentRefID[0],
+        };
+      } else if (nBoundKind === 1) {
+        selectedPaxJourney = {
+          ...paxJourneyTemp,
+          PaxSegmentRefID: paxJourneyTemp.PaxSegmentRefID.slice(1, paxJourneyTemp.PaxSegmentRefID.length),
+        };
+      }
     } else if (nBoundKind === 0) {
       selectedPaxJourney = {
         ...paxJourneyTemp,
