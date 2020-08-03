@@ -158,7 +158,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
         );
         nextFunc = trip.type === TripTypeEnum.roundTrip
           ? (): void => history.push(`/stopover/${StopOverProgressStepEnum.inbound}`)
-          : (): void => history.push(`/stopover/${StopOverProgressStepEnum.checkout}`);
+          : (): void => history.push('/done');
         hotelsClassList.push(css.Done);
         experiencesClassList.push(css.Active);
         break;
@@ -168,26 +168,10 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
             Back to experiences
           </Link>
         );
-        nextFunc = (): void => history.push(`/stopover/${StopOverProgressStepEnum.checkout}`);
+        nextFunc = (): void => history.push('/done');
         hotelsClassList.push(css.Done);
         experiencesClassList.push(css.Done);
         inboundClassList.push(css.Active);
-        break;
-      case StopOverProgressStepEnum.checkout:
-        backLink = trip.type === TripTypeEnum.roundTrip
-          ? (
-            <Link to={`/stopover/${StopOverProgressStepEnum.inbound}`}>
-              Back to return flight
-            </Link>
-          )
-          : (
-            <Link to={`/stopover/${StopOverProgressStepEnum.experiences}`}>
-              Back to experiences
-            </Link>
-          );
-        hotelsClassList.push(css.Done);
-        experiencesClassList.push(css.Done);
-        inboundClassList.push(css.Done);
         break;
       default:
         break;
@@ -271,12 +255,6 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
               selectInbound={this.selectInbound}
               isStopOver
             />
-          )}
-
-          {progressStep === StopOverProgressStepEnum.checkout && (
-            <div>
-              And we are done!
-            </div>
           )}
         </div>
 

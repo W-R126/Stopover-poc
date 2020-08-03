@@ -1,0 +1,7 @@
+.SelectFlightHeader {
+  font-size: 18px;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-weight: 300;
+  padding: 24px;
+  transition: padding 300ms;
+}

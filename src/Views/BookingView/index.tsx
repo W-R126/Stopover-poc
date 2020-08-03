@@ -145,7 +145,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
 
   private async onSelectInbound(): Promise<void> {
     const { stopOverService, history } = this.props;
-    const { outboundFare } = this.state;
+    const { outboundFare, trip } = this.state;
 
     if (outboundFare === undefined) {
       return;
@@ -154,7 +154,11 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     const result = await stopOverService.getStopOver(outboundFare.hashCode);
 
     if (!(result && this.stopOverPromptRef.current)) {
-      history.push('/select-inbound');
+      if (trip.type === TripTypeEnum.roundTrip) {
+        history.push('/select-inbound');
+      } else {
+        history.push('/done');
+      }
 
       return;
     }
@@ -194,7 +198,7 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     if (trip.type === TripTypeEnum.roundTrip) {
       history.push('/select-inbound');
     } else {
-      history.push('/passenger-details');
+      history.push('/done');
     }
   }
 
@@ -208,6 +212,8 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
     }
 
     AppState.tripSearch = trip;
+    AppState.inboundFare = undefined;
+    AppState.onwardFare = undefined;
 
     // Reset offers.
     await new Promise((resolve) => this.setState({

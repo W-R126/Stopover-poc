@@ -50,6 +50,39 @@ export default class StopOverService extends BaseService {
     this.contentService = contentService;
   }
 
+  async selectFlights(flightHashes: number[], hotelHash?: string): Promise<any> {
+    try {
+      const payload: {
+        selectFlights: number[];
+        hotelRateKey?: string;
+      } = {
+        selectFlights: flightHashes,
+      };
+
+      if (hotelHash) {
+        payload.hotelRateKey = hotelHash;
+      }
+
+      const { data, status, headers } = await this.http.post(
+        '/selectFlightsWithStopover',
+        payload,
+        {
+          headers: SessionManager.getSessionHeaders(),
+        },
+      );
+
+      if (status === 200) {
+        SessionManager.setSessionHeaders(headers);
+
+        return data;
+      }
+    } catch (err) {
+      return undefined;
+    }
+
+    return undefined;
+  }
+
   async getStopOver(hash: number): Promise<StopOverModel | undefined> {
     try {
       const result = await this.http.post<StopOverResponse>(
@@ -359,6 +392,14 @@ export default class StopOverService extends BaseService {
       const info = hotelInfo.hotelInfo;
       const { locationInfo } = info;
 
+      const checkIn = (info.amenities.amenity.find(
+        (amenity) => amenity.description === 'Check-in hour',
+      )?.value ?? '').split(':').slice(0, 2).join(':');
+
+      const checkOut = (info.amenities.amenity.find(
+        (amenity) => amenity.description === 'Check-out hour',
+      )?.value ?? '').split(':').slice(0, 2).join(':');
+
       return {
         images: images.map((image) => ({
           thumb: `${this.hotelImageBaseURL}/${image.image.url}`,
@@ -369,17 +410,15 @@ export default class StopOverService extends BaseService {
         rooms: this.getRoomOffers(
           hotelInfo.hotelRateInfo.rooms.room,
           hotelInfo.hotelInfo.hotelName,
+          checkIn,
+          checkOut,
         ),
         chain: {
           code: info.chainCode,
           name: info.chainName,
         },
-        checkIn: (info.amenities.amenity.find(
-          (amenity) => amenity.description === 'Check-in hour',
-        )?.value ?? '').split(':').slice(0, 2).join(':'),
-        checkOut: (info.amenities.amenity.find(
-          (amenity) => amenity.description === 'Check-out hour',
-        )?.value ?? '').split(':').slice(0, 2).join(':'),
+        checkIn,
+        checkOut,
         free: info.free,
         name: info.hotelName,
         code: info.hotelCode,
@@ -435,6 +474,8 @@ export default class StopOverService extends BaseService {
   private getRoomOffers(
     rooms: Room[],
     hotelName: string,
+    checkInTime: string,
+    checkOutTime: string,
   ): RoomModel[] {
     return rooms.map((room): RoomModel => ({
       category: room.roomCategory,
@@ -459,6 +500,9 @@ export default class StopOverService extends BaseService {
             lunch: ratePlan.mealsIncluded.lunch,
             lunchOrDinner: ratePlan.mealsIncluded.lunchOrDinner,
           },
+          checkInTime,
+          checkOutTime,
+          title: room.roomDescription.name,
           checkIn: rateKeyInfo.checkIn,
           checkOut: rateKeyInfo.checkOut,
           id: rateKeyInfo.id,

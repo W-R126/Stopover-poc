@@ -1,7 +1,0 @@
-.InboundContainer {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 1440px;
-  margin: 50px auto 120px;
-}

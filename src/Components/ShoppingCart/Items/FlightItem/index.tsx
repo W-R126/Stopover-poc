@@ -17,18 +17,25 @@ export default function FlightItem({
   className,
   contentService,
   legs,
+  detailed,
+  style,
 }: FlightItemProps): JSX.Element {
-  const classList = [css.FlightItem, shoppingCartCss.Item];
-
-  if (className) {
-    classList.push(className);
-  }
-
   const startLeg = legs ? legs[0] : fare.legs[0];
   const endLeg = legs ? legs[legs.length - 1] : fare.legs[fare.legs.length - 1];
 
+  if (detailed) {
+    return (
+      <div
+        className={[css.FlightItemDetailed, shoppingCartCss.Item, className].join(' ')}
+        style={style}
+      >
+        Detailed flight!
+      </div>
+    );
+  }
+
   return (
-    <div className={classList.join(' ')}>
+    <div className={[css.FlightItem, shoppingCartCss.Item, className].join(' ')}>
       <img src={flightIcon} alt="Flight" className={css.Icon} />
 
       <div className={css.Info}>

@@ -15,13 +15,9 @@ export default function ExperienceItem({
   item: experiences,
   className,
   contentService,
+  detailed,
+  style,
 }: ExperienceItemProps): JSX.Element {
-  const classList = [css.ExperienceItem, shoppingCartCss.Item];
-
-  if (className) {
-    classList.push(className);
-  }
-
   const startDate = experiences[0]?.date;
   const endDate = experiences[experiences.length - 1]?.date;
 
@@ -39,8 +35,19 @@ export default function ExperienceItem({
 
   const totalExperiences = experiences.reduce((prev, curr) => prev + curr.experiences.length, 0);
 
+  if (detailed) {
+    return (
+      <div
+        className={[css.ExperienceItemDetailed, shoppingCartCss.Item, className].join(' ')}
+        style={style}
+      >
+        Detailed experiences!
+      </div>
+    );
+  }
+
   return (
-    <div className={classList.join(' ')}>
+    <div className={[css.ExperienceItem, shoppingCartCss.Item, className].join(' ')}>
       <img src={raffleIcon} alt="Flight" className={css.Icon} />
 
       <div className={css.Info}>

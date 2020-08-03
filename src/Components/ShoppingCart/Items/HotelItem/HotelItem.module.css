@@ -42,3 +42,18 @@
   justify-self: start;
   line-height: 1;
 }
+
+.HotelItemDetailed > strong,
+.HotelItemDetailed > span {
+  display: block;
+  line-height: 1.6;
+}
+
+.HotelItemDetailed > .CheckInOut {
+  color: #a0a0a0;
+  font-size: 14px;
+}
+
+.HotelItemDetailed > .IncludedMeals {
+  color: #7a9a01;
+}

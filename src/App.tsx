@@ -12,11 +12,12 @@ import StopOverService from './Services/StopOverService';
 import StopOverView from './Views/StopOverView';
 import { StopOverProgressStepEnum } from './Enums/StopOverProgressStepEnum';
 import FlightOfferService from './Services/FlightOfferService';
-import SelectInbound from './Views/SelectInbound';
 import ExperienceService from './Services/ExperienceService';
 import GoogleMaps from './Components/GoogleMaps';
 import NDCView from './Views/NDCView';
 import NDCService from './Views/NDCView/Services/NDCService';
+import DoneView from './Views/DoneView';
+import SelectInboundView from './Views/SelectInboundView';
 
 export default function App({ config }: { config: Config }): JSX.Element {
   const contentService = new ContentService('en-GB', 'EUR', config);
@@ -79,10 +80,16 @@ export default function App({ config }: { config: Config }): JSX.Element {
             </Route>
 
             <Route path="/select-inbound">
-              <SelectInbound
-                stopOverService={stopOverService}
+              <SelectInboundView
                 flightOfferService={flightOfferService}
                 contentService={contentService}
+              />
+            </Route>
+
+            <Route path="/done">
+              <DoneView
+                flightOfferService={flightOfferService}
+                stopOverService={stopOverService}
               />
             </Route>
           </Switch>

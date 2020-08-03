@@ -45,6 +45,28 @@ export default class FlightOfferService extends BaseService {
     this.airportService = airportService;
   }
 
+  async selectOffer(hashCodes: number[]): Promise<any> {
+    try {
+      const { status, data, headers } = await this.http.post(
+        '/selectFlights',
+        {
+          selectFlights: hashCodes,
+        },
+        {
+          headers: SessionManager.getSessionHeaders(),
+        },
+      );
+
+      if (status === 200) {
+        SessionManager.setSessionHeaders(headers);
+      }
+
+      return data;
+    } catch (err) {
+      return undefined;
+    }
+  }
+
   async getOffers(
     passengers: GuestsModel,
     legs: {

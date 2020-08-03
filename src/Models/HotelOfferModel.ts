@@ -102,12 +102,15 @@ export interface RoomOfferModel {
     lunch: boolean;
     lunchOrDinner: boolean;
   };
+  checkInTime: string;
+  checkOutTime: string;
   checkIn: Date;
   checkOut: Date;
   hashCode: string;
   id: string;
   price: PriceModel;
   hotelName: string;
+  title: string;
   cancelPenalty: {
     price: PriceModel;
     deadline: Date;

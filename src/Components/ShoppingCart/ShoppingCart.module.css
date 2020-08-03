@@ -1,21 +1,26 @@
 .ShoppingCart {
   position: fixed;
   z-index: 100;
-  height: 90px;
   width: 100%;
-  top: calc(100vh - 90px);
+  bottom: 0;
+  max-height: unset;
   left: 0;
   border-top: 3px solid #bd8b13;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   transition:
-    top 200ms,
+    bottom 200ms,
     box-shadow 200ms;
   background-color: #fff;
 }
 
 .ShoppingCart[aria-expanded='false'] {
-  top: 100vh;
+  bottom: -100px;
+  max-height: 90px;
   box-shadow: none;
+}
+
+.ShoppingCart.ShowDetails {
+  height: unset;
 }
 
 .ContentWrapper {
@@ -30,6 +35,7 @@
   height: 100%;
   display: flex;
   align-items: center;
+  padding: 8px 0;
 }
 
 .Items > *.Item:not(:first-child) {
@@ -43,6 +49,7 @@
     max-content;
   gap: 0 8px;
   align-self: center;
+  padding: 8px 0;
 }
 
 .Total {
@@ -61,4 +68,50 @@
 .Total > strong {
   font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
   font-size: 22px;
+}
+
+.ViewDetails {
+  grid-column: 1 / -1;
+  border: 0;
+  background-color: transparent;
+  outline: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 16px;
+  align-items: center;
+  height: 30px;
+  cursor: pointer;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #005f96;
+}
+
+.ViewDetails > span::after {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #4e4c4a;
+  border-top: 0;
+  border-left: 0;
+  transform: translateX(8px) translateY(2px) rotateZ(225deg);
+  content: '';
+  transition: transform 100ms;
+}
+
+.ShoppingCart.ShowDetails .ViewDetails > span::after {
+  transform: translateX(8px) translateY(-2px) rotateZ(45deg);
+}
+
+.DetailedView {
+  background-color: #ededec;
+}
+
+.DetailedViewWrapper {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  display: flex;
+}
+
+.DetailedViewWrapper > .DetailedItem:not(:first-child) {
+  margin-left: 40px;
 }
