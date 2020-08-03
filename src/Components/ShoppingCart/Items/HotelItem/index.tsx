@@ -19,6 +19,8 @@ export default function HotelItem({
   contentService,
   detailed,
   style,
+  currency,
+  price,
 }: HotelItemProps): JSX.Element {
   if (detailed) {
     const includedMeals = Object.keys(roomOffer.includedMeals).map(
@@ -36,6 +38,12 @@ export default function HotelItem({
         className={[css.HotelItemDetailed, shoppingCartCss.Item, className].join(' ')}
         style={style}
       >
+        <strong className={css.Pricing}>
+          {price === 0
+            ? 'FREE'
+            : `${currency} ${Utils.formatCurrency(price)}`}
+        </strong>
+
         <strong>{roomOffer.hotelName}</strong>
         <span>{`${DateUtils.getDaysDelta(roomOffer.checkIn, roomOffer.checkOut)} Nights`}</span>
         <span>{Utils.upperCaseFirst(roomOffer.title)}</span>

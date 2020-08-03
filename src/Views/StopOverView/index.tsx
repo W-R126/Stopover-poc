@@ -263,7 +263,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
             <FlightItem
               currency={outboundFare.price.currency}
               item={outboundFare}
-              price={onwardFare ? 0 : outboundFare.price.total}
+              price={onwardFare ? onwardFare.price.total : outboundFare.price.total}
               contentService={contentService}
               legs={!onwardFare ? undefined : outboundFare.legs.slice(
                 0,
@@ -277,7 +277,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
               item={roomOffer}
               contentService={contentService}
               currency={roomOffer.price.currency}
-              price={roomOffer.price.total}
+              price={roomOffer.free ? 0 : roomOffer.price.total}
             />
           )}
 
@@ -300,7 +300,7 @@ class StopOverView extends React.Component<StopOverProps, StopOverState> {
             <FlightItem
               currency={onwardFare.price.currency}
               item={onwardFare}
-              price={onwardFare.price.total}
+              price={0}
               contentService={contentService}
               legs={onwardFare.legs.slice(
                 onwardFare.legs.findIndex((leg) => leg.origin.code === 'AUH'),

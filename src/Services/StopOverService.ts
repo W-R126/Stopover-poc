@@ -412,6 +412,7 @@ export default class StopOverService extends BaseService {
           hotelInfo.hotelInfo.hotelName,
           checkIn,
           checkOut,
+          info.free,
         ),
         chain: {
           code: info.chainCode,
@@ -476,6 +477,7 @@ export default class StopOverService extends BaseService {
     hotelName: string,
     checkInTime: string,
     checkOutTime: string,
+    free: boolean,
   ): RoomModel[] {
     return rooms.map((room): RoomModel => ({
       category: room.roomCategory,
@@ -500,6 +502,7 @@ export default class StopOverService extends BaseService {
             lunch: ratePlan.mealsIncluded.lunch,
             lunchOrDinner: ratePlan.mealsIncluded.lunchOrDinner,
           },
+          free,
           checkInTime,
           checkOutTime,
           title: room.roomDescription.name,

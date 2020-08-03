@@ -4,6 +4,7 @@
     40px
     max-content;
   gap: 0 16px;
+  min-width: 200px;
 }
 
 .Icon {
@@ -28,4 +29,25 @@
 .Info > strong {
   font-family: 'EtihadAltis-Medium', Arial, Helvetica, sans-serif;
   font-weight: 900;
+}
+
+.ExperienceItemDetailed > span,
+.ExperienceItemDetailed > strong {
+  display: block;
+  line-height: 1.6;
+}
+
+.ExperienceItemDetailed > .Pricing {
+  margin: 0 0 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #cecece;
+}
+
+.ExperienceItemDetailed > span {
+  font-size: 14px;
+}
+
+.ExperienceItemDetailed > .ExperiencePrice {
+  margin-bottom: 16px;
+  color: #7a9a01;
 }

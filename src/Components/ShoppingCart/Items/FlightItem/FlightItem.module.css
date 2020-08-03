@@ -43,3 +43,51 @@
   justify-self: start;
   line-height: 1;
 }
+
+.FlightItemDetailed > span,
+.FlightItemDetailed > strong {
+  display: block;
+  line-height: 1.6;
+}
+
+.FlightItemDetailed > .Pricing {
+  margin: 0 0 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #cecece;
+}
+
+.FlightItemDetailed > .Airport::before,
+.FlightItemDetailed > .TravelTime::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.FlightItemDetailed > .Airport::before {
+  height: 14px;
+  border: 2px solid #7e7e7e;
+  background-color: #fff;
+  border-radius: 50%;
+}
+
+.FlightItemDetailed > .TravelTime {
+  font-size: 14px;
+}
+
+.FlightItemDetailed > .TravelTime::before {
+  height: 40px;
+  border-right: 2px dashed #b1b1b1;
+  width: 8px;
+  margin-right: 14px;
+}
+
+.FlightItemDetailed > .LayOver {
+  border: 1px solid #cecece;
+  font-size: 14px;
+  border-left: 0;
+  border-right: 0;
+  padding: 4px 0;
+  margin: 8px 0;
+}

@@ -157,7 +157,10 @@ export default function Hotel({
                 ].join(' ')}
                 type="button"
                 onClick={(): void => {
-                  if (nextRoom.offers[0].id === roomOffer?.id) {
+                  if (
+                    selected
+                    && nextRoom.offers.findIndex((o) => o.id === roomOffer?.id) !== -1
+                  ) {
                     return;
                   }
 

@@ -328,7 +328,9 @@ class BookingView extends React.Component<BookingViewProps, BookingState> {
         </div>
 
         <ShoppingCart
-          proceedLabel="Select inbound flight"
+          proceedLabel={trip.type === TripTypeEnum.roundTrip
+            ? 'Select inbound flight'
+            : 'Checkout'}
           proceedAction={this.onSelectInbound}
           currency={contentService.currency}
         >

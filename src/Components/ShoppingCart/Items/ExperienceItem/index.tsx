@@ -6,6 +6,7 @@ import raffleIcon from '../../../../Assets/Images/raffles.svg';
 import { ShoppingCartItemProps } from '../..';
 import { ExperienceDateModel } from '../../../../Models/ExperienceDateModel';
 import ContentService from '../../../../Services/ContentService';
+import Utils from '../../../../Utils';
 
 interface ExperienceItemProps extends ShoppingCartItemProps<ExperienceDateModel[]> {
   contentService: ContentService;
@@ -17,6 +18,8 @@ export default function ExperienceItem({
   contentService,
   detailed,
   style,
+  currency,
+  price,
 }: ExperienceItemProps): JSX.Element {
   const startDate = experiences[0]?.date;
   const endDate = experiences[experiences.length - 1]?.date;
@@ -41,7 +44,39 @@ export default function ExperienceItem({
         className={[css.ExperienceItemDetailed, shoppingCartCss.Item, className].join(' ')}
         style={style}
       >
-        Detailed experiences!
+        <strong className={css.Pricing}>
+          {price === 0
+            ? 'FREE'
+            : `${currency} ${Utils.formatCurrency(price)}`}
+        </strong>
+
+        {experiences.map((experienceDate, idx) => (
+          experienceDate.experiences.map((experience, idx2) => (
+            <React.Fragment key={`experience-${idx}-${idx2}`}>
+              <strong>
+                {experience.experience.title}
+              </strong>
+
+              <span>
+                {experienceDate.date.toLocaleDateString(
+                  contentService.locale,
+                  { month: 'long', day: 'numeric', year: 'numeric' },
+                )}
+              </span>
+
+              <span>
+                {`${experience.guests} ${experience.guests === 1 ? 'guest' : 'guests'}`}
+              </span>
+
+              <span className={css.ExperiencePrice}>
+                {`${experience.experience.pricing[0].price.currency} ${
+                  Utils.formatCurrency(
+                    experience.experience.pricing[0].price.total * experience.guests,
+                  )}`}
+              </span>
+            </React.Fragment>
+          )).flat()
+        ))}
       </div>
     );
   }

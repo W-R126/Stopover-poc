@@ -102,6 +102,7 @@ export interface RoomOfferModel {
     lunch: boolean;
     lunchOrDinner: boolean;
   };
+  free: boolean;
   checkInTime: string;
   checkOutTime: string;
   checkIn: Date;
