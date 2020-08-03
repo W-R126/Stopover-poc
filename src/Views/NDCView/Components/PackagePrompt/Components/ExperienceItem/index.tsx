@@ -22,12 +22,23 @@ export default class ExperienceItem extends React.Component<ExperienceItemProps,
 
       const experinceDate = new Date(dateStr);
 
-    const experienceDateStr = experinceDate.toLocaleDateString(
+      const experienceDateStr = experinceDate.toLocaleDateString(
+        contentService.locale,
+        { month: 'short', day: 'numeric' },
+      );
+      const dateArr = experienceDateStr.split(' ');
+      return `${dateArr[1]} ${dateArr[0]}`;
+    }
+    const { paxSegment } = flightItem;
+    const endDate = new Date(paxSegment[paxSegment.length - 1].Dep.AircraftScheduledDateTime);
+    const expDate = new Date(endDate.valueOf() + 24 * 60 * 60 * 1000);
+
+    const expDateStr = expDate.toLocaleDateString(
       contentService.locale,
       { month: 'short', day: 'numeric' },
     );
-    const dateArr = experienceDateStr.split(' ');
-    return `${dateArr[1]} ${dateArr[0]}`;
+    const expDateArr = expDateStr.split(' ');
+    return `${expDateArr[1]} ${expDateArr[0]}`;
   }
 
   private getImgUrl(): string {
