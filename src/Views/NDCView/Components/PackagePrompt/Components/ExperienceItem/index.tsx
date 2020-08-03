@@ -41,12 +41,6 @@ export default class ExperienceItem extends React.Component<ExperienceItemProps,
     return `${expDateArr[1]} ${expDateArr[0]}`;
   }
 
-  private getImgUrl(): string {
-    const { experience } = this.props;
-    const productContent = experience['ns1:Product']['ns1:ProductContent'];
-    return productContent['ns1:ProductImages'][0]['ns1:ImageUrl'];
-  }
-
   private getTitle(): string {
     const { experience } = this.props;
     const productContent = experience['ns1:Product']['ns1:ProductContent'];
@@ -90,6 +84,25 @@ export default class ExperienceItem extends React.Component<ExperienceItemProps,
     return '1 Adult ticket';
   }
 
+  private renderProductImg(): JSX.Element|null {
+    const { experience } = this.props;
+    let ImageUrl = '';
+    const productContent = experience['ns1:Product']['ns1:ProductContent'] ?? undefined;
+    if (productContent) {
+      const ns1ProductImages = productContent['ns1:ProductImages'] ?? undefined;
+      if (ns1ProductImages) {
+        if (Array.isArray(ns1ProductImages)) {
+          ImageUrl = ns1ProductImages[0]['ns1:ImageUrl'] ?? '';
+        } else {
+          ImageUrl = ns1ProductImages['ns1:ImageUrl'] ?? '';
+        }
+      }
+    }
+
+    if (ImageUrl.length === 0) return null;
+    return <img className={css.HotelImage} src={ImageUrl} alt="hotel" />;
+  }
+
   render(): JSX.Element {
     return (
       <div className={css.PackageItem}>
@@ -100,7 +113,7 @@ export default class ExperienceItem extends React.Component<ExperienceItemProps,
         </div>
         <div className={`${css.PackageContent} ${css.Experience}`}>
           <div className={css.ExperienceItem}>
-            <img className={css.HotelImage} src={this.getImgUrl()} alt="hotel" />
+            {this.renderProductImg()}
             <div className={css.HotelImageOverlay} />
             <div className={css.Title}>{this.getTitle()}</div>
             <div className={css.Location}>

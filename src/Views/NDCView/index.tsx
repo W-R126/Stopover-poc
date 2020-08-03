@@ -140,23 +140,29 @@ class NDCView extends React.Component<NDCViewProps, NDCViewState> {
   ): FlightItemModel | undefined {
     const { PaxJourneyList, PaxSegmentList } = dataList;
     const segementList: PaxSegment[] = [];
-    let selectedPaxJourney: PaxJourney;
+    let selectedPaxJourney: PaxJourney|undefined;
+    let paxJourneyTemp: PaxJourney;
 
     if (Array.isArray(PaxJourneyList.PaxJourney)) {
-      selectedPaxJourney = PaxJourneyList.PaxJourney[nBoundKind] ?? undefined;
+      paxJourneyTemp = PaxJourneyList.PaxJourney[0] ?? undefined;
     } else if (PaxJourneyList.PaxJourney) {
-      if (Array.isArray(PaxJourneyList.PaxJourney.PaxSegmentRefID)) {
-        selectedPaxJourney = {
-          Duration: PaxJourneyList.PaxJourney.Duration,
-          PaxJourneyID: PaxJourneyList.PaxJourney.PaxJourneyID,
-          PaxSegmentRefID: PaxJourneyList.PaxJourney.PaxSegmentRefID[nBoundKind],
-        };
-      } else { selectedPaxJourney = PaxJourneyList.PaxJourney ?? undefined; }
+      paxJourneyTemp = PaxJourneyList.PaxJourney;
     } else {
       return undefined;
     }
 
-    if (!selectedPaxJourney) { return undefined; }
+    if (Array.isArray(paxJourneyTemp.PaxSegmentRefID)) {
+      selectedPaxJourney = {
+        ...paxJourneyTemp,
+        PaxSegmentRefID: paxJourneyTemp.PaxSegmentRefID[nBoundKind],
+      };
+    } else if (nBoundKind === 0) {
+      selectedPaxJourney = {
+        ...paxJourneyTemp,
+      };
+    } else if (nBoundKind === 1) return undefined;
+
+    if (!selectedPaxJourney) return undefined;
 
     if (Array.isArray(PaxSegmentList.PaxSegment)) {
       PaxSegmentList.PaxSegment.forEach((itemOne: PaxSegment) => {

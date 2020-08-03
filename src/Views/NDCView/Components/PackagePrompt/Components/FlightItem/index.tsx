@@ -54,17 +54,30 @@ export default class FlightItem extends React.Component<FlihghtItemProps, {}> {
     );
   }
 
-  private getDuration(strDuration: string): string {
-    const timeStr = strDuration.substr(2, strDuration.length);
-    const hour = parseInt(timeStr.substr(0, timeStr.indexOf('H')), 0);
-    const minute = parseInt(
-      timeStr.substr(
-        timeStr.indexOf('H') + 1,
-        timeStr.indexOf('M') - 1,
-      ),
-      0,
-    );
-    return `${hour}h ${minute}m`;
+  private getDuration(): string {
+    const { flightItem } = this.props;
+    const { paxSegment } = flightItem;
+    let hours = 0;
+    let minutes = 0;
+    paxSegment.forEach((item) => {
+      const timeStr = item.Duration.substr(2, item.Duration.length);
+      hours += parseInt(timeStr.substr(0, timeStr.indexOf('H')), 0);
+
+      minutes += parseInt(
+        timeStr.substr(
+          timeStr.indexOf('H') + 1,
+          timeStr.indexOf('M') - 1,
+        ),
+        0,
+      );
+    });
+
+    if (minutes >= 60) {
+      minutes -= 60;
+      hours += 1;
+    }
+
+    return `${hours}h ${minutes}m`;
   }
 
   private getFlightName = (selectedSegment: PaxSegment): string => {
@@ -117,7 +130,7 @@ export default class FlightItem extends React.Component<FlihghtItemProps, {}> {
                 <img src={PlanBlackRightSvg} alt="flight plan" />
               </div>
               <div className={css.Duaration}>
-                {this.getDuration(paxJourney.Duration)}
+                {this.getDuration()}
               </div>
               <div className={css.Stopport}>
                 {paxSegment.length === 1 ? 'Direct' : `${paxSegment.length} Stops`}

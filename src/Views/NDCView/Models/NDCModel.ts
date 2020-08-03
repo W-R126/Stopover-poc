@@ -400,7 +400,7 @@ export interface Ns1ProductContent {
   'ns1:ProductEntryNotes': string;
   'ns1:ProductExcludes': Ns1ProductExcludes;
   'ns1:ProductHighlights': ProductHighlight[];
-  'ns1:ProductImages': ProductImage[];
+  'ns1:ProductImages': ProductImage[] | ProductImage;
   'ns1:ProductIncludes': Ns1ProductIncludes;
   'ns1:ProductLongDescription': string;
   'ns1:ProductShortDescription': string;
