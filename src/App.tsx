@@ -18,6 +18,7 @@ import NDCView from './Views/NDCView';
 import NDCService from './Views/NDCView/Services/NDCService';
 import DoneView from './Views/DoneView';
 import SelectInboundView from './Views/SelectInboundView';
+import ExperimentalView from './Views/ExperimentalView';
 
 export default function App({ config }: { config: Config }): JSX.Element {
   const contentService = new ContentService('en-GB', 'EUR', config);
@@ -47,6 +48,10 @@ export default function App({ config }: { config: Config }): JSX.Element {
             airportService={airportService}
             contentService={ndcContentService}
           />
+        </Route>
+
+        <Route path="/experimental">
+          <ExperimentalView />
         </Route>
 
         <Route path="/">

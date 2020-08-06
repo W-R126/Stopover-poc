@@ -1,0 +1,71 @@
+.ComponentContainer {
+  display: flex;  
+  width: 17%;
+  height: 247.5px;
+  position: relative;
+  padding: 3px 1.5px 0;
+}
+
+.Back {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.Content {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  flex: 1 1 100%;
+  overflow: hidden;
+  z-index: 1;
+  padding: 24px 20px;
+  color: #fff;
+  position: relative;
+  user-select: none;
+}
+
+.FlightType {
+  margin: 4px 0 0 0;
+  font-style: normal;
+  font-weight: 350;
+  font-size: 14px;
+  line-height: 18px;
+  color: #fff;
+  text-align: center;
+}
+
+.AirportDiv {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.Airport {
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 52px;
+  color: #fff;
+}
+
+.Date {
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  color: #fff;
+}
+
+.CheckIn {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 21px; 
+  text-align: right;  
+  color: #fff;
+  margin: auto 0 0 0;
+  text-align: right;
+  cursor: pointer;
+}

@@ -1,0 +1,90 @@
+.ComponentContainer {
+  display: flex;
+  height: 247.5px;
+  width: 50%;
+  position: relative;
+  padding: 3px 1.5px 0;
+}
+
+.Content {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  flex: 1 1 100%;
+  overflow: hidden;
+  z-index: 1;
+  padding: 25px;
+  color: #fff;
+  position: relative;
+  user-select: none;
+}
+
+
+.Back {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.Cover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.Title {
+  font-style: italic;
+  font-weight: 600;
+  font-size: 35px;
+  line-height: 45px;
+  color: #fff;
+}
+
+.From {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 23px;
+  color: #fff;
+}
+
+.Description {
+  margin: 4px 0 0 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;  
+  color: #fff;
+}
+
+.Footer {
+  margin: auto 0 0 0;
+  font-style: normal;
+  font-weight: 350;
+  font-size: 16px;
+  line-height: 21px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.Footer img {
+  margin-right: 10px;
+}
+
+.TellMe {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 21px;
+  color: #fff;
+  margin-left: auto;
+  cursor: pointer;
+}

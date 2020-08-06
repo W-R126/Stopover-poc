@@ -1,0 +1,39 @@
+.MainContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.Container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+  max-width: 1440px;
+}
+
+.Header {
+  display: flex;
+  align-items: center;
+  padding-left: 21px;
+  padding-right: 31px;  
+  height: 60px;
+  background-color: #fff;
+}
+
+.Header a {
+  display: flex;
+  cursor: pointer;
+}
+
+.Header .Account {
+  margin-left: auto;
+}
+
+.InfoContainer {  
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+  background: #bd8b13;
+  margin-left: -1.5px;  
+  margin-right: -1.5px;
+}
