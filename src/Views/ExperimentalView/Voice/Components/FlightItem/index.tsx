@@ -1,8 +1,8 @@
 import React from 'react';
 import css from './FlightItem.module.css';
 
-import BgImg from '../../../../Assets/Images/Experimental/Sky-Back.jpg';
-import PlanImg from '../../../../Assets/Images/Experimental/Plane.svg';
+import BgImg from '../../../../../Assets/Images/Experimental/Sky-Back.jpg';
+import PlanImg from '../../../../../Assets/Images/Experimental/Plane.svg';
 
 export default function FlightItem(): JSX.Element {
   return (

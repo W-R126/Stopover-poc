@@ -1,18 +1,18 @@
 import React from 'react';
-import css from './Experimental.module.css';
+import css from './ExperimentalVoice.module.css';
 
-import LogoImg from '../../Assets/Images/Experimental/Logo-Etihad.png';
-import AccountImg from '../../Assets/Images/Experimental/Account.svg';
-import BgImg1 from '../../Assets/Images/Experimental/Back-1.jpg';
-import BgImg2 from '../../Assets/Images/Experimental/Back-2.jpg';
-import BgImg3 from '../../Assets/Images/Experimental/Back-3.jpg';
+import LogoImg from '../../../Assets/Images/Experimental/Logo-Etihad.png';
+import AccountImg from '../../../Assets/Images/Experimental/Account.svg';
+import BgImg1 from '../../../Assets/Images/Experimental/Back-1.jpg';
+import BgImg2 from '../../../Assets/Images/Experimental/Back-2.jpg';
+import BgImg3 from '../../../Assets/Images/Experimental/Back-3.jpg';
 
 import SearchSection from './Components/SearchSection';
 import LevelItem from './Components/LevelItem';
 import FlightItem from './Components/FlightItem';
 import ExperienceItem from './Components/ExperienceItem';
 
-export default function ExperimentalView(): JSX.Element {
+export default function ExperimentalVoice(): JSX.Element {
   return (
     <div className={css.MainContainer}>
       <div className={css.Container}>

@@ -1,6 +1,6 @@
 import React from 'react';
 import css from './ExperienceItem.module.css';
-import SunImg from '../../../../Assets/Images/Experimental/Sun.svg';
+import SunImg from '../../../../../Assets/Images/Experimental/Sun.svg';
 
 interface ExperienceItemProps {
   title: string;

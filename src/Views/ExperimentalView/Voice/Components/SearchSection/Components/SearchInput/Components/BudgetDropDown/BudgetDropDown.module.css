@@ -1,0 +1,87 @@
+.ComponentContainer {
+  position: absolute;
+  left: 0;
+  top: 60px;
+  width: 100%;
+  height: 210px;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  background: linear-gradient(180deg, #f68d2e 0%, #9e510b 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 9;
+}
+
+.Title {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  margin-top: 26px;
+}
+
+.Budget {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 52px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #fff;
+}
+
+.LetsGoBtn {
+  width: 128px;
+  height: 38px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;
+  color: #f68d2e;
+  margin: 26px 0 0 0;
+  cursor: pointer;
+}
+
+.BudgetSlider {
+  -webkit-appearance: none;
+  width: 283px;
+  height: 1px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  margin: 6px 0 0 0;
+}
+
+.BudgetSlider:hover {
+  opacity: 1;
+}
+
+.BudgetSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.BudgetSlider::-moz-range-thumb {
+  width: 23px;
+  height: 23px;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 10px;
+}
+

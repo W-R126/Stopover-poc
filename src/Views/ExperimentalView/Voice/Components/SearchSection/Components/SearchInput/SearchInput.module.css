@@ -1,0 +1,51 @@
+.ComponentContainer {
+  width: 100%;
+  margin: 13px 0 0 0;
+  height: 60px;
+  position: relative;
+  display: flex;
+  align-items: center;  
+}
+
+.ComponentContainer input[type='text'] {
+  color: #bd8b13;
+  border-radius: 30px;
+  padding: 11px 100px 11px 25px;
+  font-style: italic;
+  font-weight: 350;
+  font-size: 16px;
+  line-height: 21px;
+  background-color: #fff;
+  width: 100%;
+  height: 60px;
+  border: none;
+  outline: none;
+}
+
+.ComponentContainer input[type='text'].Open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.ComponentContainer input[type='text']:focus {
+  border: none;
+}
+
+.CloseButton {
+  cursor: pointer;
+  position: absolute;
+  right: 78px;
+}
+
+.InputMic {
+  position: absolute;
+  right: 25px;
+  width: 38px;
+  height: 38px;
+  background: #f8eac9;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

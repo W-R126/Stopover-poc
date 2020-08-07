@@ -1,9 +1,9 @@
 import React from 'react';
 import css from './LevelItem.module.css';
 
-import LevelBgImg from '../../../../Assets/Images/Experimental/Level-bg.svg';
+import LevelBgImg from '../../../../../Assets/Images/Experimental/Level-bg.svg';
 
-import { get3DigitComma } from '../../Utils';
+import { get3DigitComma } from '../../../Utils';
 
 export default function LevelItem(): JSX.Element {
   return (
