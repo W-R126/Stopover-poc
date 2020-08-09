@@ -51,7 +51,9 @@ export default function App({ config }: { config: Config }): JSX.Element {
         </Route>
 
         <Route path="/experimental/voice">
-          <ExperimentalVoice />
+          <ExperimentalVoice
+            contentService={contentService}
+          />
         </Route>
 
         <Route path="/">

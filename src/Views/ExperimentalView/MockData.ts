@@ -3,6 +3,15 @@ export const SearchInputData = [
     title: 'Book a flight from London to Beirut',
     content: {
       type: 0,
+      dateRange: {
+        start: new Date(),
+        end: new Date('2020-08-11'),
+      },
+      passenger: {
+        ADT: 1,
+        CHD: 0,
+        INF: 0,
+      },
     },
   },
   {

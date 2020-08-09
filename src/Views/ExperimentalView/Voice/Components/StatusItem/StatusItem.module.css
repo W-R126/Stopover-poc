@@ -1,0 +1,89 @@
+.ComponentContainer {
+  position: relative;
+  height: 247.5px;
+  display: flex;
+  color: #fff;
+  width: 33%;
+  overflow: hidden;
+  padding: 3px 1.5px 0;
+}
+
+.Content {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  flex: 1 1 100%;
+  overflow: hidden;
+  z-index: 1;
+  position: relative;
+  user-select: none;
+  background: #4e4c4a;
+}
+
+.Title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 23px;
+  color: #fff;
+  margin: 21px 20px 44px 20px;
+}
+
+.FlightItem {
+  display: flex;
+  margin-bottom: 31px;
+}
+
+.Progress {
+  flex: 0 0 355px;
+  display: flex;
+  position: relative;
+  height: 37px;
+  background: #6c6c6b;
+}
+
+.Backward {
+  height: 100%;
+  background: #c6c6c6;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;  
+  color: #4e4c4a;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  position: relative;
+}
+
+.Backward img {
+  position: absolute;
+  height: 100%;
+  transform: translateX(-50%);
+  left: calc(100% + 3px);
+}
+
+.FlightMiles {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 5px;  
+}
+
+.MileValue {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 23px;
+  width: 100%;
+  text-align: left;
+}
+
+.Description {
+  font-style: normal;  
+  font-size: 10px;
+  line-height: 13px;  
+  width: 100%;
+  text-align: left;
+}

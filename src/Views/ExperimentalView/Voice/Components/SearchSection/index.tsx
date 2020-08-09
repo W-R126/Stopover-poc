@@ -6,9 +6,11 @@ import CloseImg from '../../../../../Assets/Images/Experimental/Close.svg';
 import SpinnerSvg from '../../../../../Assets/Images/Experimental/Spinner.svg';
 
 import SearchInput from './Components/SearchInput';
+import ContentService from '../../../../../Services/ContentService';
 
 interface SearchSectionProps {
   isSearch: boolean;
+  contentService: ContentService;
 }
 
 interface SearchSectionState {
@@ -16,7 +18,9 @@ interface SearchSectionState {
   questionStep: number;
 }
 
-export default class SearchSection extends React.Component<SearchSectionProps, SearchSectionState> {
+export default class SearchSection extends React.Component<
+  SearchSectionProps, SearchSectionState
+> {
   private readonly STATUS_NORMAL = 0;
 
   private readonly STATUS_SEARCH = 1;
@@ -190,6 +194,8 @@ export default class SearchSection extends React.Component<SearchSectionProps, S
 
   render(): JSX.Element {
     const { status } = this.state;
+    const { contentService } = this.props;
+
     const containerClassList = [css.SearchContainer];
     if (status === this.STATUS_NORMAL) {
       containerClassList.push(css.SearchBack);
@@ -202,8 +208,10 @@ export default class SearchSection extends React.Component<SearchSectionProps, S
               <div className={css.Question}>
                 Hey John, how can we help you today?
               </div>
-              <SearchInput clickMic={this.clickSearch} />
-
+              <SearchInput
+                clickMic={this.clickSearch}
+                contentService={contentService}
+              />
             </>
           ) : (
             this.renderRecord()

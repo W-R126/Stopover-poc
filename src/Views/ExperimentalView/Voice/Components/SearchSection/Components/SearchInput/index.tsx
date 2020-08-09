@@ -8,9 +8,12 @@ import DropDown from './Components/DropDown';
 
 import { SearchInputData } from '../../../../../MockData';
 import BudgetDropDown from './Components/BudgetDropDown';
+import FlightDropDown from './Components/FlightDropDown';
+import ContentService from '../../../../../../../Services/ContentService';
 
 interface SearchInputProps {
   clickMic: Function;
+  contentService: ContentService;
 }
 
 interface SearchInputState {
@@ -26,8 +29,22 @@ export default class SearchInput extends React.Component<
     super(props);
     this.state = {
       menuList: [],
-      searchInputStr: '',
-      selectedData: {},
+      searchInputStr: 'Book a flight from London to Beirut',
+      selectedData: {
+        title: 'Book a flight from London to Beirut',
+        content: {
+          type: 0,
+          dateRange: {
+            start: new Date(),
+            end: new Date('2020-08-11'),
+          },
+          passenger: {
+            ADT: 1,
+            CHD: 0,
+            INF: 0,
+          },
+        },
+      },
     };
 
     this.changeSearchStr = this.changeSearchStr.bind(this);
@@ -63,10 +80,37 @@ export default class SearchInput extends React.Component<
     });
   }
 
-  private renderItemDropDown(): JSX.Element|null {
+  private changeDate(dateInfo: any): void {
     const { selectedData } = this.state;
-    if (Object.keys(selectedData).length === 0) { return null; }
-    if (selectedData.content.type === 3) {
+    this.setState({
+      selectedData: {
+        ...selectedData,
+        content: {
+          ...selectedData.content,
+          dateRange: {
+            start: dateInfo.start,
+            end: dateInfo.end,
+          },
+        },
+      },
+    });
+  }
+
+  private renderItemDropDown(): JSX.Element|null {
+    const { contentService } = this.props;
+    const { selectedData } = this.state;
+    if (Object.keys(selectedData).length === 0) {
+      return null;
+    }
+    if (selectedData.content.type === 0) {
+      return (
+        <FlightDropDown
+          flightData={selectedData}
+          contentService={contentService}
+          changeDate={(dateInfo: any): void => this.changeDate(dateInfo)}
+        />
+      );
+    } if (selectedData.content.type === 3) {
       return (
         <BudgetDropDown
           budget={selectedData.content.budget}
@@ -112,12 +156,12 @@ export default class SearchInput extends React.Component<
         >
           <img src={MicImg} alt="Mic" />
         </div>
-        {searchInputStr && (
+        {/* {searchInputStr && (
         <DropDown
           menuList={this.getFilteredMenuList()}
           setItem={(selectedOne: any) => { this.setItem(selectedOne); }}
         />
-        )}
+        )} */}
         {this.renderItemDropDown()}
       </div>
     );

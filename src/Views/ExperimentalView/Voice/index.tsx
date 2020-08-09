@@ -9,10 +9,16 @@ import BgImg3 from '../../../Assets/Images/Experimental/Back-3.jpg';
 
 import SearchSection from './Components/SearchSection';
 import LevelItem from './Components/LevelItem';
+import StatusItem from './Components/StatusItem';
 import FlightItem from './Components/FlightItem';
 import ExperienceItem from './Components/ExperienceItem';
+import ContentService from '../../../Services/ContentService';
 
-export default function ExperimentalVoice(): JSX.Element {
+interface ExperimentalVoiceProps {
+  contentService: ContentService;
+}
+
+export default function ExperimentalVoice({ contentService }: ExperimentalVoiceProps): JSX.Element {
   return (
     <div className={css.MainContainer}>
       <div className={css.Container}>
@@ -24,9 +30,13 @@ export default function ExperimentalVoice(): JSX.Element {
             <img src={AccountImg} alt="account" />
           </a>
         </div>
-        <SearchSection isSearch={false} />
+        <SearchSection
+          isSearch={false}
+          contentService={contentService}
+        />
         <div className={css.InfoContainer}>
-          <LevelItem />
+          {/* <LevelItem /> */}
+          <StatusItem />
           <FlightItem />
           <ExperienceItem
             title="Beijing"
