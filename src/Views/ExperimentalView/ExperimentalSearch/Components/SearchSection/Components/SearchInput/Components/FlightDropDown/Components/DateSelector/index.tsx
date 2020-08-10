@@ -10,6 +10,7 @@ interface DateSelectorProps {
   dateInfo: any;
   contentService: ContentService;
   changeDate: Function;
+  setShowDropDown: Function;
 }
 
 interface DateSelectorState {
@@ -75,23 +76,28 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
 
   private expand(): void {
     const { collapsed } = this.state;
+    const { setShowDropDown } = this.props;
 
     if (collapsed) {
       this.setState({ collapsed: false });
+      setShowDropDown(true);
     }
   }
 
   private collapse(): void {
     const { collapsed } = this.state;
+    const { setShowDropDown } = this.props;
 
     if (!collapsed) {
       this.setState({ collapsed: true });
+      setShowDropDown(false);
     }
   }
 
   private clickDone(): void {
     const { changeDate } = this.props;
     const { dateInfo } = this.state;
+    this.collapse();
     changeDate(dateInfo);
   }
 
@@ -132,6 +138,7 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
           role="button"
         >
           {this.renderTitleDate()}
+          <span className={css.ChevArrow} />
         </div>
         {!collapsed
           && (

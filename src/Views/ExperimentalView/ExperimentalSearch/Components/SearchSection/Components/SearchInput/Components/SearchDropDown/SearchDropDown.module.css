@@ -33,9 +33,15 @@
 
 .MenuItem {
   display: flex;
+  flex-direction: column;
   width: 100%;
   padding: 10px 0;
   cursor: pointer;  
+}
+
+.MainContent {
+  display: flex;
+  width: 100%;
 }
 
 .MenuItem:first-child {
@@ -56,4 +62,42 @@
   line-height: 21px;
   color: #4e4c4a;
   margin-left: 13px;
+  font-weight: 600;
+}
+
+.Details {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-left: 36px;
+  margin-top: 4px;
+}
+
+.Details .Suitcase {
+  margin-right: 6px;
+}
+
+.Details .Item {
+  font-style: normal;
+  font-weight: 250;
+  font-size: 14px;
+  line-height: 18px;
+  color: #4e4c4a;
+  margin-right: 28px;
+}
+
+.Description {
+  display: flex;
+  align-items: center;
+  font-style: italic;
+  font-weight: 350;
+  font-size: 14px;
+  line-height: 18px;
+  color: #4e4c4a;
+  padding-left: 36px;
+  margin-top: 16px;
+}
+
+.Description img {
+  margin-right: 8px;
 }

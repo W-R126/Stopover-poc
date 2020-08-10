@@ -4,22 +4,25 @@ import css from './SearchInput.module.css';
 import MicImg from '../../../../../../../Assets/Images/Experimental/Mic.svg';
 import CloseImg from '../../../../../../../Assets/Images/Experimental/Close.svg';
 
-import DropDown from './Components/DropDown';
+import SearchDropDown from './Components/SearchDropDown';
 
 import { SearchInputData } from '../../../../../MockData';
 import BudgetDropDown from './Components/BudgetDropDown';
 import FlightDropDown from './Components/FlightDropDown';
 import ContentService from '../../../../../../../Services/ContentService';
+import { GuestsModel } from '../../../../../../../Models/GuestsModel';
 
 interface SearchInputProps {
   clickMic: Function;
   contentService: ContentService;
+  selectedData: any;
+  onChange: Function;
 }
 
 interface SearchInputState {
   menuList: any[];
   searchInputStr: string;
-  selectedData: any;
+  isShowDropDown: boolean;
 }
 
 export default class SearchInput extends React.Component<
@@ -29,27 +32,14 @@ export default class SearchInput extends React.Component<
     super(props);
     this.state = {
       menuList: [],
-      searchInputStr: 'Book a flight from London to Beirut',
-      selectedData: {
-        title: 'Book a flight from London to Beirut',
-        content: {
-          type: 0,
-          dateRange: {
-            start: new Date(),
-            end: new Date('2020-08-11'),
-          },
-          passenger: {
-            ADT: 1,
-            CHD: 0,
-            INF: 0,
-          },
-        },
-      },
+      searchInputStr: '',
+      isShowDropDown: false,
     };
 
     this.changeSearchStr = this.changeSearchStr.bind(this);
     this.cancelSearch = this.cancelSearch.bind(this);
     this.setItem = this.setItem.bind(this);
+    this.setShowDropDown = this.setShowDropDown.bind(this);
   }
 
   private getFilteredMenuList(): any[] {
@@ -61,53 +51,90 @@ export default class SearchInput extends React.Component<
   }
 
   private setItem(selectedOne: any): void {
+    const { onChange } = this.props;
+    let searchStr = '';
+    let showDropDown = false;
+
+    if (selectedOne.content.type === 3) {
+      searchStr = selectedOne.title;
+      showDropDown = true;
+    }
+
     this.setState({
-      selectedData: { ...selectedOne },
-      searchInputStr: selectedOne.title,
+      searchInputStr: searchStr,
+      isShowDropDown: showDropDown,
+    });
+    onChange({ ...selectedOne });
+  }
+
+  private setShowDropDown(bShow: boolean): void {
+    this.setState({
+      isShowDropDown: bShow,
     });
   }
 
   private cancelSearch(): void {
+    const { onChange } = this.props;
+
     this.setState({
       searchInputStr: '',
-      selectedData: {},
+      isShowDropDown: false,
     });
+
+    onChange({});
   }
 
   private changeSearchStr(e: any): void {
     this.setState({
       searchInputStr: e.target.value,
+      isShowDropDown: e.target.value.length > 0,
     });
   }
 
   private changeDate(dateInfo: any): void {
-    const { selectedData } = this.state;
-    this.setState({
-      selectedData: {
-        ...selectedData,
-        content: {
-          ...selectedData.content,
-          dateRange: {
-            start: dateInfo.start,
-            end: dateInfo.end,
-          },
+    const { selectedData, onChange } = this.props;
+    onChange({
+      ...selectedData,
+      content: {
+        ...selectedData.content,
+        dateRange: {
+          start: dateInfo.start,
+          end: dateInfo.end,
         },
       },
     });
   }
 
+  private changePassender(passengerInfo: GuestsModel): void {
+    const { selectedData, onChange } = this.props;
+    onChange({
+      ...selectedData,
+      content: {
+        ...selectedData.content,
+        passenger: {
+          ...passengerInfo,
+        },
+      },
+    });
+  }
+
+  private clickGo(): void {
+    console.log('Budget Modal Click Go');
+  }
+
   private renderItemDropDown(): JSX.Element|null {
-    const { contentService } = this.props;
-    const { selectedData } = this.state;
+    const { contentService, selectedData, onChange } = this.props;
     if (Object.keys(selectedData).length === 0) {
       return null;
     }
-    if (selectedData.content.type === 0) {
+    if (selectedData.content.type === 0 || selectedData.content.type === 1) {
       return (
         <FlightDropDown
           flightData={selectedData}
           contentService={contentService}
           changeDate={(dateInfo: any): void => this.changeDate(dateInfo)}
+          changePassenger={(passenger: any): void => this.changePassender(passenger)}
+          setShowDropDown={this.setShowDropDown}
         />
       );
     } if (selectedData.content.type === 3) {
@@ -115,16 +142,15 @@ export default class SearchInput extends React.Component<
         <BudgetDropDown
           budget={selectedData.content.budget}
           changeBudget={(newValue: number): void => {
-            this.setState({
-              selectedData: {
-                ...selectedData,
-                content: {
-                  ...selectedData.content,
-                  budget: newValue,
-                },
+            onChange({
+              ...selectedData,
+              content: {
+                ...selectedData.content,
+                budget: newValue,
               },
             });
           }}
+          clickGo={this.clickGo}
         />
       );
     } if (selectedData.content.type === 2) {
@@ -134,17 +160,17 @@ export default class SearchInput extends React.Component<
   }
 
   render(): JSX.Element {
-    const { searchInputStr } = this.state;
-    const { clickMic } = this.props;
+    const { searchInputStr, isShowDropDown } = this.state;
+    const { clickMic, selectedData } = this.props;
     return (
       <div className={css.ComponentContainer}>
         <input
-          className={searchInputStr.length > 0 ? css.Open : ''}
+          className={isShowDropDown ? css.Open : ''}
           type="text"
           value={searchInputStr}
           onChange={this.changeSearchStr}
         />
-        {searchInputStr.length > 0 && (
+        {Object.keys(selectedData).length > 0 && (
         <div className={css.CloseButton} role="button" onClick={this.cancelSearch}>
           <img src={CloseImg} alt="Format input string" />
         </div>
@@ -156,12 +182,12 @@ export default class SearchInput extends React.Component<
         >
           <img src={MicImg} alt="Mic" />
         </div>
-        {/* {searchInputStr && (
-        <DropDown
+        {searchInputStr && (
+        <SearchDropDown
           menuList={this.getFilteredMenuList()}
-          setItem={(selectedOne: any) => { this.setItem(selectedOne); }}
+          setItem={(selectedOne: any): void => { this.setItem(selectedOne); }}
         />
-        )} */}
+        )}
         {this.renderItemDropDown()}
       </div>
     );

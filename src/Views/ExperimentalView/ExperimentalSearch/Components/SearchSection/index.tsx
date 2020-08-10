@@ -9,12 +9,13 @@ import SearchInput from './Components/SearchInput';
 import ContentService from '../../../../../Services/ContentService';
 
 interface SearchSectionProps {
-  isSearch: boolean;
   contentService: ContentService;
+  selectedData: any;
+  onChange: (newData: any) => void;
 }
 
 interface SearchSectionState {
-  status: number; // 0: normal, 1: searching, 2: result
+  recordStatus: number; // 0: normal, 1: searching, 2: result
   questionStep: number;
 }
 
@@ -41,7 +42,7 @@ export default class SearchSection extends React.Component<
   constructor(props: SearchSectionProps) {
     super(props);
     this.state = {
-      status: this.STATUS_NORMAL,
+      recordStatus: this.STATUS_NORMAL,
       questionStep: 0,
     };
     this.clickSearch = this.clickSearch.bind(this);
@@ -53,26 +54,26 @@ export default class SearchSection extends React.Component<
 
   private clickSearch(): void {
     this.setState({
-      status: this.STATUS_SEARCH,
+      recordStatus: this.STATUS_SEARCH,
       questionStep: 0,
     });
   }
 
   private startRrecord(): void {
     this.setState({
-      status: this.STATUS_RECORDING,
+      recordStatus: this.STATUS_RECORDING,
     });
 
     setTimeout(() => {
-      const { status } = this.state;
-      if (status === this.STATUS_NORMAL) { return; }
+      const { recordStatus } = this.state;
+      if (recordStatus === this.STATUS_NORMAL) { return; }
       this.responseWaiting();
     }, 2000);
   }
 
   private clickRecordCancel(): void {
     this.setState({
-      status: this.STATUS_NORMAL,
+      recordStatus: this.STATUS_NORMAL,
     });
   }
 
@@ -80,20 +81,20 @@ export default class SearchSection extends React.Component<
     const { questionStep } = this.state;
 
     this.setState({
-      status: this.STATUS_RESPONSE_WAITING,
+      recordStatus: this.STATUS_RESPONSE_WAITING,
     });
 
     setTimeout(() => {
-      const { status } = this.state;
+      const { recordStatus } = this.state;
 
-      if (status === this.STATUS_NORMAL) { return; }
+      if (recordStatus === this.STATUS_NORMAL) { return; }
       if (questionStep === this.QUEST_ARRAY.length - 1) {
         this.setState({
-          status: this.STATUS_RESULT,
+          recordStatus: this.STATUS_RESULT,
         });
       } else {
         this.setState({
-          status: this.STATUS_SEARCH,
+          recordStatus: this.STATUS_SEARCH,
           questionStep: questionStep + 1,
         });
       }
@@ -102,16 +103,16 @@ export default class SearchSection extends React.Component<
 
   private restartSearch(): void {
     this.setState({
-      status: this.STATUS_SEARCH,
+      recordStatus: this.STATUS_SEARCH,
       questionStep: 0,
     });
   }
 
   private renderRecord(): JSX.Element|null {
-    const { status, questionStep } = this.state;
-    if (status === this.STATUS_SEARCH
-      || status === this.STATUS_RECORDING
-      || status === this.STATUS_RESPONSE_WAITING
+    const { recordStatus, questionStep } = this.state;
+    if (recordStatus === this.STATUS_SEARCH
+      || recordStatus === this.STATUS_RECORDING
+      || recordStatus === this.STATUS_RESPONSE_WAITING
     ) {
       return (
         <>
@@ -119,7 +120,7 @@ export default class SearchSection extends React.Component<
             {this.QUEST_ARRAY[questionStep]}
           </div>
           <div className={css.MicButtonContainer}>
-            {status === this.STATUS_SEARCH && (
+            {recordStatus === this.STATUS_SEARCH && (
             <>
               <div
                 className={css.MicButton}
@@ -132,7 +133,7 @@ export default class SearchSection extends React.Component<
               </div>
             </>
             )}
-            {status === this.STATUS_RECORDING && (
+            {recordStatus === this.STATUS_RECORDING && (
             <>
               <div className={css.SpinnerContainer}>
                 <div className={css.Spinner}>
@@ -145,7 +146,7 @@ export default class SearchSection extends React.Component<
               </div>
             </>
             )}
-            {status === this.STATUS_RESPONSE_WAITING && (
+            {recordStatus === this.STATUS_RESPONSE_WAITING && (
               <img src={SpinnerSvg} alt="spinner" />
             )}
           </div>
@@ -160,7 +161,7 @@ export default class SearchSection extends React.Component<
           </div>
         </>
       );
-    } if (status === this.STATUS_RESULT) {
+    } if (recordStatus === this.STATUS_RESULT) {
       return (
         <>
           <div className={css.ResultText}>
@@ -193,17 +194,20 @@ export default class SearchSection extends React.Component<
   }
 
   render(): JSX.Element {
-    const { status } = this.state;
-    const { contentService } = this.props;
+    const { recordStatus } = this.state;
+    const { contentService, selectedData, onChange } = this.props;
 
     const containerClassList = [css.SearchContainer];
-    if (status === this.STATUS_NORMAL) {
+    if (recordStatus === this.STATUS_NORMAL) {
       containerClassList.push(css.SearchBack);
-    } else if (status === this.STATUS_RESULT) { containerClassList.push(css.ResultBack); } else { containerClassList.push(css.RecordBack); }
+    } else if (recordStatus === this.STATUS_RESULT) {
+      containerClassList.push(css.ResultBack);
+    } else { containerClassList.push(css.RecordBack); }
+
     return (
       <div className={containerClassList.join(' ')}>
         <div className={css.Container}>
-          { status === this.STATUS_NORMAL ? (
+          { recordStatus === this.STATUS_NORMAL ? (
             <>
               <div className={css.Question}>
                 Hey John, how can we help you today?
@@ -211,6 +215,8 @@ export default class SearchSection extends React.Component<
               <SearchInput
                 clickMic={this.clickSearch}
                 contentService={contentService}
+                selectedData={selectedData}
+                onChange={onChange}
               />
             </>
           ) : (

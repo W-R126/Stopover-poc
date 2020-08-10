@@ -18,7 +18,7 @@ import NDCView from './Views/NDCView';
 import NDCService from './Views/NDCView/Services/NDCService';
 import DoneView from './Views/DoneView';
 import SelectInboundView from './Views/SelectInboundView';
-import ExperimentalVoice from './Views/ExperimentalView/Voice';
+import ExperimentalSearch from './Views/ExperimentalView/ExperimentalSearch';
 
 export default function App({ config }: { config: Config }): JSX.Element {
   const contentService = new ContentService('en-GB', 'EUR', config);
@@ -50,8 +50,8 @@ export default function App({ config }: { config: Config }): JSX.Element {
           />
         </Route>
 
-        <Route path="/experimental/voice">
-          <ExperimentalVoice
+        <Route path="/experimental/search">
+          <ExperimentalSearch
             contentService={contentService}
           />
         </Route>

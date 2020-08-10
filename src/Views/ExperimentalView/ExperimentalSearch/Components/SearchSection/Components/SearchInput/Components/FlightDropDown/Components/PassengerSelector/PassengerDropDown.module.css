@@ -1,0 +1,65 @@
+.ComponentContainer {
+  height: 100%;
+}
+
+.SelectedValue {
+  position: relative;
+  padding-left: 45px;
+  padding-right: 45px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+.ChevArrow {
+  position: absolute;
+  right: 10px;
+  transition: transform 100ms;
+}
+
+.ChevArrow:after {
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f106';
+  font-size: 22px;
+}
+
+.Collapsed .ChevArrow {
+  transform: rotateZ(-180deg);
+}
+
+.SelectedValue.Collapsed {
+  white-space: nowrap;
+  background: #fff;
+}
+
+.DropDownContainer {
+  display: flex;
+  position: absolute;
+  background: #f5f5f5;
+  top: 60px;
+  left: 0;
+  z-index: 9;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  overflow: hidden;
+}
+
+.Pickers {
+  position: absolute;
+  padding: 0 20px 20px 20px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  background: #f5f5f5;
+  width: 250px;
+  z-index: 9;
+  display: flex;
+  flex-direction: column;
+}
+
+.AmountPicker {
+  margin-top: 24px;
+}
