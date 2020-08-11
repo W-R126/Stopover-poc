@@ -17,6 +17,9 @@
   color: #fff;
   position: relative;
   user-select: none;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 

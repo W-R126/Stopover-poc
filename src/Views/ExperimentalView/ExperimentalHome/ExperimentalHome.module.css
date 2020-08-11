@@ -1,0 +1,59 @@
+.ComponentContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+
+.Header {
+  width: 100%;
+  max-width: 1440px;
+  padding: 0 24px;
+  height: 60px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.SearchSection {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  height: 281px;
+  background: url('../../../Assets/Images/Experimental/HomeBanner-BG.svg') center center no-repeat;
+  background-size: cover;
+}
+
+.ControlSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 70px;
+  background: #4e4c4a;
+}
+
+.ControlItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  color: #fff;
+  border-left: 1px solid #fff;
+  cursor: pointer;
+  width: 180px;
+  height: 100%;
+}
+
+.ControlItem img {
+  margin-bottom: 6px;
+}
+
+.ControlItem:last-child {
+  border-right: 1px solid #fff;
+}

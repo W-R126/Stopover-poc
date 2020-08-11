@@ -8,14 +8,6 @@
   padding: 3px 1.5px 0;
 }
 
-.Back {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  z-index: -1;
-}
-
 .Content {
   display: flex;
   width: 100%;
@@ -26,6 +18,8 @@
   padding: 20px;
   position: relative;
   user-select: none;
+  background: url('../../../../../Assets/Images/Experimental/Level-bg.svg') center center no-repeat;
+  background-size: cover;
 }
 
 .LevelDetail {

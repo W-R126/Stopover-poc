@@ -18,6 +18,7 @@ import NDCView from './Views/NDCView';
 import NDCService from './Views/NDCView/Services/NDCService';
 import DoneView from './Views/DoneView';
 import SelectInboundView from './Views/SelectInboundView';
+import ExperimentalHome from './Views/ExperimentalView/ExperimentalHome';
 import ExperimentalSearch from './Views/ExperimentalView/ExperimentalSearch';
 
 export default function App({ config }: { config: Config }): JSX.Element {
@@ -50,6 +51,11 @@ export default function App({ config }: { config: Config }): JSX.Element {
           />
         </Route>
 
+        <Route path="/experimental/home">
+          <ExperimentalHome
+            contentService={contentService}
+          />
+        </Route>
         <Route path="/experimental/search">
           <ExperimentalSearch
             contentService={contentService}

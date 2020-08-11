@@ -1,15 +1,12 @@
 import React from 'react';
 import css from './LevelItem.module.css';
 
-import LevelBgImg from '../../../../../Assets/Images/Experimental/Level-bg.svg';
-
 import { get3DigitComma } from '../../../Utils';
 
 export default function LevelItem(): JSX.Element {
   return (
     <div className={css.ComponentContainer}>
       <div className={css.Content}>
-        <img className={css.Back} src={LevelBgImg} alt="back" />
         <div className={css.LevelDetail}>
           <span>
             Tier level:
