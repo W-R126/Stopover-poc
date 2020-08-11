@@ -10,10 +10,16 @@ import FlightStatusSvg from '../../../Assets/Images/Experimental/Flight Status.s
 import SuitCaseSvg from '../../../Assets/Images/Experimental/Home-Suitcase.svg';
 import UpgradeSvg from '../../../Assets/Images/Experimental/Upgrade.svg';
 
+import SearchPanel from './Components/SearchPanel';
+
 import ContentService from '../../../Services/ContentService';
+import AirportService from '../../../Services/AirportService';
+
+import { AirportModel } from '../../../Models/AirportModel';
 
 interface ExperimentalHomeProps {
   contentService: ContentService;
+  airportService: AirportService;
 }
 
 interface ExperimentalHomeState {
@@ -24,11 +30,29 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
   constructor(props: ExperimentalHomeProps) {
     super(props);
     this.state = {
-      selectedData: {},
+      selectedData: {
+        origin: undefined,
+        destination: undefined,
+      },
     };
+
+    this.onOriginDestinationChange = this.onOriginDestinationChange.bind(this);
+  }
+
+  private onOriginDestinationChange(origin?: AirportModel, destination?: AirportModel): void {
+    const { selectedData } = this.state;
+    this.setState({
+      selectedData: {
+        ...selectedData,
+        origin,
+        destination,
+      },
+    });
   }
 
   render(): JSX.Element {
+    const { airportService } = this.props;
+    const { selectedData } = this.state;
     return (
       <div className={css.ComponentContainer}>
         <div className={css.Header}>
@@ -36,7 +60,14 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
             <img src={LogoImg} alt="Etihad Logo" />
           </a>
         </div>
-        <div className={css.SearchSection} />
+        <div className={css.SearchSection}>
+          <SearchPanel
+            airportService={airportService}
+            origin={selectedData.origin}
+            destination={selectedData.destination}
+            onChange={this.onOriginDestinationChange}
+          />
+        </div>
         <div className={css.ControlSection}>
           <div className={css.ControlItem}>
             <img src={ControlPlaneSvg} alt="control plane svg" />

@@ -54,6 +54,7 @@ export default function App({ config }: { config: Config }): JSX.Element {
         <Route path="/experimental/home">
           <ExperimentalHome
             contentService={contentService}
+            airportService={airportService}
           />
         </Route>
         <Route path="/experimental/search">
