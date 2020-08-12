@@ -1,6 +1,8 @@
 import React from 'react';
 import css from './BudgetDropDown.module.css';
 
+import RangeSlider from '../../../../../../../Components/RangeSlider';
+
 interface BudgetDropDownProps {
   budget: number;
   changeBudget: Function;
@@ -16,14 +18,13 @@ export default function BudgetDropDown({
     <div className={css.ComponentContainer}>
       <div className={css.Title}>What's your budget?</div>
       <div className={css.Budget}>{budget}</div>
-      <input
+      <RangeSlider
         className={css.BudgetSlider}
-        type="range"
         min={1}
         max={3000}
         value={budget}
-        onChange={(e): void => {
-          changeBudget(e.target.value);
+        onChange={(value: number): void => {
+          changeBudget(value);
         }}
       />
       <div className={css.LetsGoBtn} role="button" onClick={(): void => { clickGo(); }}>

@@ -17,7 +17,6 @@
 .SearchSection {
   display: flex;
   width: 100%;
-  align-items: center;
   justify-content: center;
   height: 281px;
   background: url('../../../Assets/Images/Experimental/HomeBanner-BG.svg') center center no-repeat;

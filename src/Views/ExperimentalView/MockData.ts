@@ -1,3 +1,8 @@
+import CityImage1 from '../../Assets/Images/Experimental/CityImage1.jpg';
+import CityImage2 from '../../Assets/Images/Experimental/CityImage2.jpg';
+import CityImage3 from '../../Assets/Images/Experimental/CityImage3.jpg';
+import CityImage4 from '../../Assets/Images/Experimental/CityImage4.jpg';
+
 export const SearchInputData = [
   {
     title: 'Book a flight from London to Beirut',
@@ -131,3 +136,11 @@ export const SearchInputData = [
     },
   },
 ];
+
+export const getCityImage = (cityCode: string): string => {
+  const imgArray = [CityImage1, CityImage2, CityImage3, CityImage4];
+  const nIndex = Math.floor(Math.random() * 10) % 4;
+  return imgArray[nIndex];
+};
+
+export const getCityPrice = (cityCode: string): number => Math.floor(Math.random() * 100);

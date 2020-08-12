@@ -1,14 +1,15 @@
 .AirportSearch {
-  height: 60px;
+  height: 59px;
 }
 
 .Wrapper {
   background-color: #fff;
+  position: relative;
   overflow: hidden;
 }
 
 .AirportSearch[aria-expanded='false'] .Wrapper {
-  max-height: 60px;
+  max-height: 59px;
 }
 
 .AirportSearch.Focused .Wrapper {
@@ -19,7 +20,7 @@
 .ModalWrapper > .Wrapper > input {
   width: 100%;
   border: 0;
-  height: 59px;
+  height: 58px;
   border-radius: 0;
 }
 
@@ -33,6 +34,12 @@
   overflow: auto;
   flex-flow: column;
   font-size: 16px;
+}
+
+.ListTypeContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .ListTypeSelector {
@@ -54,6 +61,24 @@
 .ListTypeSelector .TypeItem.Active {
   font-weight: 600;
   color: #bd8b13;
+}
+
+.ListTypeDescription {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 20px 10px;
+  font-style: normal;
+  font-weight: 350;
+  font-size: 16px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  color: #4e4c4a;
+}
+
+.ListTypeDescription img {
+  margin-right: 14px;
 }
 
 .AirportSearch[aria-expanded='false'] .Result {
@@ -139,4 +164,122 @@
   .Result {
     max-height: calc(100vh - 82px);
   }
+}
+
+.SurpriseDropDown {
+  width: 100%;
+  height: 210px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(180deg, #f68d2e 0%, #b15b0d 100%);
+}
+
+.SurpriseDropDown .Budget {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  margin: 30px 0 0 0;
+}
+
+.SurpriseDropDown .BudgetValue {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 52px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  margin: 3px 0 0 0;
+}
+
+.SurpriseDropDown .BudgetSlider {
+  width: 345px;  
+}
+
+.InspireButton {
+  width: 128px;
+  height: 38px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;
+  color: #f68d2e;
+  margin: 30px 0 0 0;
+  user-select: none;
+  cursor: pointer;
+}
+
+.AirportCity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: calc(50% - 35px);
+  height: 138px;
+  overflow: hidden;
+  float: left;
+  margin: 10px 15px 10px 20px;
+  cursor: pointer;
+}
+
+.AirportCity:nth-child(2n+1) {
+  margin-left: 15px;
+  margin-right: 20px;
+}
+
+.AirportCity .CityImg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.AirportCity .Overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.AirportCity .CityName {
+  font-style: italic;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 134.5%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #fff;
+  z-index: 2;
+}
+
+.AirportCity .Price {
+  font-style: italic;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 134.5%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #fff;
+  z-index: 2;
+}
+
+.AirportCity.Hover .Overlay {
+  background: rgba(0, 0, 0, 0.6);
 }

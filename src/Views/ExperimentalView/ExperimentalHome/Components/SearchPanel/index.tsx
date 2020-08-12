@@ -9,11 +9,18 @@ import AirportSearch from '../../../../../Components/TripSearch/Components/Origi
 import Utils from '../../../../../Utils';
 import DestinationAirport from './Components/DestinationAirport';
 
+import { getCityImage, getCityPrice } from '../../../MockData';
+import ContentService from '../../../../../Services/ContentService';
+import DateSelector from './Components/DateSelector';
+
 interface SearchPanelProps {
   origin?: AirportModel;
   destination?: AirportModel;
+  dateRange?: any;
   airportService: AirportService;
-  onChange: (origin?: AirportModel, destination?: AirportModel) => void;
+  contentService: ContentService;
+  onChangeAirports: (origin?: AirportModel, destination?: AirportModel) => void;
+  onChangeDateRange: (start?: Date, end?: Date) => void;
 }
 
 interface SearchPanelState {
@@ -43,8 +50,13 @@ class SearchPanel extends React.Component<
     const { airportService } = this.props;
 
     const airports = await airportService.getAirports();
+    const airportsWithImg = airports.map((item: AirportModel): AirportModel => ({
+      ...item,
+      cityBgImg: getCityImage(item.cityCode),
+      price: getCityPrice(item.cityCode),
+    }));
 
-    await new Promise((resolve) => this.setState({ airports }, resolve));
+    await new Promise((resolve) => this.setState({ airports: airportsWithImg }, resolve));
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.setOriginAirportFromPosition);
@@ -52,15 +64,15 @@ class SearchPanel extends React.Component<
   }
 
   private onOriginChange(origin?: AirportModel): void {
-    const { destination, onChange } = this.props;
+    const { destination, onChangeAirports } = this.props;
 
-    onChange(origin, destination);
+    onChangeAirports(origin, destination);
   }
 
   private onDestinationChange(destination?: AirportModel): void {
-    const { origin, onChange } = this.props;
+    const { origin, onChangeAirports } = this.props;
 
-    onChange(origin, destination);
+    onChangeAirports(origin, destination);
   }
 
   private setOriginAirportFromPosition(position: Position): void {
@@ -89,20 +101,25 @@ class SearchPanel extends React.Component<
   }
 
   private swapDirections(): void {
-    const { origin, destination, onChange } = this.props;
+    const { origin, destination, onChangeAirports } = this.props;
 
-    onChange(destination, origin);
+    onChangeAirports(destination, origin);
   }
 
   render(): JSX.Element {
     const { selectedPane, airports } = this.state;
-    const { origin, destination } = this.props;
+    const {
+      origin, destination, dateRange, onChangeDateRange, contentService,
+    } = this.props;
 
     return (
       <div className={css.ComponentContainer}>
         <div className={css.TabSelector}>
-          {this.TAB_CONTENTS.map((item) => (
-            <div className={`${css.TabItem} ${item === selectedPane ? css.Active : ''}`}>
+          {this.TAB_CONTENTS.map((item, idx) => (
+            <div
+              key={idx}
+              className={`${css.TabItem} ${item === selectedPane ? css.Active : ''}`}
+            >
               {item}
             </div>
           ))}
@@ -135,6 +152,15 @@ class SearchPanel extends React.Component<
             onClick={this.swapDirections}
           />
         </div>
+        {(origin && destination) && (
+          <div className={css.TripBar}>
+            <DateSelector
+              contentService={contentService}
+              flightDate={dateRange}
+              changeDate={onChangeDateRange}
+            />
+          </div>
+        )}
       </div>
     );
   }

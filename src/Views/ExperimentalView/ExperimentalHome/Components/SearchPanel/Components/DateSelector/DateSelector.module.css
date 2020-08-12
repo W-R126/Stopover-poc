@@ -1,0 +1,151 @@
+.ComponentContainer {
+  display: flex;
+  position: relative;
+}
+
+.DateValue {
+  display: flex;
+  position: relative;
+}
+
+.DateInput {
+  display: flex;
+  align-items: center;
+  font-style: normal;
+  font-weight: 350;
+  font-size: 16px;
+  line-height: 21px;  
+  color: #a8a7a7;
+  cursor: pointer;
+  padding-left: 25px;
+  padding-right: 16px;
+  border-right: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.DateInput:last-child {
+  padding-left: 16px;
+  padding-right: 25px;
+}
+
+.DateInput span {
+  color: #bd8b13;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+.DateInput.Selected {
+  border: none;
+  box-shadow: 0px 0px 12px rgba(81, 80, 80, 0.25);
+}
+
+.DropDownContainer {
+  display: flex;
+  position: absolute;
+  width: 942px;
+  height: 460px;
+  background: #fff;
+  top: 60px;
+  left: 0;
+  z-index: 9;
+  overflow: hidden;
+}
+
+.LeftSection {
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px 20px 20px;
+}
+
+.ViewSelector {
+  display: flex;
+  width: 100%;
+  height: 60px;
+  align-items: center;  
+}
+
+.ViewSelector .ViewSelectorItem {
+  font-weight: 350;
+  font-size: 16px;
+  line-height: 21px;
+  color: #d7b971;
+  height: 100%;
+  padding-left: 10px;
+  padding-right: 20px;
+  user-select: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ViewSelector .ViewSelectorItem.Selected {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 21px;
+  color: #bd8b13;
+}
+
+.Footer {
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.Footer .Date {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  color: #4e4c4a;
+}
+
+.Footer .DoneButton {
+  background: #bd8b13;
+  width: 98px;
+  height: 45px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;  
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.RightSection {
+  flex: 0 0 230px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-image: url('../../../../../../../Assets/Images/Experimental/Right-Back1.jpg');
+  background-position: 0 0;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  padding: 0 20px;
+}
+
+.RightSection .Title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 21px;
+  color: #fff;
+  margin: 35px 0 0 0;
+  text-align: center;
+}
+
+.RightSection .Description {
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  color: #fff;
+  margin: 30px 0 0 0;
+}

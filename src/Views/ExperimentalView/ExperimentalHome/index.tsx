@@ -33,13 +33,18 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
       selectedData: {
         origin: undefined,
         destination: undefined,
+        dateRange: {
+          start: undefined,
+          end: undefined,
+        },
       },
     };
 
-    this.onOriginDestinationChange = this.onOriginDestinationChange.bind(this);
+    this.onChangeAirports = this.onChangeAirports.bind(this);
+    this.onChangeDateRange = this.onChangeDateRange.bind(this);
   }
 
-  private onOriginDestinationChange(origin?: AirportModel, destination?: AirportModel): void {
+  private onChangeAirports(origin?: AirportModel, destination?: AirportModel): void {
     const { selectedData } = this.state;
     this.setState({
       selectedData: {
@@ -50,8 +55,22 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
     });
   }
 
+  private onChangeDateRange(start?: Date, end?: Date): void {
+    const { selectedData } = this.state;
+
+    this.setState({
+      selectedData: {
+        ...selectedData,
+        dateRange: {
+          start,
+          end,
+        },
+      },
+    });
+  }
+
   render(): JSX.Element {
-    const { airportService } = this.props;
+    const { airportService, contentService } = this.props;
     const { selectedData } = this.state;
     return (
       <div className={css.ComponentContainer}>
@@ -63,9 +82,12 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
         <div className={css.SearchSection}>
           <SearchPanel
             airportService={airportService}
+            contentService={contentService}
             origin={selectedData.origin}
             destination={selectedData.destination}
-            onChange={this.onOriginDestinationChange}
+            dateRange={selectedData.dateRange}
+            onChangeAirports={this.onChangeAirports}
+            onChangeDateRange={this.onChangeDateRange}
           />
         </div>
         <div className={css.ControlSection}>

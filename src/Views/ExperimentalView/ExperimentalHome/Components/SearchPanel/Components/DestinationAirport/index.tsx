@@ -1,8 +1,11 @@
 import React from 'react';
 
 import css from './DestinationAirport.module.css';
+import SuitCaseGrey from '../../../../../../../Assets/Images/Experimental/Suitcase-Grey.svg';
+import SuiteCaseOrange from '../../../../../../../Assets/Images/Experimental/Suitcase-Orange.svg';
 import { AirportModel } from '../../../../../../../Models/AirportModel';
 import Input from '../../../../../../../Components/UI/Input';
+import RangeSlider from '../../../../../Components/RangeSlider';
 
 interface DestinationAirportProps {
   id?: string;
@@ -42,7 +45,7 @@ export default class DestinationAirport extends React.Component<
 
   private readonly POPULAR_LIST = 1;
 
-  private readonly SUPRISE_LIST = 2;
+  private readonly SURPRISE_LIST = 2;
 
   constructor(props: DestinationAirportProps) {
     super(props);
@@ -61,6 +64,7 @@ export default class DestinationAirport extends React.Component<
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.setListType = this.setListType.bind(this);
   }
 
   componentDidMount(): void {
@@ -128,8 +132,9 @@ export default class DestinationAirport extends React.Component<
     this.setState({ focused: true });
   }
 
-  private onBlur(): void{
-    this.collapse();
+  private onBlur(): void {
+    const { listType } = this.state;
+    if (listType === this.ALL_LIST) { this.collapse(); }
 
     this.setState({ focused: false });
   }
@@ -230,6 +235,12 @@ export default class DestinationAirport extends React.Component<
     return startsWithMatch.concat(others);
   }
 
+  private setListType(nType: number): void {
+    this.setState({
+      listType: nType,
+    });
+  }
+
   private select(value?: AirportModel): void {
     const { onChange } = this.props;
 
@@ -307,6 +318,12 @@ export default class DestinationAirport extends React.Component<
       wrapperClassList.push(wrapperClassName);
     }
 
+    const dropdownMenu = [
+      this.ALL_LIST,
+      this.POPULAR_LIST,
+      this.SURPRISE_LIST,
+    ];
+
     return (
       <div
         className={classList.join(' ')}
@@ -326,69 +343,167 @@ export default class DestinationAirport extends React.Component<
               onBlur={this.onBlur}
             />
             <div className={css.Result} ref={this.resultRef}>
-              <div className={css.ListTypeSelector}>
-                <div className={`${css.TypeItem} ${listType === this.ALL_LIST ? css.Active : ''}`}>
-                  All destinations
-                </div>
-                <div className={`${css.TypeItem} ${listType === this.POPULAR_LIST ? css.Active : ''}`}>
-                  Popular destinations
-                </div>
-                <div className={`${css.TypeItem} ${listType === this.SUPRISE_LIST ? css.Active : ''}`}>
-                  Suprise me
-                </div>
-              </div>
-              {filteredAirports.length === 0 && (
-                <div className={css.NoResult}>
-                  No result
-                </div>
-              )}
-              {filteredAirports
-                .slice(0, showCount)
-                .map((airport, idx) => {
-                  const airportClassList = [css.Airport];
-
-                  if (hoveredIndex === idx) {
-                    airportClassList.push(css.Hover);
-                  }
-
-                  return (
+              <div className={css.ListTypeContainer}>
+                <div className={css.ListTypeSelector}>
+                  {dropdownMenu.map((item, idx) => (
                     <div
-                      className={airportClassList.join(' ')}
-                      key={`airport-${airport.code}`}
-                      role="option"
-                      aria-selected={value?.code === airport.code}
-                      onMouseMove={(): void => {
-                        if (hoveredIndex !== idx) {
-                          this.setState({ hoveredIndex: idx });
-                        }
-                      }}
+                      key={idx}
+                      className={`${css.TypeItem} ${listType === item ? css.Active : ''}`}
                       onMouseDown={(e): void => {
                         e.stopPropagation();
                         e.preventDefault();
 
-                        this.select(airport);
-                        this.collapse();
+                        this.setListType(item);
                       }}
                     >
-                      <div>
-                        <span className={css.CityName}>
-                          {airport.cityName}
-                        </span>
-                        <span className={css.AirportCode}>
-                          {airport.code}
-                        </span>
-                      </div>
-                      <div>
-                        <span className={css.AirportName}>
-                          {airport.name}
-                        </span>
-                        <span className={css.CountryName}>
-                          {airport.countryName}
-                        </span>
+                      {item === this.ALL_LIST && 'All destinations'}
+                      {item === this.POPULAR_LIST && 'Popular destinations'}
+                      {item === this.SURPRISE_LIST && 'Surprise me'}
+                    </div>
+                  ))}
+                </div>
+
+                {
+                  listType === this.POPULAR_LIST && (
+                  <div className={`${css.ListTypeDescription} ${css.PopularListDescription}`}>
+                    <img src={SuitCaseGrey} alt="Suitecase grey" />
+                    <div className={css.Description}>
+                      <strong>Not sure where to go?</strong>
+                      <br />
+                      Why not visit one of these popular cites.
+                    </div>
+                  </div>
+                  )
+                }
+                {
+                  listType === this.SURPRISE_LIST && (
+                    <div className={`${css.ListTypeDescription} ${css.PopularListDescription}`}>
+                      <img src={SuiteCaseOrange} alt="Suitecase orange" />
+                      <div className={css.Description}>
+                        <strong>Feeling adventurous?</strong>
+                        <br />
+                        Enter your budget below to get some surprising recommendations
                       </div>
                     </div>
-                  );
-                })}
+                  )
+                }
+              </div>
+              {
+                (listType === this.ALL_LIST || listType === this.POPULAR_LIST) && (
+                  <>
+                    {filteredAirports.length === 0 && (
+                      <div className={css.NoResult}>
+                        No result
+                      </div>
+                    )}
+                    {filteredAirports
+                      .slice(0, showCount)
+                      .map((airport, idx) => {
+                        if (listType === this.ALL_LIST) {
+                          const airportClassList = [css.Airport];
+
+                          if (hoveredIndex === idx) {
+                            airportClassList.push(css.Hover);
+                          }
+                          return (
+                            <div
+                              className={airportClassList.join(' ')}
+                              key={`airport-${airport.code}`}
+                              role="option"
+                              aria-selected={value?.code === airport.code}
+                              onMouseMove={(): void => {
+                                if (hoveredIndex !== idx) {
+                                  this.setState({ hoveredIndex: idx });
+                                }
+                              }}
+                              onMouseDown={(e): void => {
+                                e.stopPropagation();
+                                e.preventDefault();
+
+                                this.select(airport);
+                                this.collapse();
+                              }}
+                            >
+                              <div>
+                                <span className={css.CityName}>
+                                  {airport.cityName}
+                                </span>
+                                <span className={css.AirportCode}>
+                                  {airport.code}
+                                </span>
+                              </div>
+                              <div>
+                                <span className={css.AirportName}>
+                                  {airport.name}
+                                </span>
+                                <span className={css.CountryName}>
+                                  {airport.countryName}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        } if (listType === this.POPULAR_LIST) {
+                          const airportClassList = [css.AirportCity];
+
+                          if (hoveredIndex === idx) {
+                            airportClassList.push(css.Hover);
+                          }
+
+                          return (
+                            <div
+                              className={airportClassList.join(' ')}
+                              key={`airport-${airport.code}`}
+                              role="option"
+                              aria-selected={value?.code === airport.code}
+                              onMouseMove={(): void => {
+                                if (hoveredIndex !== idx) {
+                                  this.setState({ hoveredIndex: idx });
+                                }
+                              }}
+                              onMouseDown={(e): void => {
+                                e.stopPropagation();
+                                e.preventDefault();
+
+                                this.select(airport);
+                                this.collapse();
+                              }}
+                            >
+                              <img className={css.CityImg} src={airport.cityBgImg} alt={airport.code} />
+                              <div className={css.Overlay} />
+                              <div className={css.CityName}>{airport.cityName}</div>
+                              <div className={css.Price}>
+                                £
+                                {airport.price}
+                              </div>
+                            </div>
+
+                          );
+                        }
+                        return null;
+                      })}
+                  </>
+                )
+              }
+              {listType === this.SURPRISE_LIST && (
+              <div className={css.SurpriseDropDown}>
+                <div className={css.Budget}>My budget is:</div>
+                <div className={css.BudgetValue}>
+                  £380
+                </div>
+                <RangeSlider
+                  className={css.BudgetSlider}
+                  min={0}
+                  max={3000}
+                  value={200}
+                  onChange={(rangeValue: number): void => {
+                    console.log(rangeValue);
+                  }}
+                />
+                <div className={css.InspireButton}>
+                  Inspire me
+                </div>
+              </div>
+              )}
             </div>
           </div>
         </div>

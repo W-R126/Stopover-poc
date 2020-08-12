@@ -10,6 +10,8 @@ export interface AirportModel {
   countryName?: string;
   coordinates: CoordinateModel;
   searchString: string;
+  cityBgImg?: string;
+  price?: number;
 }
 
 export function copyAirport(airport: AirportModel): AirportModel {

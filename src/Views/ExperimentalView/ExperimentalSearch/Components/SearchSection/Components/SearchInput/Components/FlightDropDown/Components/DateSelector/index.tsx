@@ -86,10 +86,13 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
 
   private collapse(): void {
     const { collapsed } = this.state;
-    const { setShowDropDown } = this.props;
+    const { setShowDropDown, dateInfo } = this.props;
 
     if (!collapsed) {
-      this.setState({ collapsed: true });
+      this.setState({
+        collapsed: true,
+        dateInfo,
+      });
       setShowDropDown(false);
     }
   }
