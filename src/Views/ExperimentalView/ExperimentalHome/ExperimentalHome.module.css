@@ -3,6 +3,7 @@
   flex-direction: column;
   width: 100%;
   align-items: center;
+  min-height: 100vh;
 }
 
 .Header {
@@ -54,4 +55,10 @@
 
 .ControlItem:last-child {
   border-right: 1px solid #fff;
+}
+
+.InfoContainer {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
 }

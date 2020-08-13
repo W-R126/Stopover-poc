@@ -4,11 +4,13 @@
 }
 
 .DateValue {
+  flex: 1 1 100%;    
   display: flex;
   position: relative;
 }
 
 .DateInput {
+  flex: 1 1 100%;
   display: flex;
   align-items: center;
   font-style: normal;
@@ -35,7 +37,8 @@
 }
 
 .DateInput.Selected {
-  border: none;
+  border: 0;
+  border-right: 1px solid #e5e5e5;
   box-shadow: 0px 0px 12px rgba(81, 80, 80, 0.25);
 }
 

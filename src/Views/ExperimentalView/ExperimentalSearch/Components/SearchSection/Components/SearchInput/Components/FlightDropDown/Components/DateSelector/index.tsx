@@ -5,6 +5,7 @@ import EventItemBg1 from '../../../../../../../../../../../Assets/Images/Experim
 
 import Calendar from '../../../../../../../../../../../Components/TripSearch/Components/DatePicker/Components/Calendar';
 import ContentService from '../../../../../../../../../../../Services/ContentService';
+import DateUtils from '../../../../../../../../../../../DateUtils';
 
 interface DateSelectorProps {
   dateInfo: any;
@@ -121,6 +122,31 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
     return `${startDateArr[1]} ${startDateArr[0]} - ${endDateArr[1]} ${endDateArr[0]}`;
   }
 
+  private renderFooterDate(): string {
+    const { contentService } = this.props;
+    const { dateInfo } = this.state;
+    if (dateInfo.start && dateInfo.end) {
+      const startDateStr = dateInfo.start.toLocaleDateString(
+        contentService.locale,
+        { month: 'short', day: 'numeric' },
+      );
+      const startDateArr = startDateStr.split(' ');
+
+      const endDateStr = dateInfo.end.toLocaleDateString(
+        contentService.locale,
+        { month: 'short', day: 'numeric' },
+      );
+      const endDateArr = endDateStr.split(' ');
+
+      const startResult = `${startDateArr[1]} ${startDateArr[0]}`;
+      const endResult = `${endDateArr[1]} ${endDateArr[0]}`;
+      const nightValue = DateUtils.getDaysDelta(dateInfo.end, dateInfo.start);
+      const nightResult = `(${nightValue} night${nightValue > 0 ? 's' : ''})`;
+
+      return `${startResult} to ${endResult} ${nightResult}`;
+    } return '';
+  }
+
   render(): JSX.Element {
     const { contentService } = this.props;
     const { collapsed, dateInfo } = this.state;
@@ -156,7 +182,7 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
                 onChange={(start, end): void => this.onChange(start, end)}
               />
               <div className={css.Footer}>
-                <div>May 07 to May 14(7 nights)</div>
+                <div>{this.renderFooterDate()}</div>
                 <div className={css.ReturnTrip}>
                   Round trip from AED 675
                 </div>

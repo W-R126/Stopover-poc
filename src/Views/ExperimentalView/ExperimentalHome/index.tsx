@@ -10,12 +10,19 @@ import FlightStatusSvg from '../../../Assets/Images/Experimental/Flight Status.s
 import SuitCaseSvg from '../../../Assets/Images/Experimental/Home-Suitcase.svg';
 import UpgradeSvg from '../../../Assets/Images/Experimental/Upgrade.svg';
 
+import BgImg1 from '../../../Assets/Images/Experimental/Back-4.jpg';
+import BgImg2 from '../../../Assets/Images/Experimental/Back-5.jpg';
+import BgImg3 from '../../../Assets/Images/Experimental/Back-6.jpg';
+
 import SearchPanel from './Components/SearchPanel';
+import InfoItem from './Components/InfoItem';
 
 import ContentService from '../../../Services/ContentService';
 import AirportService from '../../../Services/AirportService';
 
 import { AirportModel } from '../../../Models/AirportModel';
+import { GuestsModel } from '../../../Models/GuestsModel';
+import { CabinClassEnum } from '../../../Enums/CabinClassEnum';
 
 interface ExperimentalHomeProps {
   contentService: ContentService;
@@ -37,11 +44,21 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
           start: undefined,
           end: undefined,
         },
+        passenger: {
+          adults: 1,
+          children: 0,
+          infants: 0,
+        },
+        cabinClass: CabinClassEnum.economy,
+        price: 380,
       },
     };
 
     this.onChangeAirports = this.onChangeAirports.bind(this);
     this.onChangeDateRange = this.onChangeDateRange.bind(this);
+    this.onChangePassenger = this.onChangePassenger.bind(this);
+    this.onChangeCabinClass = this.onChangeCabinClass.bind(this);
+    this.onChangePrice = this.onChangePrice.bind(this);
   }
 
   private onChangeAirports(origin?: AirportModel, destination?: AirportModel): void {
@@ -69,6 +86,38 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
     });
   }
 
+  private onChangePassenger(passenger: GuestsModel): void {
+    const { selectedData } = this.state;
+    this.setState({
+      selectedData: {
+        ...selectedData,
+        passenger: {
+          ...passenger,
+        },
+      },
+    });
+  }
+
+  private onChangeCabinClass(cabinClass: CabinClassEnum): void {
+    const { selectedData } = this.state;
+    this.setState({
+      selectedData: {
+        ...selectedData,
+        cabinClass,
+      },
+    });
+  }
+
+  private onChangePrice(value: number): void {
+    const { selectedData } = this.state;
+    this.setState({
+      selectedData: {
+        ...selectedData,
+        price: value,
+      },
+    });
+  }
+
   render(): JSX.Element {
     const { airportService, contentService } = this.props;
     const { selectedData } = this.state;
@@ -85,9 +134,15 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
             contentService={contentService}
             origin={selectedData.origin}
             destination={selectedData.destination}
-            dateRange={selectedData.dateRange}
             onChangeAirports={this.onChangeAirports}
+            dateRange={selectedData.dateRange}
             onChangeDateRange={this.onChangeDateRange}
+            passenger={selectedData.passenger}
+            onChangePassenger={this.onChangePassenger}
+            cabinClass={selectedData.cabinClass}
+            onChangeCabinClass={this.onChangeCabinClass}
+            price={selectedData.price}
+            onChangePrice={this.onChangePrice}
           />
         </div>
         <div className={css.ControlSection}>
@@ -111,6 +166,30 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
             <img src={UpgradeSvg} alt="control upgrade svg" />
             Upgrade
           </div>
+        </div>
+        <div className={css.InfoContainer}>
+          <InfoItem
+            title="Visit Abu Dhabi with Etihad"
+            description="Proudly modern and cosmopolitan, Abu Dhabi is the UAE's forward-thinking cultural heart where nothing stands still."
+            climate="March: 25-30°C · Pleasant and breezy"
+            srcImg={BgImg1}
+            tellMe
+            style={{ flex: '1 1 50%', height: '400px' }}
+          />
+          <InfoItem
+            title="The Louvre Abu Dhabi"
+            description="With floating markets on the river, fascinating temples and vibrant streets with friendly locals, Bangkok is a must-see."
+            srcImg={BgImg2}
+            tellMe
+            style={{ flex: '1 1 50%', height: '400px' }}
+          />
+          <InfoItem
+            title="Experience the Formula 1 Etihad Airways Abu Dhabi Grand Prix 2020"
+            duration="November 27-29"
+            srcImg={BgImg3}
+            learnMore
+            style={{ flex: '1 1 100%', height: '300px' }}
+          />
         </div>
       </div>
     );

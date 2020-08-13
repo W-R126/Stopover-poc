@@ -18,7 +18,9 @@ export default function ExperienceItem({
   srcImg,
 }: ExperienceItemProps): JSX.Element {
   return (
-    <div className={css.ComponentContainer}>
+    <div
+      className={css.ComponentContainer}
+    >
       <div className={css.Content}>
         <img className={css.Back} src={srcImg} alt="back" />
         <div className={css.Cover} />

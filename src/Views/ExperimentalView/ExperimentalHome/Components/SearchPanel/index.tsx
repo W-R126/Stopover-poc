@@ -3,29 +3,41 @@ import React from 'react';
 import css from './SearchPanel.module.css';
 
 import AirportService from '../../../../../Services/AirportService';
+import ContentService from '../../../../../Services/ContentService';
 import { AirportModel } from '../../../../../Models/AirportModel';
-import AirportSearch from '../../../../../Components/TripSearch/Components/OriginDestinationPicker/Components/AirportSearch';
+import { GuestsModel } from '../../../../../Models/GuestsModel';
+import { CabinClassEnum } from '../../../../../Enums/CabinClassEnum';
 
 import Utils from '../../../../../Utils';
-import DestinationAirport from './Components/DestinationAirport';
-
 import { getCityImage, getCityPrice } from '../../../MockData';
-import ContentService from '../../../../../Services/ContentService';
+
+import AirportSearch from '../../../../../Components/TripSearch/Components/OriginDestinationPicker/Components/AirportSearch';
+import DestinationAirport from './Components/DestinationAirport';
 import DateSelector from './Components/DateSelector';
+import PassengerSelector from './Components/PassengerSelector';
+import CabinClassSelector from './Components/CabinClassSelector';
+import Option from '../../../../../Components/UI/Select/Option';
 
 interface SearchPanelProps {
+  airportService: AirportService;
+  contentService: ContentService;
   origin?: AirportModel;
   destination?: AirportModel;
   dateRange?: any;
-  airportService: AirportService;
-  contentService: ContentService;
+  passenger: GuestsModel;
+  cabinClass: CabinClassEnum;
+  price: number;
   onChangeAirports: (origin?: AirportModel, destination?: AirportModel) => void;
   onChangeDateRange: (start?: Date, end?: Date) => void;
+  onChangePassenger: (passenger: GuestsModel) => void;
+  onChangeCabinClass: (cabinClass: CabinClassEnum) => void;
+  onChangePrice: (value: number) => void;
 }
 
 interface SearchPanelState {
   selectedPane: string;
   airports: AirportModel[];
+  cabinClasses: { [key: string]: string };
 }
 
 class SearchPanel extends React.Component<
@@ -38,6 +50,7 @@ class SearchPanel extends React.Component<
     this.state = {
       selectedPane: 'FLIGHTS',
       airports: [],
+      cabinClasses: {},
     };
 
     this.swapDirections = this.swapDirections.bind(this);
@@ -47,7 +60,7 @@ class SearchPanel extends React.Component<
   }
 
   async componentDidMount(): Promise<void> {
-    const { airportService } = this.props;
+    const { airportService, contentService } = this.props;
 
     const airports = await airportService.getAirports();
     const airportsWithImg = airports.map((item: AirportModel): AirportModel => ({
@@ -61,6 +74,9 @@ class SearchPanel extends React.Component<
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.setOriginAirportFromPosition);
     }
+
+    const common = await contentService.get('common');
+    this.setState({ cabinClasses: common.cabinClasses });
   }
 
   private onOriginChange(origin?: AirportModel): void {
@@ -107,9 +123,15 @@ class SearchPanel extends React.Component<
   }
 
   render(): JSX.Element {
-    const { selectedPane, airports } = this.state;
+    const { selectedPane, airports, cabinClasses } = this.state;
     const {
-      origin, destination, dateRange, onChangeDateRange, contentService,
+      contentService,
+      origin, destination,
+      dateRange, onChangeDateRange,
+      passenger, onChangePassenger,
+      cabinClass, onChangeCabinClass,
+      price,
+      onChangePrice,
     } = this.props;
 
     return (
@@ -144,6 +166,8 @@ class SearchPanel extends React.Component<
             id="trip-destination"
             placeholder="Where do you want to go?"
             value={destination}
+            price={price}
+            onChangePrice={onChangePrice}
           />
           <button
             className={css.SwapButton}
@@ -155,10 +179,41 @@ class SearchPanel extends React.Component<
         {(origin && destination) && (
           <div className={css.TripBar}>
             <DateSelector
+              className={css.DateSelectorWrapper}
               contentService={contentService}
               flightDate={dateRange}
               changeDate={onChangeDateRange}
             />
+            <PassengerSelector
+              id="experimental-home-passenger-selector"
+              data={passenger}
+              style={{ flex: '1 1 100%' }}
+              onChange={onChangePassenger}
+            />
+            <CabinClassSelector
+              className={css.CabinClassSelect}
+              wrapperClassName={css.CabinClassSelectWrapper}
+              value={cabinClass}
+              onChange={onChangeCabinClass}
+            >
+              {Object.keys(CabinClassEnum).map((cc, idx) => (
+                <Option
+                  value={CabinClassEnum[cc as keyof typeof CabinClassEnum]}
+                  key={`cabin-type-option-${idx}`}
+                >
+                  {cabinClasses[cc] ?? ''}
+                </Option>
+              ))}
+            </CabinClassSelector>
+            <div
+              className={css.SearchButton}
+              role="button"
+              onClick={(): void => {
+                console.log('Click Search Button');
+              }}
+            >
+              Search
+            </div>
           </div>
         )}
       </div>

@@ -1,0 +1,115 @@
+.PassengerSelector {
+  display: block;
+  position: relative;
+  outline: 0;
+  height: 60px;
+  font-size: 18px;
+  user-select: none;
+  outline: none;
+}
+
+.Wrapper {  
+  border-right: 1px solid #e5e5e5;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.PassengerSelector[aria-expanded='true'] > .Wrapper,
+.PassengerSelector:focus > .Wrapper {
+  border-color: #fff;
+}
+
+.PassengerSelector[aria-expanded='false'] > .Wrapper {
+  max-height: 60px;
+}
+
+.Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  border-right: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+  cursor: pointer;
+  padding: 11px 15px;
+  font-weight: 350;
+  font-size: 16px;
+  line-height: 21px;
+  color: #a8a7a7;  
+}
+
+.Header::after {
+  font-family: 'Icons', Arial, Helvetica, sans-serif;
+  content: '\f107';
+  font-size: 22px;
+  transition: transform 100ms;
+  color: #bd8b13;
+}
+
+html:not([dir='rtl']) .Header::after {
+  margin-left: 16px;
+}
+
+html[dir='rtl'] .Header::after {
+  margin-right: 16px;
+}
+
+.PassengerSelector[aria-expanded='true'] .Header::after {
+  transform: rotateZ(-180deg);
+}
+
+.Header > .Passengers {
+  position: absolute;
+}
+
+.PassengerSelector[aria-expanded='false'] > .Wrapper > .ModalWrapper {
+  display: none;
+}
+
+.Pickers {
+  padding: 15px;
+  display: flex;
+  flex-flow: column;
+}
+
+.Pickers > :not(:first-child) {
+  margin-top: 24px;
+}
+
+@media screen and (min-width: 481px) {
+  .PassengerSelector:focus {
+    position: relative;
+    z-index: 1;
+  }
+
+  .Pickers > button {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .Wrapper > .ModalWrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 16px;
+  }
+
+  .Pickers {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 16px;
+  }
+}
+
+.ActiveText {
+  color: #bd8b13;  
+}

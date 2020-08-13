@@ -1,27 +1,12 @@
 .ComponentContainer {
-  display: flex;  
   position: relative;
-  width: 50%;
-  height: 247.5px;
-  padding: 3px 1.5px 0;
-}
-
-.Content {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
   flex: 1 1 100%;
-  overflow: hidden;
-  z-index: 0;
-  padding: 25px;
-  color: #fff;
-  position: relative;
-  user-select: none;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  height: 300px;
+  display: flex;
+  padding: 23px 57px;  
+  flex-direction: column;
+  justify-content: center;
 }
-
 
 .Back {
   position: absolute;
@@ -32,43 +17,56 @@
   z-index: -1;
 }
 
-.Cover {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  background: rgba(0, 0, 0, 0.3);
-}
-
 .Title {
   font-style: italic;
   font-weight: 600;
   font-size: 35px;
   line-height: 45px;
   color: #fff;
+  margin: auto 0 0 0;
 }
 
-.From {
+.Duration {
   font-style: normal;
-  font-weight: normal;
+  font-weight: 600;
   font-size: 18px;
   line-height: 23px;
   color: #fff;
+  margin: 2px 0 0 0;
 }
 
 .Description {
-  margin: 4px 0 0 0;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
-  line-height: 18px;  
+  line-height: 18px;
   color: #fff;
+}
+
+.LearnMore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 128px;
+  height: 38px;
+  cursor: pointer;
+  background: #fff;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;
+  color: #bd8b13;
+  margin: 14px 0 0 0;
+  user-select: none;
 }
 
 .Footer {
   margin: auto 0 0 0;
+  display: flex;  
+  align-items: center;
+}
+
+.Climate {
   font-style: normal;
   font-weight: 350;
   font-size: 16px;
@@ -78,16 +76,16 @@
   align-items: center;
 }
 
-.Footer img {
+.Climate img {
   margin-right: 10px;
 }
 
 .TellMe {
+  cursor: pointer;
+  margin-left: auto;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 16px;
   line-height: 21px;
   color: #fff;
-  margin-left: auto;
-  cursor: pointer;
 }

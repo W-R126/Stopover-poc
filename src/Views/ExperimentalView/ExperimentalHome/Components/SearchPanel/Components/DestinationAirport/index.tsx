@@ -18,6 +18,8 @@ interface DestinationAirportProps {
   value?: AirportModel;
   airports: AirportModel[];
   onChange: (value?: AirportModel) => void;
+  price: number;
+  onChangePrice: (value: number) => void;
 }
 
 interface DestinationAirportState {
@@ -282,6 +284,8 @@ export default class DestinationAirport extends React.Component<
       style,
       placeholder,
       value,
+      price,
+      onChangePrice,
       wrapperClassName,
       focusedClassName,
     } = this.props;
@@ -488,15 +492,16 @@ export default class DestinationAirport extends React.Component<
               <div className={css.SurpriseDropDown}>
                 <div className={css.Budget}>My budget is:</div>
                 <div className={css.BudgetValue}>
-                  £380
+                  £
+                  {price}
                 </div>
                 <RangeSlider
                   className={css.BudgetSlider}
                   min={0}
                   max={3000}
-                  value={200}
+                  value={price}
                   onChange={(rangeValue: number): void => {
-                    console.log(rangeValue);
+                    onChangePrice(rangeValue);
                   }}
                 />
                 <div className={css.InspireButton}>

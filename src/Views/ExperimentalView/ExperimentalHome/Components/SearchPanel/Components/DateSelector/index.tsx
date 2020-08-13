@@ -8,6 +8,7 @@ import ContentService from '../../../../../../../Services/ContentService';
 import DateUtils from '../../../../../../../DateUtils';
 
 interface DateSelectorProps {
+  className: string;
   flightDate: any;
   contentService: ContentService;
   changeDate: (start?: Date, end?: Date) => void;
@@ -154,7 +155,7 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
   }
 
   render(): JSX.Element {
-    const { contentService, flightDate } = this.props;
+    const { className, contentService, flightDate } = this.props;
     const {
       collapsed, dateInfo, selectedTab, selectedView,
     } = this.state;
@@ -163,7 +164,7 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
     if (collapsed) { titleClassList.push(css.Collapsed); }
     return (
       <div
-        className={css.ComponentContainer}
+        className={`${css.ComponentContainer} ${className}`}
         ref={this.selfRef}
         onFocus={this.expand}
       >
