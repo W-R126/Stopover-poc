@@ -21,13 +21,14 @@
   background-color: #fff;
 }
 
-.Header a {
-  display: flex;
+.Header .Logo {
   cursor: pointer;
 }
 
+
 .Header .Account {
   margin-left: auto;
+  cursor: pointer;
 }
 
 .InfoContainer {  

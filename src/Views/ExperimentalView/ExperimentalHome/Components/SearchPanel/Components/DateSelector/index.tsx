@@ -7,11 +7,14 @@ import Calendar from '../../../../../../../Components/TripSearch/Components/Date
 import ContentService from '../../../../../../../Services/ContentService';
 import DateUtils from '../../../../../../../DateUtils';
 
+import { TripTypeEnum } from '../../../../../../../Enums/TripTypeEnum';
+
 interface DateSelectorProps {
-  className: string;
+  tripType: TripTypeEnum;
   flightDate: any;
   contentService: ContentService;
   changeDate: (start?: Date, end?: Date) => void;
+  changeTrip: (tripType: TripTypeEnum) => void;
 }
 
 interface DateSelectorState {
@@ -154,17 +157,51 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
     } return '';
   }
 
+  private renderTripButton(): JSX.Element | null {
+    const { tripType, changeTrip } = this.props;
+    if (tripType === TripTypeEnum.roundTrip) {
+      return (
+        <div
+          className={css.TripButton}
+          role="button"
+          onClick={(): void => changeTrip(TripTypeEnum.oneWay)}
+        >
+          One way only
+        </div>
+      );
+    } if (tripType === TripTypeEnum.oneWay) {
+      return (
+        <div
+          className={css.TripButton}
+          role="button"
+          onClick={(): void => changeTrip(TripTypeEnum.roundTrip)}
+        >
+          Return Trip
+        </div>
+      );
+    }
+
+    return null;
+  }
+
   render(): JSX.Element {
-    const { className, contentService, flightDate } = this.props;
+    const {
+      contentService, tripType, flightDate,
+    } = this.props;
     const {
       collapsed, dateInfo, selectedTab, selectedView,
     } = this.state;
+
+    const wrapperClassList = [css.ComponentContainer];
+    if (tripType === TripTypeEnum.roundTrip) {
+      wrapperClassList.push(css.RounndTripWrapper);
+    }
 
     const titleClassList = [css.DateValue];
     if (collapsed) { titleClassList.push(css.Collapsed); }
     return (
       <div
-        className={`${css.ComponentContainer} ${className}`}
+        className={wrapperClassList.join(' ')}
         ref={this.selfRef}
         onFocus={this.expand}
       >
@@ -181,6 +218,7 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
             Depature date
             <span>{this.renderSelectDate(flightDate.start)}</span>
           </div>
+          {tripType === TripTypeEnum.roundTrip && (
           <div
             className={`${css.DateInput} ${selectedTab === 2 ? css.Selected : ''}`}
             onClick={(): void => {
@@ -191,6 +229,7 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
             Return date
             <span>{this.renderSelectDate(flightDate.end)}</span>
           </div>
+          )}
         </div>
         {!collapsed
           && (
@@ -205,13 +244,14 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
                 end={dateInfo.end}
                 ref={this.calendarRef}
                 contentService={contentService}
-                span
+                span={tripType === TripTypeEnum.roundTrip}
                 onChange={(start, end): void => this.onChange(start, end)}
               />
               <div className={css.Footer}>
                 <div>
                   {this.renderFooterDate()}
                 </div>
+                {this.renderTripButton()}
                 <div
                   className={css.DoneButton}
                   onClick={(): void => { this.clickDone(); }}

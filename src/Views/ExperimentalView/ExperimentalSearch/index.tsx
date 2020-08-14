@@ -55,12 +55,12 @@ class ExperimentalSearch extends React.Component<
       <div className={css.MainContainer}>
         <div className={css.Container}>
           <div className={css.Header}>
-            <a className={css.Logo} href="">
+            <div className={css.Logo}>
               <img src={LogoImg} alt="logo" />
-            </a>
-            <a className={css.Account} href="">
+            </div>
+            <div className={css.Account}>
               <img src={AccountImg} alt="account" />
-            </a>
+            </div>
           </div>
           <SearchSection
             contentService={contentService}

@@ -17,6 +17,7 @@ import DateSelector from './Components/DateSelector';
 import PassengerSelector from './Components/PassengerSelector';
 import CabinClassSelector from './Components/CabinClassSelector';
 import Option from '../../../../../Components/UI/Select/Option';
+import { TripTypeEnum } from '../../../../../Enums/TripTypeEnum';
 
 interface SearchPanelProps {
   airportService: AirportService;
@@ -27,11 +28,13 @@ interface SearchPanelProps {
   passenger: GuestsModel;
   cabinClass: CabinClassEnum;
   price: number;
+  tripType: TripTypeEnum;
   onChangeAirports: (origin?: AirportModel, destination?: AirportModel) => void;
   onChangeDateRange: (start?: Date, end?: Date) => void;
   onChangePassenger: (passenger: GuestsModel) => void;
   onChangeCabinClass: (cabinClass: CabinClassEnum) => void;
   onChangePrice: (value: number) => void;
+  onChangeTripType: (tripType: TripTypeEnum) => void;
 }
 
 interface SearchPanelState {
@@ -122,16 +125,68 @@ class SearchPanel extends React.Component<
     onChangeAirports(destination, origin);
   }
 
-  render(): JSX.Element {
-    const { selectedPane, airports, cabinClasses } = this.state;
+  private renderFlightSelector(): JSX.Element|null {
     const {
       contentService,
       origin, destination,
       dateRange, onChangeDateRange,
       passenger, onChangePassenger,
       cabinClass, onChangeCabinClass,
-      price,
-      onChangePrice,
+      tripType, onChangeTripType,
+    } = this.props;
+
+    const { cabinClasses } = this.state;
+
+    if (tripType === TripTypeEnum.oneWay && !origin) { return null; }
+    if (tripType === TripTypeEnum.roundTrip && (!origin || !destination)) { return null; }
+
+    return (
+      <div className={css.TripBar}>
+        <DateSelector
+          contentService={contentService}
+          flightDate={dateRange}
+          changeDate={onChangeDateRange}
+          tripType={tripType}
+          changeTrip={onChangeTripType}
+        />
+        <PassengerSelector
+          id="experimental-home-passenger-selector"
+          data={passenger}
+          style={{ flex: '1 1 100%' }}
+          onChange={onChangePassenger}
+        />
+        <CabinClassSelector
+          value={cabinClass}
+          onChange={onChangeCabinClass}
+        >
+          {Object.keys(CabinClassEnum).map((cc, idx) => (
+            <Option
+              value={CabinClassEnum[cc as keyof typeof CabinClassEnum]}
+              key={`cabin-type-option-${idx}`}
+            >
+              {cabinClasses[cc] ?? ''}
+            </Option>
+          ))}
+        </CabinClassSelector>
+        <div
+          className={css.SearchButton}
+          role="button"
+          onClick={(): void => {
+            console.log('Click Search Button');
+          }}
+        >
+          Search
+        </div>
+      </div>
+    );
+  }
+
+  render(): JSX.Element {
+    const { selectedPane, airports } = this.state;
+    const {
+      origin, destination,
+      price, onChangePrice,
+      tripType,
     } = this.props;
 
     return (
@@ -157,65 +212,32 @@ class SearchPanel extends React.Component<
             placeholder="Where are you flying from?"
             value={origin}
           />
-          <DestinationAirport
-            className={css.AirportSearch}
-            wrapperClassName={css.AirportSearchWrapper}
-            focusedClassName={css.AirportSearchFocused}
-            airports={airports.filter((airport) => airport.code !== origin?.code)}
-            onChange={this.onDestinationChange}
-            id="trip-destination"
-            placeholder="Where do you want to go?"
-            value={destination}
-            price={price}
-            onChangePrice={onChangePrice}
-          />
-          <button
-            className={css.SwapButton}
-            type="button"
-            tabIndex={-1}
-            onClick={this.swapDirections}
-          />
+          {
+            tripType === TripTypeEnum.roundTrip && (
+              <>
+                <DestinationAirport
+                  className={css.AirportSearch}
+                  wrapperClassName={css.AirportSearchWrapper}
+                  focusedClassName={css.AirportSearchFocused}
+                  airports={airports.filter((airport) => airport.code !== origin?.code)}
+                  onChange={this.onDestinationChange}
+                  id="trip-destination"
+                  placeholder="Where do you want to go?"
+                  value={destination}
+                  price={price}
+                  onChangePrice={onChangePrice}
+                />
+                <button
+                  className={css.SwapButton}
+                  type="button"
+                  tabIndex={-1}
+                  onClick={this.swapDirections}
+                />
+              </>
+            )
+          }
         </div>
-        {(origin && destination) && (
-          <div className={css.TripBar}>
-            <DateSelector
-              className={css.DateSelectorWrapper}
-              contentService={contentService}
-              flightDate={dateRange}
-              changeDate={onChangeDateRange}
-            />
-            <PassengerSelector
-              id="experimental-home-passenger-selector"
-              data={passenger}
-              style={{ flex: '1 1 100%' }}
-              onChange={onChangePassenger}
-            />
-            <CabinClassSelector
-              className={css.CabinClassSelect}
-              wrapperClassName={css.CabinClassSelectWrapper}
-              value={cabinClass}
-              onChange={onChangeCabinClass}
-            >
-              {Object.keys(CabinClassEnum).map((cc, idx) => (
-                <Option
-                  value={CabinClassEnum[cc as keyof typeof CabinClassEnum]}
-                  key={`cabin-type-option-${idx}`}
-                >
-                  {cabinClasses[cc] ?? ''}
-                </Option>
-              ))}
-            </CabinClassSelector>
-            <div
-              className={css.SearchButton}
-              role="button"
-              onClick={(): void => {
-                console.log('Click Search Button');
-              }}
-            >
-              Search
-            </div>
-          </div>
-        )}
+        {this.renderFlightSelector()}
       </div>
     );
   }

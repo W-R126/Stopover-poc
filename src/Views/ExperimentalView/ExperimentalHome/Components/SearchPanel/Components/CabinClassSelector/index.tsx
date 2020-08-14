@@ -3,11 +3,9 @@ import React from 'react';
 import css from './CabinClassSelector.module.css';
 
 interface CabinClassSelectorProps<T> {
-  className?: string;
   style?: React.CSSProperties;
   value: T;
   onChange: (value: T) => void;
-  wrapperClassName?: string;
 }
 
 interface CabinClassSelectorState {
@@ -142,8 +140,11 @@ export default class CabinClassSelector<T> extends React.Component<
       >
         <div className={css.Wrapper}>
           <div className={css.Selected}>
-            Class
-            <span className={css.ActiveText}><strong>{selected}</strong></span>
+            <span>
+              Class
+              <span className={css.ActiveText}><strong>{selected}</strong></span>
+
+            </span>
           </div>
           {
             !collapsed && (

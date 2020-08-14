@@ -23,6 +23,7 @@ import AirportService from '../../../Services/AirportService';
 import { AirportModel } from '../../../Models/AirportModel';
 import { GuestsModel } from '../../../Models/GuestsModel';
 import { CabinClassEnum } from '../../../Enums/CabinClassEnum';
+import { TripTypeEnum } from '../../../Enums/TripTypeEnum';
 
 interface ExperimentalHomeProps {
   contentService: ContentService;
@@ -51,6 +52,7 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
         },
         cabinClass: CabinClassEnum.economy,
         price: 380,
+        tripType: TripTypeEnum.roundTrip,
       },
     };
 
@@ -59,6 +61,7 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
     this.onChangePassenger = this.onChangePassenger.bind(this);
     this.onChangeCabinClass = this.onChangeCabinClass.bind(this);
     this.onChangePrice = this.onChangePrice.bind(this);
+    this.onChangeTripType = this.onChangeTripType.bind(this);
   }
 
   private onChangeAirports(origin?: AirportModel, destination?: AirportModel): void {
@@ -118,15 +121,39 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
     });
   }
 
+  private onChangeTripType(value: TripTypeEnum): void {
+    const { selectedData } = this.state;
+    if (value === TripTypeEnum.oneWay) {
+      this.setState({
+        selectedData: {
+          ...selectedData,
+          tripType: value,
+          dateRange: {
+            ...selectedData.dateRange,
+            end: undefined,
+          },
+          destination: undefined,
+        },
+      });
+    } else if (value === TripTypeEnum.roundTrip) {
+      this.setState({
+        selectedData: {
+          ...selectedData,
+          tripType: value,
+        },
+      });
+    }
+  }
+
   render(): JSX.Element {
     const { airportService, contentService } = this.props;
     const { selectedData } = this.state;
     return (
       <div className={css.ComponentContainer}>
         <div className={css.Header}>
-          <a href="">
+          <div className={css.Logo}>
             <img src={LogoImg} alt="Etihad Logo" />
-          </a>
+          </div>
         </div>
         <div className={css.SearchSection}>
           <SearchPanel
@@ -143,6 +170,8 @@ class ExperimentalHome extends React.Component<ExperimentalHomeProps, Experiment
             onChangeCabinClass={this.onChangeCabinClass}
             price={selectedData.price}
             onChangePrice={this.onChangePrice}
+            tripType={selectedData.tripType}
+            onChangeTripType={this.onChangeTripType}
           />
         </div>
         <div className={css.ControlSection}>

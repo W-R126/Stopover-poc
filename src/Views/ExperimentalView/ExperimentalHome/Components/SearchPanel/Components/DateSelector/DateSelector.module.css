@@ -1,6 +1,11 @@
 .ComponentContainer {
   display: flex;
   position: relative;
+  flex: 1 1 100%;
+}
+
+.ComponentContainer.RounndTripWrapper {
+  flex: 1 0 43%;
 }
 
 .DateValue {
@@ -96,6 +101,7 @@
   align-items: center;
   padding-left: 50px;
   padding-right: 50px;
+  justify-content: space-between;
 }
 
 .Footer .Date {
@@ -104,6 +110,17 @@
   font-size: 14px;
   line-height: 18px;
   color: #4e4c4a;
+}
+
+.Footer .TripButton {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;
+  color: #bd8b13;
+  margin-left: auto;
+  cursor: pointer;
+  user-select: none;
 }
 
 .Footer .DoneButton {
@@ -119,7 +136,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin-left: auto;
+  margin-left: 36px;
 }
 
 .RightSection {

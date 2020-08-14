@@ -40,6 +40,7 @@
   height: 60px;
   position: relative;
   border-bottom: 1px solid #e5e5e5;
+  z-index: 2;
 }
 
 .SwapButton {
@@ -61,9 +62,9 @@
   border-radius: 25px;
 }
 
-.AirportSearch {
-  height: 59;
-  width: 50%;
+.AirportSearch {  
+  flex: 1 1 100%;
+  height: 60px;
 }
 
 .AirportSearch:first-child {
@@ -104,9 +105,7 @@
 }
 
 .SearchButton {
-  flex: 1 1 100%;
-  height: 100%;
-  max-width: 300px;
+  flex: 0 0 192px;
   background: #bd8b13;
   display: flex;
   align-items: center;
