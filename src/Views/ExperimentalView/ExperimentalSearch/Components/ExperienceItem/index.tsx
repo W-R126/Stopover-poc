@@ -1,10 +1,13 @@
 import React from 'react';
 import css from './ExperienceItem.module.css';
+
 import SunImg from '../../../../../Assets/Images/Experimental/Sun.svg';
+import ChevRightSvg from '../../../../../Assets/Images/Experimental/ChevRight.svg';
 
 interface ExperienceItemProps {
   title: string;
-  subTitle: string;
+  subTitle?: string;
+  duration?: string;
   description?: string;
   climate?: string;
   srcImg: string;
@@ -13,6 +16,7 @@ interface ExperienceItemProps {
 export default function ExperienceItem({
   title,
   subTitle,
+  duration,
   description,
   climate,
   srcImg,
@@ -25,9 +29,8 @@ export default function ExperienceItem({
         <img className={css.Back} src={srcImg} alt="back" />
         <div className={css.Cover} />
         <div className={css.Title}>{title}</div>
-        <div className={css.From}>
-          {subTitle}
-        </div>
+        {duration && <div className={css.Duration}>{duration}</div>}
+        {subTitle && <div className={css.From}>{subTitle}</div>}
         {description && <div className={css.Description}>{description}</div>}
         <div className={css.Footer}>
           { climate && (
@@ -37,7 +40,8 @@ export default function ExperienceItem({
             </>
           )}
           <div className={css.TellMe} role="button">
-            {'Tell me more >'}
+            Tell me more
+            <img src={ChevRightSvg} alt="Chev Right" />
           </div>
         </div>
       </div>

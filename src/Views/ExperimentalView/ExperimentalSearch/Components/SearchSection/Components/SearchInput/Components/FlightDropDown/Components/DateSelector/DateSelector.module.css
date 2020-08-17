@@ -128,16 +128,16 @@
 
 .RightSection .Title {
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 18px;
   line-height: 23px;
   color: #fff;
   text-align: center;
-  margin: 50px 0 0 0;
+  margin: 43.51px 0 0 0;
 }
 
 .RightSection .Description {
-  margin: 20px 0 0 0;
+  margin: 22.49px 0 0 0;
   font-size: 14px;
   line-height: 18px;
   text-align: center;
@@ -156,44 +156,3 @@
   margin: 0;
 }
 
-.EventSlider {
-  margin: 10px 0 0 50px;
-  width: 230px;  
-  overflow-y: auto;
-  display: flex;  
-}
-
-.EventItem {
-  flex: 0 0 180px;
-  height: 205px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  margin-right: 10px;
-}
-
-.EventItem .EventContnet {
-  background: #fff;
-}
-
-.EventItem .EventTitle {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 18px;
-  text-align: center;
-  color: #4e4c4a;
-  margin-top: 8px;
-}
-
-.EventItem .LearnMore {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 18px;
-  text-align: center;
-  color: #bd8b13;
-  margin: 33px 0 12px;
-  cursor: pointer;
-}

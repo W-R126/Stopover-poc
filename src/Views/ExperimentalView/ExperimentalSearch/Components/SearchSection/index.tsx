@@ -33,10 +33,7 @@ export default class SearchSection extends React.Component<
   private readonly STATUS_RESULT = 4;
 
   private readonly QUEST_ARRAY = [
-    'First Question1',
-    'First Question2',
-    'First Question3',
-    'First Question4',
+    "What's the baggabe allowance for Economy Flex",
   ]
 
   constructor(props: SearchSectionProps) {
@@ -165,7 +162,9 @@ export default class SearchSection extends React.Component<
       return (
         <>
           <div className={css.ResultText}>
-            The baggage allowance for Economy Flex is: 35kg
+            The baggage allowance for Economy Flex is:
+            {' '}
+            <strong>35kg</strong>
           </div>
           <div className={css.MicButtonContainer}>
             <div

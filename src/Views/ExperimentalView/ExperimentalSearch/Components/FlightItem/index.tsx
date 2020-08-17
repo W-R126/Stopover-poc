@@ -2,6 +2,7 @@ import React from 'react';
 import css from './FlightItem.module.css';
 
 import PlanImg from '../../../../../Assets/Images/Experimental/Plane.svg';
+import ChevRightSvg from '../../../../../Assets/Images/Experimental/ChevRight.svg';
 
 export default function FlightItem(): JSX.Element {
   return (
@@ -15,7 +16,7 @@ export default function FlightItem(): JSX.Element {
           <div className={css.Airport}>
             AUH
           </div>
-          {'>'}
+          <img src={ChevRightSvg} alt="Chev Right" />
           <div className={css.Airport}>
             BEY
           </div>
@@ -24,7 +25,8 @@ export default function FlightItem(): JSX.Element {
           26 May 2020
         </div>
         <div className={css.CheckIn} role="button">
-          {'Check in >'}
+          Check in
+          <img src={ChevRightSvg} alt="checkin chevright" />
         </div>
       </div>
     </div>

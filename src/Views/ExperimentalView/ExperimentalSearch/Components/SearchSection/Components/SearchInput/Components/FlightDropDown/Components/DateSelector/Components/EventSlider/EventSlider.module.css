@@ -1,0 +1,76 @@
+.ComponentContainer {
+  margin: 10px 0 0 50px;
+  width: 230px;
+  overflow-y: auto;
+  display: flex;
+  position: relative;
+  padding-bottom: 5px;
+}
+
+.ComponentContainer::-webkit-scrollbar { 
+  visibility: hidden;
+}
+
+.ComponentContainer::-webkit-scrollbar {
+  position: absolute;  
+  height: 7px;
+}
+
+/* Track */
+.ComponentContainer::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+ 
+/* Handle */
+.ComponentContainer::-webkit-scrollbar-thumb {
+  background: rgba(189, 139, 19, 0.5);
+  border: 1px solid rgb(189, 139, 19);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.ComponentContainer::-webkit-scrollbar-thumb:hover {
+  background: rgba(189, 139, 19, 1);
+}
+
+
+.EventItem {
+  flex: 0 0 180px;
+  height: 205px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-right: 15px;
+  user-select: none;
+}
+
+.EventItem .EventContnet {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 8px 20px 12px;
+  height: 105px;
+}
+
+.EventItem .EventTitle {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  color: #4e4c4a;  
+}
+
+.EventItem .LearnMore {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  color: #bd8b13;
+  margin-top: auto;
+  cursor: pointer;
+  font-weight: 600;
+}

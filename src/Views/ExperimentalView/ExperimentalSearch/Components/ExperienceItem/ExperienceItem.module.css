@@ -58,6 +58,15 @@
   color: #fff;
 }
 
+.Duration {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 23px;
+  color: #fff;
+  font-weight: 600;
+}
+
 .Description {
   margin: 4px 0 0 0;
   font-style: normal;
@@ -65,6 +74,7 @@
   font-size: 14px;
   line-height: 18px;  
   color: #fff;
+  max-width: 370px;
 }
 
 .Footer {
@@ -73,7 +83,7 @@
   font-weight: 350;
   font-size: 16px;
   line-height: 21px;
-  color: #fff;
+  color: #fff;  
   display: flex;
   align-items: center;
 }
@@ -83,11 +93,20 @@
 }
 
 .TellMe {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 16px;
   line-height: 21px;
   color: #fff;
   margin-left: auto;
   cursor: pointer;
+}
+
+.TellMe img {
+  width: 7.41px;
+  height: 12px;
+  margin: 2px 0 0 10.59px;
 }

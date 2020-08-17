@@ -4,6 +4,7 @@ import css from './DateSelector.module.css';
 import EventItemBg1 from '../../../../../../../../../../../Assets/Images/Experimental/EventItem1-Bg.jpg';
 
 import Calendar from '../../../../../../../../../../../Components/TripSearch/Components/DatePicker/Components/Calendar';
+import EventSlider from './Components/EventSlider';
 import ContentService from '../../../../../../../../../../../Services/ContentService';
 import DateUtils from '../../../../../../../../../../../DateUtils';
 
@@ -23,6 +24,24 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
   private readonly selfRef = React.createRef<HTMLDivElement>();
 
   private readonly calendarRef = React.createRef<Calendar>();
+
+  private EventData = [
+    {
+      title: 'Wildlife Photographer of the Year',
+      date: '1 Oct - 31 Oct',
+      backImg: EventItemBg1,
+    },
+    {
+      title: 'Wildlife Photographer of the Year',
+      date: '1 Oct - 31 Oct',
+      backImg: EventItemBg1,
+    },
+    {
+      title: 'Wildlife Photographer of the Year',
+      date: '1 Oct - 31 Oct',
+      backImg: EventItemBg1,
+    },
+  ]
 
   constructor(props: DateSelectorProps) {
     super(props);
@@ -196,7 +215,7 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
               </div>
             </div>
             <div className={css.RightSection}>
-              <div className={css.Title}>Riyadh in May</div>
+              <div className={css.Title}>Sydney in October</div>
               <div className={css.Description}>
                 <div><strong><i>Season</i></strong></div>
                 <div>Spring-Summer</div>
@@ -211,41 +230,7 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
               </div>
               <div className={css.Events}>
                 <div className={css.Title}><strong><i>Events</i></strong></div>
-                <div className={css.EventSlider}>
-                  <div className={css.EventItem}>
-                    <img src={EventItemBg1} alt="Event Item" />
-                    <div className={css.EventContnet}>
-                      <div className={css.EventTitle}>
-                        Global Town Festival 3
-                        <br />
-                        May 24 - 30
-                      </div>
-                      <div className={css.LearnMore} role="button">Learn more</div>
-                    </div>
-                  </div>
-                  <div className={css.EventItem}>
-                    <img src={EventItemBg1} alt="Event Item" />
-                    <div className={css.EventContnet}>
-                      <div className={css.EventTitle}>
-                        Global Town Festival 3
-                        <br />
-                        May 24 - 30
-                      </div>
-                      <div className={css.LearnMore} role="button">Learn more</div>
-                    </div>
-                  </div>
-                  <div className={css.EventItem}>
-                    <img src={EventItemBg1} alt="Event Item" />
-                    <div className={css.EventContnet}>
-                      <div className={css.EventTitle}>
-                        Global Town Festival 3
-                        <br />
-                        May 24 - 30
-                      </div>
-                      <div className={css.LearnMore} role="button">Learn more</div>
-                    </div>
-                  </div>
-                </div>
+                <EventSlider eventItems={this.EventData} />
               </div>
             </div>
           </div>

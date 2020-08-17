@@ -5,7 +5,7 @@ import CityImage4 from '../../Assets/Images/Experimental/CityImage4.jpg';
 
 export const SearchInputData = [
   {
-    title: 'Book a flight from London to Beirut',
+    title: 'Book a flight from London to Sydney',
     content: {
       type: 0,
       dateRange: {
@@ -18,102 +18,102 @@ export const SearchInputData = [
         infants: 0,
       },
       segment: [{
-        Arrival: 'RUH',
-        Depature: 'AUH',
+        Arrival: 'SYD',
+        Depature: 'LHR',
         Stops: 1,
         Duration: '10hr Travel Time',
       }],
       Description: "This flight has a layover in Abu Dhabi! It's eligible for Etihad's amazing Stopover Abu Dhabi deals",
     },
   },
-  {
-    title: 'Book a flight from Colombo to London',
-    content: {
-      type: 1,
-      dateRange: {
-        start: new Date('2020-08-19'),
-        end: new Date('2020-08-21'),
-      },
-      passenger: {
-        adults: 1,
-        children: 0,
-        infants: 0,
-      },
-      segment: [{
-        Arrival: 'RUH',
-        Depature: 'AUH',
-        Stops: 1,
-        Duration: '10hr Travel Time',
-      }],
-      Description: "This flight has a layover in Abu Dhabi! It's eligible for Etihad's amazing Stopover Abu Dhabi deals",
-    },
-  },
-  {
-    title: 'Book a flight from Sydney to Muscat',
-    content: {
-      type: 1,
-      dateRange: {
-        start: new Date('2020-08-29'),
-        end: new Date('2020-09-15'),
-      },
-      passenger: {
-        adults: 1,
-        children: 0,
-        infants: 0,
-      },
-      segment: [{
-        Arrival: 'RUH',
-        Depature: 'AUH',
-        Stops: 1,
-        Duration: '10hr Travel Time',
-      }],
-      Description: "This flight has a layover in Abu Dhabi! It's eligible for Etihad's amazing Stopover Abu Dhabi deals",
-    },
-  },
-  {
-    title: 'Book a flight from London to Sydney',
-    content: {
-      type: 1,
-      dateRange: {
-        start: new Date('2020-10-10'),
-        end: new Date('2020-10-21'),
-      },
-      passenger: {
-        adults: 1,
-        children: 0,
-        infants: 0,
-      },
-      segment: [{
-        Arrival: 'RUH',
-        Depature: 'AUH',
-        Stops: 1,
-        Duration: '10hr Travel Time',
-      }],
-      Description: "This flight has a layover in Abu Dhabi! It's eligible for Etihad's amazing Stopover Abu Dhabi deals",
-    },
-  },
-  {
-    title: 'Book a flight from London to Mumbai',
-    content: {
-      type: 1,
-      dateRange: {
-        start: new Date(),
-        end: new Date('2020-08-11'),
-      },
-      passenger: {
-        adults: 1,
-        children: 0,
-        infants: 0,
-      },
-      segment: [{
-        Arrival: 'RUH',
-        Depature: 'AUH',
-        Stops: 1,
-        Duration: '10hr Travel Time',
-      }],
-      Description: "This flight has a layover in Abu Dhabi! It's eligible for Etihad's amazing Stopover Abu Dhabi deals",
-    },
-  },
+  // {
+  //   title: 'Book a flight from London to London',
+  //   content: {
+  //     type: 1,
+  //     dateRange: {
+  //       start: new Date('2020-08-19'),
+  //       end: new Date('2020-08-21'),
+  //     },
+  //     passenger: {
+  //       adults: 1,
+  //       children: 0,
+  //       infants: 0,
+  //     },
+  //     segment: [{
+  //       Arrival: 'RUH',
+  //       Depature: 'AUH',
+  //       Stops: 1,
+  //       Duration: '10hr Travel Time',
+  //     }],
+  //     Description: "This flight has a layover in Abu Dhabi! It's eligible for Etihad's amazing Stopover Abu Dhabi deals",
+  //   },
+  // },
+  // {
+  //   title: 'Book a flight from Sydney to Muscat',
+  //   content: {
+  //     type: 1,
+  //     dateRange: {
+  //       start: new Date('2020-08-29'),
+  //       end: new Date('2020-09-15'),
+  //     },
+  //     passenger: {
+  //       adults: 1,
+  //       children: 0,
+  //       infants: 0,
+  //     },
+  //     segment: [{
+  //       Arrival: 'RUH',
+  //       Depature: 'AUH',
+  //       Stops: 1,
+  //       Duration: '10hr Travel Time',
+  //     }],
+  //     Description: "This flight has a layover in Abu Dhabi! It's eligible for Etihad's amazing Stopover Abu Dhabi deals",
+  //   },
+  // },
+  // {
+  //   title: 'Book a flight from London to Sydney',
+  //   content: {
+  //     type: 1,
+  //     dateRange: {
+  //       start: new Date('2020-10-10'),
+  //       end: new Date('2020-10-21'),
+  //     },
+  //     passenger: {
+  //       adults: 1,
+  //       children: 0,
+  //       infants: 0,
+  //     },
+  //     segment: [{
+  //       Arrival: 'RUH',
+  //       Depature: 'AUH',
+  //       Stops: 1,
+  //       Duration: '10hr Travel Time',
+  //     }],
+  //     Description: "This flight has a layover in Abu Dhabi! It's eligible for Etihad's amazing Stopover Abu Dhabi deals",
+  //   },
+  // },
+  // {
+  //   title: 'Book a flight from London to Mumbai',
+  //   content: {
+  //     type: 1,
+  //     dateRange: {
+  //       start: new Date(),
+  //       end: new Date('2020-08-11'),
+  //     },
+  //     passenger: {
+  //       adults: 1,
+  //       children: 0,
+  //       infants: 0,
+  //     },
+  //     segment: [{
+  //       Arrival: 'RUH',
+  //       Depature: 'AUH',
+  //       Stops: 1,
+  //       Duration: '10hr Travel Time',
+  //     }],
+  //     Description: "This flight has a layover in Abu Dhabi! It's eligible for Etihad's amazing Stopover Abu Dhabi deals",
+  //   },
+  // },
   {
     title: 'How much baggage allowance for Economy flex ticke',
     content: {

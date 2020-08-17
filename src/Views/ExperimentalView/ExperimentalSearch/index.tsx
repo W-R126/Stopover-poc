@@ -72,14 +72,14 @@ class ExperimentalSearch extends React.Component<
             <FlightItem />
             <ExperienceItem
               title="Beijing"
-              subTitle="From AED 2,255"
+              subTitle="From £890 "
               description="Beijing is an enthralling clash of personalities. Traditional but tech-forward, it’s a megacity marching into the future."
-              climate="May: 18-25°C · Pleasant and breezy"
+              climate="November: 18-25°C · Pleasant and breezy"
               srcImg={BgImg1}
             />
             <ExperienceItem
               title="Experience the Formula 1 Etihad"
-              subTitle="November 27-29"
+              duration="November 27-29"
               srcImg={BgImg2}
             />
             <ExperienceItem
