@@ -22,7 +22,7 @@ export default function FlightItem(): JSX.Element {
           </div>
         </div>
         <div className={css.Date}>
-          26 NOv 2020
+          26 Nov 2020
         </div>
         <div className={css.CheckIn} role="button">
           Check in
