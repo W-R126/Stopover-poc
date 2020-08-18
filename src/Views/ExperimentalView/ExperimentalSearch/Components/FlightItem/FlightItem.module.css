@@ -22,7 +22,7 @@
 }
 
 .FlightType {
-  margin: 4px 0 0 0;
+  margin: 3.72px 0 0 0;
   font-style: normal;
   font-weight: 350;
   font-size: 14px;
@@ -36,6 +36,7 @@
   width: 100%;
   align-items: center;
   justify-content: space-between;
+  margin: 23px 0 0 0;
 }
 
 .Airport {
@@ -64,6 +65,7 @@
   margin: auto 0 0 0;
   text-align: right;
   cursor: pointer;
+  margin-right: 10px;
 }
 
 .CheckIn img {
