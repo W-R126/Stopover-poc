@@ -10,7 +10,7 @@ export default function StatusItem(): JSX.Element {
         <div className={css.Title}>On your way to Silver Status!</div>
         <div className={css.FlightItem}>
           <div className={css.Progress}>
-            <div className={css.Backward} style={{ width: '150px' }}>
+            <div className={css.Backward} style={{ width: '60%' }}>
               Tire miles
               <img src={PlanImg} alt="Plan" />
             </div>
@@ -22,7 +22,7 @@ export default function StatusItem(): JSX.Element {
         </div>
         <div className={css.FlightItem}>
           <div className={css.Progress}>
-            <div className={css.Backward} style={{ width: '100px' }}>
+            <div className={css.Backward} style={{ width: '30%' }}>
               Tire segments
               <img src={PlanImg} alt="Plan" />
             </div>

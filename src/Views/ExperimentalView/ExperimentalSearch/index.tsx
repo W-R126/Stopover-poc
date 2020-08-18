@@ -42,7 +42,7 @@ class ExperimentalSearch extends React.Component<
   private renderFirstItem(): JSX.Element {
     const { selectedData } = this.state;
 
-    if (selectedData.content && selectedData.content.type && selectedData.content.type === 0) {
+    if (selectedData.content && selectedData.content.type === 0) {
       return <StatusItem />;
     } return <LevelItem />;
   }
