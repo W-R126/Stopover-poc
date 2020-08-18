@@ -13,6 +13,26 @@
   z-index: 9;
 }
 
+.TopHeader {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(100% - 100px);
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  background-color: #fff;
+  padding: 20px 25px 19px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;
+  color: #4e4c4a;
+}
+
+.TopHeader .Price {
+  color: #f68d2e;
+}
+
 .Title {
   font-style: normal;
   font-weight: normal;

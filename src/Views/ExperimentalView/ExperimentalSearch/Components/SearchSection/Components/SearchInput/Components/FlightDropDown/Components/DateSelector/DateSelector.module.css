@@ -73,6 +73,7 @@
 
 .CalendarContainer {
   display: flex;
+  flex: 1 1 100%;
   flex-direction: column;
   padding: 50px 30px 30px 30px;
 }

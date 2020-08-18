@@ -120,12 +120,9 @@ export default class SearchInput extends React.Component<
     });
   }
 
-  private clickGo(): void {
-    console.log('Budget Modal Click Go');
-  }
-
   private renderItemDropDown(): JSX.Element|null {
     const { contentService, selectedData, onChange } = this.props;
+    const { isShowDropDown } = this.state;
     if (Object.keys(selectedData).length === 0) {
       return null;
     }
@@ -142,6 +139,7 @@ export default class SearchInput extends React.Component<
     } if (selectedData.content.type === 3) {
       return (
         <BudgetDropDown
+          title={selectedData.title}
           budget={selectedData.content.budget}
           changeBudget={(newValue: number): void => {
             onChange({
@@ -152,7 +150,8 @@ export default class SearchInput extends React.Component<
               },
             });
           }}
-          clickGo={this.clickGo}
+          clickGo={this.setShowDropDown}
+          isShowDropDown={isShowDropDown}
         />
       );
     } if (selectedData.content.type === 2) {
