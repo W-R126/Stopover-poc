@@ -2,14 +2,18 @@ import React from 'react';
 import css from './DateSelector.module.css';
 
 import EventItemBg1 from '../../../../../../../../../../../Assets/Images/Experimental/EventItem1-Bg.jpg';
+import EventItemBg2 from '../../../../../../../../../../../Assets/Images/Experimental/EventItem2-Bg.jpg';
+import EventItemBg3 from '../../../../../../../../../../../Assets/Images/Experimental/EventItem3-Bg.jpg';
 
-import Calendar from '../../../../../../../../../../../Components/TripSearch/Components/DatePicker/Components/Calendar';
 import EventSlider from './Components/EventSlider';
 import ContentService from '../../../../../../../../../../../Services/ContentService';
 import DateUtils from '../../../../../../../../../../../DateUtils';
+import PriceCalendar from '../../../../../../../../../Components/PriceCalendar';
+import { DatePriceModel } from '../../../../../../../../../MockData';
 
 interface DateSelectorProps {
   dateInfo: any;
+  datePrice?: DatePriceModel[];
   contentService: ContentService;
   changeDate: Function;
   setShowDropDown: Function;
@@ -23,7 +27,7 @@ interface DateSelectorState {
 export default class DateSelector extends React.Component<DateSelectorProps, DateSelectorState> {
   private readonly selfRef = React.createRef<HTMLDivElement>();
 
-  private readonly calendarRef = React.createRef<Calendar>();
+  private readonly calendarRef = React.createRef<PriceCalendar>();
 
   private EventData = [
     {
@@ -32,14 +36,14 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
       backImg: EventItemBg1,
     },
     {
-      title: 'Wildlife Photographer of the Year',
-      date: '1 Oct - 31 Oct',
-      backImg: EventItemBg1,
+      title: 'Boothill Markets',
+      date: '20 Aug - 31 Dec',
+      backImg: EventItemBg2,
     },
     {
-      title: 'Wildlife Photographer of the Year',
-      date: '1 Oct - 31 Oct',
-      backImg: EventItemBg1,
+      title: 'Sydney Harbour Halloween Party Cruise',
+      date: '31 Oct',
+      backImg: EventItemBg3,
     },
   ]
 
@@ -167,7 +171,7 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
   }
 
   render(): JSX.Element {
-    const { contentService } = this.props;
+    const { contentService, datePrice } = this.props;
     const { collapsed, dateInfo } = this.state;
 
     const titleClassList = [css.DateValue];
@@ -192,13 +196,14 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
           && (
           <div className={css.DropDownContainer}>
             <div className={css.CalendarContainer}>
-              <Calendar
+              <PriceCalendar
                 start={dateInfo.start}
                 end={dateInfo.end}
                 ref={this.calendarRef}
                 contentService={contentService}
                 span
                 onChange={(start, end): void => this.onChange(start, end)}
+                datePrice={datePrice}
               />
               <div className={css.Footer}>
                 <div>{this.renderFooterDate()}</div>

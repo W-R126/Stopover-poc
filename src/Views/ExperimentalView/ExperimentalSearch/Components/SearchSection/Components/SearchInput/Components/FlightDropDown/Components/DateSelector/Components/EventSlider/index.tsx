@@ -26,6 +26,7 @@ export default class EventSlider extends React.Component<EventSliderProps, Event
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
   }
 
   onMouseDown(e: any): void{
@@ -52,19 +53,30 @@ export default class EventSlider extends React.Component<EventSliderProps, Event
     }
   }
 
+  onMouseLeave(e: any): void {
+    const { isScrolling } = this.state;
+    if (isScrolling) {
+      this.setState({
+        isScrolling: false,
+      });
+    }
+  }
+
   render(): JSX.Element {
+    const { isScrolling } = this.state;
     const { eventItems } = this.props;
     return (
       <div
-        className={css.ComponentContainer}
+        className={`${css.ComponentContainer} ${isScrolling ? css.Grabbing : ''}`}
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
         onMouseMove={this.onMouseMove}
+        onMouseLeave={this.onMouseLeave}
         ref={this.selfRef}
       >
         {eventItems.map((item) => (
           <div className={css.EventItem}>
-            <img src={item.backImg} alt="Event Item" />
+            <img src={item.backImg} draggable={false} alt="Event Item" />
             <div className={css.EventContnet}>
               <div className={css.EventTitle}>
                 <strong>Wildlife Photographer of the Year</strong>

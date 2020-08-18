@@ -1,0 +1,61 @@
+.Calendar {
+  display: flex;
+  direction: ltr;
+  align-items: flex-start;
+  position: relative;
+}
+
+.Calendar > button {
+  border: 0;
+  background-color: transparent;
+  outline: 0;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 138px;
+  transition: opacity 300ms;
+}
+
+.Calendar > button:disabled {
+  opacity: 0.5;
+}
+
+.Calendar > button > img {
+  vertical-align: top;
+  height: 32px;
+  width: 32px;
+}
+
+.Calendar > .NavigateBack > img {
+  transform: rotateZ(-180deg);
+}
+
+.Month {
+  width: calc(100% - 8px);
+  margin: 0 8px;
+}
+
+@media screen and (max-width: 630px) {
+  .Month {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .Calendar > button {
+    position: absolute;
+    top: 0;
+    margin: 0;
+  }
+
+  .Calendar > .NavigateBack {
+    left: 0;
+  }
+
+  .Calendar > .NavigateForward {
+    right: 0;
+  }
+
+  .Month {
+    margin-top: 6px;
+  }
+}

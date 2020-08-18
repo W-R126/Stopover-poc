@@ -55,10 +55,12 @@ export default class SearchInput extends React.Component<
     let searchStr = '';
     let showDropDown = false;
 
-    if (selectedOne.content.type === 3) {
+    if (selectedOne.content.type === 2 || selectedOne.content.type === 3) {
       searchStr = selectedOne.title;
-      showDropDown = true;
     }
+
+    if (selectedOne.content.type === 2) { showDropDown = false; }
+    if (selectedOne.content.type === 3) { showDropDown = true; }
 
     this.setState({
       searchInputStr: searchStr,
@@ -182,11 +184,11 @@ export default class SearchInput extends React.Component<
         >
           <img src={MicImg} alt="Mic" />
         </div>
-        {searchInputStr && (
-        <SearchDropDown
-          menuList={this.getFilteredMenuList()}
-          setItem={(selectedOne: any): void => { this.setItem(selectedOne); }}
-        />
+        {(searchInputStr && isShowDropDown) && (
+          <SearchDropDown
+            menuList={this.getFilteredMenuList()}
+            setItem={(selectedOne: any): void => { this.setItem(selectedOne); }}
+          />
         )}
         {this.renderItemDropDown()}
       </div>

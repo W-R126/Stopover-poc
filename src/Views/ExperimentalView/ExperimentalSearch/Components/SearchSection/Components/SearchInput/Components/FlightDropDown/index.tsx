@@ -22,6 +22,7 @@ export default function FlightDropDown({
         <div className={css.Title}>{flightData.title}</div>
         <DateSelector
           dateInfo={flightData.content.dateRange}
+          datePrice={flightData.content.DatePrice}
           contentService={contentService}
           changeDate={(dateInfo: any): void => changeDate(dateInfo)}
           setShowDropDown={setShowDropDown}

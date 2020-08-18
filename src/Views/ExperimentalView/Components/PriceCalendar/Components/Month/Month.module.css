@@ -1,0 +1,106 @@
+.Title {
+  display: block;
+  text-align: center;
+  padding-bottom: 16px;
+  font-family: 'EtihadAltis-Text', Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  user-select: none;
+}
+
+.Weekdays,
+.Days {
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.Weekdays {
+  color: #71706e;
+}
+
+.Days {
+  color: #b8b7b7;
+}
+
+.Weekdays > span,
+.Days > span {
+  display: flex;
+  width: 14.285%;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+}
+
+.Days > span {
+  border-radius: 4px;
+  border: 1px solid #fff;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+}
+
+.Days > span:not(.Disabled) {
+  cursor: pointer;
+}
+
+.Days > span[aria-selected='true'] {
+  position: relative;
+  background-color: #bd8b13;
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.Days > span[aria-selected='true']::after {
+  content: '';
+  height: 30px;
+  position: absolute;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+}
+
+.Days .Price {
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: 350;
+}
+
+.Days .Price.Sunday {
+  color: #7a9a01;
+}
+
+.SelectionEnd::after {
+  left: -4px;
+  border-right: 4px solid #bd8b13;
+}
+
+.Month:not(.Selecting) .SelectionStart::after {
+  right: -4px;
+  border-left: 4px solid #bd8b13;
+}
+
+.Month.Negative .SelectionStart:not(:hover)::after {
+  left: -4px;
+  border-right: 4px solid #bd8b13;
+}
+
+.Month.Selecting:not(.Negative) .SelectionStart:not(:hover)::after {
+  right: -4px;
+  border-left: 4px solid #bd8b13;
+}
+
+.SelectionEnd.SelectionStart::after {
+  display: none;
+}
+
+.Days > span[aria-selected='false']:not(.Disabled) {
+  color: #4e4c4a;
+}
+
+.Days > span[aria-selected='false']:not(.Disabled):hover {
+  background-color: #e5d1a1;
+}
+
+.Days > span.InSpan {
+  background-color: #e5d1a1;
+}

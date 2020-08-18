@@ -14,15 +14,15 @@ export default function FlightItem(): JSX.Element {
         </div>
         <div className={css.AirportDiv}>
           <div className={css.Airport}>
-            AUH
+            LHR
           </div>
           <img src={ChevRightSvg} alt="Chev Right" />
           <div className={css.Airport}>
-            BEY
+            SYD
           </div>
         </div>
         <div className={css.Date}>
-          26 May 2020
+          7 Oct 2020
         </div>
         <div className={css.CheckIn} role="button">
           Check in

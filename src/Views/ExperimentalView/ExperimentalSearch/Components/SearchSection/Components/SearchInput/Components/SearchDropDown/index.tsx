@@ -61,9 +61,9 @@ export default function SearchDropDown({ menuList, setItem }: SearchDropDownProp
           >
             <div className={css.MainContent}>
               <div className={css.IconDiv}>
-                {item.content.type === 0 && <img src={MenuIcon1} alt="Icon1" />}
-                {item.content.type === 1 && <img src={MenuIcon2} alt="Icon2" />}
-                {(item.content.type === 2 || item.content.type === 3) && <img src={MenuIcon3} alt="Icon3" />}
+                {item.iconType === 0 && <img src={MenuIcon1} alt="Icon1" />}
+                {item.iconType === 1 && <img src={MenuIcon2} alt="Icon2" />}
+                {(item.iconType === 2 || item.iconType === 3) && <img src={MenuIcon3} alt="Icon3" />}
               </div>
               <div className={css.Title}>{item.title}</div>
             </div>

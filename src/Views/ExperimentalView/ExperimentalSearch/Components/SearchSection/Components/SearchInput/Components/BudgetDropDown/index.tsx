@@ -2,6 +2,7 @@ import React from 'react';
 import css from './BudgetDropDown.module.css';
 
 import RangeSlider from '../../../../../../../Components/RangeSlider';
+import { get3DigitComma } from '../../../../../../../Utils';
 
 interface BudgetDropDownProps {
   budget: number;
@@ -17,7 +18,7 @@ export default function BudgetDropDown({
   return (
     <div className={css.ComponentContainer}>
       <div className={css.Title}>What's your budget?</div>
-      <div className={css.Budget}>{budget}</div>
+      <div className={css.Budget}>{`AED ${get3DigitComma(budget)}`}</div>
       <RangeSlider
         className={css.BudgetSlider}
         min={1}
