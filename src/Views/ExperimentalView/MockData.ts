@@ -210,6 +210,7 @@ export const SearchInputData = [
     content: {
       type: 2,
       weight: 35,
+      answer: 'Baggage allowance for Economy Flex is',
     },
   },
   {
@@ -218,6 +219,7 @@ export const SearchInputData = [
     content: {
       type: 2,
       weight: 35,
+      answer: 'Baggage allowance for Domestic flights is',
     },
   },
   {
@@ -226,6 +228,8 @@ export const SearchInputData = [
     content: {
       type: 2,
       weight: 35,
+      answer: 'Baggage allowance for Business class is',
+
     },
   },
   {

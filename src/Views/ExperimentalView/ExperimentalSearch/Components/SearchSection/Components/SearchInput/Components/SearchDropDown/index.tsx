@@ -39,7 +39,7 @@ export default function SearchDropDown({ menuList, setItem }: SearchDropDownProp
         return (
           <div className={css.Details}>
             <img className={css.Suitcase} src={SuitCaseIcon} alt="suitcase" />
-            {`Baggage allowance for Economy Flex is ${item.content.weight}kg`}
+            {`${item.content.answer} ${item.content.weight}kg`}
           </div>
         );
       }

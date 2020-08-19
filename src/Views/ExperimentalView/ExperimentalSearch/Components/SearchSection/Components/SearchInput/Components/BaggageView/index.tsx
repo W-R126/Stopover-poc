@@ -10,7 +10,7 @@ export default function BaggageView({ data }: BaggageViewProps): JSX.Element {
   return (
     <div className={css.ComponentContainer}>
       <img src={SuitCaseIcon} alt="Suitcase" />
-      {`Baggage allowance for Economy Flex is ${data.content.weight}kg`}
+      {`${data.content.answer} ${data.content.weight}kg`}
     </div>
   );
 }
