@@ -33,7 +33,7 @@ export default class SearchSection extends React.Component<
   private readonly STATUS_RESULT = 4;
 
   private readonly QUEST_ARRAY = [
-    "What's the baggabe allowance for Economy Flex",
+    'What is the baggage allowance in economy flex?',
   ]
 
   constructor(props: SearchSectionProps) {
@@ -59,6 +59,7 @@ export default class SearchSection extends React.Component<
   private startRrecord(): void {
     this.setState({
       recordStatus: this.STATUS_RECORDING,
+      questionStep: 0,
     });
 
     setTimeout(() => {
@@ -114,7 +115,7 @@ export default class SearchSection extends React.Component<
       return (
         <>
           <div className={css.RecordQuestion}>
-            {this.QUEST_ARRAY[questionStep]}
+            {recordStatus === this.STATUS_RESPONSE_WAITING && this.QUEST_ARRAY[questionStep]}
           </div>
           <div className={css.MicButtonContainer}>
             {recordStatus === this.STATUS_SEARCH && (
@@ -162,7 +163,7 @@ export default class SearchSection extends React.Component<
       return (
         <>
           <div className={css.ResultText}>
-            The baggage allowance for Economy Flex is:
+            The baggage allowance in economy flex is:
             {' '}
             <strong>35kg</strong>
           </div>
@@ -212,7 +213,7 @@ export default class SearchSection extends React.Component<
                 Hey John, how can we help you today?
               </div>
               <SearchInput
-                clickMic={this.clickSearch}
+                clickMic={this.startRrecord}
                 contentService={contentService}
                 selectedData={selectedData}
                 onChange={onChange}

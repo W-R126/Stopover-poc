@@ -10,7 +10,7 @@ export default function FlightItem(): JSX.Element {
       <div className={css.Content}>
         <img src={PlanImg} alt="plan" />
         <div className={css.FlightType}>
-          Upcoming flight
+          Manage my bookin
         </div>
         <div className={css.AirportDiv}>
           <div className={css.Airport}>

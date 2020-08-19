@@ -223,15 +223,15 @@ export default class DateSelector extends React.Component<DateSelectorProps, Dat
               <div className={css.Title}>Sydney in October</div>
               <div className={css.Description}>
                 <div><strong><i>Season</i></strong></div>
-                <div>Spring-Summer</div>
+                <div>Spring</div>
               </div>
               <div className={css.Description}>
                 <div><strong><i>Avg. Temperature</i></strong></div>
-                <div>39°C</div>
+                <div>22°C</div>
               </div>
               <div className={css.Description}>
                 <div><strong><i>Weather</i></strong></div>
-                <div>Hot and humid</div>
+                <div>Sunny and cool with occasional light rain</div>
               </div>
               <div className={css.Events}>
                 <div className={css.Title}><strong><i>Events</i></strong></div>

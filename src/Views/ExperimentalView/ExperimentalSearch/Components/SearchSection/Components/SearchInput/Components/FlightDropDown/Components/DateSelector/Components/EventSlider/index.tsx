@@ -79,9 +79,9 @@ export default class EventSlider extends React.Component<EventSliderProps, Event
             <img src={item.backImg} draggable={false} alt="Event Item" />
             <div className={css.EventContnet}>
               <div className={css.EventTitle}>
-                <strong>Wildlife Photographer of the Year</strong>
+                <strong>{item.title}</strong>
                 <br />
-                1 Oct - 31 Oct
+                {item.date}
               </div>
               <div className={css.LearnMore} role="button">Learn more</div>
             </div>
