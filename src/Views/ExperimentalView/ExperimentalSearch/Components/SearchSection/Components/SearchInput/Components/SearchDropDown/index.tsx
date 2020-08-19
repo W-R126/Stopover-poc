@@ -14,7 +14,7 @@ interface SearchDropDownProps {
 
 export default function SearchDropDown({ menuList, setItem }: SearchDropDownProps): JSX.Element {
   const renderDetailItem = (item: any): JSX.Element | null => {
-    if (menuList.length <= 2) {
+    if (menuList.length <= 1) {
       if (item.content.type === 0 || item.content.type === 1) {
         return (
           <>
