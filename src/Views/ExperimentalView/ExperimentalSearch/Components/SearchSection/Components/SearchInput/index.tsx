@@ -9,6 +9,7 @@ import SearchDropDown from './Components/SearchDropDown';
 import { SearchInputData } from '../../../../../MockData';
 import BudgetDropDown from './Components/BudgetDropDown';
 import FlightDropDown from './Components/FlightDropDown';
+import BaggageView from './Components/BaggageView';
 import ContentService from '../../../../../../../Services/ContentService';
 import { GuestsModel } from '../../../../../../../Models/GuestsModel';
 
@@ -136,6 +137,8 @@ export default class SearchInput extends React.Component<
           setShowDropDown={this.setShowDropDown}
         />
       );
+    } if (selectedData.content.type === 2) {
+      return <BaggageView data={selectedData} />;
     } if (selectedData.content.type === 3) {
       return (
         <BudgetDropDown

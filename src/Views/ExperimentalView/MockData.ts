@@ -209,7 +209,7 @@ export const SearchInputData = [
     iconType: 2,
     content: {
       type: 2,
-      weight: 25,
+      weight: 35,
     },
   },
   {
@@ -217,7 +217,7 @@ export const SearchInputData = [
     iconType: 2,
     content: {
       type: 2,
-      weight: 25,
+      weight: 35,
     },
   },
   {
