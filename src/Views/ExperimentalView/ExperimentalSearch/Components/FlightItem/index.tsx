@@ -10,7 +10,7 @@ export default function FlightItem(): JSX.Element {
       <div className={css.Content}>
         <img src={PlanImg} alt="plan" />
         <div className={css.FlightType}>
-          Manage my bookin
+          Upcoming flight
         </div>
         <div className={css.AirportDiv}>
           <div className={css.Airport}>
@@ -25,7 +25,7 @@ export default function FlightItem(): JSX.Element {
           26 Nov 2020
         </div>
         <div className={css.CheckIn} role="button">
-          Check in
+          Manage my booking
           <img src={ChevRightSvg} alt="checkin chevright" />
         </div>
       </div>
